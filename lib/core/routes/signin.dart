@@ -1,3 +1,4 @@
+import 'package:customerapp/core/routes/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -150,6 +151,20 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(context, SignUpPageRoute.routeName);
+                      },
+                      child: const Text(
+                        'Create an account',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                )
               ],
             ),
           ),

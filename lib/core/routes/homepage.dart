@@ -13,7 +13,7 @@ class HomePageScreen extends StatefulWidget {
 }
 
 class _HomePageScreenState extends State<HomePageScreen> {
-  int currentIndex = 0;
+  int currentIndex = 1;
   List<Widget> items = const [Orders(),Home(),Profile()];
   @override
   Widget build(BuildContext context) {

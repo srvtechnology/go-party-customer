@@ -2,6 +2,7 @@ import 'package:customerapp/core/routes/homepage.dart';
 import 'package:customerapp/core/routes/intro.dart';
 import 'package:customerapp/core/routes/product.dart';
 import 'package:customerapp/core/routes/signin.dart';
+import 'package:customerapp/core/routes/signup.dart';
 import 'package:customerapp/core/routes/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -28,9 +29,9 @@ class MyApp extends StatelessWidget {
             SplashScreen.routeName:(context)=> const SplashScreen(),
             IntroductionPageRoute.routeName:(context)=>const IntroductionPageRoute(),
             SignInPageRoute.routeName:(context)=>const SignInPageRoute(),
+            SignUpPageRoute.routeName:(context)=>const SignUpPageRoute(),
             HomePageScreen.routeName:(context)=>const HomePageScreen(),
             ProductPageRoute.routeName:(context)=>const ProductPageRoute()
-
           },
         );
       }

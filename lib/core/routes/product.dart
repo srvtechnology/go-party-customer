@@ -1,3 +1,4 @@
+import 'package:customerapp/core/routes/filter.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -19,12 +20,14 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
         body:NestedScrollView(
       floatHeaderSlivers: true,
       headerSliverBuilder: (context,isChange){
-        return [SliverAppBar(
+        return [
+          SliverAppBar(
+            title: const Text("Services"),
           floating: true,
           snap: true,
           elevation: 0,
           bottom: PreferredSize(
-            preferredSize: Size.fromHeight(10.h),
+            preferredSize: const Size.fromHeight(60),
             child: _searchBar(controller: _searchController),
           )
         )];
@@ -46,7 +49,6 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                 ProductTile(category: "Wedding", service: "Planning", vendor: "Paras Ltd", price: "45000"),
                 ProductTile(category: "Wedding", service: "Planning", vendor: "Paras Ltd", price: "45000"),
                 ProductTile(category: "Wedding", service: "Planning", vendor: "Paras Ltd", price: "45000"),
-
               ],
             ),
           ),
@@ -84,7 +86,9 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                 ),
                 backgroundColor: Colors.redAccent
               ),
-              onPressed: (){},
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>const FilterPage()));
+              },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: const [
