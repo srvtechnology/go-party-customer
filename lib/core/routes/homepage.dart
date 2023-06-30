@@ -1,8 +1,9 @@
 import 'package:customerapp/core/components/card.dart';
+import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/routes/product.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:simple_icons/simple_icons.dart';
 
 class HomePageScreen extends StatefulWidget {
   static const routeName = "/home";
@@ -234,69 +235,72 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Profile"),
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        actions: [
-          IconButton(onPressed: (){
-
-            Navigator.pushNamed(context, ProductPageRoute.routeName);
-          }, icon: const Icon(Icons.search)),
-        ],
-      ),
-      body: SingleChildScrollView(
-        physics: const ClampingScrollPhysics(),
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(20.0),
-              child: const Center(
-                child: CircleAvatar(
-                  radius: 50.0,
-                  child: Icon(Icons.person),
+    return Consumer<AuthProvider>(
+      builder: (context,state,child) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text("Profile"),
+            centerTitle: true,
+            automaticallyImplyLeading: false,
+            actions: [
+              IconButton(onPressed: (){
+                Navigator.pushNamed(context, ProductPageRoute.routeName);
+              }, icon: const Icon(Icons.search)),
+            ],
+          ),
+          body: SingleChildScrollView(
+            physics: const ClampingScrollPhysics(),
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(20.0),
+                  child: const Center(
+                    child: CircleAvatar(
+                      radius: 50.0,
+                      child: Icon(Icons.person),
+                    ),
+                  ),
                 ),
-              ),
+                ListTile(
+                  leading: const Icon(Icons.person_2_outlined),
+                  title: const Text('Edit Profile'),
+                  onTap: () {
+                    // Handle "History" option tap
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.history),
+                  title: const Text('History'),
+                  onTap: () {
+                    // Handle "History" option tap
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.feedback),
+                  title: const Text('Feedback'),
+                  onTap: () {
+                    // Handle "Feedback" option tap
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.contact_phone),
+                  title: const Text('Contact'),
+                  onTap: () {
+                    // Handle "Contact" option tap
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.logout),
+                  title: const Text('Logout'),
+                  onTap: () {
+                    state.logout();
+                  },
+                ),
+              ],
             ),
-            ListTile(
-              leading: const Icon(Icons.person_2_outlined),
-              title: const Text('Edit Profile'),
-              onTap: () {
-                // Handle "History" option tap
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.history),
-              title: const Text('History'),
-              onTap: () {
-                // Handle "History" option tap
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.feedback),
-              title: const Text('Feedback'),
-              onTap: () {
-                // Handle "Feedback" option tap
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.contact_phone),
-              title: const Text('Contact'),
-              onTap: () {
-                // Handle "Contact" option tap
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Logout'),
-              onTap: () {
-                // Handle "Logout" option tap
-              },
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      }
     );
   }
 }

@@ -1,5 +1,6 @@
-import 'package:customerapp/core/routes/intro.dart';
 import 'package:flutter/material.dart';
+
+import 'mainpage.dart';
 
 class SplashScreen extends StatefulWidget {
   static const routeName = "splash";
@@ -14,7 +15,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 3),(){
-      Navigator.pushReplacementNamed(context, IntroductionPageRoute.routeName);
+      Navigator.pushReplacementNamed(context, MainPageRoute.routeName);
     });
   }
   @override
