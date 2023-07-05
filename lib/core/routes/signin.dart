@@ -37,9 +37,10 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
     final form = _formKey.currentState;
     if (form!.validate()) {
       try {
-        state.login(_emailController.text, _passwordController.text)
-            .then(
-                (value)=>Navigator.pushReplacementNamed(context, MainPageRoute.routeName));
+        await state.login(_emailController.text, _passwordController.text);
+        if(context.mounted){
+          Navigator.pushReplacementNamed(context, MainPageRoute.routeName);
+        }
       }
       catch(e){
        CustomLogger.error(e);

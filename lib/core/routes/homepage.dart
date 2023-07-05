@@ -1,6 +1,11 @@
+import 'dart:math';
+
+import 'package:customerapp/config.dart';
 import 'package:customerapp/core/components/card.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
+import 'package:customerapp/core/providers/serviceProvider.dart';
 import 'package:customerapp/core/routes/product.dart';
+import 'package:customerapp/core/routes/singleService.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -62,13 +67,13 @@ class _OrdersState extends State<Orders> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            OrderTile(category: "Wedding", service: "Planning", vendor: "Paras Ltd", price: "45000", date: "10.08.23"),
-            OrderTile(category: "Wedding", service: "Planning", vendor: "Paras Ltd", price: "45000", date: "10.08.23"),
-            OrderTile(category: "Wedding", service: "Planning", vendor: "Paras Ltd", price: "45000", date: "10.08.23"),
-            OrderTile(category: "Wedding", service: "Planning", vendor: "Paras Ltd", price: "45000", date: "10.08.23"),
-            OrderTile(category: "Wedding", service: "Planning", vendor: "Paras Ltd", price: "45000", date: "10.08.23"),
-            OrderTile(category: "Wedding", service: "Planning", vendor: "Paras Ltd", price: "45000", date: "10.08.23"),
-            OrderTile(category: "Wedding", service: "Planning", vendor: "Paras Ltd", price: "45000", date: "10.08.23"),
+            OrderTile( service: "Planning", vendor: "Paras Ltd", price: "45000", date: "10.08.23"),
+            OrderTile( service: "Planning", vendor: "Paras Ltd", price: "45000", date: "10.08.23"),
+            OrderTile( service: "Planning", vendor: "Paras Ltd", price: "45000", date: "10.08.23"),
+            OrderTile( service: "Planning", vendor: "Paras Ltd", price: "45000", date: "10.08.23"),
+            OrderTile( service: "Planning", vendor: "Paras Ltd", price: "45000", date: "10.08.23"),
+            OrderTile( service: "Planning", vendor: "Paras Ltd", price: "45000", date: "10.08.23"),
+            OrderTile( service: "Planning", vendor: "Paras Ltd", price: "45000", date: "10.08.23"),
           ],
         ),
       ),
@@ -86,140 +91,165 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: GestureDetector(
-            onTap: (){},
-            child: Row(
-              children:const [
-                Expanded(child: Icon(Icons.location_city)),
-                Expanded(child: Icon(Icons.arrow_drop_down))
+    return ListenableProvider(
+      create: (_)=>ServiceProvider(),
+      child: Consumer<ServiceProvider>(
+        builder: (context,state,child) {
+          if(state.isLoading){
+            return Scaffold(
+              body: Container(
+                alignment: Alignment.center,
+                child: const CircularProgressIndicator(),
+              ),
+            );
+          }
+          if(state.data==null){
+            return Scaffold(
+              appBar: AppBar(
+                leading: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GestureDetector(
+                    onTap: (){},
+                    child: Row(
+                      children:const [
+                        Expanded(child: Icon(Icons.location_city)),
+                        Expanded(child: Icon(Icons.arrow_drop_down))
+                      ],
+                    ),
+                  ),
+                ),
+                automaticallyImplyLeading: false,
+                centerTitle: true,
+                title: const Text("Home"),
+                actions: [
+                  IconButton(onPressed: (){
+                    Navigator.pushNamed(context, ProductPageRoute.routeName);
+                  }, icon: const Icon(Icons.search)),
+                  IconButton(onPressed: (){}, icon: const Icon(Icons.add_shopping_cart)),
+                  IconButton(onPressed: (){}, icon: const Icon(Icons.favorite_border)),
+                ],
+              ),
+              body: Container(
+                alignment: Alignment.center,
+                child: Text("No services available"),
+              ),
+            );
+          }
+          return Scaffold(
+            appBar: AppBar(
+              leading: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GestureDetector(
+                  onTap: (){},
+                  child: Row(
+                    children:const [
+                      Expanded(child: Icon(Icons.location_city)),
+                      Expanded(child: Icon(Icons.arrow_drop_down))
+                    ],
+                  ),
+                ),
+              ),
+              automaticallyImplyLeading: false,
+              centerTitle: true,
+              title: const Text("Home"),
+              actions: [
+                IconButton(onPressed: (){
+                  Navigator.pushNamed(context, ProductPageRoute.routeName);
+                }, icon: const Icon(Icons.search)),
+                IconButton(onPressed: (){}, icon: const Icon(Icons.add_shopping_cart)),
+                IconButton(onPressed: (){}, icon: const Icon(Icons.favorite_border)),
               ],
             ),
-          ),
-        ),
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        title: const Text("Home"),
-        actions: [
-          IconButton(onPressed: (){
-
-            Navigator.pushNamed(context, ProductPageRoute.routeName);
-          }, icon: const Icon(Icons.search)),
-          IconButton(onPressed: (){}, icon: const Icon(Icons.add_shopping_cart)),
-          IconButton(onPressed: (){}, icon: const Icon(Icons.favorite_border)),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children:[
-            Container(
-                padding: const EdgeInsets.symmetric(vertical: 30,horizontal: 20),
-                child: Text("Discover the experience",style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.w600,fontSize: 19.sp),)),
-            Container(
-              alignment: Alignment.centerLeft,
+            body: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Text("Our top services",style: Theme.of(context).textTheme.labelLarge,),
-                  ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
+                children:[
+                  Container(
+                      padding: const EdgeInsets.symmetric(vertical: 30,horizontal: 20),
+                      child: Text("Discover the experience",style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.w600,fontSize: 19.sp),)),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CircularOrderCard(service: "Catering", category: "Birthday", imageUrl:""),
-                        CircularOrderCard(service: "Catering", category: "Birthday", imageUrl:""),
-                        CircularOrderCard(service: "Catering", category: "Birthday", imageUrl:""),
-                        CircularOrderCard(service: "Catering", category: "Birthday", imageUrl:""),
-                        CircularOrderCard(service: "Catering", category: "Birthday", imageUrl:""),
-                        CircularOrderCard(service: "Catering", category: "Birthday", imageUrl:""),
-                        CircularOrderCard(service: "Catering", category: "Birthday", imageUrl:""),
-
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Text("Our top services",style: Theme.of(context).textTheme.labelLarge,),
+                        ),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: state.data!.getRange(0, min(4,state.data!.length)).map((e) => CircularOrderCard(service: e,)).toList()
+                          ),
+                        )
                       ],
                     ),
-                  )
+                  ),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Text("Trending",style: Theme.of(context).textTheme.labelLarge,),
+                        ),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: state.data!.getRange(4, min(7,state.data!.length)).map((e) => OrderCard(service: e.name, price: e.price, imageUrl: e.image,onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>SingleServiceRoute(service: e)));
+                            },)).toList()
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Text("Top Searches of the week",style: Theme.of(context).textTheme.labelLarge,),
+                        ),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                              children: state.data!.getRange(7, min(10,state.data!.length)).map((e) => OrderCard(service: e.name, price: e.price, imageUrl: e.image)).toList()
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  // Container(
+                  //   alignment: Alignment.centerLeft,
+                  //   child: Column(
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     children: [
+                  //       Padding(
+                  //         padding: const EdgeInsets.all(20.0),
+                  //         child: Text("Top Categories",style: Theme.of(context).textTheme.labelLarge,),
+                  //       ),
+                  //       SingleChildScrollView(
+                  //         scrollDirection: Axis.horizontal,
+                  //         child: Row(
+                  //           children: [
+                  //             OrderCard(service: "Catering", imageUrl:"",price:"1499"),
+                  //             OrderCard(service: "Catering", imageUrl:"",price:"1499"),
+                  //             OrderCard(service: "More", imageUrl:"",price:"1499"),
+                  //           ],
+                  //         ),
+                  //       )
+                  //     ],
+                  //   ),
+                  // ),
                 ],
               ),
             ),
-            Container(
-              alignment: Alignment.centerLeft,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Text("Trending",style: Theme.of(context).textTheme.labelLarge,),
-                  ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        OrderCard(service: "Catering", category: "Birthday", imageUrl:"",price:"1499"),
-                        OrderCard(service: "Catering", category: "Birthday", imageUrl:"",price:"1499"),
-                        OrderCard(service: "Catering", category: "Birthday", imageUrl:"",price:"1499"),
-                        OrderCard(service: "Catering", category: "Birthday", imageUrl:"",price:"1499"),
-                        OrderCard(service: "Catering", category: "Birthday", imageUrl:"",price:"1499"),
-                        OrderCard(service: "Catering", category: "Birthday", imageUrl:"",price:"1499"),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Container(
-              alignment: Alignment.centerLeft,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Text("Top Searches of the week",style: Theme.of(context).textTheme.labelLarge,),
-                  ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        OrderCard(service: "Catering", category: "Birthday", imageUrl:"",price:"1499"),
-                        OrderCard(service: "Catering", category: "Birthday", imageUrl:"",price:"1499"),
-                        OrderCard(service: "Catering", category: "Birthday", imageUrl:"",price:"1499"),
-                        OrderCard(service: "Catering", category: "Birthday", imageUrl:"",price:"1499"),
-                        OrderCard(service: "Catering", category: "Birthday", imageUrl:"",price:"1499"),
-                        OrderCard(service: "Catering", category: "Birthday", imageUrl:"",price:"1499"),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Container(
-              alignment: Alignment.centerLeft,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Text("Top Categories",style: Theme.of(context).textTheme.labelLarge,),
-                  ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        OrderCard(service: "Catering", category: "Birthday", imageUrl:"",price:"1499"),
-                        OrderCard(service: "Catering", category: "Birthday", imageUrl:"",price:"1499"),
-                        OrderCard(service: "More", category: "", imageUrl:"",price:"1499"),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ],
-        ),
+          );
+        }
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:customerapp/core/providers/AuthProvider.dart';
+import 'package:customerapp/core/providers/categoryProvider.dart';
 import 'package:customerapp/core/routes/homepage.dart';
 import 'package:customerapp/core/routes/intro.dart';
 import 'package:customerapp/core/routes/mainpage.dart';
@@ -23,7 +24,9 @@ class MyApp extends StatelessWidget {
       builder: (context,orientation,aspectRatio) {
         return MultiProvider(
           providers: [
-            ChangeNotifierProvider(create: (_)=>AuthProvider())
+            ChangeNotifierProvider(create: (_)=>AuthProvider()),
+            ChangeNotifierProvider(create: (_)=>CategoryProvider()),
+
           ],
           child: MaterialApp(
             theme: ThemeData(

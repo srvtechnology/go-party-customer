@@ -1,13 +1,16 @@
+import 'package:customerapp/core/routes/singleService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
+import '../models/service.dart';
+
 typedef OnTap  = void Function();
 
 class OrderCard extends StatelessWidget {
-  String service,category,price,imageUrl;
+  String service,price,imageUrl;
   OnTap? onTap;
-  OrderCard({Key? key,required this.service,required this.category,required this.price,required this.imageUrl,this.onTap}) : super(key: key);
+  OrderCard({Key? key,required this.service,required this.price,required this.imageUrl,this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,17 +27,14 @@ class OrderCard extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  image: const DecorationImage(
+                  image: DecorationImage(
                     fit: BoxFit.fitHeight,
-                  image: AssetImage(
-                    "assets/images/signup5bg.jpg"
-                  )
+                  image: NetworkImage(imageUrl)
                 )
               ),
             )),
             const SizedBox(height: 20,),
             Expanded(child: Text(service,style: const TextStyle(fontWeight: FontWeight.bold),)),
-            Expanded(child: Text(category)),
             Expanded(child: Text("₹ $price",style: const TextStyle(fontWeight: FontWeight.bold)),),
           ],
         ),
@@ -44,29 +44,34 @@ class OrderCard extends StatelessWidget {
 }
 
 class CircularOrderCard extends StatelessWidget {
-  String service,category,imageUrl;
-  CircularOrderCard({Key? key,required this.service,required this.category,required this.imageUrl}) : super(key: key);
+  ServiceModel service;
+  CircularOrderCard({Key? key,required this.service}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Column(
-        children: [
-          const CircleAvatar(
-            radius: 40,
-            backgroundImage: AssetImage("assets/images/signup3bg.jpg"),
-          ),
-          Text(service)
-        ],
+    return GestureDetector(
+      onTap: (){
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>SingleServiceRoute(service: service)));
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          children: [
+            CircleAvatar(
+              radius: 40,
+              backgroundImage: NetworkImage(service.image),
+            ),
+            Text(service.name)
+          ],
+        ),
       ),
     );
   }
 }
 
 class OrderTile extends StatelessWidget {
-  String category,service,vendor,date,price;
-  OrderTile({Key? key,required this.category,required this.service,required this.vendor,required this.price,required this.date}) : super(key: key);
+  String service,vendor,date,price;
+  OrderTile({Key? key,required this.service,required this.vendor,required this.price,required this.date}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -112,16 +117,6 @@ class OrderTile extends StatelessWidget {
           ),
           const SizedBox(
             height: 5,
-          ),
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(category,style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Theme.of(context).primaryColor),),
-                Text(vendor,),
-              ],
-            ),
           ),
           const SizedBox(height: 10,),
           Expanded(child:Text(service,style: Theme.of(context).textTheme.labelMedium,)),

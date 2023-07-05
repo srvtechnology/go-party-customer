@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 
 import '../../config.dart';
 import '../models/user.dart';
@@ -6,11 +9,10 @@ import '../utils/logger.dart';
 
 Future<String> login(String email,String password)async{
   try{
-    Response response = await Dio().post("${APIConfig.baseUrl}/api/customer-login",data: FormData.fromMap({
+    Response response = await Dio().post("${APIConfig.baseUrl}/api/customer-login",data: {
       "email":email,
       "password":password,
-      "user_type":"vendor",
-    }));
+    });
     CustomLogger.debug(response.data);
     return response.data['result']['token'];
   }
