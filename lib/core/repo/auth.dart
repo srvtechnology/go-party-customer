@@ -44,3 +44,21 @@ Future<UserModel> get_UserData(String token)async{
   }
 }
 
+Future register(String email,String password,String name,String phone)async
+{
+  try{
+    Response response = await Dio().post(
+      "${APIConfig.baseUrl}/api/customer-registration",
+      data: {
+        "name":name,
+        "email":email,
+        "password":password,
+        "mobile":phone
+      }
+    );
+    return Future.value(true);
+  }catch(e){
+    return Future.value(e);
+  }
+}
+

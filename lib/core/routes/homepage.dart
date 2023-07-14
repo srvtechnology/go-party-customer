@@ -1,10 +1,12 @@
 import 'dart:math';
-
-import 'package:customerapp/config.dart';
+import 'package:customerapp/core/components/banner.dart';
 import 'package:customerapp/core/components/card.dart';
+import 'package:customerapp/core/components/loading.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/serviceProvider.dart';
 import 'package:customerapp/core/routes/product.dart';
+import 'package:customerapp/core/routes/profile.dart';
+import 'package:customerapp/core/routes/signin.dart';
 import 'package:customerapp/core/routes/singleService.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -99,10 +101,9 @@ class _HomeState extends State<Home> {
             return Scaffold(
               body: Container(
                 alignment: Alignment.center,
-                child: const CircularProgressIndicator(),
-              ),
+                child:const ShimmerWidget())
             );
-          }
+         }
           if(state.data==null){
             return Scaffold(
               appBar: AppBar(
@@ -112,7 +113,7 @@ class _HomeState extends State<Home> {
                     onTap: (){},
                     child: Row(
                       children:const [
-                        Expanded(child: Icon(Icons.location_city)),
+                        Expanded(child: Text("Location")),
                         Expanded(child: Icon(Icons.arrow_drop_down))
                       ],
                     ),
@@ -131,50 +132,75 @@ class _HomeState extends State<Home> {
               ),
               body: Container(
                 alignment: Alignment.center,
-                child: Text("No services available"),
+                child: const Text("No services available"),
               ),
             );
           }
           return Scaffold(
             appBar: AppBar(
-              leading: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onTap: (){},
-                  child: Row(
-                    children:const [
-                      Expanded(child: Icon(Icons.location_city)),
-                      Expanded(child: Icon(Icons.arrow_drop_down))
-                    ],
-                  ),
+              leading: GestureDetector(
+                onTap: (){},
+                child: Row(
+                  children:const [
+                    SizedBox(width: 10,),
+                    Expanded(flex:10,child: Text("Cities")),
+                    Expanded(child: Icon(Icons.arrow_drop_down))
+                  ],
                 ),
               ),
               automaticallyImplyLeading: false,
               centerTitle: true,
               title: const Text("Home"),
               actions: [
-                IconButton(onPressed: (){
-                  Navigator.pushNamed(context, ProductPageRoute.routeName);
-                }, icon: const Icon(Icons.search)),
-                IconButton(onPressed: (){}, icon: const Icon(Icons.add_shopping_cart)),
-                IconButton(onPressed: (){}, icon: const Icon(Icons.favorite_border)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5.0),
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          shape: const CircleBorder(),
+                          backgroundColor: Colors.white
+                      ),
+                      onPressed: (){
+                    Navigator.pushNamed(context, ProductPageRoute.routeName);
+                  }, child: Icon(Icons.search,color:Theme.of(context).primaryColorDark,)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                          backgroundColor: Colors.white
+                      ),
+                      onPressed: (){}, child: Icon(Icons.add_shopping_cart,color:Theme.of(context).primaryColorDark,)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5.0),
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          shape: const CircleBorder(),
+                          backgroundColor: Colors.white
+                      ),
+                      onPressed: (){}, child: Icon(Icons.favorite_border,color:Theme.of(context).primaryColorDark,)),
+                ),
               ],
             ),
             body: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children:[
-                  Container(
-                      padding: const EdgeInsets.symmetric(vertical: 30,horizontal: 20),
-                      child: Text("Discover the experience",style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.w600,fontSize: 19.sp),)),
+                  const EcommerceBanner(imageUrl: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2940&q=80",
+                      title: "Discover the experience",
+                      subtitle: "Shop the latest trends"),
                   Container(
                     alignment: Alignment.centerLeft,
+                    color: Colors.grey[300],
+                    padding: const EdgeInsets.only(top: 10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Text("Our top services",style: Theme.of(context).textTheme.labelLarge,),
+                          padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                          child: Text("Our top services",style: Theme.of(context).textTheme.labelLarge!.copyWith(fontWeight: FontWeight.w700),),
                         ),
                         SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
@@ -191,15 +217,36 @@ class _HomeState extends State<Home> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Text("Trending",style: Theme.of(context).textTheme.labelLarge,),
+                          padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                          child: Text("Trending",style: Theme.of(context).textTheme.labelLarge!.copyWith(fontWeight: FontWeight.w700),),
                         ),
                         SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Row(
-                            children: state.data!.getRange(4, min(7,state.data!.length)).map((e) => OrderCard(service: e.name, price: e.price, imageUrl: e.image,onTap: (){
+                            children: state.data!.getRange(4, min(7,state.data!.length)).map((e) => OrderCard(service: e,
+                              onTap: (){
                               Navigator.push(context, MaterialPageRoute(builder: (context)=>SingleServiceRoute(service: e)));
-                            },)).toList()
+                            },
+                            )).toList()
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: OutlinedButton(
+                                    style: OutlinedButton.styleFrom(
+                            side: const BorderSide(width: 1,color: Colors.blue),
+                            shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      )
+                                    ),
+                                    onPressed: (){
+                                      Navigator.pushNamed(context, ProductPageRoute.routeName);
+                                    }, child:const Text("View all")),
+                              ),
+                            ],
                           ),
                         )
                       ],
@@ -211,13 +258,36 @@ class _HomeState extends State<Home> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Text("Top Searches of the week",style: Theme.of(context).textTheme.labelLarge,),
+                          padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                          child: Text("Top Searches of the week",style: Theme.of(context).textTheme.labelLarge!.copyWith(fontWeight: FontWeight.w700)),
                         ),
                         SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Row(
-                              children: state.data!.getRange(7, min(10,state.data!.length)).map((e) => OrderCard(service: e.name, price: e.price, imageUrl: e.image)).toList()
+                              children: state.data!.getRange(7, min(10,state.data!.length)).map((e) => OrderCard(
+                                  onTap: (){
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>SingleServiceRoute(service: e)));
+                                  },
+                                  service: e)).toList()
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: OutlinedButton(
+                                    style: OutlinedButton.styleFrom(
+                                        side: const BorderSide(width: 1,color: Colors.blue),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                        )
+                                    ),
+                                    onPressed: (){
+                                      Navigator.pushNamed(context, ProductPageRoute.routeName);
+                                    }, child:const Text("View all")),
+                              ),
+                            ],
                           ),
                         )
                       ],
@@ -267,6 +337,40 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Consumer<AuthProvider>(
       builder: (context,state,child) {
+        if(state.authState == AuthState.LoggedOut){
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text("Profile"),
+              centerTitle: true,
+              automaticallyImplyLeading: false,
+              actions: [
+                IconButton(onPressed: (){
+                  Navigator.pushNamed(context, ProductPageRoute.routeName);
+                }, icon: const Icon(Icons.search)),
+              ],
+            ),
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(20.0),
+                  child: const Center(
+                    child: CircleAvatar(
+                      radius: 50.0,
+                      child: Icon(Icons.person),
+                    ),
+                  ),
+                ),
+                const Text("Please Sign in to view"),
+                SizedBox(height: 5.h,),
+                ElevatedButton(onPressed: (){
+                    Navigator.pushNamed(context, SignInPageRoute.routeName);
+                }, child: const Text("Sign in / Sign up"))
+              ],
+            ),
+          );
+        }
         return Scaffold(
           appBar: AppBar(
             title: const Text("Profile"),
@@ -295,21 +399,14 @@ class _ProfileState extends State<Profile> {
                   leading: const Icon(Icons.person_2_outlined),
                   title: const Text('Edit Profile'),
                   onTap: () {
-                    // Handle "History" option tap
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.history),
-                  title: const Text('History'),
-                  onTap: () {
-                    // Handle "History" option tap
+                    Navigator.pushNamed(context, EditProfilePage.routeName);
                   },
                 ),
                 ListTile(
                   leading: const Icon(Icons.feedback),
                   title: const Text('Feedback'),
                   onTap: () {
-                    // Handle "Feedback" option tap
+                    Navigator.pushNamed(context, FeedbackPage.routeName);
                   },
                 ),
                 ListTile(

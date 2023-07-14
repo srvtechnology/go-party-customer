@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:card_loading/card_loading.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -39,5 +40,60 @@ class _LoadingWidgetState extends State<LoadingWidget> {
   void dispose() {
     super.dispose();
     t?.cancel();
+  }
+}
+
+class ShimmerWidget extends StatefulWidget {
+  const ShimmerWidget({Key? key}) : super(key: key);
+
+  @override
+  State<ShimmerWidget> createState() => _ShimmerWidgetState();
+}
+
+class _ShimmerWidgetState extends State<ShimmerWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 40),
+      padding: const EdgeInsets.all(20.0),
+      child: SingleChildScrollView(
+        physics:const ClampingScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _singleCard(),
+            _singleCard(),
+            _singleCard(),
+            _singleCard(),
+          ],
+        ),
+      ),
+    );
+  }
+  Widget _singleCard(){
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: const [
+        CardLoading(
+          height: 30,
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+          width: 100,
+          margin: EdgeInsets.only(bottom: 10),
+        ),
+        CardLoading(
+          height: 100,
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+          margin: EdgeInsets.only(bottom: 10),
+        ),
+        CardLoading(
+          height: 30,
+          width: 200,
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+          margin: EdgeInsets.only(bottom: 10),
+        ),
+      ],
+    );
   }
 }

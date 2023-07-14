@@ -42,6 +42,8 @@ dependencies:
   shared_preferences: ^2.1.2
   logger: ^1.4.0
   cached_network_image: ^3.2.3
+  card_loading: ^0.3.0
+  connectivity: ^3.0.6
 
 dev_dependencies:
   flutter_test:

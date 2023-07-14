@@ -1,6 +1,7 @@
 class UserModel {
-      String name,email,mobile;
+      String id,name,email,mobile;
       UserModel({
+      required this.id,
       required this.name,
       required this.email,
       required this.mobile  
@@ -8,6 +9,7 @@ class UserModel {
       
       factory UserModel.fromJson(Map json){
         return UserModel(
+            id: json["data"]["id"].toString(),
             name: json["data"]["name"],
             email: json["data"]["email"],
             mobile: json["data"]["mobile"]);

@@ -31,12 +31,22 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
-                height: 30.h,
+                height: 25.h,
                 alignment: Alignment.center,
-                child: CachedNetworkImage(
-                  imageUrl: widget.service.image,
-                  placeholder: (context,url)=>Container(alignment: Alignment.center,child: const CircularProgressIndicator(),),
-                 errorWidget: (context,url,err)=>Container(alignment: Alignment.center,child: const Icon(Icons.error_outline),),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Hero(
+                        tag: "Product Image ${widget.service.id}",
+                        child: CachedNetworkImage(
+                          fit: BoxFit.fitWidth,
+                          imageUrl: widget.service.image,
+                          placeholder: (context,url)=>Container(alignment: Alignment.center,child: const CircularProgressIndicator(),),
+                         errorWidget: (context,url,err)=>Container(alignment: Alignment.center,child: const Icon(Icons.error_outline),),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Container(

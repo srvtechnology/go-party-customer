@@ -12,7 +12,7 @@ enum AuthState {
 }
 class AuthProvider with ChangeNotifier {
   AuthState _authState = AuthState.Waiting;
-  String? _token=null;
+  String? _token;
   bool _isLoading = false;
   bool get isLoading => _isLoading;
   UserModel? _user;
@@ -39,6 +39,17 @@ class AuthProvider with ChangeNotifier {
   }
   AuthProvider(){
     init();
+  }
+  Future<void> register(String name,String email,String phone,String password)
+  async {
+    try{
+      await authRepo.register(email, password, name, phone);
+      await login(email, password);
+    }catch(e){
+      CustomLogger.error(e);
+      _authState = AuthState.Error ;
+      notifyListeners();
+    }
   }
   void init()async{
     startLoading();

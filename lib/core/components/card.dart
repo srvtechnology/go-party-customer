@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:customerapp/core/routes/singleService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,34 +11,47 @@ import '../models/service.dart';
 typedef OnTap  = void Function();
 
 class OrderCard extends StatelessWidget {
-  String service,price,imageUrl;
+  ServiceModel service;
   OnTap? onTap;
-  OrderCard({Key? key,required this.service,required this.price,required this.imageUrl,this.onTap}) : super(key: key);
+  OrderCard({Key? key,required this.service,this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.all(20),
-        height: 30.h,
+        margin: const EdgeInsets.symmetric(vertical: 5,horizontal: 10),
+        height: 35.h,
         width: 50.w,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(flex: 9,child:
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: DecorationImage(
-                    fit: BoxFit.fitHeight,
-                  image: NetworkImage(imageUrl)
-                )
+            Hero(
+              tag: "Product Image ${service.id}",
+              child: Container(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                        offset: const Offset(1,1),
+                        spreadRadius: 2,
+                        blurRadius: 2,
+                        color: Colors.grey[400]!
+                    ),
+                  ],
+                    borderRadius: BorderRadius.circular(10),
+                    image: DecorationImage(
+                      fit: BoxFit.fitHeight,
+                    image: CachedNetworkImageProvider(service.image,)
+                  )
+                ),
               ),
             )),
             const SizedBox(height: 20,),
-            Expanded(child: Text(service,style: const TextStyle(fontWeight: FontWeight.bold),)),
-            Expanded(child: Text("₹ $price",style: const TextStyle(fontWeight: FontWeight.bold)),),
+            Expanded(child: Text(service.name,style: const TextStyle(fontWeight: FontWeight.bold),)),
+            FittedBox(child: Text("${service.description.substring(0,min(26,service.description.length))} ...",overflow: TextOverflow.visible,textAlign: TextAlign.left,)),
+            const SizedBox(height: 20,),
+            Expanded(child: Text("₹ ${service.price}",style: const TextStyle(fontWeight: FontWeight.bold)),),
           ],
         ),
       ),
@@ -44,8 +60,8 @@ class OrderCard extends StatelessWidget {
 }
 
 class CircularOrderCard extends StatelessWidget {
-  ServiceModel service;
-  CircularOrderCard({Key? key,required this.service}) : super(key: key);
+  final ServiceModel service;
+  const CircularOrderCard({Key? key,required this.service}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -57,10 +73,21 @@ class CircularOrderCard extends StatelessWidget {
         padding: const EdgeInsets.all(10.0),
         child: Column(
           children: [
-            CircleAvatar(
-              radius: 40,
-              backgroundImage: NetworkImage(service.image),
+            Container(
+              decoration:BoxDecoration(
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                      blurRadius: 2,
+                      color: Colors.grey[400]!,
+                       spreadRadius: 1)],
+              ),
+              child: CircleAvatar(
+                radius: 40,
+                backgroundImage: CachedNetworkImageProvider(service.image),
+              ),
             ),
+            const SizedBox(height: 10,),
             Text(service.name)
           ],
         ),
@@ -143,8 +170,9 @@ class OrderTile extends StatelessWidget {
   }
 }
 class ProductTile extends StatelessWidget {
-  String category,service,vendor,price;
-  ProductTile({Key? key,required this.category,required this.service,required this.vendor,required this.price,}) : super(key: key);
+  ServiceModel service;
+  Function? onTap;
+  ProductTile({Key? key,required this.service,this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -179,11 +207,9 @@ class ProductTile extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(horizontal: 10),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
-                image: const DecorationImage(
+                image: DecorationImage(
                     fit: BoxFit.fitWidth,
-                    image: AssetImage(
-                        "assets/images/signup5bg.jpg"
-                    )
+                    image: CachedNetworkImageProvider(service.image)
                 )
             ),
           )
@@ -196,8 +222,7 @@ class ProductTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(category,style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Theme.of(context).primaryColor),),
-                Text(vendor,),
+                Text(service.name,style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Theme.of(context).primaryColor),),
               ],
             ),
           ),
@@ -205,8 +230,8 @@ class ProductTile extends StatelessWidget {
           Expanded(child:Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(service,style: Theme.of(context).textTheme.labelMedium,),
-              Text("₹ $price",style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w600),)
+              FittedBox(child: Text("${service.description.substring(0,min(20,service.description.length))} ...",)),
+              Text("₹ ${service.price}",style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w600),)
             ],
           )),
           const SizedBox(height: 20,),
@@ -214,7 +239,11 @@ class ProductTile extends StatelessWidget {
             children: [
               Expanded(
                 child: ElevatedButton(
-                  onPressed: (){},
+                  onPressed: (){
+                    if(onTap!=null){
+                      onTap!();
+                    }
+                  },
                   child: const Text("View"),
                 ),
               ),

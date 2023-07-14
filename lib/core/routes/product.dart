@@ -1,8 +1,11 @@
+import 'package:customerapp/core/providers/serviceProvider.dart';
 import 'package:customerapp/core/routes/filter.dart';
+import 'package:customerapp/core/routes/singleService.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-
 import '../components/card.dart';
+import '../components/loading.dart';
 
 class ProductPageRoute extends StatefulWidget {
   static const routeName ="/product";
@@ -16,43 +19,60 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
   final TextEditingController _searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body:NestedScrollView(
-      floatHeaderSlivers: true,
-      headerSliverBuilder: (context,isChange){
-        return [
-          SliverAppBar(
-            title: const Text("Services"),
-          floating: true,
-          snap: true,
-          elevation: 0,
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(60),
-            child: _searchBar(controller: _searchController),
-          )
-        )];
-      },
-      body:Container(
-          height: double.infinity,
-          width: double.infinity,
-          color: Colors.white,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                ProductTile(category: "Wedding", service: "Planning", vendor: "Paras Ltd", price: "45000"),
-                ProductTile(category: "Wedding", service: "Planning", vendor: "Paras Ltd", price: "45000"),
-                ProductTile(category: "Wedding", service: "Planning", vendor: "Paras Ltd", price: "45000"),
-                ProductTile(category: "Wedding", service: "Planning", vendor: "Paras Ltd", price: "45000"),
-                ProductTile(category: "Wedding", service: "Planning", vendor: "Paras Ltd", price: "45000"),
-                ProductTile(category: "Wedding", service: "Planning", vendor: "Paras Ltd", price: "45000"),
-                ProductTile(category: "Wedding", service: "Planning", vendor: "Paras Ltd", price: "45000"),
-                ProductTile(category: "Wedding", service: "Planning", vendor: "Paras Ltd", price: "45000"),
-                ProductTile(category: "Wedding", service: "Planning", vendor: "Paras Ltd", price: "45000"),
-                ProductTile(category: "Wedding", service: "Planning", vendor: "Paras Ltd", price: "45000"),
-              ],
+    return ListenableProvider(
+      create: (_)=>ServiceProvider(),
+      child: Consumer<ServiceProvider>(
+        builder: (context,state,child) {
+          if(state.isLoading){
+            return Scaffold(
+                body: Container(
+                    alignment: Alignment.center,
+                    child:const ShimmerWidget())
+            );
+          }
+          if(state.data==null){
+            return Scaffold(
+              appBar: AppBar(
+                title:const Text("Services"),
+                centerTitle: true,
+              ),
+              body: Container(
+                alignment: Alignment.center,
+                child: const Text("No services available"),
+              ),
+            );
+          }
+          return Scaffold(
+              body:NestedScrollView(
+            floatHeaderSlivers: true,
+            headerSliverBuilder: (context,isChange){
+              return [
+                SliverAppBar(
+                  title: const Text("Services"),
+                floating: true,
+                snap: true,
+                elevation: 0,
+                bottom: PreferredSize(
+                  preferredSize: const Size.fromHeight(60),
+                  child: _searchBar(controller: _searchController),
+                )
+              )];
+            },
+            body:Container(
+                height: double.infinity,
+                width: double.infinity,
+                color: Colors.white,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: state.data!.map((e) => ProductTile(service: e,onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>SingleServiceRoute(service: e)));
+                    },)).toList()
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
+          );
+        }
       ),
     );
   }
