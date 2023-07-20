@@ -20,63 +20,70 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
   @override
   Widget build(BuildContext context) {
     return ListenableProvider(
-      create: (_)=>ServiceProvider(),
-      child: Consumer<ServiceProvider>(
-        builder: (context,state,child) {
-          if(state.isLoading){
-            return Scaffold(
-                body: Container(
-                    alignment: Alignment.center,
-                    child:const ShimmerWidget())
-            );
-          }
-          if(state.data==null){
-            return Scaffold(
-              appBar: AppBar(
-                title:const Text("Services"),
-                centerTitle: true,
-              ),
-              body: Container(
-                alignment: Alignment.center,
-                child: const Text("No services available"),
-              ),
-            );
-          }
-          return Scaffold(
-              body:NestedScrollView(
-            floatHeaderSlivers: true,
-            headerSliverBuilder: (context,isChange){
-              return [
-                SliverAppBar(
-                  title: const Text("Services"),
-                floating: true,
-                snap: true,
-                elevation: 0,
-                bottom: PreferredSize(
-                  preferredSize: const Size.fromHeight(60),
-                  child: _searchBar(controller: _searchController),
-                )
-              )];
-            },
-            body:Container(
-                height: double.infinity,
-                width: double.infinity,
-                color: Colors.white,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: state.data!.map((e) => ProductTile(service: e,onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>SingleServiceRoute(service: e)));
-                    },)).toList()
+      create: (_)=>FilterProvider(),
+      child: Consumer<FilterProvider>(
+        builder: (context,filters,child) {
+          return ListenableProvider(
+            create: (_)=>ServiceProvider(filters: filters),
+            child: Consumer<ServiceProvider>(
+              builder: (context,state,child) {
+                if(state.isLoading){
+                  return Scaffold(
+                      body: Container(
+                          alignment: Alignment.center,
+                          child:const ShimmerWidget())
+                  );
+                }
+                if(state.data==null){
+                  return Scaffold(
+                    appBar: AppBar(
+                      title:const Text("Services"),
+                      centerTitle: true,
+                    ),
+                    body: Container(
+                      alignment: Alignment.center,
+                      child: const Text("No services available"),
+                    ),
+                  );
+                }
+                return Scaffold(
+                    body:NestedScrollView(
+                  floatHeaderSlivers: true,
+                  headerSliverBuilder: (context,isChange){
+                    return [
+                      SliverAppBar(
+                        title: const Text("Services"),
+                      floating: true,
+                      snap: true,
+                      elevation: 0,
+                      bottom: PreferredSize(
+                        preferredSize: const Size.fromHeight(60),
+                        child: _searchBar(controller: _searchController,filterState: filters,serviceState: state),
+                      )
+                    )];
+                  },
+                  body:Container(
+                      height: double.infinity,
+                      width: double.infinity,
+                      color: Colors.white,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: state.data!.map((e) => ProductTile(service: e,onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>SingleServiceRoute(service: e)));
+                          },)).toList()
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
+                );
+              }
             ),
           );
         }
       ),
     );
   }
-    Widget _searchBar({required TextEditingController controller}){
+    Widget _searchBar({required TextEditingController controller,required FilterProvider filterState,required ServiceProvider serviceState}){
     return Container(
       color: Colors.white,
       height: 9.h,
@@ -107,7 +114,7 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                 backgroundColor: Colors.redAccent
               ),
               onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>const FilterPage()));
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>FilterPage(filterState: filterState,))).then((value) => serviceState.getFilteredServices(filterState));
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

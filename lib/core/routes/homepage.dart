@@ -94,229 +94,236 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return ListenableProvider(
-      create: (_)=>ServiceProvider(),
-      child: Consumer<ServiceProvider>(
-        builder: (context,state,child) {
-          if(state.isLoading){
-            return Scaffold(
-              body: Container(
-                alignment: Alignment.center,
-                child:const ShimmerWidget())
-            );
-         }
-          if(state.data==null){
-            return Scaffold(
-              appBar: AppBar(
-                leading: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GestureDetector(
-                    onTap: (){},
-                    child: Row(
-                      children:const [
-                        Expanded(child: Text("Location")),
-                        Expanded(child: Icon(Icons.arrow_drop_down))
-                      ],
-                    ),
-                  ),
-                ),
-                automaticallyImplyLeading: false,
-                centerTitle: true,
-                title: const Text("Home"),
-                actions: [
-                  IconButton(onPressed: (){
-                    Navigator.pushNamed(context, ProductPageRoute.routeName);
-                  }, icon: const Icon(Icons.search)),
-                  IconButton(onPressed: (){}, icon: const Icon(Icons.add_shopping_cart)),
-                  IconButton(onPressed: (){}, icon: const Icon(Icons.favorite_border)),
-                ],
-              ),
-              body: Container(
-                alignment: Alignment.center,
-                child: const Text("No services available"),
-              ),
-            );
-          }
-          return Scaffold(
-            appBar: AppBar(
-              leading: GestureDetector(
-                onTap: (){},
-                child: Row(
-                  children:const [
-                    SizedBox(width: 10,),
-                    Expanded(flex:10,child: Text("Cities")),
-                    Expanded(child: Icon(Icons.arrow_drop_down))
-                  ],
-                ),
-              ),
-              automaticallyImplyLeading: false,
-              centerTitle: true,
-              title: const Text("Home"),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5.0),
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          shape: const CircleBorder(),
-                          backgroundColor: Colors.white
-                      ),
-                      onPressed: (){
-                    Navigator.pushNamed(context, ProductPageRoute.routeName);
-                  }, child: Icon(Icons.search,color:Theme.of(context).primaryColorDark,)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5),
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        shape: const CircleBorder(),
-                          backgroundColor: Colors.white
-                      ),
-                      onPressed: (){}, child: Icon(Icons.add_shopping_cart,color:Theme.of(context).primaryColorDark,)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5.0),
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          shape: const CircleBorder(),
-                          backgroundColor: Colors.white
-                      ),
-                      onPressed: (){}, child: Icon(Icons.favorite_border,color:Theme.of(context).primaryColorDark,)),
-                ),
-              ],
-            ),
-            body: SingleChildScrollView(
-              physics: const ClampingScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children:[
-                  const EcommerceBanner(imageUrl: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2940&q=80",
-                      title: "Discover the experience",
-                      subtitle: "Shop the latest trends"),
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    color: Colors.grey[300],
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-                          child: Text("Our top services",style: Theme.of(context).textTheme.labelLarge!.copyWith(fontWeight: FontWeight.w700),),
-                        ),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
+      create: (_)=>FilterProvider(),
+      child: Consumer<FilterProvider>(
+        builder: (context,filter,child) {
+          return ListenableProvider(
+            create: (_)=>ServiceProvider(filters: filter),
+            child: Consumer<ServiceProvider>(
+              builder: (context,state,child) {
+                if(state.isLoading){
+                  return Scaffold(
+                    body: Container(
+                      alignment: Alignment.center,
+                      child:const ShimmerWidget())
+                  );
+               }
+                if(state.data==null){
+                  return Scaffold(
+                    appBar: AppBar(
+                      leading: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GestureDetector(
+                          onTap: (){},
                           child: Row(
-                            children: state.data!.getRange(0, min(4,state.data!.length)).map((e) => CircularOrderCard(service: e,)).toList()
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-                          child: Text("Trending",style: Theme.of(context).textTheme.labelLarge!.copyWith(fontWeight: FontWeight.w700),),
-                        ),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: state.data!.getRange(4, min(7,state.data!.length)).map((e) => OrderCard(service: e,
-                              onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>SingleServiceRoute(service: e)));
-                            },
-                            )).toList()
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 40),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: OutlinedButton(
-                                    style: OutlinedButton.styleFrom(
-                            side: const BorderSide(width: 1,color: Colors.blue),
-                            shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      )
-                                    ),
-                                    onPressed: (){
-                                      Navigator.pushNamed(context, ProductPageRoute.routeName);
-                                    }, child:const Text("View all")),
-                              ),
+                            children:const [
+                              Expanded(child: Text("Location")),
+                              Expanded(child: Icon(Icons.arrow_drop_down))
                             ],
                           ),
-                        )
+                        ),
+                      ),
+                      automaticallyImplyLeading: false,
+                      centerTitle: true,
+                      title: const Text("Home"),
+                      actions: [
+                        IconButton(onPressed: (){
+                          Navigator.pushNamed(context, ProductPageRoute.routeName);
+                        }, icon: const Icon(Icons.search)),
+                        IconButton(onPressed: (){}, icon: const Icon(Icons.add_shopping_cart)),
+                        IconButton(onPressed: (){}, icon: const Icon(Icons.favorite_border)),
                       ],
                     ),
+                    body: Container(
+                      alignment: Alignment.center,
+                      child: const Text("No services available"),
+                    ),
+                  );
+                }
+                return Scaffold(
+                  appBar: AppBar(
+                    leading: GestureDetector(
+                      onTap: (){},
+                      child: Row(
+                        children:const [
+                          SizedBox(width: 10,),
+                          Expanded(flex:10,child: Text("Cities")),
+                          Expanded(child: Icon(Icons.arrow_drop_down))
+                        ],
+                      ),
+                    ),
+                    automaticallyImplyLeading: false,
+                    centerTitle: true,
+                    title: const Text("Home"),
+                    actions: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5.0),
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                shape: const CircleBorder(),
+                                backgroundColor: Colors.white
+                            ),
+                            onPressed: (){
+                          Navigator.pushNamed(context, ProductPageRoute.routeName);
+                        }, child: Icon(Icons.search,color:Theme.of(context).primaryColorDark,)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              shape: const CircleBorder(),
+                                backgroundColor: Colors.white
+                            ),
+                            onPressed: (){}, child: Icon(Icons.add_shopping_cart,color:Theme.of(context).primaryColorDark,)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5.0),
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                shape: const CircleBorder(),
+                                backgroundColor: Colors.white
+                            ),
+                            onPressed: (){}, child: Icon(Icons.favorite_border,color:Theme.of(context).primaryColorDark,)),
+                      ),
+                    ],
                   ),
-                  Container(
-                    alignment: Alignment.centerLeft,
+                  body: SingleChildScrollView(
+                    physics: const ClampingScrollPhysics(),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-                          child: Text("Top Searches of the week",style: Theme.of(context).textTheme.labelLarge!.copyWith(fontWeight: FontWeight.w700)),
+                      children:[
+                        const EcommerceBanner(imageUrl: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2940&q=80",
+                            title: "Discover the experience",
+                            subtitle: "Shop the latest trends"),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          color: Colors.grey[300],
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                                child: Text("Our top services",style: Theme.of(context).textTheme.labelLarge!.copyWith(fontWeight: FontWeight.w700),),
+                              ),
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: state.data!.getRange(0, min(4,state.data!.length)).map((e) => CircularOrderCard(service: e,)).toList()
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                              children: state.data!.getRange(7, min(10,state.data!.length)).map((e) => OrderCard(
-                                  onTap: (){
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                                child: Text("Trending",style: Theme.of(context).textTheme.labelLarge!.copyWith(fontWeight: FontWeight.w700),),
+                              ),
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: state.data!.getRange(4, min(7,state.data!.length)).map((e) => OrderCard(service: e,
+                                    onTap: (){
                                     Navigator.push(context, MaterialPageRoute(builder: (context)=>SingleServiceRoute(service: e)));
                                   },
-                                  service: e)).toList()
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 40),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: OutlinedButton(
-                                    style: OutlinedButton.styleFrom(
-                                        side: const BorderSide(width: 1,color: Colors.blue),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10),
-                                        )
-                                    ),
-                                    onPressed: (){
-                                      Navigator.pushNamed(context, ProductPageRoute.routeName);
-                                    }, child:const Text("View all")),
+                                  )).toList()
+                                ),
                               ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 40),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: OutlinedButton(
+                                          style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(width: 1,color: Colors.blue),
+                                  shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10),
+                                            )
+                                          ),
+                                          onPressed: (){
+                                            Navigator.pushNamed(context, ProductPageRoute.routeName);
+                                          }, child:const Text("View all")),
+                                    ),
+                                  ],
+                                ),
+                              )
                             ],
                           ),
-                        )
+                        ),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                                child: Text("Top Searches of the week",style: Theme.of(context).textTheme.labelLarge!.copyWith(fontWeight: FontWeight.w700)),
+                              ),
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                    children: state.data!.getRange(7, min(10,state.data!.length)).map((e) => OrderCard(
+                                        onTap: (){
+                                          Navigator.push(context, MaterialPageRoute(builder: (context)=>SingleServiceRoute(service: e)));
+                                        },
+                                        service: e)).toList()
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 40),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: OutlinedButton(
+                                          style: OutlinedButton.styleFrom(
+                                              side: const BorderSide(width: 1,color: Colors.blue),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(10),
+                                              )
+                                          ),
+                                          onPressed: (){
+                                            Navigator.pushNamed(context, ProductPageRoute.routeName);
+                                          }, child:const Text("View all")),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        // Container(
+                        //   alignment: Alignment.centerLeft,
+                        //   child: Column(
+                        //     crossAxisAlignment: CrossAxisAlignment.start,
+                        //     children: [
+                        //       Padding(
+                        //         padding: const EdgeInsets.all(20.0),
+                        //         child: Text("Top Categories",style: Theme.of(context).textTheme.labelLarge,),
+                        //       ),
+                        //       SingleChildScrollView(
+                        //         scrollDirection: Axis.horizontal,
+                        //         child: Row(
+                        //           children: [
+                        //             OrderCard(service: "Catering", imageUrl:"",price:"1499"),
+                        //             OrderCard(service: "Catering", imageUrl:"",price:"1499"),
+                        //             OrderCard(service: "More", imageUrl:"",price:"1499"),
+                        //           ],
+                        //         ),
+                        //       )
+                        //     ],
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
-                  // Container(
-                  //   alignment: Alignment.centerLeft,
-                  //   child: Column(
-                  //     crossAxisAlignment: CrossAxisAlignment.start,
-                  //     children: [
-                  //       Padding(
-                  //         padding: const EdgeInsets.all(20.0),
-                  //         child: Text("Top Categories",style: Theme.of(context).textTheme.labelLarge,),
-                  //       ),
-                  //       SingleChildScrollView(
-                  //         scrollDirection: Axis.horizontal,
-                  //         child: Row(
-                  //           children: [
-                  //             OrderCard(service: "Catering", imageUrl:"",price:"1499"),
-                  //             OrderCard(service: "Catering", imageUrl:"",price:"1499"),
-                  //             OrderCard(service: "More", imageUrl:"",price:"1499"),
-                  //           ],
-                  //         ),
-                  //       )
-                  //     ],
-                  //   ),
-                  // ),
-                ],
-              ),
+                );
+              }
             ),
           );
         }

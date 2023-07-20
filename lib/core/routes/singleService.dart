@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:customerapp/core/models/service.dart';
+import 'package:customerapp/core/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -12,14 +13,46 @@ class SingleServiceRoute extends StatefulWidget {
 }
 
 class _SingleServiceRouteState extends State<SingleServiceRoute> {
+
+  void addToCart(context,){
+    showDialog(context: context, builder: (context){
+      return Dialog(
+        child: SingleChildScrollView(
+          child: Container(
+            alignment: Alignment.topCenter,
+            child: Column(
+              children: [
+
+
+              ],
+            ),
+          ),
+        ),
+      );
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      floatingActionButton: ElevatedButton(
-        style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
-        onPressed: (){},
-        child: const Text("Book Now !"),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+            onPressed: (){
+              addToCart(context);
+            },
+            child: const Text("Add to Cart"),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+            onPressed: (){
+              //addToCart(context);
+            },
+            child: const Text("Book Now !"),
+          ),
+        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: SizedBox(
