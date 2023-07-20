@@ -37,13 +37,16 @@ class ServiceProvider with ChangeNotifier{
       stopLoading();
     }
   }
-  Future<void> getFilteredServices(FilterProvider filters)async{
+  Future<void> getFilteredServices(FilterProvider filters,{String? searchString})async{
     try{
       startLoading();
       Map<String,dynamic> data = {};
       if(filters.startPrice!=null && filters.endPrice!=null){
         data["start_price"]=filters.startPrice;
         data["end_price"]=filters.endPrice;
+      }
+      if(searchString!=null){
+        data["search"]=searchString;
       }
       if(filters.discount!=null){
         data["discount_percentage"]=filters.discount;

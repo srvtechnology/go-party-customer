@@ -17,6 +17,8 @@ class ProductPageRoute extends StatefulWidget {
 
 class _ProductPageRouteState extends State<ProductPageRoute> {
   final TextEditingController _searchController = TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
     return ListenableProvider(
@@ -104,6 +106,9 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
             ),
           ),
           const SizedBox(width: 20,),
+          IconButton(onPressed: (){
+            serviceState.getFilteredServices(filterState,searchString: _searchController.text);
+          }, icon: const Icon(Icons.search)),
           Expanded(
             flex: 4,
             child: ElevatedButton(
@@ -118,13 +123,14 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: const [
-                  Icon(Icons.account_tree_outlined,size: 15,),
-                  Text("Filters"),
+                children:  [
+                  const Icon(Icons.account_tree_outlined,size: 15,),
+                  Text("Filters",style: TextStyle(fontSize: 12.sp),),
                 ],
               ),
             ),
-          )
+          ),
+          const SizedBox(width: 20,),
         ],
       ),
     );

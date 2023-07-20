@@ -4,6 +4,7 @@ import 'package:customerapp/core/components/card.dart';
 import 'package:customerapp/core/components/loading.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/serviceProvider.dart';
+import 'package:customerapp/core/routes/cart.dart';
 import 'package:customerapp/core/routes/product.dart';
 import 'package:customerapp/core/routes/profile.dart';
 import 'package:customerapp/core/routes/signin.dart';
@@ -142,16 +143,6 @@ class _HomeState extends State<Home> {
                 }
                 return Scaffold(
                   appBar: AppBar(
-                    leading: GestureDetector(
-                      onTap: (){},
-                      child: Row(
-                        children:const [
-                          SizedBox(width: 10,),
-                          Expanded(flex:10,child: Text("Cities")),
-                          Expanded(child: Icon(Icons.arrow_drop_down))
-                        ],
-                      ),
-                    ),
                     automaticallyImplyLeading: false,
                     centerTitle: true,
                     title: const Text("Home"),
@@ -174,7 +165,10 @@ class _HomeState extends State<Home> {
                               shape: const CircleBorder(),
                                 backgroundColor: Colors.white
                             ),
-                            onPressed: (){}, child: Icon(Icons.add_shopping_cart,color:Theme.of(context).primaryColorDark,)),
+                            onPressed: (){
+                              Navigator.pushNamed(context, CartPage.routeName);
+
+                            }, child: Icon(Icons.add_shopping_cart,color:Theme.of(context).primaryColorDark,)),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 5.0),

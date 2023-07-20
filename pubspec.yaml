@@ -44,6 +44,7 @@ dependencies:
   cached_network_image: ^3.2.3
   card_loading: ^0.3.0
   connectivity: ^3.0.6
+  animated_custom_dropdown: ^1.5.0
 
 dev_dependencies:
   flutter_test:
