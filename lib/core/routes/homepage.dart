@@ -112,27 +112,33 @@ class _HomeState extends State<Home> {
                 if(state.data==null){
                   return Scaffold(
                     appBar: AppBar(
-                      leading: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: GestureDetector(
-                          onTap: (){},
-                          child: Row(
-                            children:const [
-                              Expanded(child: Text("Location")),
-                              Expanded(child: Icon(Icons.arrow_drop_down))
-                            ],
-                          ),
-                        ),
-                      ),
                       automaticallyImplyLeading: false,
                       centerTitle: true,
                       title: const Text("Home"),
                       actions: [
-                        IconButton(onPressed: (){
-                          Navigator.pushNamed(context, ProductPageRoute.routeName);
-                        }, icon: const Icon(Icons.search)),
-                        IconButton(onPressed: (){}, icon: const Icon(Icons.add_shopping_cart)),
-                        IconButton(onPressed: (){}, icon: const Icon(Icons.favorite_border)),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 5.0),
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  shape: const CircleBorder(),
+                                  backgroundColor: Colors.white
+                              ),
+                              onPressed: (){
+                                Navigator.pushNamed(context, ProductPageRoute.routeName);
+                              }, child: Icon(Icons.search,color:Theme.of(context).primaryColorDark,)),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 5),
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  shape: const CircleBorder(),
+                                  backgroundColor: Colors.white
+                              ),
+                              onPressed: (){
+                                Navigator.pushNamed(context, CartPage.routeName);
+
+                              }, child: Icon(Icons.add_shopping_cart,color:Theme.of(context).primaryColorDark,)),
+                        ),
                       ],
                     ),
                     body: Container(
@@ -169,15 +175,6 @@ class _HomeState extends State<Home> {
                               Navigator.pushNamed(context, CartPage.routeName);
 
                             }, child: Icon(Icons.add_shopping_cart,color:Theme.of(context).primaryColorDark,)),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5.0),
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                shape: const CircleBorder(),
-                                backgroundColor: Colors.white
-                            ),
-                            onPressed: (){}, child: Icon(Icons.favorite_border,color:Theme.of(context).primaryColorDark,)),
                       ),
                     ],
                   ),
@@ -338,7 +335,7 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Consumer<AuthProvider>(
       builder: (context,state,child) {
-        if(state.authState == AuthState.LoggedOut){
+        if(state.authState != AuthState.LoggedIn){
           return Scaffold(
             appBar: AppBar(
               title: const Text("Profile"),

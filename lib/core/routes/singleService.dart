@@ -141,13 +141,6 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                   },
                   child: const Text("Add to Cart"),
                 ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
-                  onPressed: (){
-                    //addToCart(context);
-                  },
-                  child: const Text("Book Now !"),
-                ),
               ],
             ),
             floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

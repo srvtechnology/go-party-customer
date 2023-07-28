@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:customerapp/core/models/cart.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/cartProvider.dart';
+import 'package:customerapp/core/repo/cart.dart';
+import 'package:customerapp/core/routes/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -14,7 +16,7 @@ class CartPage extends StatefulWidget {
   const CartPage({super.key});
 
   @override
-  _CartPageState createState() => _CartPageState();
+  State<CartPage> createState() => _CartPageState();
 }
 
 class CartItem {
@@ -37,8 +39,26 @@ class _CartPageState extends State<CartPage> {
   Widget build(BuildContext context) {
     return ListenableProvider(
       create: (_)=>CartProvider(context.read<AuthProvider>()),
-      child: Consumer<CartProvider>(
-        builder: (context,cart,child){
+      child: Consumer2<CartProvider,AuthProvider>(
+        builder: (context,cart,auth,child){
+          if(auth.authState!= AuthState.LoggedIn){
+            return Scaffold(
+                appBar: AppBar(),
+                body: Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(50),
+                    child:Column(
+                      children:[
+                        const Icon(Icons.shopping_cart,size: 100,),
+                        const SizedBox(height: 20,),
+                        const Text("Please log in to view your cart."),
+                        ElevatedButton(onPressed: (){
+                          Navigator.pushNamed(context, SignInPageRoute.routeName);
+                        }, child: const Text("Sign in"))
+                      ],
+                    ))
+            );
+          }
           if(cart.isLoading){
             return Scaffold(
                 body: Container(
@@ -54,9 +74,9 @@ class _CartPageState extends State<CartPage> {
                     padding: const EdgeInsets.all(50),
                     child:Column(
                       children:const [
-                        Icon(Icons.shopping_cart,size: 100,),
-                        SizedBox(height: 20,),
-                        Text("Cart is currently empty.")
+                         Icon(Icons.shopping_cart,size: 100,),
+                         SizedBox(height: 20,),
+                         Text("Cart is currently empty."),
                       ],
                     ))
             );
@@ -65,22 +85,22 @@ class _CartPageState extends State<CartPage> {
               appBar: AppBar(
                 title: const Text('Cart'),
               ),
+              bottomNavigationBar: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.redAccent
+                  ),
+                  onPressed: (){},
+                  child: const Text("Checkout"),
+                ),
+              ),
               body: SingleChildScrollView(
                 child: Column(
                   children: [
                     const SizedBox(height: 20,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Expanded(
-                            flex: 2,
-                            child: Text("Service",textAlign: TextAlign.center,style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w600),)),
-                        Expanded(child: Text("Quantity",style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w600),)),
-                        Expanded(child: Text("Total",style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w600),)),
-                      ],
-                    ),
                     Column(
-                      children: cart.data.map((e) => CartTile(e)).toList()
+                      children: cart.data.map((e) => _cartTile(cart,e,auth)).toList()
                     ),
                   ],
                 ),
@@ -90,10 +110,9 @@ class _CartPageState extends State<CartPage> {
       )
     );
   }
-  Widget CartTile(CartModel item){
+  Widget _cartTile(CartProvider state,CartModel item,AuthProvider auth){
     return Container(
-      alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       margin: const EdgeInsets.all(10),
       decoration: BoxDecoration(
           color: Colors.white,
@@ -111,71 +130,80 @@ class _CartPageState extends State<CartPage> {
             ),
           ]
       ),
-      height: 13.h,
-      child: Row(
+      height: 40.h,
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Expanded(
-              flex: 2,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: CachedNetworkImage(
-                        imageUrl: item.service.image,
-                        width: 80,
-                        height: 150,
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  height: 20.h,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: CachedNetworkImageProvider(
+                        item.service.image,
                       ),
+                      fit: BoxFit.fitWidth,
                     )
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(item.service.name,style: TextStyle(fontWeight: FontWeight.w600,fontSize: 16.sp),),
-                      Text(item.category.name),
-
-                    ],
-                  )
-                ],
-              ),),
-          Expanded(child: Container(
-            alignment: Alignment.center,
-            child:Row(
-              children: [
-                Expanded(child: IconButton(onPressed: (){
-                  setState(() {
-                    item.quantity=(double.parse(item.quantity)-1).toString();
-                  });
-                }, icon: const Icon(Icons.remove))),
-                Expanded(child: TextFormField(
-                  style: TextStyle(fontSize: 14.sp),
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12.sp),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    )
-                  ),
-                  initialValue: item.quantity,
-                  onChanged: (text){
-                    setState(() {
-                      item.quantity = text;
-                    });
-                  },
                 ),
+              ),
+            ],
+          ),
+          Text(item.service.name,style: Theme.of(context).textTheme.titleLarge,),
+          Text(item.service.description),
+          const SizedBox(height: 20,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                height: 40,
+                width: 80,
+                padding: const EdgeInsets.all(10),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.grey[300]
                 ),
-                Expanded(child: IconButton(onPressed: (){
-                setState(() {
-                  item.quantity=(double.parse(item.quantity)+1).toString();
-                });
-                  }, icon: const Icon(Icons.add))),
-              ],
-            )
-          ),),
-          Expanded(child: Container(
-            alignment: Alignment.center,
-            child: Text(item.totalPrice),)),
+                child: FittedBox(child: Text("₹ ${item.price}")),
+              ),
+              const Text("X"),
+              Container(
+                height: 40,
+                width: 80,
+                padding: const EdgeInsets.all(10),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.grey[300]
+                ),
+                child: Text(item.quantity),
+              ),
+              const Text(" = "),
+              Container(
+                height: 40,
+                width: 80,
+                padding: const EdgeInsets.all(10),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.grey[300]
+                ),
+                child: FittedBox(child: Text("₹ ${item.totalPrice}")),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10,),
+          Center(
+            child: ElevatedButton(
+              onPressed: ()async{
+                await removeFromCart(context.read<AuthProvider>(), item.id);
+                state.getCategories(auth);
+            },child: const Text("Remove"),),
+          )
         ],
       ),
     );

@@ -126,7 +126,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     try{
       await editProfile(auth, {
         "user_id":auth.user?.id,
-        "email":email,
         "mobile":phoneNumber,
         "name":name,
 

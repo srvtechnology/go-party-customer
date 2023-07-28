@@ -14,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-import 'core/components/errors.dart';
 void main() {
   runApp(const MyApp());
 }

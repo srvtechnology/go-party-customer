@@ -48,3 +48,21 @@ Future<List<CartModel>> getCartItems(AuthProvider auth)async{
   }
 }
 
+Future<void> removeFromCart(AuthProvider auth,String id)async{
+  try{
+    Response response = await Dio().post(
+        "${APIConfig.baseUrl}/api/customer/delete-cart-item",
+        data: {
+          "id":id
+        },
+      options: Options(
+        headers: {
+          "Authorization":"Bearer ${auth.token}"
+        }
+      )
+    );
+  }catch(e){
+    CustomLogger.error(e);
+    rethrow;
+  }
+}

@@ -39,6 +39,9 @@ Future<UserModel> get_UserData(String token)async{
   catch(e){
     if(e is DioException){
       CustomLogger.error(e.response!.data);
+      if(e.response!.data["status"].contains("Token is Expired")){
+
+      }
     }
     return Future.error(e);
   }
