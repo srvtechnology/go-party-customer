@@ -13,6 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
+import 'addressPage.dart';
+
 class HomePageScreen extends StatefulWidget {
   static const routeName = "/home";
   const HomePageScreen({Key? key}) : super(key: key);
@@ -398,6 +400,13 @@ class _ProfileState extends State<Profile> {
                   title: const Text('Edit Profile'),
                   onTap: () {
                     Navigator.pushNamed(context, EditProfilePage.routeName);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.home),
+                  title: const Text('Manage Addresses'),
+                  onTap: () {
+                    Navigator.pushNamed(context, AddressPage.routeName);
                   },
                 ),
                 ListTile(

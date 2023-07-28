@@ -3,6 +3,7 @@ import 'package:customerapp/core/models/cart.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/cartProvider.dart';
 import 'package:customerapp/core/repo/cart.dart';
+import 'package:customerapp/core/routes/checkoutPage.dart';
 import 'package:customerapp/core/routes/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -91,7 +92,9 @@ class _CartPageState extends State<CartPage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.redAccent
                   ),
-                  onPressed: (){},
+                  onPressed: (){
+                    Navigator.pushNamed(context, CheckoutPage.routeName);
+                  },
                   child: const Text("Checkout"),
                 ),
               ),
