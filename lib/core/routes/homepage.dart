@@ -3,6 +3,7 @@ import 'package:customerapp/core/components/banner.dart';
 import 'package:customerapp/core/components/card.dart';
 import 'package:customerapp/core/components/loading.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
+import 'package:customerapp/core/providers/orderProvider.dart';
 import 'package:customerapp/core/providers/serviceProvider.dart';
 import 'package:customerapp/core/routes/cart.dart';
 import 'package:customerapp/core/routes/product.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
+import '../models/orders.dart';
 import 'addressPage.dart';
 
 class HomePageScreen extends StatefulWidget {
@@ -57,30 +59,77 @@ class Orders extends StatefulWidget {
 class _OrdersState extends State<Orders> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Orders"),
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        actions: [
-          IconButton(onPressed: (){
-            Navigator.pushNamed(context, ProductPageRoute.routeName);
-          }, icon: const Icon(Icons.search)),
-          IconButton(onPressed: (){}, icon: const Icon(Icons.add_shopping_cart)),
-        ],
+    return ListenableProvider(
+      create: (_)=>OrderProvider(context.read<AuthProvider>()),
+      child: Consumer<OrderProvider>(
+        builder: (context,state,child) {
+          if(state.isLoading){
+            return const ShimmerWidget();
+          }
+          return DefaultTabController(
+            length: 2,
+            child: Scaffold(
+              appBar: AppBar(
+                title: const Text("Orders"),
+                automaticallyImplyLeading: false,
+                centerTitle: true,
+                actions: [
+                  IconButton(onPressed: (){}, icon: const Icon(Icons.add_shopping_cart)),
+                ],
+                bottom: const TabBar(tabs: [
+                  Tab(icon: Text("Upcoming"),),
+                  Tab(icon: Text("Delivered"),),
+                ]),
+              ),
+              body: TabBarView(
+                children: [
+                  _upcomingOrders(state.upcomingData),
+                  _deliveredOrders(state.deliveredData)
+                ],
+              ),
+            ),
+          );
+        }
       ),
-      body: SingleChildScrollView(
+    );
+  }
+  Widget _upcomingOrders(List<OrderModel> upcomingOrders){
+    if(upcomingOrders.isEmpty){
+      return Container(
+        alignment: Alignment.center,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            OrderTile( service: "Planning", vendor: "Paras Ltd", price: "45000", date: "10.08.23"),
-            OrderTile( service: "Planning", vendor: "Paras Ltd", price: "45000", date: "10.08.23"),
-            OrderTile( service: "Planning", vendor: "Paras Ltd", price: "45000", date: "10.08.23"),
-            OrderTile( service: "Planning", vendor: "Paras Ltd", price: "45000", date: "10.08.23"),
-            OrderTile( service: "Planning", vendor: "Paras Ltd", price: "45000", date: "10.08.23"),
-            OrderTile( service: "Planning", vendor: "Paras Ltd", price: "45000", date: "10.08.23"),
-            OrderTile( service: "Planning", vendor: "Paras Ltd", price: "45000", date: "10.08.23"),
+            Icon(Icons.add_business_sharp,size: 100,color: Theme.of(context).primaryColorDark,),
+            const SizedBox(height: 20,),
+            const Text("Looks like there are no upcoming orders."),
           ],
         ),
+      );
+    }
+    return SingleChildScrollView(
+      child: Column(
+          children:upcomingOrders.map((e) => OrderTile(order:e)).toList()
+      ),
+    );
+  }
+  Widget _deliveredOrders(List<OrderModel> deliveredOrders){
+    if(deliveredOrders.isEmpty){
+      return Container(
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.add_business_sharp,size: 100,color: Theme.of(context).primaryColorDark,),
+            const SizedBox(height: 20,),
+            const Text("Looks like there are no previous orders."),
+          ],
+        ),
+      );
+    }
+    return SingleChildScrollView(
+      child: Column(
+          children: deliveredOrders.map((e) => OrderTile(order:e)).toList()
       ),
     );
   }

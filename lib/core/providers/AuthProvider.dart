@@ -59,11 +59,15 @@ class AuthProvider with ChangeNotifier {
       _authState = AuthState.LoggedOut;
     }
     else{
-      _token = tempToken;
-      print("Logged in");
-      await getUser();
-      _authState = AuthState.LoggedIn ;
-
+      try{
+        _token = tempToken;
+        print("Logged in");
+        await getUser();
+        _authState = AuthState.LoggedIn ;
+      }
+      catch(e){
+        _authState = AuthState.LoggedOut;
+      }
     }
     stopLoading();
   }

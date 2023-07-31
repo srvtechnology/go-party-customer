@@ -5,7 +5,7 @@ import '../../config.dart';
 import '../models/address.dart';
 import '../utils/logger.dart';
 
-Future<void> addAddress(AuthProvider auth,Map data)async{
+Future<String> addAddress(AuthProvider auth,Map data)async{
   try{
     Response response = await Dio().post("${APIConfig.baseUrl}/api/customer/add-address",
         data:data,
@@ -16,6 +16,7 @@ Future<void> addAddress(AuthProvider auth,Map data)async{
         )
     );
     CustomLogger.debug(response.data);
+    return response.data["address_id"];
   }catch(e){
     if(e is DioException){
       CustomLogger.error(e.response!.data);

@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
+import '../models/orders.dart';
 import '../models/service.dart';
 
 typedef OnTap  = void Function();
@@ -97,8 +98,8 @@ class CircularOrderCard extends StatelessWidget {
 }
 
 class OrderTile extends StatelessWidget {
-  String service,vendor,date,price;
-  OrderTile({Key? key,required this.service,required this.vendor,required this.price,required this.date}) : super(key: key);
+  OrderModel order;
+  OrderTile({Key? key,required this.order}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -142,27 +143,19 @@ class OrderTile extends StatelessWidget {
             ),
           )
           ),
-          const SizedBox(
-            height: 5,
+          const SizedBox(height: 15,),
+          Expanded(
+              child:Text(
+                order.services,
+                style: Theme.of(context).textTheme.labelMedium,)
           ),
-          const SizedBox(height: 10,),
-          Expanded(child:Text(service,style: Theme.of(context).textTheme.labelMedium,)),
-          Expanded(child:Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(date),
-              Text("₹ $price",style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w600),)
-            ],
-          )),
-          Expanded(child:Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: (){},
-                  child: const Text("View"),
-                ),
-              ),
-            ],
+          Expanded(
+              child:Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(order.eventDate),
+                  Text("₹ ${order.totalPrice}",style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w600),)
+                ],
           )),
         ],
       ),
