@@ -20,7 +20,6 @@ class _FilterPageState extends State<FilterPage> {
   void initState() {
     super.initState();
     _selectedCategoryIds = [...widget.filterState.categories];
-    _discount = widget.filterState.discount;
   }
   @override
   Widget build(BuildContext context) {
@@ -68,43 +67,13 @@ class _FilterPageState extends State<FilterPage> {
                     ),
                   ],
                 ),
-                ExpansionTile(
-                    title: const Text("Discount"),
-                    children: [
-                      filterTile("10%",selected: _discount=="10",onTap: (){
-                        setState(() {
-                          _discount = "10";
-                        });
-                      }),
-                      filterTile("20%",selected: _discount=="20",onTap: (){
-                        setState(() {
-                          _discount = "20";
-                        });
-                      }),
-                      filterTile("30%",selected: _discount=="30",onTap: (){
-                        setState(() {
-                          _discount = "30";
-                        });
-                      }),
-                      filterTile("40%",selected: _discount=="40",onTap: (){
-                        setState(() {
-                          _discount = "40";
-                        });
-                      }),
-                      filterTile("50%",selected: _discount=="50",onTap: (){
-                        setState(() {
-                          _discount = "50";
-                        });
-                      }),
-                      ],
-                ),
                 ElevatedButton(
                     onPressed: (){
                       if(_rangeSelected){
-                        widget.filterState.setFilters(categories: _selectedCategoryIds,discount: _discount,startPrice: _currentRangeValues.start.toString(),endPrice: _currentRangeValues.end.toString());
+                        widget.filterState.setFilters(categories: _selectedCategoryIds,startPrice: _currentRangeValues.start.toString(),endPrice: _currentRangeValues.end.toString());
                       }
                       else{
-                        widget.filterState.setFilters(categories: _selectedCategoryIds,discount: _discount);
+                        widget.filterState.setFilters(categories: _selectedCategoryIds);
                       }
                       Navigator.pop(context);
                     },

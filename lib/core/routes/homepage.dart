@@ -74,7 +74,9 @@ class _OrdersState extends State<Orders> {
                 automaticallyImplyLeading: false,
                 centerTitle: true,
                 actions: [
-                  IconButton(onPressed: (){}, icon: const Icon(Icons.add_shopping_cart)),
+                  IconButton(onPressed: (){
+                    Navigator.pushNamed(context, CartPage.routeName);
+                  }, icon: const Icon(Icons.add_shopping_cart)),
                 ],
                 bottom: const TabBar(tabs: [
                   Tab(icon: Text("Upcoming"),),

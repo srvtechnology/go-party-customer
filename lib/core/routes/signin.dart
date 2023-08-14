@@ -8,8 +8,9 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 
 class SignInPageRoute extends StatefulWidget {
   static const String routeName = '/signin';
+  final bool comeBack;
 
-  const SignInPageRoute({super.key});
+  const SignInPageRoute({super.key,this.comeBack=false});
 
   @override
   State<SignInPageRoute> createState() => _SignInPageRouteState();
@@ -39,7 +40,11 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
       try {
         await state.login(_emailController.text, _passwordController.text);
         if(context.mounted){
-          Navigator.pushReplacementNamed(context, MainPageRoute.routeName);
+          if(widget.comeBack) {
+            Navigator.pop(context);
+          }else{
+            Navigator.pushReplacementNamed(context, MainPageRoute.routeName);
+          }
         }
       }
       catch(e){

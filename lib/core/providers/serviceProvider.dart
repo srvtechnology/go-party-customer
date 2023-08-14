@@ -1,5 +1,6 @@
 import 'package:customerapp/core/repo/services.dart';
 import 'package:customerapp/core/utils/logger.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:collection/collection.dart';
 import '../models/service.dart';
@@ -31,6 +32,9 @@ class ServiceProvider with ChangeNotifier{
       _data = await getServices();
     }catch(e)
     {
+      if(e is DioException){
+        CustomLogger.error(e);
+      }
       CustomLogger.error(e);
     }
     finally{
@@ -47,9 +51,6 @@ class ServiceProvider with ChangeNotifier{
       }
       if(searchString!=null){
         data["search"]=searchString;
-      }
-      if(filters.discount!=null){
-        data["discount_percentage"]=filters.discount;
       }
       filters.categories.forEachIndexed(
               (index,value){
@@ -71,19 +72,17 @@ class ServiceProvider with ChangeNotifier{
 
 class FilterProvider with ChangeNotifier{
   List<String> _categories=[];
-  String? _startPrice,_endPrice,_discount;
+  String? _startPrice,_endPrice;
   List<String> get categories=>_categories;
   bool _hasFilters = false;
   bool get hasFilters => _hasFilters;
   String? get startPrice => _startPrice;
   String? get endPrice => _endPrice;
-  String? get discount => _discount;
 
-  void setFilters({required List<String> categories,String? startPrice,String? endPrice,String? discount}){
+  void setFilters({required List<String> categories,String? startPrice,String? endPrice}){
     _categories = [...categories];
     _startPrice = startPrice;
     _endPrice = endPrice;
-    _discount = discount;
     _hasFilters = true;
     notifyListeners();
   }

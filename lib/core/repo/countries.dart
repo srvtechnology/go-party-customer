@@ -4,10 +4,11 @@ import 'package:customerapp/core/utils/logger.dart';
 import 'package:dio/dio.dart';
 
 import '../../config.dart';
+import '../utils/dio.dart';
 
 Future<List<Country>> getCountries(AuthProvider auth)async{
   try{
-    Response response = await Dio().get(
+    Response response = await customDioClient.client.get(
         "${APIConfig.baseUrl}/api/customer/get-countries",
         options: Options(
           headers: {

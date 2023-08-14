@@ -3,11 +3,12 @@ import 'package:dio/dio.dart';
 
 import '../../config.dart';
 import '../models/address.dart';
+import '../utils/dio.dart';
 import '../utils/logger.dart';
 
 Future<String> addAddress(AuthProvider auth,Map data)async{
   try{
-    Response response = await Dio().post("${APIConfig.baseUrl}/api/customer/add-address",
+    Response response = await customDioClient.client.post("${APIConfig.baseUrl}/api/customer/add-address",
         data:data,
         options: Options(
             headers: {
@@ -27,7 +28,7 @@ Future<String> addAddress(AuthProvider auth,Map data)async{
 
 Future<List<AddressModel>> getAddress(AuthProvider auth)async{
   try{
-    Response response = await Dio().get(
+    Response response = await customDioClient.client.get(
         "${APIConfig.baseUrl}/api/customer/view-address",
         options: Options(
           headers: {

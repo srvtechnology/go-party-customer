@@ -3,9 +3,11 @@ import 'package:customerapp/core/models/category.dart';
 import 'package:customerapp/core/utils/logger.dart';
 import 'package:dio/dio.dart';
 
+import '../utils/dio.dart';
+
 Future<List<CategoryModel>> getCategories()async{
     try{
-      Response response = await Dio().get("${APIConfig.baseUrl}/api/customer-all-category");
+      Response response = await customDioClient.client.get("${APIConfig.baseUrl}/api/customer-all-category");
       List<CategoryModel> list = [];
       for(var i in response.data["category"])
       {

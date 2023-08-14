@@ -4,10 +4,12 @@ import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/utils/logger.dart';
 import 'package:dio/dio.dart';
 
+import '../utils/dio.dart';
+
 Future<void> addtoCart(AuthProvider auth,Map data)async{
   try{
     CustomLogger.debug(auth.token);
-    Response response = await Dio().post("${APIConfig.baseUrl}/api/customer/add-to-cart",
+    Response response = await customDioClient.client.post("${APIConfig.baseUrl}/api/customer/add-to-cart",
     data:data,
       options: Options(
         headers: {
@@ -25,7 +27,7 @@ Future<void> addtoCart(AuthProvider auth,Map data)async{
 
 Future<List<CartModel>> getCartItems(AuthProvider auth)async{
   try{
-    Response response = await Dio().get(
+    Response response = await customDioClient.client.get(
         "${APIConfig.baseUrl}/api/customer/show-cart",
       options: Options(
         headers: {
@@ -50,7 +52,7 @@ Future<List<CartModel>> getCartItems(AuthProvider auth)async{
 
 Future<void> removeFromCart(AuthProvider auth,String id)async{
   try{
-    Response response = await Dio().post(
+    Response response = await customDioClient.client.post(
         "${APIConfig.baseUrl}/api/customer/delete-cart-item",
         data: {
           "id":id

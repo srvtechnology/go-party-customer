@@ -121,6 +121,7 @@ class AuthProvider with ChangeNotifier {
     }
     catch(e){
       _authState = AuthState.Error;
+      rethrow;
     }
     notifyListeners();
   }

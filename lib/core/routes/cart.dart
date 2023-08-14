@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:customerapp/core/models/cart.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
@@ -157,7 +159,7 @@ class _CartPageState extends State<CartPage> {
             ],
           ),
           Text(item.service.name,style: Theme.of(context).textTheme.titleLarge,),
-          Text(item.service.description),
+          Text("${item.service.description.substring(0,min(item.service.description.length, 45))} ..",),
           const SizedBox(height: 20,),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

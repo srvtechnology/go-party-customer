@@ -1,7 +1,7 @@
 import '../../config.dart';
 
 class ServiceModel{
-  String id,name,description,price,priceBasis,image;
+  String id,name,description,price,discountedPrice,priceBasis,image;
   String? categoryId;
   final String imageUrl = "storage/app/public/service/";
 
@@ -10,6 +10,7 @@ class ServiceModel{
     required this.name,
     required this.description,
     required this.priceBasis,
+    required this.discountedPrice,
     required this.price,
     required this.image,
     this.categoryId,
@@ -21,6 +22,7 @@ class ServiceModel{
       description: json["description"],
       price: json["price"].toString(),
       priceBasis: json["price_basis"],
+      discountedPrice: json["discount_price"],
       image: "${APIConfig.baseUrl}/storage/app/public/service/${json["image"]}",
       //categoryId: json["service_category_details"]["category_id"],
     );

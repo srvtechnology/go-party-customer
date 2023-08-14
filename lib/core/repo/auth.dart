@@ -5,11 +5,12 @@ import 'package:dio/io.dart';
 
 import '../../config.dart';
 import '../models/user.dart';
+import '../utils/dio.dart';
 import '../utils/logger.dart';
 
 Future<String> login(String email,String password)async{
   try{
-    Response response = await Dio().post("${APIConfig.baseUrl}/api/customer-login",data: {
+    Response response = await customDioClient.client.post("${APIConfig.baseUrl}/api/customer-login",data: {
       "email":email,
       "password":password,
     });
@@ -27,7 +28,7 @@ Future<String> login(String email,String password)async{
 Future<UserModel> get_UserData(String token)async{
   Response response;
   try{
-    response = await Dio().get("${APIConfig.baseUrl}/api/customer-details",
+    response = await customDioClient.client.get("${APIConfig.baseUrl}/api/customer-details",
         options: Options(
             headers: {
               "Authorization":"Bearer ${token}"
@@ -50,7 +51,7 @@ Future<UserModel> get_UserData(String token)async{
 Future register(String email,String password,String name,String phone)async
 {
   try{
-    Response response = await Dio().post(
+    Response response = await customDioClient.client.post(
       "${APIConfig.baseUrl}/api/customer-registration",
       data: {
         "name":name,

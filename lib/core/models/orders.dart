@@ -1,7 +1,12 @@
+import 'package:customerapp/core/models/category.dart';
+import 'package:customerapp/core/models/service.dart';
+
 class OrderModel {
   String id;
   String paymentType;
   String customerUserId;
+  ServiceModel service;
+  CategoryModel category;
   String address;
   String landmark;
   String area;
@@ -15,8 +20,6 @@ class OrderModel {
   String customerPhone;
   String forAddress;
   String vandorOrderStatus;
-  String services;
-  String categoryId;
   String price;
   String quantity;
   String totalPrice;
@@ -45,8 +48,8 @@ class OrderModel {
     required this.customerPhone,
     required this.forAddress,
     required this.vandorOrderStatus,
-    required this.services,
-    required this.categoryId,
+    required this.service,
+    required this.category,
     required this.price,
     required this.quantity,
     required this.totalPrice,
@@ -77,8 +80,8 @@ class OrderModel {
       customerPhone: json['customer_phone'].toString(),
       forAddress: json['for_address'].toString(),
       vandorOrderStatus: json['vandor_order_status'].toString(),
-      services: json['services'].toString(),
-      categoryId: json['category_id'].toString(),
+      service: ServiceModel.fromJson(json["service_details"]),
+      category: CategoryModel.fromJson(json["category_details"]),
       price: json['price'].toString(),
       quantity: json['quantity'].toString(),
       totalPrice: json['total_price'].toString(),

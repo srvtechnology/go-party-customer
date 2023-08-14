@@ -4,13 +4,14 @@ import 'package:customerapp/core/models/service.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/categoryProvider.dart';
 import 'package:customerapp/core/repo/cart.dart';
+import 'package:customerapp/core/routes/signin.dart';
 import 'package:customerapp/core/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class SingleServiceRoute extends StatefulWidget {
-  ServiceModel service;
+  final ServiceModel service;
   SingleServiceRoute({Key? key,required this.service}) : super(key: key);
 
   @override
@@ -25,6 +26,16 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
   final TextEditingController _days = TextEditingController();
   final TextEditingController _duration = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  void _calculateDays(){
+    _days.text = DateTime.parse(_endDate.text).difference(DateTime.parse(_startDate.text)).inDays.toString();
+  }
+  @override
+  void initState() {
+    super.initState();
+    _startDate.addListener(_calculateDays);
+    _endDate.addListener(_calculateDays);
+  }
   TextFormField datePickField(TextEditingController controller,String hintText){
     return TextFormField(
       controller: controller,
@@ -82,6 +93,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                   ),
                   const SizedBox(height: 20,),
                   TextFormField(
+                    readOnly: true,
                     keyboardType: TextInputType.number,
                     controller: _days,
                     validator: (text){
@@ -133,22 +145,28 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
             floatingActionButton: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                if(auth.authState == AuthState.LoggedIn)
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
                   onPressed: (){
-                    addToCartDialog(context,categories);
+                    if(auth.authState == AuthState.LoggedIn) {
+                      addToCartDialog(context,categories);
+                    }
+                    else {
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>const SignInPageRoute(comeBack: true,)))
+                          .then((value) => addToCartDialog(context,categories));
+                    }
                   },
                   child: const Text("Add to Cart"),
                 ),
               ],
             ),
             floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-            body: SizedBox(
-              height: double.infinity,
+            body: Container(
+              constraints: BoxConstraints(
+                minHeight: 500.h
+              ),
               width: double.infinity,
               child: SingleChildScrollView(
-                physics: const ClampingScrollPhysics(),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -182,14 +200,33 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                       child: Text(widget.service.description,style: Theme.of(context).textTheme.bodyMedium,),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
                       alignment: Alignment.centerLeft,
-                      child: Text("Price Info",style: Theme.of(context).textTheme.titleLarge,),
+                      child: Text("Discounted Price",style: Theme.of(context).textTheme.titleLarge,),
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
                       alignment: Alignment.centerLeft,
-                      child: Text("\u20B9 ${widget.service.price} ${widget.service.priceBasis}",style: Theme.of(context).textTheme.bodyMedium,),
+                      child: RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "\u20B9 ${widget.service.discountedPrice}  ",
+                              style: TextStyle(fontSize: 20.sp,color: Colors.redAccent),
+                                children: [
+                                  TextSpan(
+                                    text: "${widget.service.priceBasis} inc. tax",
+                                    style: TextStyle(fontSize: 15.sp,color: Colors.black),
+                                  ),
+                                ]
+                              ),
+                            ]
+                          ),),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
+                      alignment: Alignment.centerLeft,
+                      child: Text("\u20B9 ${widget.service.price}",style: Theme.of(context).textTheme.bodyMedium!.copyWith(decoration: TextDecoration.lineThrough),),
                     ),
                   ],
                 ),

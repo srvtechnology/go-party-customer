@@ -1,11 +1,16 @@
+import 'dart:io';
+
 import 'package:customerapp/config.dart';
 import 'package:customerapp/core/models/service.dart';
 import 'package:customerapp/core/utils/logger.dart';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
+
+import '../utils/dio.dart';
 
 Future<List<ServiceModel>> getServices()async{
   try{
-    Response response = await Dio().get("${APIConfig.baseUrl}/api/customer-all-service");
+    Response response = await customDioClient.client.get("${APIConfig.baseUrl}/api/customer-all-service");
     List<ServiceModel> services = [];
     for (var serviceJson in response.data["services"]){
       services.add(ServiceModel.fromJson(serviceJson));
@@ -20,7 +25,7 @@ Future<List<ServiceModel>> getServices()async{
 
 Future<List<ServiceModel>> searchServices(Map<String,dynamic> data)async{
   try{
-    Response response = await Dio().post(
+    Response response = await customDioClient.client.post(
         "${APIConfig.baseUrl}/api/customer/search",
       data: FormData.fromMap(data),
     );

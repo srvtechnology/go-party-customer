@@ -104,7 +104,7 @@ class OrderTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 40.h,
+      height: 45.h,
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
@@ -129,34 +129,89 @@ class OrderTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-              flex: 6,
+              flex: 4,
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 10),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
-                image: const DecorationImage(
+                image: DecorationImage(
                     fit: BoxFit.fitWidth,
-                    image: AssetImage(
-                        "assets/images/signup5bg.jpg"
-                    )
+                    image: CachedNetworkImageProvider(order.service.image)
                 )
             ),
           )
           ),
-          const SizedBox(height: 15,),
+          const SizedBox(height: 5,),
           Expanded(
-              child:Text(
-                order.services,
-                style: Theme.of(context).textTheme.labelMedium,)
-          ),
-          Expanded(
-              child:Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child:Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(order.eventDate),
-                  Text("₹ ${order.totalPrice}",style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w600),)
+                  FittedBox(
+                    child: Text(
+                      order.service.name,
+                      style: TextStyle(fontSize: 18.sp,fontWeight: FontWeight.w600),),
+                  ),
+                  Text(
+                    order.category.name,
+                    style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w600),),
                 ],
+              )
+          ),
+
+          Expanded(
+              child: Row(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    order.eventDate,
+                  ),
+                  Container(width: 40,alignment: Alignment.center,child: const Text("to"),),
+                  Text(
+                    order.eventEndDate,
+                  ),
+                ],
+              )
+            ],
           )),
+          Expanded(
+              child:
+          Container(
+            child: Text("${order.houseNumber}, ${order.landmark}, ${order.area}, ${order.state}"),
+          )),
+          Expanded(
+
+              child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+            Container(
+              padding: const EdgeInsets.all(5),
+              decoration:BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.grey[200]
+              ),
+              child: Text(order.price),
+            ),
+              const SizedBox(width: 20,child: Text("X"),),
+              Container(
+                padding: const EdgeInsets.all(5),
+                decoration:BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.grey[200]
+                ),
+              child: Text(order.quantity),
+            ),
+            const SizedBox(width: 20,child: Text("="),),
+            Container(
+              padding: const EdgeInsets.all(5),
+              decoration:BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.grey[200]
+              ),
+              child: Text("₹ ${order.totalPrice}"),
+            ),
+          ],)),
         ],
       ),
     );
