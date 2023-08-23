@@ -2,6 +2,7 @@ import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/repo/order.dart';
 import 'package:customerapp/core/routes/mainpage.dart';
+import 'package:customerapp/core/utils/logger.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -127,6 +128,7 @@ class _PaymentPageState extends State<PaymentPage> {
   }
   Future<void> submit(AuthProvider auth)async{
     try{
+      CustomLogger.debug(widget.addressId);
       await placeOrder(auth, _paymentModeController.text.contains("Cash")?"cod":"online", widget.addressId);
       if(context.mounted){
         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>const MainPageRoute()), (route) => route.isFirst);

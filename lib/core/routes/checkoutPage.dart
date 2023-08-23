@@ -2,10 +2,12 @@ import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:csc_picker/csc_picker.dart';
 import 'package:customerapp/core/components/errors.dart';
 import 'package:customerapp/core/components/loading.dart';
+import 'package:customerapp/core/models/address.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/addressProvider.dart';
 import 'package:customerapp/core/repo/address.dart';
 import 'package:customerapp/core/repo/countries.dart';
+import 'package:collection/collection.dart';
 import 'package:customerapp/core/repo/order.dart';
 import 'package:customerapp/core/routes/paymentPage.dart';
 import 'package:customerapp/core/utils/logger.dart';
@@ -34,6 +36,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
   final _areaController = TextEditingController();
   final _landmarkController = TextEditingController();
   final _addressController = TextEditingController();
+  int _selectedAddressIndex = -1;
+  AddressModel? _selectedAddress;
   String? country,state,city;
   String defaultAddress = "Yes";
   bool otherAddress = true;
@@ -78,6 +82,16 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 appBar: AppBar(
                   title: const Text("Checkout"),
                 ),
+                bottomNavigationBar: Padding(
+                  padding: const EdgeInsets.only(right: 20,left: 20,bottom: 20),
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+                      onPressed: (){
+                        if(_formKey.currentState!.validate()){
+                          submit(context.read<AuthProvider>(),data,addressState);
+                        }
+                      }, child: const Text("Proceed"))
+                ),
                 body: Form(
                   key: _formKey,
                   child: Container(
@@ -85,6 +99,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
+
+                          if(addressState.data.isNotEmpty)
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
@@ -94,13 +110,49 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           ),
                           const SizedBox(height: 20,),
                           if(addressState.data.isNotEmpty)
-                            CustomDropdown(
-                                hintText: "Select Address",
-                                items: addressState.data.map((e) => "${e.houseNumber}, ${e.landmark}, ${e.area}, ${e.state}").toList(), controller: _addressController),
+                            Column(
+                              children: addressState.data.mapIndexed((index,e) => Row(
+                                children: [
+                                  Expanded(child: Column(
+                                    mainAxisAlignment:MainAxisAlignment.start,
+                                    children: [
+                                      Radio(value: index, groupValue: _selectedAddressIndex,
+                                          onChanged: (index){
+                                            setState(() {
+                                              _selectedAddressIndex = index!;
+                                              _selectedAddress = e;
+                                              otherAddress = false;
+                                            });
+                                          }),
+                                      Text("")
+                                    ],
+                                  )),
+                                  Expanded(flex:5,child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(height: 10,),
+                                      Text(e.billingName,style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
+                                      Text(e.addressType,style: const TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
+                                      Text("${e.houseNumber}, ${e.landmark}, ${e.area}, ${e.state}"),
+                                      const SizedBox(height: 10,),
+                                    ],
+                                  ))
+                                ],
+                              )).toList(),
+                            ),
                           const SizedBox(height: 20,),
                           if(otherAddress)
                           Column(
                             children: [
+                              const SizedBox(height: 20,),
+                              if(addressState.data.isNotEmpty)
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const SizedBox(width: 5,),
+                                    Text("OR",style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w600),)
+                                  ],
+                                ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -141,14 +193,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                   ),
                                   keyboardType: TextInputType.number,
                                 ),
-                              ),
-                              const SizedBox(height: 20,),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const SizedBox(width: 5,),
-                                  Text("OR",style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w600),)
-                                ],
                               ),
                               const SizedBox(height: 20,),
                               SizedBox(
@@ -290,18 +334,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
                             ],
                           ),
-                          Row(
-                            children: [
-                              Expanded(
-                                  child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
-                                      onPressed: (){
-                                        if(_formKey.currentState!.validate()){
-                                          submit(context.read<AuthProvider>(),data,addressState);
-                                        }
-                                      }, child: const Text("Proceed"))),
-                            ],
-                          )
                         ],
                       ),
 
@@ -318,8 +350,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
   Future<void> submit(AuthProvider auth,List<Country> countries,AddressProvider addressState)async{
     try{
-      if(_addressController.text.isNotEmpty){
-        String addressId = addressState.data.firstWhere((element) => _addressController.text.contains(element.state) && _addressController.text.contains(element.houseNumber) && _addressController.text.contains(element.landmark)).id.toString();
+      if(_selectedAddress!=null){
+        String addressId = _selectedAddress!.id.toString();
         Navigator.push(context,MaterialPageRoute(builder: (context)=>PaymentPage(addressId: addressId)));
         return;
       }

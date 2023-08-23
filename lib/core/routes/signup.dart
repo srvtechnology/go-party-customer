@@ -7,9 +7,10 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'mainpage.dart';
 
 class SignUpPageRoute extends StatefulWidget {
+  final bool comeback;
   static const String routeName = '/signup';
 
-  const SignUpPageRoute({super.key});
+  const SignUpPageRoute({super.key,this.comeback=false});
 
   @override
   State<SignUpPageRoute> createState() => _SignUpPageRouteState();
@@ -45,7 +46,12 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
           _passwordController.text
       );
       if(context.mounted){
-        Navigator.pushReplacementNamed(context, MainPageRoute.routeName);
+        if(widget.comeback){
+          Navigator.pop(context);
+        }
+        else {
+          Navigator.pushReplacementNamed(context, MainPageRoute.routeName);
+        }
       }
     }catch(e){
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
@@ -126,7 +132,7 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                         if (value!.isEmpty) {
                           return 'Please enter your Phone Number';
                         }
-                        if (value.length<12 || value.length>14) {
+                        if (value.length!=10) {
                           return 'Please enter a valid Phone Number';
                         }
                         return null;

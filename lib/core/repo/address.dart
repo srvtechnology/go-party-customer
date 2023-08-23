@@ -17,7 +17,26 @@ Future<String> addAddress(AuthProvider auth,Map data)async{
         )
     );
     CustomLogger.debug(response.data);
-    return response.data["address_id"];
+    return response.data["address_id"].toString();
+  }catch(e){
+    if(e is DioException){
+      CustomLogger.error(e.response!.data);
+    }
+    return Future.error(e);
+  }
+}
+Future<String> editAddress(AuthProvider auth,Map data)async{
+  try{
+    Response response = await customDioClient.client.post("${APIConfig.baseUrl}/api/customer/update-address",
+        data:data,
+        options: Options(
+            headers: {
+              "Authorization":"Bearer ${auth.token}"
+            }
+        )
+    );
+    CustomLogger.debug(response.data);
+    return response.data["address_id"].toString();
   }catch(e){
     if(e is DioException){
       CustomLogger.error(e.response!.data);

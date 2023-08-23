@@ -168,7 +168,12 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                       children: [
                         TextButton(
                           onPressed: () {
-                            Navigator.pushReplacementNamed(context, SignUpPageRoute.routeName);
+                            if(widget.comeBack){
+                              Navigator.push(context,MaterialPageRoute(builder: (context)=>SignUpPageRoute(comeback: widget.comeBack,)));
+                            }
+                            else{
+                              Navigator.pushReplacementNamed(context, SignInPageRoute.routeName);
+                            }
                           },
                           child: const Text(
                             'Create an account',

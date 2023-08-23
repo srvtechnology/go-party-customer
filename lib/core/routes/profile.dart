@@ -133,7 +133,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       if(context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Profile saved successfully'),
+          content: Text('The verification mail has been sent to you registered email , please verify the mail to reflect the changes you have made.'),
         ),
       );
       }

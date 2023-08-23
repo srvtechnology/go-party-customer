@@ -28,6 +28,7 @@ class AddressProvider with ChangeNotifier{
       _data = await AddressRepo.getAddress(auth);
     }catch(e){
       CustomLogger.error(e);
+      _data = [];
     }
     stopLoading();
   }
