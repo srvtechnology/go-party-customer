@@ -46,6 +46,8 @@ dependencies:
   connectivity: ^3.0.6
   animated_custom_dropdown: ^1.5.0
   csc_picker: ^0.2.7
+  geolocator: ^10.0.0
+  geocoding: ^2.1.0
 
 dev_dependencies:
   flutter_test:

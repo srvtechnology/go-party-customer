@@ -3,6 +3,7 @@ import 'package:csc_picker/csc_picker.dart';
 import 'package:customerapp/core/models/address.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/addressProvider.dart';
+import 'package:customerapp/core/utils/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -35,15 +36,28 @@ class _AddressAddPageState extends State<AddressAddPage> {
   String defaultAddress = "Yes";
   bool clicked = false;
   late Future<List<Country>> _countryFuture;
+  late Future<Map> _geolocationFuture;
+
   @override
   void initState() {
     super.initState();
     _countryFuture = getCountries(context.read<AuthProvider>());
+    _geolocationFuture = getLocation();
+  }
+  Future<Map> getLocation()async
+  {
+    Map data = await getCountryCityState();
+    setState(() {
+      country=data["country"];
+      state=data["state"];
+      city=data["city"];
+    });
+    return data;
   }
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: _countryFuture,
+        future: Future.wait([_countryFuture,_geolocationFuture]),
         builder: (context,snapshot) {
           if(snapshot.connectionState == ConnectionState.waiting){
             return Scaffold(
@@ -54,9 +68,11 @@ class _AddressAddPageState extends State<AddressAddPage> {
             );
           }
           if(snapshot.hasError || !snapshot.hasData){
+            CustomLogger.error(snapshot.error);
             return CustomErrorWidget(backgroundColor: Colors.white, icon: Icons.error, message: "Something wrong. Please try again later.");
           }
-          List<Country> data = snapshot.data??[];
+          final data = (snapshot.data![0]) as List<Country>;
+          CustomLogger.debug(snapshot.data![1]);
           return Scaffold(
             appBar: AppBar(
               title: const Text("Add an Address"),
@@ -168,17 +184,18 @@ class _AddressAddPageState extends State<AddressAddPage> {
                       ),
                       const SizedBox(height: 20,),
                       CSCPicker(
+                        currentCountry: country,
+                        currentState: state,
+                        currentCity: city,
                         flagState: CountryFlag.DISABLE,
                         onCountryChanged: (value) {
                           setState(() {
                             country = value;
-                            //   _countryController.text=value;
                           });
                         },
                         onStateChanged:(value) {
                           setState(() {
                             state = value;
-                            // _stateController.text=value!;
                           });
                         },
                         onCityChanged:(value) {
