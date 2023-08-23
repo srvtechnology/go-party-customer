@@ -178,11 +178,23 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                           Expanded(
                             child: Hero(
                               tag: "Product Image ${widget.service.id}",
-                              child: CachedNetworkImage(
-                                fit: BoxFit.fitWidth,
-                                imageUrl: widget.service.image,
-                                placeholder: (context,url)=>Container(alignment: Alignment.center,child: const CircularProgressIndicator(),),
-                               errorWidget: (context,url,err)=>Container(alignment: Alignment.center,child: const Icon(Icons.error_outline),),
+                              child: SingleChildScrollView(
+                                physics: const ClampingScrollPhysics(),
+                                scrollDirection: Axis.horizontal,
+                                child: Column(
+                                  children:widget.service.images.map((e)
+                                  => Container(
+                                    height: 25.h,
+                                    margin:const EdgeInsets.symmetric(horizontal: 20),
+                                    alignment: Alignment.center,
+                                    child: CachedNetworkImage(
+                                      fit: BoxFit.fitWidth,
+                                      imageUrl: e,
+                                      placeholder: (context,url)=>Container(alignment: Alignment.center,child: const CircularProgressIndicator(),),
+                                      errorWidget: (context,url,err)=>Container(alignment: Alignment.center,child: const Icon(Icons.error_outline),),
+                                    ),
+                                  )).toList()
+                                ),
                               ),
                             ),
                           ),

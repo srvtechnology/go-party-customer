@@ -149,7 +149,7 @@ class _CartPageState extends State<CartPage> {
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: CachedNetworkImageProvider(
-                        item.service.image,
+                        item.service.images[0],
                       ),
                       fit: BoxFit.fitWidth,
                     )

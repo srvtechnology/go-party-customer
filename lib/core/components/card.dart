@@ -43,7 +43,7 @@ class OrderCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                     image: DecorationImage(
                       fit: BoxFit.fitHeight,
-                    image: CachedNetworkImageProvider(service.image,)
+                    image: CachedNetworkImageProvider(service.images[0],)
                   )
                 ),
               ),
@@ -85,7 +85,7 @@ class CircularOrderCard extends StatelessWidget {
               ),
               child: CircleAvatar(
                 radius: 40,
-                backgroundImage: CachedNetworkImageProvider(service.image),
+                backgroundImage: CachedNetworkImageProvider(service.images[0]),
               ),
             ),
             const SizedBox(height: 10,),
@@ -136,7 +136,7 @@ class OrderTile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15),
                 image: DecorationImage(
                     fit: BoxFit.fitWidth,
-                    image: CachedNetworkImageProvider(order.service.image)
+                    image: CachedNetworkImageProvider(order.service.images[0])
                 )
             ),
           )
@@ -257,7 +257,7 @@ class ProductTile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15),
                 image: DecorationImage(
                     fit: BoxFit.fitWidth,
-                    image: CachedNetworkImageProvider(service.image)
+                    image: CachedNetworkImageProvider(service.images[0])
                 )
             ),
           )
