@@ -110,7 +110,7 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
             serviceState.getFilteredServices(filterState,searchString: _searchController.text);
           }, icon: const Icon(Icons.search)),
           Expanded(
-            flex: 4,
+            flex: 5,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(

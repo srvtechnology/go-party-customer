@@ -57,7 +57,11 @@ Future<List<ServiceModel>> searchServices(Map<String,dynamic> data)async{
     List<ServiceModel> services = [];
     CustomLogger.debug(response.data);
     for (var serviceJson in response.data["data"]){
-      services.add(ServiceModel.fromJson(serviceJson));
+      try{
+        services.add(ServiceModel.fromJson(serviceJson));
+      }catch(e){
+        CustomLogger.error(serviceJson);
+      }
     }
     return services;
   }
