@@ -495,7 +495,7 @@ class _AddressEditPageState extends State<AddressEditPage> {
           country=data.firstWhere((element) => element.id==widget.address.country).name;
           return Scaffold(
             appBar: AppBar(
-              title: const Text("Add an Address"),
+              title: const Text("Edit Address"),
             ),
             body: Form(
               key: _formKey,
