@@ -2,8 +2,8 @@ import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/repo/order.dart';
 import 'package:customerapp/core/routes/mainpage.dart';
+import 'package:customerapp/core/utils/geolocator.dart';
 import 'package:customerapp/core/utils/logger.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -20,6 +20,21 @@ class _PaymentPageState extends State<PaymentPage> {
   final TextEditingController _paymentModeController = TextEditingController();
   final TextEditingController _cardNumberController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool showCard=true;
+  @override
+  void initState() {
+    super.initState();
+    _paymentModeController.addListener(() {
+      if(_paymentModeController.text=="Cash On Delivery"){
+       setState(() {
+         showCard=false;
+       });
+      }
+      else{
+        showCard=true;
+      }
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,6 +61,7 @@ class _PaymentPageState extends State<PaymentPage> {
                   hintText: "Select Payment Mode",
                   items: const ["Cash On Delivery","Online"], controller: _paymentModeController),
               const SizedBox(height: 20,),
+              if(showCard)
               Form(
                 key: _formKey,
                 child: Column(
@@ -106,19 +122,19 @@ class _PaymentPageState extends State<PaymentPage> {
                     ],
                   ),
                   const SizedBox(height: 30,),
-                  Row(
-                    children: [
-                      Expanded(child:
-                      ElevatedButton(
-                          onPressed:(){
-                            submit(context.read<AuthProvider>());
-                          },
-                          child: const Text("Place Order"),
-                      ))
-                    ],
-                  )
                 ],
             ),
+              ),
+              Row(
+                children: [
+                  Expanded(child:
+                  ElevatedButton(
+                    onPressed:(){
+                      submit(context.read<AuthProvider>());
+                    },
+                    child: const Text("Place Order"),
+                  ))
+                ],
               )
             ],
           ),
@@ -128,8 +144,9 @@ class _PaymentPageState extends State<PaymentPage> {
   }
   Future<void> submit(AuthProvider auth)async{
     try{
-      CustomLogger.debug(widget.addressId);
-      await placeOrder(auth, _paymentModeController.text.contains("Cash")?"cod":"online", widget.addressId);
+      Map data=await getCountryCityState();
+      CustomLogger.debug(data);
+      await placeOrder(auth, _paymentModeController.text.contains("Cash")?"cod":"online", widget.addressId,data["city"]);
       if(context.mounted){
         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>const MainPageRoute()), (route) => route.isFirst);
       }

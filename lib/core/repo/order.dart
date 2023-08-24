@@ -6,12 +6,13 @@ import 'package:dio/dio.dart';
 import '../models/orders.dart';
 import '../utils/dio.dart';
 
-Future<void> placeOrder(AuthProvider auth,String paymentMethod,String addressId)async{
+Future<void> placeOrder(AuthProvider auth,String paymentMethod,String addressId,String currentCity)async{
   try{
     Response response = await customDioClient.client.post("${APIConfig.baseUrl}/api/customer/payment",
     data: {
       "payment_method":paymentMethod,
       "address_id":addressId,
+      "current_city":currentCity
     },
       options: Options(
         headers: {
@@ -39,10 +40,15 @@ Future<List<OrderModel>> getUpcomingOrderItems(AuthProvider auth)async{
         )
     );
     List<OrderModel> list = [];
-
+    CustomLogger.debug(response.data);
     for(var i in response.data["data"])
     {
-      list.add(OrderModel.fromJson(i));
+      try{
+        list.add(OrderModel.fromJson(i));
+      }catch(e){
+        CustomLogger.error(i);
+        CustomLogger.error(e);
+      }
     }
     return list;
   } catch(e){
@@ -64,7 +70,6 @@ Future<List<OrderModel>> getDeliveredOrderItems(AuthProvider auth)async{
         )
     );
     List<OrderModel> list = [];
-    CustomLogger.debug(response.data);
     for(var i in response.data["data"])
     {
       list.add(OrderModel.fromJson(i));

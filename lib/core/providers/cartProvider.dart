@@ -6,6 +6,8 @@ import '../repo/cart.dart' as cartRepo;
 
 class CartProvider with ChangeNotifier{
   List<CartModel> _data=[];
+  List<String> _serviceIds =[];
+  List<String> get serviceIds => _serviceIds;
   List<CartModel> get data=> _data;
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -26,6 +28,9 @@ class CartProvider with ChangeNotifier{
     startLoading();
     try{
       _data = await cartRepo.getCartItems(auth);
+      for(var i in data){
+        _serviceIds.add(i.service.id);
+      }
     }catch(e){
       CustomLogger.error(e);
     }

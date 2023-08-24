@@ -1,10 +1,9 @@
-import 'dart:io';
-
+import 'package:collection/collection.dart';
 import 'package:customerapp/config.dart';
 import 'package:customerapp/core/models/service.dart';
 import 'package:customerapp/core/utils/logger.dart';
 import 'package:dio/dio.dart';
-import 'package:dio/io.dart';
+
 
 import '../utils/dio.dart';
 
@@ -18,6 +17,32 @@ Future<List<ServiceModel>> getServices()async{
     return services;
   }
   catch(e){
+    return Future.error(e);
+  }
+}
+
+Future<List> getServiceAvailability(List<String> serviceId,String addressId)async{
+  try{
+    Map<String,dynamic> data ={
+      "address_id":addressId,
+
+    };
+
+    serviceId.forEachIndexed((index,e){
+      data["service_id[$index]"]=e;
+    });
+    CustomLogger.debug(data);
+    Response response = await customDioClient.client.post(
+        "${APIConfig.baseUrl}/api/customer/check-service-availablity",
+        data: FormData.fromMap(data)
+    );
+    CustomLogger.debug(response.data);
+    return response.data["data"]["not_available_services"]??[];
+  }
+  catch(e){
+    if(e is DioException){
+      CustomLogger.error(e.response!.data);
+    }
     return Future.error(e);
   }
 }

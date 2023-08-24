@@ -37,7 +37,7 @@ class CartItem {
 }
 
 class _CartPageState extends State<CartPage> {
-
+  Map changedQuantity = {};
   @override
   Widget build(BuildContext context) {
     return ListenableProvider(
@@ -94,8 +94,9 @@ class _CartPageState extends State<CartPage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.redAccent
                   ),
-                  onPressed: (){
-                    Navigator.pushNamed(context, CheckoutPage.routeName);
+                  onPressed: ()async{
+                    await _handleQuantityChanged(auth);
+                    if(context.mounted)Navigator.push(context, MaterialPageRoute(builder: (context)=>CheckoutPage(serviceIds: cart.serviceIds,cartItems: cart.data,)));
                   },
                   child: const Text("Checkout"),
                 ),
@@ -114,6 +115,11 @@ class _CartPageState extends State<CartPage> {
         },
       )
     );
+  }
+  Future<void> _handleQuantityChanged(AuthProvider auth)async{
+      for (String key in changedQuantity.keys){
+          await changeCartItemQuantity(auth, changedQuantity[key], key);
+      }
   }
   Widget _cartTile(CartProvider state,CartModel item,AuthProvider auth){
     return Container(
@@ -185,7 +191,24 @@ class _CartPageState extends State<CartPage> {
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.grey[300]
                 ),
-                child: Text(item.quantity),
+                child: TextFormField(
+                  keyboardType: const TextInputType.numberWithOptions(signed: false,decimal: false),
+                  textAlign: TextAlign.center,
+                  textAlignVertical: TextAlignVertical.center,
+                  initialValue: item.quantity,
+                  onChanged: (text){
+                    if(text.isNotEmpty){
+                      setState(() {
+                        item.quantity = text;
+                        item.totalPrice=(double.parse(text) * double.parse(item.price)).toString();
+                        changedQuantity[item.id]=text;
+                      });
+                    }
+                  },
+                  decoration: const InputDecoration(
+                    border: InputBorder.none
+                  ),
+                ),
               ),
               const Text(" = "),
               Container(

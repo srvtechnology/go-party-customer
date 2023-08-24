@@ -53,7 +53,6 @@ class MyApp extends StatelessWidget {
               EditProfilePage.routeName:(context)=>const EditProfilePage(),
               FeedbackPage.routeName:(context)=>const FeedbackPage(),
               CartPage.routeName:(context)=>const CartPage(),
-              CheckoutPage.routeName:(context)=>const CheckoutPage(),
               AddressPage.routeName:(context)=>const AddressPage(),
               AddressAddPage.routeName:(context)=>const AddressAddPage()
             },

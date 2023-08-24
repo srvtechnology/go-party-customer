@@ -31,7 +31,7 @@ Future<UserModel> get_UserData(String token)async{
     response = await customDioClient.client.get("${APIConfig.baseUrl}/api/customer-details",
         options: Options(
             headers: {
-              "Authorization":"Bearer ${token}"
+              "Authorization":"Bearer $token"
             }
         )
     );

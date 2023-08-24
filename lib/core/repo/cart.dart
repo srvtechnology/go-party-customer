@@ -36,7 +36,6 @@ Future<List<CartModel>> getCartItems(AuthProvider auth)async{
       )
     );
     List<CartModel> list = [];
-    CustomLogger.debug(response.data);
     for(var i in response.data["data"]["cart"])
     {
       list.add(CartModel.fromJson(i));
@@ -47,6 +46,28 @@ Future<List<CartModel>> getCartItems(AuthProvider auth)async{
       CustomLogger.error(e.response!.data);
     }
     return Future.error(e);
+  }
+}
+
+Future<void> changeCartItemQuantity(AuthProvider auth,String quantity,String itemId)async{
+  try{
+    CustomLogger.debug(quantity);
+    Response response = await customDioClient.client.post(
+        "${APIConfig.baseUrl}/api/customer/update-cart-qty",
+        data: {
+          "cart_id":itemId,
+          "qty":quantity
+        },
+        options: Options(
+            headers: {
+              "Authorization":"Bearer ${auth.token}"
+            }
+        )
+    );
+    CustomLogger.debug(response.data);
+  }catch(e){
+    CustomLogger.error(e);
+    rethrow;
   }
 }
 

@@ -8,18 +8,21 @@ import 'package:customerapp/core/providers/addressProvider.dart';
 import 'package:customerapp/core/repo/address.dart';
 import 'package:customerapp/core/repo/countries.dart';
 import 'package:collection/collection.dart';
-import 'package:customerapp/core/repo/order.dart';
+import 'package:customerapp/core/repo/services.dart';
 import 'package:customerapp/core/routes/paymentPage.dart';
 import 'package:customerapp/core/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
+import '../models/cart.dart';
 import '../models/countries.dart';
 
 class CheckoutPage extends StatefulWidget {
   static const routeName = "/checkout";
-  const CheckoutPage({Key? key}) : super(key: key);
+  List<String> serviceIds;
+  List<CartModel> cartItems;
+  CheckoutPage({Key? key,required this.serviceIds,required this.cartItems}) : super(key: key);
 
   @override
   State<CheckoutPage> createState() => _CheckoutPageState();
@@ -347,12 +350,51 @@ class _CheckoutPageState extends State<CheckoutPage> {
       ),
     );
   }
-
+  void showNotAvailableDialog(List notAvailable){
+    showDialog(context: context,
+        builder: (context){
+          return Dialog(
+            shape:  RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            child: Container(
+              height: 40.h,
+              padding: const EdgeInsets.all(30),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                        "The following services are not available at your selected address.\nPlease try another address or remove them from cart.",
+                      style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16.sp),
+                    ),
+                    const SizedBox(height: 30,),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: notAvailable.map((e) => Text(
+                          "• ${widget.cartItems
+                              .firstWhere((element)
+                          => element.service.id == e).service.name}",
+                        style: TextStyle(fontSize: 16.sp,color: Colors.grey),
+                      )).toList(),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
   Future<void> submit(AuthProvider auth,List<Country> countries,AddressProvider addressState)async{
     try{
       if(_selectedAddress!=null){
         String addressId = _selectedAddress!.id.toString();
-        Navigator.push(context,MaterialPageRoute(builder: (context)=>PaymentPage(addressId: addressId)));
+        List notAvailable=await getServiceAvailability(widget.serviceIds, addressId);
+        if(notAvailable.isNotEmpty) {
+          showNotAvailableDialog(notAvailable);
+        }
+        else
+        {
+          if(context.mounted)Navigator.push(context,MaterialPageRoute(builder: (context)=>PaymentPage(addressId: addressId)));
+        }
         return;
       }
       if(country==null){
@@ -388,11 +430,16 @@ class _CheckoutPageState extends State<CheckoutPage> {
         "default_address":defaultAddress.substring(0,1)
       };
       String addressId = await addAddress(auth, data);
-      if(context.mounted) {
-        Navigator.push(context,MaterialPageRoute(builder: (context)=>PaymentPage(addressId: addressId)));
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("You have Successfully placed your order.")));
+      List notAvailable=await getServiceAvailability(widget.serviceIds, addressId);
+      if(notAvailable.isNotEmpty) {
+        showNotAvailableDialog(notAvailable);
       }
-
+      else{
+        if(context.mounted) {
+          Navigator.push(context,MaterialPageRoute(builder: (context)=>PaymentPage(addressId: addressId)));
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("You have Successfully placed your order.")));
+        }
+      }
     }catch(e){
         CustomLogger.error(e);
     }
