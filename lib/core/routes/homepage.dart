@@ -241,14 +241,24 @@ class _HomeState extends State<Home> {
                             subtitle: "Shop the latest trends"),
                         Container(
                           alignment: Alignment.centerLeft,
-                          color: Colors.grey[300],
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                offset:const Offset(0,1),
+                                spreadRadius: 3,
+                                blurRadius: 6,
+                                color: Colors.grey[300]!
+                              )
+                            ]
+                          ),
                           padding: const EdgeInsets.only(top: 10),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-                                child: Text("Our top services",style: Theme.of(context).textTheme.labelLarge!.copyWith(fontWeight: FontWeight.w700),),
+                                padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                                child: Text("Our Top Services",style: Theme.of(context).textTheme.labelLarge!.copyWith(fontSize: 20),),
                               ),
                               SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
@@ -265,8 +275,17 @@ class _HomeState extends State<Home> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-                                child: Text("Trending",style: Theme.of(context).textTheme.labelLarge!.copyWith(fontWeight: FontWeight.w700),),
+                                padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 30),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text("Trending",style: Theme.of(context).textTheme.labelLarge!.copyWith(fontSize: 20),),
+                                    TextButton(onPressed: (){
+                                      Navigator.pushNamed(context, ProductPageRoute.routeName);
+                                    }, child: Text("View All",style: TextStyle(color: Theme.of(context).primaryColorDark,fontSize: 15),))
+                                  ],
+                                ),
                               ),
                               SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
@@ -278,25 +297,6 @@ class _HomeState extends State<Home> {
                                   )).toList()
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 40),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: OutlinedButton(
-                                          style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(width: 1,color: Colors.blue),
-                                  shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(10),
-                                            )
-                                          ),
-                                          onPressed: (){
-                                            Navigator.pushNamed(context, ProductPageRoute.routeName);
-                                          }, child:const Text("View all")),
-                                    ),
-                                  ],
-                                ),
-                              )
                             ],
                           ),
                         ),

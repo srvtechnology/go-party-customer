@@ -22,15 +22,16 @@ class OrderCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 5,horizontal: 10),
-        height: 35.h,
+        height: 30.h,
         width: 50.w,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(flex: 9,child:
+            Expanded(flex: 4,child:
             Hero(
               tag: "Product Image ${service.id}",
               child: Container(
+                height: 20.h,
                 decoration: BoxDecoration(
                   boxShadow: [
                     BoxShadow(
@@ -48,11 +49,11 @@ class OrderCard extends StatelessWidget {
                 ),
               ),
             )),
-            const SizedBox(height: 20,),
-            Expanded(child: Text(service.name,style: const TextStyle(fontWeight: FontWeight.bold),)),
+            const SizedBox(height: 10,),
+            Expanded(child: Text(service.name,style: const TextStyle(fontSize: 18),)),
             FittedBox(child: Text("${service.description.substring(0,min(26,service.description.length))} ...",overflow: TextOverflow.visible,textAlign: TextAlign.left,)),
             const SizedBox(height: 20,),
-            Expanded(child: Text("₹ ${service.price}",style: const TextStyle(fontWeight: FontWeight.bold)),),
+            Expanded(child: Text("₹ ${service.price}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18,color: Theme.of(context).primaryColorDark)),),
           ],
         ),
       ),
@@ -89,7 +90,7 @@ class CircularOrderCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10,),
-            Text(service.name)
+            Text(service.name,style: const TextStyle(fontWeight: FontWeight.w600),)
           ],
         ),
       ),

@@ -12,7 +12,11 @@ Future<List<ServiceModel>> getServices()async{
     Response response = await customDioClient.client.get("${APIConfig.baseUrl}/api/customer-all-service");
     List<ServiceModel> services = [];
     for (var serviceJson in response.data["services"]){
+      try{
         services.add(ServiceModel.fromJson(serviceJson));
+      }catch(e){
+        CustomLogger.error(serviceJson);
+      }
     }
     return services;
   }
