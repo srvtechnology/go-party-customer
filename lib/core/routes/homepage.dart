@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:customerapp/core/components/banner.dart';
 import 'package:customerapp/core/components/card.dart';
 import 'package:customerapp/core/components/loading.dart';
@@ -27,24 +29,29 @@ class HomePageScreen extends StatefulWidget {
 
 class _HomePageScreenState extends State<HomePageScreen> {
   int currentIndex = 1;
-  List<Widget> items = const [Orders(),Home(),Profile()];
+  List<Widget> items = const [Orders(),Home(),CartPage(),Profile()];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: items[currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: ConvexAppBar(
+        height: 40,
         onTap: (index){
           setState(() {
-            currentIndex = index ;
+            currentIndex = index;
           });
         },
-        currentIndex: currentIndex,
+        initialActiveIndex: currentIndex,
+        backgroundColor: Colors.white,
+        color: Theme.of(context).primaryColorDark,
+        activeColor: Theme.of(context).primaryColorDark,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_bag),label: "Orders"),
-          BottomNavigationBarItem(icon: Icon(Icons.home),label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.person),label: "Profile"),
+          TabItem(icon: Icons.shopping_bag),
+          TabItem(icon: Icons.home),
+          TabItem(icon: Icons.shopping_cart),
+          TabItem(icon: Icons.person),
         ],
-      ),
+      )
     );
   }
 }
@@ -145,6 +152,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final CarouselController _carouselController = CarouselController();
+  int _currentCarouselIndex = 0;
+  @override
+  void initState() {
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return ListenableProvider(
@@ -202,9 +215,11 @@ class _HomeState extends State<Home> {
                 }
                 return Scaffold(
                   appBar: AppBar(
+                    elevation: 1,
+                    backgroundColor: Colors.white,
                     automaticallyImplyLeading: false,
-                    centerTitle: true,
-                    title: const Text("Home"),
+                    centerTitle: false,
+                    title: Image.asset("assets/images/logo/logo-resized.png",width: 120,),
                     actions: [
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 5.0),
@@ -217,18 +232,6 @@ class _HomeState extends State<Home> {
                           Navigator.pushNamed(context, ProductPageRoute.routeName);
                         }, child: Icon(Icons.search,color:Theme.of(context).primaryColorDark,)),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5),
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              shape: const CircleBorder(),
-                                backgroundColor: Colors.white
-                            ),
-                            onPressed: (){
-                              Navigator.pushNamed(context, CartPage.routeName);
-
-                            }, child: Icon(Icons.add_shopping_cart,color:Theme.of(context).primaryColorDark,)),
-                      ),
                     ],
                   ),
                   body: SingleChildScrollView(
@@ -236,13 +239,53 @@ class _HomeState extends State<Home> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children:[
-                        const EcommerceBanner(imageUrl: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2940&q=80",
-                            title: "Discover the experience",
-                            subtitle: "Shop the latest trends"),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                          child: Text("",style: Theme.of(context).textTheme.labelLarge!.copyWith(fontSize: 20),),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(vertical: 5.0),
+
+                          child: CarouselSlider(
+
+                            carouselController: _carouselController,
+                            options: CarouselOptions(
+                              onPageChanged: (index,kwargs){
+                                setState(() {
+                                  _currentCarouselIndex = index;
+                                });
+                              },
+                              enableInfiniteScroll: true,
+                              autoPlay: true,
+                              autoPlayInterval: const Duration(seconds: 3),
+                              autoPlayAnimationDuration:const Duration(milliseconds: 800),
+                              autoPlayCurve: Curves.fastOutSlowIn,
+                              enlargeCenterPage: true,
+                            ),
+                            items: [
+                              "https://mobirise.com/extensions/commercem4/assets/images/gallery00.jpg",
+                              "https://mobirise.com/extensions/commercem4/assets/images/gallery04.jpg",
+                              "https://mobirise.com/extensions/commercem4/assets/images/gallery07.jpg"
+                            ].map((e) => Container(
+                              alignment: Alignment.center,
+                              child: Image.network(e,fit: BoxFit.fitWidth,),
+                            )).toList(),
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.symmetric(vertical: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children:[0,1,2].map((e) => Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 10),
+                              height: 8,width: 8,decoration: BoxDecoration(shape: BoxShape.circle,color:_currentCarouselIndex==e?Colors.black:Colors.grey),
+                            )).toList(),
+                          ),
+                        ),
                         Container(
                           alignment: Alignment.centerLeft,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: const Color(0xffE9EFF5),
                             boxShadow: [
                               BoxShadow(
                                 offset:const Offset(0,1),
@@ -305,9 +348,17 @@ class _HomeState extends State<Home> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-                                child: Text("Top Searches of the week",style: Theme.of(context).textTheme.labelLarge!.copyWith(fontWeight: FontWeight.w700)),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                                    child: Text("Top Searches of the week",style: Theme.of(context).textTheme.labelLarge!.copyWith(fontSize: 20)),
+                                  ),
+                                  TextButton(onPressed: (){
+                                    Navigator.pushNamed(context, ProductPageRoute.routeName);
+                                  }, child: Text("View All",style: TextStyle(color: Theme.of(context).primaryColorDark,fontSize: 15),))
+                                ],
                               ),
                               SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
@@ -319,50 +370,10 @@ class _HomeState extends State<Home> {
                                         service: e)).toList()
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 40),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: OutlinedButton(
-                                          style: OutlinedButton.styleFrom(
-                                              side: const BorderSide(width: 1,color: Colors.blue),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(10),
-                                              )
-                                          ),
-                                          onPressed: (){
-                                            Navigator.pushNamed(context, ProductPageRoute.routeName);
-                                          }, child:const Text("View all")),
-                                    ),
-                                  ],
-                                ),
-                              )
                             ],
                           ),
                         ),
-                        // Container(
-                        //   alignment: Alignment.centerLeft,
-                        //   child: Column(
-                        //     crossAxisAlignment: CrossAxisAlignment.start,
-                        //     children: [
-                        //       Padding(
-                        //         padding: const EdgeInsets.all(20.0),
-                        //         child: Text("Top Categories",style: Theme.of(context).textTheme.labelLarge,),
-                        //       ),
-                        //       SingleChildScrollView(
-                        //         scrollDirection: Axis.horizontal,
-                        //         child: Row(
-                        //           children: [
-                        //             OrderCard(service: "Catering", imageUrl:"",price:"1499"),
-                        //             OrderCard(service: "Catering", imageUrl:"",price:"1499"),
-                        //             OrderCard(service: "More", imageUrl:"",price:"1499"),
-                        //           ],
-                        //         ),
-                        //       )
-                        //     ],
-                        //   ),
-                        // ),
+
                       ],
                     ),
                   ),

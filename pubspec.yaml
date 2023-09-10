@@ -48,6 +48,8 @@ dependencies:
   csc_picker: ^0.2.7
   geolocator: ^10.0.0
   geocoding: ^2.1.0
+  convex_bottom_bar: ^3.2.0
+  carousel_slider: ^4.2.1
 
 dev_dependencies:
   flutter_test:
