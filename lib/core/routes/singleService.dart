@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:customerapp/core/models/service.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/categoryProvider.dart';
@@ -27,7 +30,8 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
   final TextEditingController _days = TextEditingController();
   final TextEditingController _duration = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
+  int _currentCarouselIndex = 0;
+  final CarouselController _carouselController = CarouselController();
   void _calculateDays(){
     _days.text = DateTime.parse(_endDate.text).difference(DateTime.parse(_startDate.text)).inDays.toString();
   }
@@ -141,12 +145,11 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
       create: (_)=>CategoryProvider(),
       child: Consumer2<CategoryProvider,AuthProvider>(
         builder: (context,categories,auth,child) {
-          CustomLogger.debug(widget.service.images);
           return Scaffold(
             appBar: AppBar(
               elevation: 1,
               backgroundColor: Colors.white,
-              iconTheme: IconThemeData(color: Colors.grey),
+              iconTheme: const IconThemeData(color: Colors.grey),
               centerTitle: false,
               title: Image.asset("assets/images/logo/logo-resized.png",width: 120,),
               actions: [
@@ -200,32 +203,49 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(
                       height: 10,
                     ),
                     Container(
-                      height: 25.h,
-                      alignment: Alignment.center,
-                      child: Row(
+                      padding: const EdgeInsets.symmetric(vertical: 5.0),
+                      child: Stack(
                         children: [
-                          Expanded(
-                            child: SingleChildScrollView(
-                              physics: const ClampingScrollPhysics(),
-                              scrollDirection: Axis.horizontal,
-                              child: Column(
-                                children:widget.service.images.map((e)
-                                => Container(
-                                  height: 25.h,
-                                  margin:const EdgeInsets.symmetric(horizontal: 20),
-                                  alignment: Alignment.center,
-                                  child: CachedNetworkImage(
-                                    fit: BoxFit.fitWidth,
-                                    imageUrl: e,
-                                    placeholder: (context,url)=>Container(alignment: Alignment.center,child: const CircularProgressIndicator(),),
-                                    errorWidget: (context,url,err)=>Container(alignment: Alignment.center,child: const Icon(Icons.error_outline),),
-                                  ),
-                                )).toList()
+                          CarouselSlider(
+                            carouselController: _carouselController,
+                            options: CarouselOptions(
+                                onPageChanged: (index,kwargs){
+                                  setState(() {
+                                    _currentCarouselIndex = index;
+                                  });
+                                },
+                                enableInfiniteScroll: true,
+                                autoPlay: true,
+                                autoPlayInterval: const Duration(seconds: 3),
+                                autoPlayAnimationDuration:const Duration(milliseconds: 800),
+                                autoPlayCurve: Curves.fastOutSlowIn,
+                                enlargeFactor: 0,
+                                viewportFraction: 1
+                            ),
+                            items: widget.service.images.getRange(0, min(2, widget.service.images.length-1)).map((e) => Container(
+                              width: double.infinity,
+                              child: Image.network(e,fit: BoxFit.fitWidth,),
+                            )).toList(),
+                          ),
+                          Positioned.fill(
+                            top: 180,
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(vertical: 20),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children:[0,1,2].map((e) => Container(
+                                  margin: const EdgeInsets.symmetric(horizontal: 10),
+
+                                  height: 8,width: 8,decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.white,width: 0.5),
+                                    shape: BoxShape.circle,color:_currentCarouselIndex==e?Colors.white:Colors.transparent),
+                                )).toList(),
                               ),
                             ),
                           ),
@@ -242,34 +262,73 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                       alignment: Alignment.centerLeft,
                       child: Text(widget.service.description,style: Theme.of(context).textTheme.bodyMedium,),
                     ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-                      alignment: Alignment.centerLeft,
-                      child: Text("Discounted Price",style: Theme.of(context).textTheme.titleLarge,),
-                    ),
+
+                    const Divider(thickness: 1,),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
                       alignment: Alignment.centerLeft,
                       child: RichText(
-                          text: TextSpan(
+                        text: TextSpan(
                             children: [
                               TextSpan(
-                                text: "\u20B9 ${widget.service.discountedPrice}  ",
-                              style: TextStyle(fontSize: 20.sp,color: Colors.redAccent),
-                                children: [
-                                  TextSpan(
-                                    text: "${widget.service.priceBasis} inc. tax",
-                                    style: TextStyle(fontSize: 15.sp,color: Colors.black),
-                                  ),
-                                ]
+                                  text: "\u20B9 ${widget.service.discountedPrice}  ",
+                                  style: TextStyle(fontSize: 20.sp,color: Theme.of(context).primaryColorDark),
+                                  children: [
+                                    TextSpan(
+                                      text: "${widget.service.priceBasis} inc. tax",
+                                      style: TextStyle(fontSize: 15.sp,color: Colors.black),
+                                    ),
+                                  ]
                               ),
                             ]
-                          ),),
+                        ),),
+                    ),
+                    const Divider(thickness: 1,),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100]
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                      alignment: Alignment.centerLeft,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text("Pricing Info",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                          const SizedBox(height: 20,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text("Discount Price:",style: TextStyle(fontSize: 16),),
+                              Text("\u20B9 ${widget.service.discountedPrice}")
+                            ],
+                          ),
+                          _dashedDivider(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text("Original Price:",style: TextStyle(fontSize: 16),),
+                              Text("\u20B9 ${widget.service.price}",style: const TextStyle(decoration: TextDecoration.lineThrough),)
+                            ],
+                          ),
+                          _dashedDivider(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text("Original Price:",style: TextStyle(fontSize: 16),),
+                              Text("\u20B9 ${widget.service.price}",style: const TextStyle(decoration: TextDecoration.lineThrough),)
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
-                      alignment: Alignment.centerLeft,
-                      child: Text("\u20B9 ${widget.service.price}",style: Theme.of(context).textTheme.bodyMedium!.copyWith(decoration: TextDecoration.lineThrough),),
+                        margin: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                        child: const Text("Reviews",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),)),
+                    Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                        child: Column(
+
+                        )
                     ),
                   ],
                 ),
@@ -277,6 +336,21 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
             ),
           );
         }
+      ),
+    );
+  }
+  Widget _dashedDivider(){
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        children: List.generate(1500~/10, (index) => Expanded(
+          child: Container(
+            color: index%2==0?Colors.transparent
+                :Colors.grey,
+            height: 2,
+            width: 1,
+          ),
+        )),
       ),
     );
   }
