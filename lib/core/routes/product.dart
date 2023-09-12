@@ -1,6 +1,7 @@
 import 'package:customerapp/core/providers/serviceProvider.dart';
 import 'package:customerapp/core/routes/filter.dart';
 import 'package:customerapp/core/routes/singleService.dart';
+import 'package:customerapp/core/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -48,34 +49,65 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                     ),
                   );
                 }
-                return Scaffold(
-                    body:NestedScrollView(
-                  floatHeaderSlivers: true,
-                  headerSliverBuilder: (context,isChange){
-                    return [
-                      SliverAppBar(
-                        title: const Text("Services"),
-                      floating: true,
-                      snap: true,
-                      elevation: 0,
-                      bottom: PreferredSize(
-                        preferredSize: const Size.fromHeight(60),
-                        child: _searchBar(controller: _searchController,filterState: filters,serviceState: state),
-                      )
-                    )];
+                return GestureDetector(
+                  onTap: (){
+                    FocusManager.instance.primaryFocus!.unfocus();
                   },
-                  body:Container(
-                      height: double.infinity,
-                      width: double.infinity,
-                      color: Colors.white,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: state.data!.map((e) => ProductTile(service: e,onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>SingleServiceRoute(service: e)));
-                          },)).toList()
-                        ),
-                      ),
+                  child: Scaffold(
+                      body:Stack(
+                        children: [
+                          NestedScrollView(
+                    floatHeaderSlivers: true,
+                    headerSliverBuilder: (context,isChange){
+                          return [
+                            SliverAppBar(
+                              title: const Text("Services"),
+                            floating: true,
+                            snap: true,
+                            elevation: 0,
+                            bottom: PreferredSize(
+                              preferredSize: const Size.fromHeight(80),
+                              child: _searchBar(controller: _searchController,filterState: filters,serviceState: state),
+                            )
+                          )];
+                    },
+                    body:Container(
+                            height: double.infinity,
+                            width: double.infinity,
+                            color: Colors.white,
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: state.data!.map((e) => ProductTile(service: e,onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>SingleServiceRoute(service: e)));
+                                },)).toList()
+                              ),
+                            ),
+                          ),
                     ),
+                          Positioned(
+                            bottom: 20,
+                            left: 180,
+                            child: ElevatedButton(
+
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50)
+                                ),
+                                backgroundColor: Theme.of(context).primaryColorDark
+                            ),
+                            onPressed: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>FilterPage(filterState: filters)));
+                            },
+                            child: Row(
+                              children: const [
+                                Icon(Icons.menu_rounded,size: 15,),
+                                SizedBox(width: 10,),
+                                Text("Filter")
+                              ],
+                            ),
+                          ),)
+                        ],
+                      ),
                   ),
                 );
               }
@@ -88,20 +120,28 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
     Widget _searchBar({required TextEditingController controller,required FilterProvider filterState,required ServiceProvider serviceState}){
     return Container(
       color: Colors.white,
-      height: 9.h,
+      height: 10.h,
       padding: const EdgeInsets.all(20),
       child: Row(
         children: [
           Expanded(
             flex: 10,
             child: TextFormField(
+
               autofocus: true,
               controller: controller,
               decoration: InputDecoration(
-                contentPadding: const EdgeInsets.only(bottom: 10,right: 5),
-                prefixIcon: const Icon(Icons.search),
+                  labelText: "Search ...",
+                  filled: true,
+                  fillColor: const Color(0xffe5e5e5),
+                  contentPadding: const EdgeInsets.only(bottom: 10,right: 5),
+                prefixIcon: Icon(Icons.search,color: Theme.of(context).primaryColor,),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                  enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(width: 0.5,color: Colors.grey)
                 )
               ),
             ),
@@ -110,28 +150,7 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
           IconButton(onPressed: (){
             serviceState.getFilteredServices(filterState,searchString: _searchController.text);
           }, icon: const Icon(Icons.search)),
-          Expanded(
-            flex: 5,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(50)
-                ),
-                backgroundColor: Colors.redAccent
-              ),
-              onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>FilterPage(filterState: filterState,))).then((value) => serviceState.getFilteredServices(filterState));
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children:  [
-                  const Icon(Icons.account_tree_outlined,size: 15,),
-                  Text("Filters",style: TextStyle(fontSize: 12.sp),),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(width: 20,),
+
         ],
       ),
     );

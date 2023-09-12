@@ -13,6 +13,7 @@ class ServiceProvider with ChangeNotifier{
   bool get isLoading => _isLoading;
   ServiceProvider({required FilterProvider filters}){
     if(filters.hasFilters==true){
+      CustomLogger.debug("Getting filtered Services");
       getFilteredServices(filters);
     }
     else {

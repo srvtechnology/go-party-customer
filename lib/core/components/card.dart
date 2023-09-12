@@ -226,7 +226,7 @@ class ProductTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 40.h,
+      height: 42.h,
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
@@ -276,24 +276,21 @@ class ProductTile extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10,),
-          Expanded(child:Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              FittedBox(child: Text("${service.description.substring(0,min(20,service.description.length))} ...",)),
-              Text("₹ ${service.price}",style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w600),)
-            ],
-          )),
+          FittedBox(child: Text("${service.description.substring(0,min(42,service.description.length))} ...",style: const TextStyle(fontSize: 14),)),
           const SizedBox(height: 20,),
+          Expanded(child: Text("₹ ${service.price}",style: TextStyle(fontSize: 24,color: Theme.of(context).primaryColor),)),
+          const SizedBox(height: 10,),
           Expanded(child:Row(
             children: [
               Expanded(
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).primaryColorDark),
                   onPressed: (){
                     if(onTap!=null){
                       onTap!();
                     }
                   },
-                  child: const Text("View"),
+                  child: const Text("View Details"),
                 ),
               ),
             ],

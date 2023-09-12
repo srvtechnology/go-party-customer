@@ -37,6 +37,7 @@ class MyApp extends StatelessWidget {
           ],
           child: MaterialApp(
             theme: ThemeData(
+              elevatedButtonTheme: ElevatedButtonThemeData(style: ElevatedButton.styleFrom(backgroundColor: const Color(0xff0264a5))),
               primaryColor:const Color(0xff0264a5),
               appBarTheme: const AppBarTheme(color: Color(0xff0264a5)),
               primarySwatch: Colors.blue,
