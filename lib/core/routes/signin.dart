@@ -63,7 +63,6 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
         return Scaffold(
           body: Container(
             height: double.infinity,
-            color: Colors.grey[900],
             padding: const EdgeInsets.all(16.0),
             child: SingleChildScrollView(
               child: Form(
@@ -71,21 +70,59 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    SizedBox(height: 10.h),
-                    Image.asset(
-                      'assets/images/logo/logo-white.png',
-                      height: 150.0,
+                    SizedBox(height: 8.h),
+                    Container(
+                      height: 20.h,
+                      color: Theme.of(context).primaryColor,
+                      child: Image.asset(
+                        'assets/images/logo/logo-white.png',
+                        height: 150.0,
+                      ),
                     ),
                     const SizedBox(height: 32.0),
+                    Container(
+                      alignment: Alignment.center,
+                      child: Text("LOG IN",style: TextStyle(color: Theme.of(context).primaryColor,fontSize: 26,fontWeight: FontWeight.w600),),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Don't have an account ?"),
+                        TextButton(
+                          onPressed: () {
+                            if(widget.comeBack){
+                              Navigator.push(context,MaterialPageRoute(builder: (context)=>SignUpPageRoute(comeback: widget.comeBack,)));
+                            }
+                            else{
+                              Navigator.pushReplacementNamed(context, SignInPageRoute.routeName);
+                            }
+                          },
+                          child:  Text(
+                            'Create Here',
+                            style: TextStyle(color: Theme.of(context).primaryColor),
+                          ),
+                        ),
+                      ],
+                    ),
                     if(state.authState==AuthState.Error)
                       const Text("Incorrect username or password",style: TextStyle(color: Colors.red),),
+                    const SizedBox(height: 20,),
                     TextFormField(
-                      style:const TextStyle(color: Colors.white),
                       controller: _emailController,
-                      decoration: const InputDecoration(
-                        labelStyle: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: const Color(0xffe5e5e5),
+                        labelStyle: const TextStyle(color: Colors.grey),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(width: 0.5,color: Colors.grey)
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(width: 0.5,color: Colors.grey)
+                        ),
                         labelText: 'Email',
-                        prefixIcon: Icon(Icons.email, color: Colors.white),
+                        prefixIcon:const Icon(Icons.email),
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -99,13 +136,22 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                     ),
                     const SizedBox(height: 16.0),
                     TextFormField(
-                      style:const TextStyle(color: Colors.white),
                       controller: _passwordController,
                       obscureText: _obscureText,
                       decoration: InputDecoration(
-                        labelText: 'Password',
-                        labelStyle: const TextStyle(color: Colors.white),
-                        prefixIcon: const Icon(Icons.lock, color: Colors.white),
+                      filled: true,
+                      fillColor: const Color(0xffe5e5e5),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(width: 0.5,color: Colors.grey)
+                        ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(width: 0.5,color: Colors.grey)
+                        ),
+                      labelText: 'Password',
+                        labelStyle: const TextStyle(color: Colors.grey),
+                        prefixIcon: const Icon(Icons.lock, color: Colors.grey),
                         suffixIcon: GestureDetector(
                           onTap: () {
                             setState(() {
@@ -114,7 +160,7 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                           },
                           child: Icon(
                             _obscureText ? Icons.visibility_off : Icons.visibility,
-                            color: Colors.white,
+                            color: Colors.grey,
                           ),
                         ),
                       ),
@@ -134,9 +180,9 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                         _submitForm(state);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.indigo,
+                        backgroundColor: Theme.of(context).primaryColor,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
                       ),
@@ -145,7 +191,7 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       )
                           : const Text(
-                        'Sign In',
+                        'Log in',
                         style: TextStyle(
                           fontSize: 18.0,
                           fontWeight: FontWeight.bold,
@@ -154,34 +200,6 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                       ),
                     ),
                     const SizedBox(height: 16.0),
-                    TextButton(
-                      onPressed: () {
-                        // Handle forgot password logic
-                      },
-                      child: const Text(
-                        'Forgot Password?',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            if(widget.comeBack){
-                              Navigator.push(context,MaterialPageRoute(builder: (context)=>SignUpPageRoute(comeback: widget.comeBack,)));
-                            }
-                            else{
-                              Navigator.pushReplacementNamed(context, SignInPageRoute.routeName);
-                            }
-                          },
-                          child: const Text(
-                            'Create an account',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ],
-                    )
                   ],
                 ),
               ),
