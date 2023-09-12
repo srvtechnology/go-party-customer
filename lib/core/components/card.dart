@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:customerapp/core/models/user.dart';
 import 'package:customerapp/core/routes/singleService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -301,3 +302,34 @@ class ProductTile extends StatelessWidget {
   }
 }
 
+class ReviewTile extends StatelessWidget {
+  final ReviewModel e;
+  const ReviewTile({Key? key,required this.e}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                backgroundColor: Colors.primaries[Random().nextInt(Colors.primaries.length)],
+                child: Text(e.name.substring(0,1)),
+              ),
+              const SizedBox(width: 20,),
+              Text(e.name,style:const TextStyle(fontSize: 14,fontWeight: FontWeight.w600),),
+              const SizedBox(width: 20,),
+              const Icon(Icons.star,color: Colors.yellow,),
+              Text(e.rating)
+            ],
+          ),
+          const SizedBox(height: 20,),
+          Text(e.message,style: const TextStyle(fontSize: 18),),
+        ],
+      ),
+    );
+  }
+}

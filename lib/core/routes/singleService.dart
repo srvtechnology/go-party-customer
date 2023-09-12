@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:customerapp/core/components/card.dart';
 import 'package:customerapp/core/models/service.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/categoryProvider.dart';
@@ -13,6 +14,9 @@ import 'package:customerapp/core/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+
+import '../models/user.dart';
+import '../providers/reviewProvider.dart';
 
 class SingleServiceRoute extends StatefulWidget {
   final ServiceModel service;
@@ -30,8 +34,6 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
   final TextEditingController _days = TextEditingController();
   final TextEditingController _duration = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  int _currentCarouselIndex = 0;
-  final CarouselController _carouselController = CarouselController();
   void _calculateDays(){
     _days.text = DateTime.parse(_endDate.text).difference(DateTime.parse(_startDate.text)).inDays.toString();
   }
@@ -141,10 +143,15 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
   }
   @override
   Widget build(BuildContext context) {
-    return ListenableProvider(
-      create: (_)=>CategoryProvider(),
-      child: Consumer2<CategoryProvider,AuthProvider>(
-        builder: (context,categories,auth,child) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_)=>CategoryProvider(),),
+        ChangeNotifierProvider(create: (_)=>ReviewProvider(serviceId: widget.service.id),),
+      ],
+      child: Consumer3<CategoryProvider,AuthProvider,ReviewProvider>(
+        builder: (context,categories,auth,reviews,child) {
+
+
           return Scaffold(
             appBar: AppBar(
               elevation: 1,
@@ -208,50 +215,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                     const SizedBox(
                       height: 10,
                     ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(vertical: 5.0),
-                      child: Stack(
-                        children: [
-                          CarouselSlider(
-                            carouselController: _carouselController,
-                            options: CarouselOptions(
-                                onPageChanged: (index,kwargs){
-                                  setState(() {
-                                    _currentCarouselIndex = index;
-                                  });
-                                },
-                                enableInfiniteScroll: true,
-                                autoPlay: true,
-                                autoPlayInterval: const Duration(seconds: 3),
-                                autoPlayAnimationDuration:const Duration(milliseconds: 800),
-                                autoPlayCurve: Curves.fastOutSlowIn,
-                                enlargeFactor: 0,
-                                viewportFraction: 1
-                            ),
-                            items: widget.service.images.getRange(0, min(2, widget.service.images.length-1)).map((e) => Container(
-                              width: double.infinity,
-                              child: Image.network(e,fit: BoxFit.fitWidth,),
-                            )).toList(),
-                          ),
-                          Positioned.fill(
-                            top: 180,
-                            child: Container(
-                              margin: const EdgeInsets.symmetric(vertical: 20),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children:[0,1,2].map((e) => Container(
-                                  margin: const EdgeInsets.symmetric(horizontal: 10),
-
-                                  height: 8,width: 8,decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.white,width: 0.5),
-                                    shape: BoxShape.circle,color:_currentCarouselIndex==e?Colors.white:Colors.transparent),
-                                )).toList(),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    ImageSlider(imageUrls: widget.service.images),
                     Container(
                       padding: const EdgeInsets.all(20),
                       alignment: Alignment.centerLeft,
@@ -303,7 +267,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                             ],
                           ),
                           _dashedDivider(),
-                          Row(
+                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text("Original Price:",style: TextStyle(fontSize: 16),),
@@ -321,15 +285,38 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                         ],
                       ),
                     ),
+                    const Divider(thickness: 1,),
+                    const SizedBox(height: 10,),
                     Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
-                        child: const Text("Reviews",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),)),
+                        margin: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text("Reviews",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                            const SizedBox(width: 40,),
+                            ElevatedButton(
+                                style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
+                                onPressed: (){}, child: const Text("Write a Review")),
+                          ],
+                        )),
+                    const SizedBox(height: 10,),
+                    const Divider(thickness: 1,),
                     Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                        margin: const EdgeInsets.symmetric(horizontal: 40),
                         child: Column(
-
+                          children: reviews.data.getRange(0, min(4,reviews.data.length-1)).map((e) => ReviewTile(e: e)).toList(),
                         )
                     ),
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.symmetric(horizontal: 40,vertical: 10),
+                      child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                          onPressed: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>ReviewPage(reviews: reviews.data)));
+                      }, child: Text("View All Reviews",style: TextStyle(fontSize: 18,color: Theme.of(context).primaryColorDark),)),
+                    ),
+                    const SizedBox(height: 100,),
                   ],
                 ),
               ),
@@ -351,6 +338,96 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
             width: 1,
           ),
         )),
+      ),
+    );
+  }
+}
+
+class ImageSlider extends StatefulWidget {
+  final List<String> imageUrls;
+  const ImageSlider({Key? key,required this.imageUrls}) : super(key: key);
+
+  @override
+  State<ImageSlider> createState() => _ImageSliderState();
+}
+
+class _ImageSliderState extends State<ImageSlider> {
+  int _currentCarouselIndex = 0;
+  final CarouselController _carouselController = CarouselController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 5.0),
+      child: Stack(
+        children: [
+          CarouselSlider(
+            carouselController: _carouselController,
+            options: CarouselOptions(
+                onPageChanged: (index,kwargs){
+                  setState(() {
+                    _currentCarouselIndex = index;
+                  });
+                },
+                enableInfiniteScroll: true,
+                autoPlay: true,
+                autoPlayInterval: const Duration(seconds: 3),
+                autoPlayAnimationDuration:const Duration(milliseconds: 800),
+                autoPlayCurve: Curves.fastOutSlowIn,
+                enlargeFactor: 0,
+                viewportFraction: 1
+            ),
+            items: widget.imageUrls.getRange(0, min(2, widget.imageUrls.length-1)).map((e) => Container(
+              width: double.infinity,
+              child: Image.network(e,fit: BoxFit.fitWidth,),
+            )).toList(),
+          ),
+          Positioned.fill(
+            top: 180,
+            child: Container(
+              margin: const EdgeInsets.symmetric(vertical: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:[0,1,2].map((e) => Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 10),
+
+                  height: 8,width: 8,decoration: BoxDecoration(
+                    border: Border.all(color: Colors.white,width: 0.5),
+                    shape: BoxShape.circle,color:_currentCarouselIndex==e?Colors.white:Colors.transparent),
+                )).toList(),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ReviewPage extends StatefulWidget {
+  final List<ReviewModel> reviews;
+  const ReviewPage({Key? key, required this.reviews}) : super(key: key);
+
+  @override
+  State<ReviewPage> createState() => _ReviewPageState();
+}
+
+class _ReviewPageState extends State<ReviewPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Reviews"),
+      ),
+      body: Container(
+        height: double.infinity,
+        width: double.infinity,
+        padding: const EdgeInsets.all(20),
+        child: SingleChildScrollView(
+          child: Column(
+            children: widget.reviews.map((e) => ReviewTile(e: e)).toList(),
+          ),
+        ),
       ),
     );
   }
