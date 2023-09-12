@@ -1,7 +1,6 @@
 import 'dart:math';
-
+import 'package:collection/collection.dart';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:customerapp/core/components/card.dart';
 import 'package:customerapp/core/models/service.dart';
@@ -10,7 +9,6 @@ import 'package:customerapp/core/providers/categoryProvider.dart';
 import 'package:customerapp/core/repo/cart.dart';
 import 'package:customerapp/core/routes/product.dart';
 import 'package:customerapp/core/routes/signin.dart';
-import 'package:customerapp/core/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -369,26 +367,27 @@ class _ImageSliderState extends State<ImageSlider> {
                     _currentCarouselIndex = index;
                   });
                 },
-                enableInfiniteScroll: true,
-                autoPlay: true,
+                enableInfiniteScroll: widget.imageUrls.length<2?false:true,
+                autoPlay:widget.imageUrls.length<2?false:true,
                 autoPlayInterval: const Duration(seconds: 3),
                 autoPlayAnimationDuration:const Duration(milliseconds: 800),
                 autoPlayCurve: Curves.fastOutSlowIn,
                 enlargeFactor: 0,
                 viewportFraction: 1
             ),
-            items: widget.imageUrls.getRange(0, min(2, widget.imageUrls.length-1)).map((e) => Container(
+            items: widget.imageUrls.getRange(0, min(3, widget.imageUrls.length)).map((e) => Container(
               width: double.infinity,
               child: Image.network(e,fit: BoxFit.fitWidth,),
             )).toList(),
           ),
+          if(widget.imageUrls.length>1)
           Positioned.fill(
             top: 180,
             child: Container(
               margin: const EdgeInsets.symmetric(vertical: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children:[0,1,2].map((e) => Container(
+                children:widget.imageUrls.mapIndexed((e,s) => Container(
                   margin: const EdgeInsets.symmetric(horizontal: 10),
 
                   height: 8,width: 8,decoration: BoxDecoration(

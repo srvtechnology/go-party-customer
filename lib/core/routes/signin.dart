@@ -90,12 +90,11 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                         const Text("Don't have an account ?"),
                         TextButton(
                           onPressed: () {
-                            if(widget.comeBack){
-                              Navigator.push(context,MaterialPageRoute(builder: (context)=>SignUpPageRoute(comeback: widget.comeBack,)));
-                            }
-                            else{
-                              Navigator.pushReplacementNamed(context, SignInPageRoute.routeName);
-                            }
+                              Navigator.push(context,MaterialPageRoute(builder: (context)=>SignUpPageRoute(comeback: widget.comeBack,))).then((value){
+                                if(Navigator.canPop(context)){
+                                  Navigator.pop(context);
+                                }
+                              });
                           },
                           child:  Text(
                             'Create Here',
