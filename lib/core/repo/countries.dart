@@ -17,7 +17,6 @@ Future<List<Country>> getCountries(AuthProvider auth)async{
         )
     );
     List<Country> data = [];
-
     for (var country in response.data["data"]){
       data.add(Country.fromJson(country));
     }

@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:customerapp/core/components/card.dart';
+import 'package:customerapp/core/components/divider.dart';
 import 'package:customerapp/core/models/service.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/categoryProvider.dart';
@@ -264,7 +265,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                               Text("\u20B9 ${widget.service.discountedPrice}")
                             ],
                           ),
-                          _dashedDivider(),
+                          const DashedDivider(),
                            Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -272,7 +273,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                               Text("\u20B9 ${widget.service.price}",style: const TextStyle(decoration: TextDecoration.lineThrough),)
                             ],
                           ),
-                          _dashedDivider(),
+                          const DashedDivider(),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -321,21 +322,6 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
             ),
           );
         }
-      ),
-    );
-  }
-  Widget _dashedDivider(){
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        children: List.generate(1500~/10, (index) => Expanded(
-          child: Container(
-            color: index%2==0?Colors.transparent
-                :Colors.grey,
-            height: 2,
-            width: 1,
-          ),
-        )),
       ),
     );
   }

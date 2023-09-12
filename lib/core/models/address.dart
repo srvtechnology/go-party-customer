@@ -12,7 +12,8 @@ class AddressModel {
   double latitude;
   double longitude;
   String landmark;
-  int country;
+  String country;
+  String countryName;
   String area;
   String pinCode;
   String addressType;
@@ -34,6 +35,7 @@ class AddressModel {
     required this.longitude,
     required this.landmark,
     required this.country,
+    required this.countryName,
     required this.area,
     required this.pinCode,
     required this.addressType,
@@ -41,8 +43,7 @@ class AddressModel {
     required this.updatedAt,
   });
 
-  // Factory constructor to create an Address instance from a JSON object.
-  factory AddressModel.fromJson(Map<String, dynamic> json) {
+   factory AddressModel.fromJson(Map<String, dynamic> json) {
     return AddressModel(
       id: json['id'],
       defaultAddress: json['default_address'],
@@ -58,6 +59,7 @@ class AddressModel {
       longitude: double.tryParse(json['long']) ?? 0.0,
       landmark: json['landmark'],
       country: json['country'],
+      countryName: json["country_name"],
       area: json['area'],
       pinCode: json['pin_code'],
       addressType: json['address_type'],

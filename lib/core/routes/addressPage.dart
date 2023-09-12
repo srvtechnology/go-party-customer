@@ -1,5 +1,6 @@
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:csc_picker/csc_picker.dart';
+import 'package:customerapp/core/components/divider.dart';
 import 'package:customerapp/core/models/address.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/addressProvider.dart';
@@ -374,8 +375,9 @@ class _AddressPageState extends State<AddressPage> {
             appBar: AppBar(
               title: const Text("Manage Addresses"),
             ),
-            bottomNavigationBar: Padding(
-              padding: const EdgeInsets.all(40),
+            bottomNavigationBar: Container(
+              height: 40,
+              margin: const EdgeInsets.only(bottom: 40,left: 40,right: 40),
               child: ElevatedButton(
                 onPressed: ()async{
                   await Navigator.pushNamed(context, AddressAddPage.routeName);
@@ -410,28 +412,36 @@ class _AddressPageState extends State<AddressPage> {
   }
   Widget _addressTile(AddressModel address,AddressProvider state){
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 5),
+      height: 150,
+      padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
       decoration: BoxDecoration(
-        color: Colors.white,
         borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            offset: const Offset(1,1),
-            blurRadius: 1,
-            color: Colors.grey[300]!
-          ),
-          BoxShadow(
-            offset: const Offset(-1,-1),
-            blurRadius: 1,
-            color: Colors.grey[300]!
-          ),
-        ]
       ),
-      child: ListTile(
-        onTap: (){
-          Navigator.push(context,MaterialPageRoute(builder: (context)=>AddressEditPage(address: address))).then((value) => state.getAddress(context.read<AuthProvider>()));
-        },
-        title: FittedBox(child: Text("${address.houseNumber}, ${address.landmark}, ${address.area} , ${address.city}, ${address.state}")),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "${address.houseNumber}, ${address.landmark}, \n${address.area} , ${address.city}, \n${address.state}, ${address.countryName}",
+            style: const TextStyle(fontWeight: FontWeight.w500),
+          ),
+          const SizedBox(height: 10,),
+          Row(
+            children: [
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  onPressed: (){
+                Navigator.push(context,MaterialPageRoute(builder: (context)=>AddressEditPage(address: address))).then((value) => state.getAddress(context.read<AuthProvider>()));
+              }, child: const Text("Edit")),
+              const SizedBox(width: 20,),
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+                  onPressed: (){
+                Navigator.push(context,MaterialPageRoute(builder: (context)=>AddressEditPage(address: address))).then((value) => state.getAddress(context.read<AuthProvider>()));
+              }, child: const Text("Delete")),
+            ],
+          ),
+          const DashedDivider(),
+        ],
       ),
     );
   }
@@ -492,7 +502,7 @@ class _AddressEditPageState extends State<AddressEditPage> {
             return CustomErrorWidget(backgroundColor: Colors.white, icon: Icons.error, message: "Something wrong. Please try again later.");
           }
           List<Country> data = snapshot.data??[];
-          country=data.firstWhere((element) => element.id==widget.address.country).name;
+          country=data.firstWhere((element) => element.id.toString()==widget.address.country).name;
           return Scaffold(
             appBar: AppBar(
               title: const Text("Edit Address"),

@@ -58,7 +58,11 @@ Future<List<AddressModel>> getAddress(AuthProvider auth)async{
     List<AddressModel> list = [];
     for(var i in response.data["data"]["all_address"])
     {
-      list.add(AddressModel.fromJson(i));
+      try{
+        list.add(AddressModel.fromJson(i));
+      }catch(e){
+        CustomLogger.error(i);
+      }
     }
     return list;
   } catch(e){
