@@ -85,6 +85,7 @@ class _OrdersState extends State<Orders> {
                 actions: [
                   Container(
                     width: 250,
+                    margin: const EdgeInsets.only(right: 10),
                     padding: const EdgeInsets.all(5),
                     child: GestureDetector(
                       onTap: (){
@@ -245,6 +246,7 @@ class _HomeState extends State<Home> {
                     actions: [
                       Container(
                         width: 250,
+                        margin: const EdgeInsets.only(right: 10),
                         padding: const EdgeInsets.all(5),
                         child: GestureDetector(
                           onTap: (){
@@ -511,6 +513,7 @@ class _ProfileState extends State<Profile> {
               actions: [
                 Container(
                   width: 250,
+                  margin: const EdgeInsets.only(right: 10),
                   padding: const EdgeInsets.all(5),
                   child: GestureDetector(
                     onTap: (){
@@ -564,6 +567,7 @@ class _ProfileState extends State<Profile> {
             actions: [
               Container(
                 width: 250,
+                margin: const EdgeInsets.only(right: 10),
                 padding: const EdgeInsets.all(5),
                 child: GestureDetector(
                   onTap: (){

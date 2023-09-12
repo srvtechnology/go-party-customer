@@ -56,6 +56,7 @@ class _CartPageState extends State<CartPage> {
                   actions: [
                     Container(
                       width: 250,
+                      margin: const EdgeInsets.only(right: 10),
                       padding: const EdgeInsets.all(5),
                       child: GestureDetector(
                         onTap: (){
@@ -110,6 +111,7 @@ class _CartPageState extends State<CartPage> {
                 actions: [
                   Container(
                     width: 250,
+                    margin: const EdgeInsets.only(right: 10),
                     padding: const EdgeInsets.all(5),
                     child: GestureDetector(
                       onTap: (){

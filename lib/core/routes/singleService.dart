@@ -4,6 +4,7 @@ import 'package:customerapp/core/models/service.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/categoryProvider.dart';
 import 'package:customerapp/core/repo/cart.dart';
+import 'package:customerapp/core/routes/product.dart';
 import 'package:customerapp/core/routes/signin.dart';
 import 'package:customerapp/core/utils/logger.dart';
 import 'package:flutter/material.dart';
@@ -140,13 +141,43 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
       create: (_)=>CategoryProvider(),
       child: Consumer2<CategoryProvider,AuthProvider>(
         builder: (context,categories,auth,child) {
+          CustomLogger.debug(widget.service.images);
           return Scaffold(
-            appBar: AppBar(),
+            appBar: AppBar(
+              elevation: 1,
+              backgroundColor: Colors.white,
+              iconTheme: IconThemeData(color: Colors.grey),
+              centerTitle: false,
+              title: Image.asset("assets/images/logo/logo-resized.png",width: 120,),
+              actions: [
+                Container(
+                  width: 200,
+                  margin: const EdgeInsets.only(right: 10),
+                  padding: const EdgeInsets.all(5),
+                  child: GestureDetector(
+                    onTap: (){
+                      Navigator.pushNamed(context, ProductPageRoute.routeName);
+                    },
+                    child: TextFormField(
+                      enabled: false,
+                      decoration: InputDecoration(
+                          filled: true,
+                          fillColor: const Color(0xffe5e5e5),
+                          labelText: "Search ...",
+                          prefixIcon: const Icon(Icons.search),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          )
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
             floatingActionButton: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
                   onPressed: (){
                     if(auth.authState == AuthState.LoggedIn) {
                       addToCartDialog(context,categories);
@@ -170,31 +201,31 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    const SizedBox(
+                      height: 10,
+                    ),
                     Container(
                       height: 25.h,
                       alignment: Alignment.center,
                       child: Row(
                         children: [
                           Expanded(
-                            child: Hero(
-                              tag: "Product Image ${widget.service.id}",
-                              child: SingleChildScrollView(
-                                physics: const ClampingScrollPhysics(),
-                                scrollDirection: Axis.horizontal,
-                                child: Column(
-                                  children:widget.service.images.map((e)
-                                  => Container(
-                                    height: 25.h,
-                                    margin:const EdgeInsets.symmetric(horizontal: 20),
-                                    alignment: Alignment.center,
-                                    child: CachedNetworkImage(
-                                      fit: BoxFit.fitWidth,
-                                      imageUrl: e,
-                                      placeholder: (context,url)=>Container(alignment: Alignment.center,child: const CircularProgressIndicator(),),
-                                      errorWidget: (context,url,err)=>Container(alignment: Alignment.center,child: const Icon(Icons.error_outline),),
-                                    ),
-                                  )).toList()
-                                ),
+                            child: SingleChildScrollView(
+                              physics: const ClampingScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              child: Column(
+                                children:widget.service.images.map((e)
+                                => Container(
+                                  height: 25.h,
+                                  margin:const EdgeInsets.symmetric(horizontal: 20),
+                                  alignment: Alignment.center,
+                                  child: CachedNetworkImage(
+                                    fit: BoxFit.fitWidth,
+                                    imageUrl: e,
+                                    placeholder: (context,url)=>Container(alignment: Alignment.center,child: const CircularProgressIndicator(),),
+                                    errorWidget: (context,url,err)=>Container(alignment: Alignment.center,child: const Icon(Icons.error_outline),),
+                                  ),
+                                )).toList()
                               ),
                             ),
                           ),
