@@ -77,16 +77,38 @@ class _OrdersState extends State<Orders> {
             length: 2,
             child: Scaffold(
               appBar: AppBar(
-                title: const Text("Orders"),
+                elevation: 1,
+                backgroundColor: Colors.white,
                 automaticallyImplyLeading: false,
-                centerTitle: true,
+                centerTitle: false,
+                title: Image.asset("assets/images/logo/logo-resized.png",width: 120,),
                 actions: [
-                  IconButton(onPressed: (){
-                    Navigator.pushNamed(context, CartPage.routeName);
-                  }, icon: const Icon(Icons.add_shopping_cart)),
+                  Container(
+                    width: 250,
+                    padding: const EdgeInsets.all(5),
+                    child: GestureDetector(
+                      onTap: (){
+                        Navigator.pushNamed(context, ProductPageRoute.routeName);
+                      },
+                      child: TextFormField(
+                        enabled: false,
+                        decoration: InputDecoration(
+                            filled: true,
+                            fillColor: const Color(0xffe5e5e5),
+                            labelText: "Search ...",
+                            prefixIcon: const Icon(Icons.search),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            )
+                        ),
+                      ),
+                    ),
+                  )
                 ],
-                bottom: const TabBar(tabs: [
-                  Tab(icon: Text("Upcoming"),),
+                bottom:  TabBar(
+                    labelColor: Theme.of(context).primaryColorDark,
+                    tabs:const [
+                  Tab(icon: Text("Upcoming",),),
                   Tab(icon: Text("Delivered"),),
                 ]),
               ),
@@ -221,17 +243,27 @@ class _HomeState extends State<Home> {
                     centerTitle: false,
                     title: Image.asset("assets/images/logo/logo-resized.png",width: 120,),
                     actions: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5.0),
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                shape: const CircleBorder(),
-                                backgroundColor: Colors.white
+                      Container(
+                        width: 250,
+                        padding: const EdgeInsets.all(5),
+                        child: GestureDetector(
+                          onTap: (){
+                            Navigator.pushNamed(context, ProductPageRoute.routeName);
+                          },
+                          child: TextFormField(
+                            enabled: false,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: const Color(0xffe5e5e5),
+                              labelText: "Search ...",
+                              prefixIcon: const Icon(Icons.search),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              )
                             ),
-                            onPressed: (){
-                          Navigator.pushNamed(context, ProductPageRoute.routeName);
-                        }, child: Icon(Icons.search,color:Theme.of(context).primaryColorDark,)),
-                      ),
+                          ),
+                        ),
+                      )
                     ],
                   ),
                   body: SingleChildScrollView(
@@ -239,61 +271,98 @@ class _HomeState extends State<Home> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children:[
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-                          child: Text("",style: Theme.of(context).textTheme.labelLarge!.copyWith(fontSize: 20),),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          decoration: BoxDecoration(
+                              color: const Color(0xffE9EFF5),
+                              boxShadow: [
+                                BoxShadow(
+                                    offset:const Offset(0,1),
+                                    spreadRadius: 3,
+                                    blurRadius: 6,
+                                    color: Colors.grey[300]!
+                                )
+                              ]
+                          ),
+                          padding: const EdgeInsets.only(top: 10),
+                          margin: const EdgeInsets.only(bottom: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                                    child: Text("Our Events",style: Theme.of(context).textTheme.labelLarge!.copyWith(fontSize: 20),),
+                                  ),
+                                  TextButton(onPressed: (){
+                                    Navigator.pushNamed(context, ProductPageRoute.routeName);}, child: Text("View All",style: TextStyle(color: Theme.of(context).primaryColorDark,fontSize: 15),))
+                                ],
+                              ),
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                    children: state.data!.getRange(0, min(4,state.data!.length)).map((e) => CircularOrderCard(service: e,)).toList()
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                         Container(
                           padding: const EdgeInsets.symmetric(vertical: 5.0),
 
-                          child: CarouselSlider(
+                          child: Stack(
+                            children: [
+                              CarouselSlider(
+                                carouselController: _carouselController,
+                                options: CarouselOptions(
+                                  onPageChanged: (index,kwargs){
+                                    setState(() {
+                                      _currentCarouselIndex = index;
+                                    });
+                                  },
+                                  enableInfiniteScroll: true,
+                                  autoPlay: true,
+                                  autoPlayInterval: const Duration(seconds: 3),
+                                  autoPlayAnimationDuration:const Duration(milliseconds: 800),
+                                  autoPlayCurve: Curves.fastOutSlowIn,
+                                  enlargeFactor: 0,
+                                  viewportFraction: 1
+                                ),
+                                items: [
+                                  "https://mobirise.com/extensions/commercem4/assets/images/gallery00.jpg",
+                                  "https://mobirise.com/extensions/commercem4/assets/images/gallery04.jpg",
+                                  "https://mobirise.com/extensions/commercem4/assets/images/gallery07.jpg"
+                                ].map((e) => Container(
+                                  width: double.infinity,
+                                  child: Image.network(e,fit: BoxFit.fitWidth,),
+                                )).toList(),
+                              ),
+                              Positioned.fill(
+                                top: 180,
+                                child: Container(
+                                  margin: const EdgeInsets.symmetric(vertical: 20),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children:[0,1,2].map((e) => Container(
+                                      margin: const EdgeInsets.symmetric(horizontal: 10),
 
-                            carouselController: _carouselController,
-                            options: CarouselOptions(
-                              onPageChanged: (index,kwargs){
-                                setState(() {
-                                  _currentCarouselIndex = index;
-                                });
-                              },
-                              enableInfiniteScroll: true,
-                              autoPlay: true,
-                              autoPlayInterval: const Duration(seconds: 3),
-                              autoPlayAnimationDuration:const Duration(milliseconds: 800),
-                              autoPlayCurve: Curves.fastOutSlowIn,
-                              enlargeCenterPage: true,
-                            ),
-                            items: [
-                              "https://mobirise.com/extensions/commercem4/assets/images/gallery00.jpg",
-                              "https://mobirise.com/extensions/commercem4/assets/images/gallery04.jpg",
-                              "https://mobirise.com/extensions/commercem4/assets/images/gallery07.jpg"
-                            ].map((e) => Container(
-                              alignment: Alignment.center,
-                              child: Image.network(e,fit: BoxFit.fitWidth,),
-                            )).toList(),
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.symmetric(vertical: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children:[0,1,2].map((e) => Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 10),
-                              height: 8,width: 8,decoration: BoxDecoration(shape: BoxShape.circle,color:_currentCarouselIndex==e?Colors.black:Colors.grey),
-                            )).toList(),
+                                      height: 8,width: 8,decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.black,width: 0.5),
+                                        shape: BoxShape.circle,color:_currentCarouselIndex==e?Theme.of(context).primaryColorDark:Colors.white),
+                                    )).toList(),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         Container(
                           alignment: Alignment.centerLeft,
-                          decoration: BoxDecoration(
-                            color: const Color(0xffE9EFF5),
-                            boxShadow: [
-                              BoxShadow(
-                                offset:const Offset(0,1),
-                                spreadRadius: 3,
-                                blurRadius: 6,
-                                color: Colors.grey[300]!
-                              )
-                            ]
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+
                           ),
                           padding: const EdgeInsets.only(top: 10),
                           child: Column(
@@ -301,7 +370,7 @@ class _HomeState extends State<Home> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
-                                child: Text("Our Top Services",style: Theme.of(context).textTheme.labelLarge!.copyWith(fontSize: 20),),
+                                child: Text("Top Services",style: Theme.of(context).textTheme.labelLarge!.copyWith(fontSize: 20),),
                               ),
                               SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
@@ -312,6 +381,38 @@ class _HomeState extends State<Home> {
                             ],
                           ),
                         ),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 30),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text("Packages",style: Theme.of(context).textTheme.labelLarge!.copyWith(fontSize: 20),),
+                                    TextButton(onPressed: (){
+                                      Navigator.pushNamed(context, ProductPageRoute.routeName);
+                                    }, child: Text("View All",style: TextStyle(color: Theme.of(context).primaryColorDark,fontSize: 15),))
+                                  ],
+                                ),
+                              ),
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: state.data!.getRange(4, min(7,state.data!.length)).map((e) => OrderCard(service: e,
+                                    onTap: (){
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>SingleServiceRoute(service: e)));
+                                  },
+                                  )).toList()
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
                         Container(
                           alignment: Alignment.centerLeft,
                           child: Column(
@@ -402,13 +503,33 @@ class _ProfileState extends State<Profile> {
         if(state.authState != AuthState.LoggedIn){
           return Scaffold(
             appBar: AppBar(
-              title: const Text("Profile"),
-              centerTitle: true,
+              elevation: 1,
+              backgroundColor: Colors.white,
               automaticallyImplyLeading: false,
+              centerTitle: false,
+              title: Image.asset("assets/images/logo/logo-resized.png",width: 120,),
               actions: [
-                IconButton(onPressed: (){
-                  Navigator.pushNamed(context, ProductPageRoute.routeName);
-                }, icon: const Icon(Icons.search)),
+                Container(
+                  width: 250,
+                  padding: const EdgeInsets.all(5),
+                  child: GestureDetector(
+                    onTap: (){
+                      Navigator.pushNamed(context, ProductPageRoute.routeName);
+                    },
+                    child: TextFormField(
+                      enabled: false,
+                      decoration: InputDecoration(
+                          filled: true,
+                          fillColor: const Color(0xffe5e5e5),
+                          labelText: "Search ...",
+                          prefixIcon: const Icon(Icons.search),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          )
+                      ),
+                    ),
+                  ),
+                )
               ],
             ),
             body: Column(
@@ -435,13 +556,33 @@ class _ProfileState extends State<Profile> {
         }
         return Scaffold(
           appBar: AppBar(
-            title: const Text("Profile"),
-            centerTitle: true,
+            elevation: 1,
+            backgroundColor: Colors.white,
             automaticallyImplyLeading: false,
+            centerTitle: false,
+            title: Image.asset("assets/images/logo/logo-resized.png",width: 120,),
             actions: [
-              IconButton(onPressed: (){
-                Navigator.pushNamed(context, ProductPageRoute.routeName);
-              }, icon: const Icon(Icons.search)),
+              Container(
+                width: 250,
+                padding: const EdgeInsets.all(5),
+                child: GestureDetector(
+                  onTap: (){
+                    Navigator.pushNamed(context, ProductPageRoute.routeName);
+                  },
+                  child: TextFormField(
+                    enabled: false,
+                    decoration: InputDecoration(
+                        filled: true,
+                        fillColor: const Color(0xffe5e5e5),
+                        labelText: "Search ...",
+                        prefixIcon: const Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        )
+                    ),
+                  ),
+                ),
+              )
             ],
           ),
           body: SingleChildScrollView(

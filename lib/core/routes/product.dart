@@ -95,6 +95,7 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
           Expanded(
             flex: 10,
             child: TextFormField(
+              autofocus: true,
               controller: controller,
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.only(bottom: 10,right: 5),

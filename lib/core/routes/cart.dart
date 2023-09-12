@@ -6,6 +6,7 @@ import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/cartProvider.dart';
 import 'package:customerapp/core/repo/cart.dart';
 import 'package:customerapp/core/routes/checkoutPage.dart';
+import 'package:customerapp/core/routes/product.dart';
 import 'package:customerapp/core/routes/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -46,7 +47,36 @@ class _CartPageState extends State<CartPage> {
         builder: (context,cart,auth,child){
           if(auth.authState!= AuthState.LoggedIn){
             return Scaffold(
-                appBar: AppBar(),
+                appBar: AppBar(
+                  elevation: 1,
+                  backgroundColor: Colors.white,
+                  automaticallyImplyLeading: false,
+                  centerTitle: false,
+                  title: Image.asset("assets/images/logo/logo-resized.png",width: 120,),
+                  actions: [
+                    Container(
+                      width: 250,
+                      padding: const EdgeInsets.all(5),
+                      child: GestureDetector(
+                        onTap: (){
+                          Navigator.pushNamed(context, ProductPageRoute.routeName);
+                        },
+                        child: TextFormField(
+                          enabled: false,
+                          decoration: InputDecoration(
+                              filled: true,
+                              fillColor: const Color(0xffe5e5e5),
+                              labelText: "Search ...",
+                              prefixIcon: const Icon(Icons.search),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              )
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
                 body: Container(
                     alignment: Alignment.center,
                     padding: const EdgeInsets.all(50),
@@ -71,7 +101,36 @@ class _CartPageState extends State<CartPage> {
           }
           if(cart.data.isEmpty){
             return Scaffold(
-              appBar: AppBar(),
+              appBar: AppBar(
+                elevation: 1,
+                backgroundColor: Colors.white,
+                automaticallyImplyLeading: false,
+                centerTitle: false,
+                title: Image.asset("assets/images/logo/logo-resized.png",width: 120,),
+                actions: [
+                  Container(
+                    width: 250,
+                    padding: const EdgeInsets.all(5),
+                    child: GestureDetector(
+                      onTap: (){
+                        Navigator.pushNamed(context, ProductPageRoute.routeName);
+                      },
+                      child: TextFormField(
+                        enabled: false,
+                        decoration: InputDecoration(
+                            filled: true,
+                            fillColor: const Color(0xffe5e5e5),
+                            labelText: "Search ...",
+                            prefixIcon: const Icon(Icons.search),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            )
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
                 body: Container(
                     alignment: Alignment.center,
                     padding: const EdgeInsets.all(50),
@@ -86,7 +145,34 @@ class _CartPageState extends State<CartPage> {
           }
           return Scaffold(
               appBar: AppBar(
-                title: const Text('Cart'),
+                elevation: 1,
+                backgroundColor: Colors.white,
+                automaticallyImplyLeading: false,
+                centerTitle: false,
+                title: Image.asset("assets/images/logo/logo-resized.png",width: 120,),
+                actions: [
+                  Container(
+                    width: 250,
+                    padding: const EdgeInsets.all(5),
+                    child: GestureDetector(
+                      onTap: (){
+                        Navigator.pushNamed(context, ProductPageRoute.routeName);
+                      },
+                      child: TextFormField(
+                        enabled: false,
+                        decoration: InputDecoration(
+                            filled: true,
+                            fillColor: const Color(0xffe5e5e5),
+                            labelText: "Search ...",
+                            prefixIcon: const Icon(Icons.search),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            )
+                        ),
+                      ),
+                    ),
+                  )
+                ],
               ),
               bottomNavigationBar: Padding(
                 padding: const EdgeInsets.all(20.0),
