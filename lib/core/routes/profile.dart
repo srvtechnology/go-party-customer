@@ -1,7 +1,201 @@
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/repo/customer.dart';
+import 'package:customerapp/core/routes/product.dart';
+import 'package:customerapp/core/routes/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
+
+import 'addressPage.dart';
+
+class Profile extends StatefulWidget {
+  const Profile({Key? key}) : super(key: key);
+
+  @override
+  State<Profile> createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<AuthProvider>(
+        builder: (context,state,child) {
+          if(state.authState != AuthState.LoggedIn){
+            return Scaffold(
+              appBar: AppBar(
+                elevation: 1,
+                backgroundColor: Colors.white,
+                automaticallyImplyLeading: false,
+                centerTitle: false,
+                title: Image.asset("assets/images/logo/logo-resized.png",width: 120,),
+                actions: [
+                  Container(
+                    width: 250,
+                    margin: const EdgeInsets.only(right: 10),
+                    padding: const EdgeInsets.all(5),
+                    child: GestureDetector(
+                      onTap: (){
+                        Navigator.pushNamed(context, ProductPageRoute.routeName);
+                      },
+                      child: TextFormField(
+                        enabled: false,
+                        decoration: InputDecoration(
+                            filled: true,
+                            fillColor: const Color(0xffe5e5e5),
+                            labelText: "Search ...",
+                            prefixIcon: const Icon(Icons.search),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            )
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              body: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(20.0),
+                    child: const Center(
+                      child: CircleAvatar(
+                        radius: 50.0,
+                        child: Icon(Icons.person),
+                      ),
+                    ),
+                  ),
+                  const Text("Please Sign in to view"),
+                  SizedBox(height: 5.h,),
+                  ElevatedButton(onPressed: (){
+                    Navigator.pushNamed(context, SignInPageRoute.routeName);
+                  }, child: const Text("Sign in / Sign up"))
+                ],
+              ),
+            );
+          }
+          return Scaffold(
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Colors.white,
+              automaticallyImplyLeading: false,
+              centerTitle: false,
+              title: Image.asset("assets/images/logo/logo-resized.png",width: 120,),
+              actions: [
+                Container(
+                  width: 250,
+                  margin: const EdgeInsets.only(right: 10),
+                  padding: const EdgeInsets.all(5),
+                  child: GestureDetector(
+                    onTap: (){
+                      Navigator.pushNamed(context, ProductPageRoute.routeName);
+                    },
+                    child: TextFormField(
+                      enabled: false,
+                      decoration: InputDecoration(
+                          filled: true,
+                          fillColor: const Color(0xffe5e5e5),
+                          labelText: "Search ...",
+                          prefixIcon: const Icon(Icons.search),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          )
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+            body: Column(
+              children: [
+                Container(
+                  color: Colors.white,
+                  padding: const EdgeInsets.all(20.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      CircleAvatar(
+                        radius:15,
+                        backgroundColor:Theme.of(context).primaryColorLight,
+                        child: Icon(Icons.person,color: Theme.of(context).primaryColorDark,size: 10,),
+                      ),
+                      const SizedBox(width: 10,),
+                      Text("Hello, ${state.user!.name}",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 20,color: Theme.of(context).primaryColor),),
+                    ],
+                  )
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                    child: GridView(
+                      gridDelegate:
+                    const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 30,
+                      childAspectRatio: 3.5
+
+                    ),
+                    children: [
+                      _roundedButton(
+                        title: 'Edit Profile',
+                        onTap: () {
+                          Navigator.pushNamed(context, EditProfilePage.routeName);
+                        },
+                      ),
+                      _roundedButton(
+                        title: 'Manage Addresses',
+                        onTap: () {
+                          Navigator.pushNamed(context, AddressPage.routeName);
+                        },
+                      ),
+                      _roundedButton(
+                        title: 'Feedback',
+                        onTap: () {
+                          Navigator.pushNamed(context, FeedbackPage.routeName);
+                        },
+                      ),
+                      _roundedButton(
+                        title: 'Contact',
+                        onTap: () {
+                        },
+                      ),
+                      _roundedButton(
+                        title: 'Logout',
+                        onTap: () {
+                          state.logout();
+                        },
+                      ),
+                    ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+          );
+        }
+    );
+  }
+  Widget _roundedButton({required String title,required Function onTap}){
+    return GestureDetector(
+      onTap: (){
+        onTap();
+      },
+      child: Container(
+        height: 10,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(color: Theme.of(context).primaryColorDark,
+              width: 0.5),
+        ),
+        child: Text(title,style: TextStyle(color: Theme.of(context).primaryColorDark),),
+      ),
+    );
+  }
+}
 
 class EditProfilePage extends StatefulWidget {
   static const String routeName = '/edit_profile'; // Add route name
