@@ -65,6 +65,7 @@ Future<void> changeCartItemQuantity(AuthProvider auth,String quantity,String ite
     );
     CustomLogger.debug(response.data);
   }catch(e){
+
     CustomLogger.error(e);
     rethrow;
   }

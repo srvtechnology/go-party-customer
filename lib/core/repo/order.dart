@@ -6,11 +6,12 @@ import 'package:dio/dio.dart';
 import '../models/orders.dart';
 import '../utils/dio.dart';
 
-Future<void> placeOrder(AuthProvider auth,String paymentMethod,String addressId,String currentCity)async{
+Future<void> placeOrder(AuthProvider auth,String paymentMethod,String paymentType,String addressId,String currentCity)async{
   try{
     Response response = await customDioClient.client.post("${APIConfig.baseUrl}/api/customer/payment",
     data: {
       "payment_method":paymentMethod,
+      "payment_type":paymentType,
       "address_id":addressId,
       "current_city":currentCity
     },

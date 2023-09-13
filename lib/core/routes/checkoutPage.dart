@@ -1,5 +1,6 @@
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:csc_picker/csc_picker.dart';
+import 'package:customerapp/core/components/divider.dart';
 import 'package:customerapp/core/components/errors.dart';
 import 'package:customerapp/core/components/loading.dart';
 import 'package:customerapp/core/models/address.dart';
@@ -85,67 +86,78 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 appBar: AppBar(
                   title: const Text("Checkout"),
                 ),
-                bottomNavigationBar: Padding(
-                  padding: const EdgeInsets.only(right: 20,left: 20,bottom: 20),
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
-                      onPressed: (){
-                        if(_formKey.currentState!.validate()){
-                          submit(context.read<AuthProvider>(),data,addressState);
-                        }
-                      }, child: const Text("Proceed"))
-                ),
                 body: Form(
                   key: _formKey,
-                  child: Container(
-                    padding: const EdgeInsets.all(30),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Container(
+                          color: Theme.of(context).primaryColorLight,
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          child:Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Column(
+                                children: const [
+                                  CircleAvatar(radius: 10,child: Icon(Icons.check,size: 10,),),
+                                  SizedBox(height: 5,),
+                                  Text("Cart",style: TextStyle(fontSize: 12),)
+                                ],
+                              ),
+                              Column(
+                                children: const [
+                                  CircleAvatar(radius: 10,child: Icon(Icons.circle,size: 10,),),
+                                  SizedBox(height: 5,),
+                                  Text("Select Address",style: TextStyle(fontSize: 12),)
+                                ],
+                              ),
+                              Column(
+                                children: const [
+                                  CircleAvatar(radius: 10,backgroundColor: Colors.grey,),
+                                  SizedBox(height: 5,),
+                                  Text("Payment",style: TextStyle(fontSize: 12),)
+                                ],
+                              ),
+                              Column(
+                                children: const [
+                                  CircleAvatar(radius: 10,backgroundColor: Colors.grey,),
+                                  SizedBox(height: 5,),
+                                  Text("Order Placed",style: TextStyle(fontSize: 12),)
+                                ],
+                              ),
 
-                          if(addressState.data.isNotEmpty)
-                          Row(
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 10,),
+                        if(addressState.data.isNotEmpty)
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 30,vertical: 5),
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               const SizedBox(width: 5,),
-                              Text("Address Details",style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w600),)
+                              Text("Select a delivery Address",style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w600),)
                             ],
                           ),
-                          const SizedBox(height: 20,),
-                          if(addressState.data.isNotEmpty)
-                            Column(
-                              children: addressState.data.mapIndexed((index,e) => Row(
-                                children: [
-                                  Expanded(child: Column(
-                                    mainAxisAlignment:MainAxisAlignment.start,
-                                    children: [
-                                      Radio(value: index, groupValue: _selectedAddressIndex,
-                                          onChanged: (index){
-                                            setState(() {
-                                              _selectedAddressIndex = index!;
-                                              _selectedAddress = e;
-                                              otherAddress = false;
-                                            });
-                                          }),
-                                      Text("")
-                                    ],
-                                  )),
-                                  Expanded(flex:5,child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      const SizedBox(height: 10,),
-                                      Text(e.billingName,style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
-                                      Text(e.addressType,style: const TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
-                                      Text("${e.houseNumber}, ${e.landmark}, ${e.area}, ${e.state}"),
-                                      const SizedBox(height: 10,),
-                                    ],
-                                  ))
-                                ],
-                              )).toList(),
+                        ),
+                        const SizedBox(height: 20,),
+                        if(addressState.data.isNotEmpty)
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.grey[200]
                             ),
-                          const SizedBox(height: 20,),
-                          if(otherAddress)
-                          Column(
+                            padding: const EdgeInsets.symmetric(horizontal: 40,vertical: 10),
+                            child: Column(
+                              children: addressState.data.mapIndexed((index,e) => _addressTile(index, e,data,addressState)).toList(),
+                            ),
+                          ),
+                        const SizedBox(height: 20,),
+                        if(otherAddress)
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 30),
+                          child: Column(
                             children: [
                               const SizedBox(height: 20,),
                               if(addressState.data.isNotEmpty)
@@ -334,13 +346,20 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                   }),
                                 ],
                               ),
-
+                              ElevatedButton(
+                                  style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                                  onPressed: (){
+                                    if(_formKey.currentState!.validate()){
+                                      submit(context.read<AuthProvider>(),data,addressState);
+                                    }
+                                  }, child: const Text("Deliver to this Address")),
+                              const SizedBox(height: 100,)
                             ],
                           ),
-                        ],
-                      ),
-
+                        ),
+                      ],
                     ),
+
                   ),
                 ),
               );
@@ -383,6 +402,50 @@ class _CheckoutPageState extends State<CheckoutPage> {
           );
         });
   }
+  
+  Widget _addressTile(int index,AddressModel e,List<Country> data,AddressProvider addressState,){
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(child: Column(
+              mainAxisAlignment:MainAxisAlignment.start,
+              children: [
+                Radio(value: index, groupValue: _selectedAddressIndex,
+                    onChanged: (index){
+                      setState(() {
+                        _selectedAddressIndex = index!;
+                        _selectedAddress = e;
+                        otherAddress = false;
+                      });
+                    }),
+              ],
+            )),
+            Expanded(flex:5,child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 10,),
+                Text(e.billingName,style: TextStyle(fontSize: 16,color: Theme.of(context).primaryColor),),
+                Text(e.addressType,style: const TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
+                Text("${e.houseNumber}, ${e.landmark}, ${e.area}, ${e.state}"),
+                const SizedBox(height: 10,),
+              ],
+            ))
+          ],
+        ),
+        if(_selectedAddress == e)
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+              onPressed: (){
+                if(_formKey.currentState!.validate()){
+                  submit(context.read<AuthProvider>(),data,addressState);
+                }
+              }, child: const Text("Deliver to this Address")),
+        const DashedDivider(),
+      ],
+    );
+  }
+  
   Future<void> submit(AuthProvider auth,List<Country> countries,AddressProvider addressState)async{
     try{
       if(_selectedAddress!=null){
