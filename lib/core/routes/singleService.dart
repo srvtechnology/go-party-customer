@@ -48,7 +48,14 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
       controller: controller,
       decoration: InputDecoration(
         hintText: hintText,
-        border: const OutlineInputBorder()
+        border: OutlineInputBorder(
+          borderSide: BorderSide(width: 0.5,color: Theme.of(context).primaryColor),
+          borderRadius: BorderRadius.circular(10),
+        ),
+          enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(width: 0.5,color: Theme.of(context).primaryColor),
+          borderRadius: BorderRadius.circular(10),
+        )
       ),
       validator: (text){
         if(text==null || text.isEmpty){
@@ -65,8 +72,10 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
     );
   }
   void addToCartDialog(BuildContext context,CategoryProvider categories){
-    showDialog(context: context, builder: (context){
-      return Dialog(
+    showModalBottomSheet(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        context: context, builder: (context){
+      return Container(
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
@@ -76,6 +85,8 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
               child: Column(
                 children: [
                   CustomDropdown.search(
+                    borderSide: BorderSide(width: 0.5,color: Theme.of(context).primaryColor),
+                    borderRadius: BorderRadius.circular(10),
                     hintText: "Select Occasion",
                     controller: _categoryName,
                     items: categories.data.map((e) => e.name).toList(),
@@ -93,9 +104,16 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                         return "Required";
                       }
                     },
-                    decoration: const InputDecoration(
-                      border:OutlineInputBorder(),
-                      hintText: "Select Quantity"
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(width: 0.5,color: Theme.of(context).primaryColor),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 0.5,color: Theme.of(context).primaryColor),
+                          borderRadius: BorderRadius.circular(10),
+                        )
+                        ,hintText: "Select Quantity"
                     ),
                   ),
                   const SizedBox(height: 20,),
@@ -108,13 +126,23 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                         return "Required";
                       }
                     },
-                    decoration: const InputDecoration(
-                      border:OutlineInputBorder(),
-                      hintText: "Select Days"
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(width: 0.5,color: Theme.of(context).primaryColor),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 0.5,color: Theme.of(context).primaryColor),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        hintText: "Select Days"
                     ),
                   ),
                   const SizedBox(height: 20,),
-                  CustomDropdown(items: const ["Full Day","Morning","Night"], controller: _duration),
+                  CustomDropdown(
+                      borderSide: BorderSide(width: 0.5,color: Theme.of(context).primaryColor),
+                      borderRadius: BorderRadius.circular(10),
+                      items: const ["Full Day","Morning","Night"], controller: _duration),
                   const SizedBox(height: 20,),
                   ElevatedButton(onPressed: ()async{
                   if(_formKey.currentState!.validate()){
@@ -132,7 +160,8 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                    if(context.mounted)ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Successfully added to cart")));
                     if(context.mounted)Navigator.pop(context);
                   }
-                }, child: const Text("Proceed"))
+                }, child: const Text("Proceed")),
+                  const SizedBox(height: 40,),
                 ],
               ),
             ),
@@ -267,7 +296,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                             ],
                           ),
                           const DashedDivider(),
-                           Row(
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text("Original Price:",style: TextStyle(fontSize: 16),),
@@ -278,8 +307,8 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text("Original Price:",style: TextStyle(fontSize: 16),),
-                              Text("\u20B9 ${widget.service.price}",style: const TextStyle(decoration: TextDecoration.lineThrough),)
+                              const Text("Unit:",style: TextStyle(fontSize: 16),),
+                              Text(widget.service.priceBasis,)
                             ],
                           ),
                         ],

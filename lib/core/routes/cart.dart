@@ -8,10 +8,12 @@ import 'package:customerapp/core/repo/cart.dart';
 import 'package:customerapp/core/routes/checkoutPage.dart';
 import 'package:customerapp/core/routes/product.dart';
 import 'package:customerapp/core/routes/signin.dart';
+import 'package:customerapp/core/routes/singleService.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
+import '../components/divider.dart';
 import '../components/loading.dart';
 
 class CartPage extends StatefulWidget {
@@ -39,6 +41,13 @@ class CartItem {
 
 class _CartPageState extends State<CartPage> {
   Map changedQuantity = {};
+  double total=0;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListenableProvider(
@@ -145,60 +154,98 @@ class _CartPageState extends State<CartPage> {
                     ))
             );
           }
-          return Scaffold(
-              appBar: AppBar(
-                elevation: 1,
-                backgroundColor: Colors.white,
-                automaticallyImplyLeading: false,
-                centerTitle: false,
-                title: Image.asset("assets/images/logo/logo-resized.png",width: 120,),
-                actions: [
-                  Container(
-                    width: 250,
-                    padding: const EdgeInsets.all(5),
-                    child: GestureDetector(
-                      onTap: (){
-                        Navigator.pushNamed(context, ProductPageRoute.routeName);
-                      },
-                      child: TextFormField(
-                        enabled: false,
-                        decoration: InputDecoration(
-                            filled: true,
-                            fillColor: const Color(0xffe5e5e5),
-                            labelText: "Search ...",
-                            prefixIcon: const Icon(Icons.search),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            )
+          return GestureDetector(
+            onTap: (){
+              FocusManager.instance.primaryFocus!.unfocus();
+            },
+            child: Scaffold(
+                appBar: AppBar(
+                  elevation: 1,
+                  backgroundColor: Colors.white,
+                  automaticallyImplyLeading: false,
+                  centerTitle: false,
+                  title: Image.asset("assets/images/logo/logo-resized.png",width: 120,),
+                  actions: [
+                    Container(
+                      width: 250,
+                      padding: const EdgeInsets.all(5),
+                      child: GestureDetector(
+                        onTap: (){
+                          Navigator.pushNamed(context, ProductPageRoute.routeName);
+                        },
+                        child: TextFormField(
+                          enabled: false,
+                          decoration: InputDecoration(
+                              filled: true,
+                              fillColor: const Color(0xffe5e5e5),
+                              labelText: "Search ...",
+                              prefixIcon: const Icon(Icons.search),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              )
+                          ),
                         ),
                       ),
-                    ),
-                  )
-                ],
-              ),
-              bottomNavigationBar: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent
-                  ),
-                  onPressed: ()async{
-                    await _handleQuantityChanged(auth);
-                    if(context.mounted)Navigator.push(context, MaterialPageRoute(builder: (context)=>CheckoutPage(serviceIds: cart.serviceIds,cartItems: cart.data,)));
-                  },
-                  child: const Text("Checkout"),
-                ),
-              ),
-              body: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    const SizedBox(height: 20,),
-                    Column(
-                      children: cart.data.map((e) => _cartTile(cart,e,auth)).toList()
-                    ),
+                    )
                   ],
                 ),
-              )
+                body: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 20,),
+                      Container(
+                        width: double.infinity,
+                        margin: const EdgeInsets.all(10),
+                        padding:const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                  offset:  const Offset(1, 1),
+                                  spreadRadius: 1,
+                                  color: Colors.grey[300]!
+                              ),
+                              BoxShadow(
+                                  offset: const Offset(-1, -1),
+                                  spreadRadius: 1,
+                                  color: Colors.grey[300]!
+                              ),
+                            ]
+                        ),
+                        height: 120,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Subtotal: \u20B9 ${cart.totalPrice}",style: const TextStyle(fontSize: 16),),
+                            const SizedBox(height: 10,),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.green
+                                    ),
+                                    onPressed: ()async{
+                                      await _handleQuantityChanged(auth);
+                                      if(context.mounted)Navigator.push(context, MaterialPageRoute(builder: (context)=>CheckoutPage(serviceIds: cart.serviceIds,cartItems: cart.data,)));
+                                    },
+                                    child: Text("Proceed to buy (${cart.data.length} items)"),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const DashedDivider(),
+                      Column(
+                        children: cart.data.map((e) => _cartTile(cart,e,auth)).toList()
+                      ),
+                    ],
+                  ),
+                )
+            ),
           );
         },
       )
@@ -211,117 +258,273 @@ class _CartPageState extends State<CartPage> {
   }
   Widget _cartTile(CartProvider state,CartModel item,AuthProvider auth){
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      margin: const EdgeInsets.all(10),
+      margin: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              offset:  const Offset(1, 1),
-              spreadRadius: 1,
-              color: Colors.grey[300]!
-            ),
-            BoxShadow(
-              offset: const Offset(-1, -1),
-              spreadRadius: 1,
-                color: Colors.grey[300]!
-            ),
-          ]
       ),
       height: 40.h,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  height: 20.h,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: CachedNetworkImageProvider(
-                        item.service.images[0],
-                      ),
-                      fit: BoxFit.fitWidth,
-                    )
+        child: Column(
+          children: [
+            Expanded(
+              child: Row(
+              children: [
+                Expanded(child: Container(
+                  alignment: Alignment.topCenter,
+                  margin: const EdgeInsets.all(20),
+                  child: Container(
+                    height: 150,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        image: DecorationImage(
+                        image: NetworkImage(item.service.images.first),
+                        fit: BoxFit.fill
+                      )
+                    ),
+                  ),
+                ),),
+                Expanded(
+                  child: Container(
+                    height: double.infinity,
+                    margin: const EdgeInsets.symmetric(vertical: 20,horizontal: 5),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(item.service.name,style: const TextStyle(fontSize: 18,fontWeight: FontWeight.w600),),
+                        Container(
+                          margin: const EdgeInsets.only(right: 10),
+                          child: Text(item.service.description.substring(0,min(30, item.service.description.length)),style: const TextStyle(fontSize: 12),),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 10),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text("₹ ${item.service.price}",style: TextStyle(color: Theme.of(context).primaryColor,fontSize: 16),),
+
+                              Text("  ${item.service.priceBasis}",style:const TextStyle(fontSize: 12),)
+                            ],
+                          ),
+                        ),
+                        Container(
+                          color: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          margin: const EdgeInsets.only(right: 10,top: 10),
+                          alignment: Alignment.centerLeft,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text("Discount Price:",style: TextStyle(fontSize: 12,)),
+                                  Text("\u20B9 ${item.service.discountedPrice}",style: TextStyle(color: Theme.of(context).primaryColor)),
+                                ],
+                              ),
+                              const DashedDivider(),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text("Original Price:",style: TextStyle(fontSize: 12,),),
+                                  Text("\u20B9 ${item.service.price}",style: const TextStyle(decoration: TextDecoration.lineThrough),)
+                                ],
+                              ),
+                              const DashedDivider(),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text("Unit:",style: TextStyle(fontSize: 12),),
+                                  Text(item.service.priceBasis,style: const TextStyle(decoration: TextDecoration.lineThrough),)
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(right: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Text("Quantity",style: TextStyle(fontSize: 12),),
+                              const SizedBox(width: 20,),
+                              Container(
+                                width: 50,
+                                height: 30,
+                                child: TextFormField(
+                                  keyboardType: const TextInputType.numberWithOptions(signed: false,decimal: false),
+                                  textAlign: TextAlign.center,
+                                  textAlignVertical: TextAlignVertical.center,
+                                  initialValue: item.quantity,
+                                  decoration:const InputDecoration(
+                                    contentPadding: EdgeInsets.all(0),
+                                    enabledBorder: OutlineInputBorder(
+
+                                    ),
+                                    border: OutlineInputBorder(
+
+                                    )
+                                  ),
+                                  onChanged: (text){
+                                    if(text.isNotEmpty){
+                                      setState(() {
+                                        item.quantity = text;
+                                        item.totalPrice=(double.parse(text) * double.parse(item.price)).toString();
+                                        changedQuantity[item.id]=text;
+                                        state.calculateTotal();
+                                      });
+                                    }
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(right: 10,top: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Text("Total",style: TextStyle(fontSize: 12),),
+                              const SizedBox(width: 20,),
+                              Text("\u20B9 ${item.totalPrice}",style: const TextStyle(fontSize: 12),),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 10),
+                          child:Row(
+                            children: [
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  shadowColor: Colors.grey,
+                                  elevation: 2.5,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
+                                ),
+                                onPressed: ()async{
+                                  await removeFromCart(context.read<AuthProvider>(), item.id);
+                                  state.getCart(auth);
+
+                                }, child: const Text("Delete",style: TextStyle(color: Colors.black),),),
+                              const SizedBox(width: 20,),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
+                                ),
+                                onPressed: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>SingleServiceRoute(service: item.service,)));
+
+                                }, child: const Text("View",),)
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          Text(item.service.name,style: Theme.of(context).textTheme.titleLarge,),
-          Text("${item.service.description.substring(0,min(item.service.description.length, 45))} ..",),
-          const SizedBox(height: 20,),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Container(
-                height: 40,
-                width: 80,
-                padding: const EdgeInsets.all(10),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.grey[300]
-                ),
-                child: FittedBox(child: Text("₹ ${item.price}")),
-              ),
-              const Text("X"),
-              Container(
-                height: 40,
-                width: 80,
-                padding: const EdgeInsets.all(10),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.grey[300]
-                ),
-                child: TextFormField(
-                  keyboardType: const TextInputType.numberWithOptions(signed: false,decimal: false),
-                  textAlign: TextAlign.center,
-                  textAlignVertical: TextAlignVertical.center,
-                  initialValue: item.quantity,
-                  onChanged: (text){
-                    if(text.isNotEmpty){
-                      setState(() {
-                        item.quantity = text;
-                        item.totalPrice=(double.parse(text) * double.parse(item.price)).toString();
-                        changedQuantity[item.id]=text;
-                      });
-                    }
-                  },
-                  decoration: const InputDecoration(
-                    border: InputBorder.none
-                  ),
-                ),
-              ),
-              const Text(" = "),
-              Container(
-                height: 40,
-                width: 80,
-                padding: const EdgeInsets.all(10),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.grey[300]
-                ),
-                child: FittedBox(child: Text("₹ ${item.totalPrice}")),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10,),
-          Center(
-            child: ElevatedButton(
-              onPressed: ()async{
-                await removeFromCart(context.read<AuthProvider>(), item.id);
-                state.getCategories(auth);
-            },child: const Text("Remove"),),
-          )
-        ],
+              ],
       ),
+            ),
+            const DashedDivider(),
+          ],
+        )
     );
   }
 }
+
+
+//
+// Column(
+// crossAxisAlignment: CrossAxisAlignment.start,
+// mainAxisAlignment: MainAxisAlignment.start,
+// children: [
+// Row(
+// children: [
+// Expanded(
+// child: Container(
+// height: 20.h,
+// alignment: Alignment.center,
+// decoration: BoxDecoration(
+// image: DecorationImage(
+// image: CachedNetworkImageProvider(
+// item.service.images[0],
+// ),
+// fit: BoxFit.fitWidth,
+// )
+// ),
+// ),
+// ),
+// ],
+// ),
+// Text(item.service.name,style: Theme.of(context).textTheme.titleLarge,),
+// Text("${item.service.description.substring(0,min(item.service.description.length, 45))} ..",),
+// const SizedBox(height: 20,),
+// Row(
+// mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+// children: [
+// Container(
+// height: 40,
+// width: 80,
+// padding: const EdgeInsets.all(10),
+// alignment: Alignment.center,
+// decoration: BoxDecoration(
+// borderRadius: BorderRadius.circular(10),
+// color: Colors.grey[300]
+// ),
+// child: FittedBox(child: Text("₹ ${item.price}")),
+// ),
+// const Text("X"),
+// Container(
+// height: 40,
+// width: 80,
+// padding: const EdgeInsets.all(10),
+// alignment: Alignment.center,
+// decoration: BoxDecoration(
+// borderRadius: BorderRadius.circular(10),
+// color: Colors.grey[300]
+// ),
+// child: TextFormField(
+// keyboardType: const TextInputType.numberWithOptions(signed: false,decimal: false),
+// textAlign: TextAlign.center,
+// textAlignVertical: TextAlignVertical.center,
+// initialValue: item.quantity,
+// onChanged: (text){
+// if(text.isNotEmpty){
+// setState(() {
+// item.quantity = text;
+// item.totalPrice=(double.parse(text) * double.parse(item.price)).toString();
+// changedQuantity[item.id]=text;
+// });
+// }
+// },
+// decoration: const InputDecoration(
+// border: InputBorder.none
+// ),
+// ),
+// ),
+// const Text(" = "),
+// Container(
+// height: 40,
+// width: 80,
+// padding: const EdgeInsets.all(10),
+// alignment: Alignment.center,
+// decoration: BoxDecoration(
+// borderRadius: BorderRadius.circular(10),
+// color: Colors.grey[300]
+// ),
+// child: FittedBox(child: Text("₹ ${item.totalPrice}")),
+// ),
+// ],
+// ),
+// const SizedBox(height: 10,),
+// Center(
+// child: ElevatedButton(
+// onPressed: ()async{
+// await removeFromCart(context.read<AuthProvider>(), item.id);
+// state.getCategories(auth);
+// },child: const Text("Remove"),),
+// )
+// ],
+// ),

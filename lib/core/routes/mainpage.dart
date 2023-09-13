@@ -1,10 +1,5 @@
-import 'package:customerapp/core/components/loading.dart';
-import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/networkProvider.dart';
 import 'package:customerapp/core/routes/homepage.dart';
-import 'package:customerapp/core/routes/intro.dart';
-import 'package:customerapp/core/routes/signin.dart';
-import 'package:customerapp/core/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

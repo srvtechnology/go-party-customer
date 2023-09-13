@@ -8,7 +8,6 @@ import '../utils/dio.dart';
 
 Future<void> addtoCart(AuthProvider auth,Map data)async{
   try{
-    CustomLogger.debug(auth.token);
     Response response = await customDioClient.client.post("${APIConfig.baseUrl}/api/customer/add-to-cart",
     data:data,
       options: Options(
