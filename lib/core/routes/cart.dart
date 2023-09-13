@@ -269,7 +269,9 @@ class _CartPageState extends State<CartPage> {
             Expanded(
               child: Row(
               children: [
-                Expanded(child: Container(
+                Expanded(
+                  child:
+                Container(
                   alignment: Alignment.topCenter,
                   margin: const EdgeInsets.all(20),
                   child: Container(
@@ -286,7 +288,7 @@ class _CartPageState extends State<CartPage> {
                 Expanded(
                   child: Container(
                     height: double.infinity,
-                    margin: const EdgeInsets.symmetric(vertical: 20,horizontal: 5),
+                    margin: const EdgeInsets.symmetric(horizontal: 5,vertical: 12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -393,7 +395,7 @@ class _CartPageState extends State<CartPage> {
                           ),
                         ),
                         Container(
-                          margin: const EdgeInsets.only(top: 10),
+                          margin: const EdgeInsets.only(top: 20),
                           child:Row(
                             children: [
                               ElevatedButton(
@@ -415,7 +417,6 @@ class _CartPageState extends State<CartPage> {
                                 ),
                                 onPressed: (){
                                   Navigator.push(context, MaterialPageRoute(builder: (context)=>SingleServiceRoute(service: item.service,)));
-
                                 }, child: const Text("View",),)
                             ],
                           ),

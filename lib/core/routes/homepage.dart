@@ -307,7 +307,7 @@ class _HomeState extends State<Home> {
                             ],
                           ),
                         ),
-                        ImageSlider(imageUrls: state.banner1Images),
+                        ImageSlider(imageUrls: state.mobileBannerImages),
                         Container(
                           alignment: Alignment.centerLeft,
                           decoration: const BoxDecoration(
@@ -331,6 +331,7 @@ class _HomeState extends State<Home> {
                             ],
                           ),
                         ),
+                        ImageSlider(imageUrls: state.banner1Images),
                         Container(
                           alignment: Alignment.centerLeft,
                           child: Column(

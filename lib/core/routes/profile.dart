@@ -20,7 +20,7 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Consumer<AuthProvider>(
         builder: (context,state,child) {
-          if(state.authState != AuthState.LoggedIn){
+          if(state.authState != AuthState.LoggedIn || state.user==null){
             return Scaffold(
               appBar: AppBar(
                 elevation: 1,

@@ -8,6 +8,7 @@ import '../models/service.dart';
 class ServiceProvider with ChangeNotifier{
   List<ServiceModel>? _data;
   List<String> banner1Images = [];
+  List<String> mobileBannerImages = [];
 
   List<ServiceModel>? get data=> _data;
   bool _isLoading = false;
@@ -34,6 +35,7 @@ class ServiceProvider with ChangeNotifier{
       startLoading();
       _data = await getServices();
       banner1Images  = await getBannerImages();
+      mobileBannerImages = await getMobileBannerImages();
     }catch(e)
     {
       if(e is DioException){

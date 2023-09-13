@@ -89,4 +89,16 @@ Future<List<String>> getBannerImages()async{
   }catch(e){
     rethrow;
   }
-} 
+}
+Future<List<String>> getMobileBannerImages()async{
+  try{
+    Response response = await Dio().get("${APIConfig.baseUrl}/api/mobile-banners-list");
+    List<String> images = [];
+    for (var i in response.data["data"]){
+      images.add(i["image"]);
+    }
+    return images;
+  }catch(e){
+    rethrow;
+  }
+}
