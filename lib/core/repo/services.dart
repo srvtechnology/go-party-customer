@@ -75,3 +75,18 @@ Future<List<ServiceModel>> searchServices(Map<String,dynamic> data)async{
     return Future.error(e);
   }
 }
+
+
+Future<List<String>> getBannerImages()async{
+  try{
+    Response response = await Dio().get("${APIConfig.baseUrl}/api/adv-banners-list");
+    List<String> images = [];
+    
+    for (var i in response.data["data"]){
+      images.add(i["image"]);
+    }
+    return images;
+  }catch(e){
+    rethrow;
+  }
+} 

@@ -72,3 +72,19 @@ Future<List<AddressModel>> getAddress(AuthProvider auth)async{
     return Future.error(e);
   }
 }
+
+Future<void> deleteAddressbyId(AuthProvider auth,String addressId)async{
+  try{
+    Response  response = await Dio().post("${APIConfig.baseUrl}/api/customer/delete-address",
+    data: {
+      "address_id":addressId
+    }
+    );
+  }catch(e){
+    if(e is DioException){
+
+      CustomLogger.error(e.response!.realUri.toString());
+    }
+    rethrow;
+  }
+}

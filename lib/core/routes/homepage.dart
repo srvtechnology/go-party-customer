@@ -311,55 +311,7 @@ class _HomeState extends State<Home> {
                             ],
                           ),
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(vertical: 5.0),
-
-                          child: Stack(
-                            children: [
-                              CarouselSlider(
-                                carouselController: _carouselController,
-                                options: CarouselOptions(
-                                  onPageChanged: (index,kwargs){
-                                    setState(() {
-                                      _currentCarouselIndex = index;
-                                    });
-                                  },
-                                  enableInfiniteScroll: true,
-                                  autoPlay: true,
-                                  autoPlayInterval: const Duration(seconds: 3),
-                                  autoPlayAnimationDuration:const Duration(milliseconds: 800),
-                                  autoPlayCurve: Curves.fastOutSlowIn,
-                                  enlargeFactor: 0,
-                                  viewportFraction: 1
-                                ),
-                                items: [
-                                  "https://mobirise.com/extensions/commercem4/assets/images/gallery00.jpg",
-                                  "https://mobirise.com/extensions/commercem4/assets/images/gallery04.jpg",
-                                  "https://mobirise.com/extensions/commercem4/assets/images/gallery07.jpg"
-                                ].map((e) => Container(
-                                  width: double.infinity,
-                                  child: Image.network(e,fit: BoxFit.fitWidth,),
-                                )).toList(),
-                              ),
-                              Positioned.fill(
-                                top: 180,
-                                child: Container(
-                                  margin: const EdgeInsets.symmetric(vertical: 20),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children:[0,1,2].map((e) => Container(
-                                      margin: const EdgeInsets.symmetric(horizontal: 10),
-
-                                      height: 8,width: 8,decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.black,width: 0.5),
-                                        shape: BoxShape.circle,color:_currentCarouselIndex==e?Theme.of(context).primaryColorDark:Colors.white),
-                                    )).toList(),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        ImageSlider(imageUrls: state.banner1Images),
                         Container(
                           alignment: Alignment.centerLeft,
                           decoration: const BoxDecoration(

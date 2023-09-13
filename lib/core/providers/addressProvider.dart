@@ -32,4 +32,16 @@ class AddressProvider with ChangeNotifier{
     }
     stopLoading();
   }
+
+  Future<void> deleteAddress(AuthProvider auth,String addressId)async{
+    startLoading();
+    try{
+        await AddressRepo.deleteAddressbyId(auth, addressId);
+    }catch(e){
+      CustomLogger.error(e);
+    }
+    await getAddress(auth);
+    stopLoading();
+  }
+
 }

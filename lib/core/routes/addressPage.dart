@@ -435,8 +435,8 @@ class _AddressPageState extends State<AddressPage> {
               const SizedBox(width: 20,),
               ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
-                  onPressed: (){
-                Navigator.push(context,MaterialPageRoute(builder: (context)=>AddressEditPage(address: address))).then((value) => state.getAddress(context.read<AuthProvider>()));
+                  onPressed: ()async{
+                    await state.deleteAddress(context.read<AuthProvider>(), address.id.toString());
               }, child: const Text("Delete")),
             ],
           ),
