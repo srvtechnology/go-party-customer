@@ -24,6 +24,24 @@ Future<List<ServiceModel>> getServices()async{
     return Future.error(e);
   }
 }
+Future<List<EventModel>> getEvents()async{
+  try{
+    Response response = await Dio().get("${APIConfig.baseUrl}/api/view-all-events");
+    List<EventModel> events = [];
+    CustomLogger.debug(response.data);
+    for (var eventJson in response.data["data"]){
+      try{
+        events.add(EventModel.fromJson(eventJson));
+      }catch(e){
+        CustomLogger.error(eventJson);
+      }
+    }
+    return events;
+  }
+  catch(e){
+    return Future.error(e);
+  }
+}
 
 Future<List> getServiceAvailability(List<String> serviceId,String addressId)async{
   try{
@@ -102,3 +120,5 @@ Future<List<String>> getMobileBannerImages()async{
     rethrow;
   }
 }
+
+

@@ -9,7 +9,8 @@ class ServiceProvider with ChangeNotifier{
   List<ServiceModel>? _data;
   List<String> banner1Images = [];
   List<String> mobileBannerImages = [];
-
+  List<EventModel>? _eventData = [];
+  List<EventModel>? get eventData =>_eventData;
   List<ServiceModel>? get data=> _data;
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -36,6 +37,7 @@ class ServiceProvider with ChangeNotifier{
       _data = await getServices();
       banner1Images  = await getBannerImages();
       mobileBannerImages = await getMobileBannerImages();
+      _eventData = await getEvents();
     }catch(e)
     {
       if(e is DioException){

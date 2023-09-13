@@ -38,3 +38,18 @@ class ServiceModel{
     );
   }
 }
+
+
+class EventModel {
+  String id,name,image;
+
+  EventModel({
+    required this.id,
+   required this.name,
+   required this.image,
+});
+
+  factory EventModel.fromJson(Map json){
+    return EventModel(id: json["id"].toString(), name: json["category_name"], image: json["image"]);
+  }
+}

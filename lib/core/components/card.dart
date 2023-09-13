@@ -99,6 +99,39 @@ class CircularOrderCard extends StatelessWidget {
   }
 }
 
+
+class CircularEventCard extends StatelessWidget {
+  final EventModel event;
+  const CircularEventCard({Key? key,required this.event}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        children: [
+          Container(
+            decoration:BoxDecoration(
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                    blurRadius: 2,
+                    color: Colors.grey[400]!,
+                    spreadRadius: 1)],
+            ),
+            child: CircleAvatar(
+              radius: 40,
+              backgroundImage: CachedNetworkImageProvider(event.image),
+            ),
+          ),
+          const SizedBox(height: 10,),
+          Text(event.name,style: const TextStyle(fontWeight: FontWeight.w600),)
+        ],
+      ),
+    );
+  }
+}
+
 class OrderTile extends StatelessWidget {
   OrderModel order;
   OrderTile({Key? key,required this.order}) : super(key: key);

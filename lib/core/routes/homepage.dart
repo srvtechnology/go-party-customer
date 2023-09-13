@@ -8,9 +8,11 @@ import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/orderProvider.dart';
 import 'package:customerapp/core/providers/serviceProvider.dart';
 import 'package:customerapp/core/routes/cart.dart';
+import 'package:customerapp/core/routes/eventsPage.dart';
 import 'package:customerapp/core/routes/product.dart';
 import 'package:customerapp/core/routes/profile.dart';
 import 'package:customerapp/core/routes/singleService.dart';
+import 'package:customerapp/core/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/orders.dart';
@@ -295,13 +297,14 @@ class _HomeState extends State<Home> {
                                     child: Text("Our Events",style: Theme.of(context).textTheme.labelLarge!.copyWith(fontSize: 20),),
                                   ),
                                   TextButton(onPressed: (){
-                                    Navigator.pushNamed(context, ProductPageRoute.routeName);}, child: Text("View All",style: TextStyle(color: Theme.of(context).primaryColorDark,fontSize: 15),))
+                                    Navigator.push(context,MaterialPageRoute(builder: (context)=>EventsPage(events: state.eventData!)));
+                                    }, child: Text("View All",style: TextStyle(color: Theme.of(context).primaryColorDark,fontSize: 15),))
                                 ],
                               ),
                               SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
                                 child: Row(
-                                    children: state.data!.getRange(0, min(4,state.data!.length)).map((e) => CircularOrderCard(service: e,)).toList()
+                                    children: state.eventData!.getRange(0, min(4,state.data!.length)).map((e) => CircularEventCard(event: e,)).toList()
                                 ),
                               )
                             ],
@@ -331,7 +334,6 @@ class _HomeState extends State<Home> {
                             ],
                           ),
                         ),
-
                         ImageSlider(imageUrls: state.banner1Images),
                         Container(
                           alignment: Alignment.centerLeft,
