@@ -72,7 +72,7 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
         return Scaffold(
           body: Container(
             height: double.infinity,
-            color: Colors.grey[900],
+            color: Colors.white,
             padding: const EdgeInsets.all(16.0),
             child: SingleChildScrollView(
               child: Form(
@@ -81,18 +81,29 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     SizedBox(height: 10.h),
-                    Image.asset(
-                      'assets/images/logo/logo-white.png',
-                      height: 150.0,
+                    Container(
+                      color: Theme.of(context).primaryColor,
+                      child: Image.asset(
+                        'assets/images/logo/logo-white.png',
+                        height: 150.0,
+                      ),
                     ),
                     SizedBox(height: 32.0,child: state.authState == AuthState.Error?const Text("Something went wrong. Please try again later"):null,),
                     TextFormField(
-                      style:const TextStyle(color: Colors.white),
+                      style:const TextStyle(color: Colors.grey),
                       controller: _emailController,
-                      decoration: const InputDecoration(
-                        labelStyle: TextStyle(color: Colors.white),
+                      decoration:  InputDecoration(
                         labelText: 'Email',
-                        prefixIcon: Icon(Icons.email, color: Colors.white),
+                        prefixIcon: const Icon(Icons.email, color: Colors.grey),
+                        labelStyle: const TextStyle(color: Colors.grey),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(width: 0.5,color: Colors.grey)
+                        ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(width: 0.5,color: Colors.grey)
+                        ),
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -106,12 +117,20 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                     ),
                     const SizedBox(height: 16.0),
                     TextFormField(
-                      style:const TextStyle(color: Colors.white),
+                      style:const TextStyle(color: Colors.grey),
                       controller: _nameController,
-                      decoration: const InputDecoration(
-                        labelStyle: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
                         labelText: 'Name',
-                        prefixIcon: Icon(Icons.person, color: Colors.white),
+                        prefixIcon: const Icon(Icons.person, color: Colors.grey),
+                        labelStyle: const TextStyle(color: Colors.grey),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(width: 0.5,color: Colors.grey)
+                        ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(width: 0.5,color: Colors.grey)
+                        ),
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -121,12 +140,20 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                     ),
                     const SizedBox(height: 16.0),
                     TextFormField(
-                      style:const TextStyle(color: Colors.white),
+                      style:const TextStyle(color: Colors.grey),
                       controller: _phoneNumberController,
-                      decoration: const InputDecoration(
-                        labelStyle: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
                         labelText: 'Phone Number',
-                        prefixIcon: Icon(Icons.phone, color: Colors.white),
+                        prefixIcon: const Icon(Icons.phone, color: Colors.grey),
+                        labelStyle: const TextStyle(color: Colors.grey),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(width: 0.5,color: Colors.grey)
+                        ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(width: 0.5,color: Colors.grey)
+                        ),
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -140,13 +167,12 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                     ),
                     const SizedBox(height: 16.0),
                     TextFormField(
-                      style:const TextStyle(color: Colors.white),
+                      style:const TextStyle(color: Colors.grey),
                       controller: _passwordController,
                       obscureText: _obscureText,
                       decoration: InputDecoration(
                         labelText: 'Password',
-                        labelStyle: const TextStyle(color: Colors.white),
-                        prefixIcon: const Icon(Icons.lock, color: Colors.white),
+                        prefixIcon: const Icon(Icons.lock, color: Colors.grey),
                         suffixIcon: GestureDetector(
                           onTap: () {
                             setState(() {
@@ -155,8 +181,17 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                           },
                           child: Icon(
                             _obscureText ? Icons.visibility_off : Icons.visibility,
-                            color: Colors.white,
+                            color: Colors.grey,
                           ),
+                        ),
+                        labelStyle: const TextStyle(color: Colors.grey),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(width: 0.5,color: Colors.grey)
+                        ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(width: 0.5,color: Colors.grey)
                         ),
                       ),
                       validator: (value) {
@@ -171,13 +206,12 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                     ),
                     const SizedBox(height: 16.0),
                     TextFormField(
-                      style:const TextStyle(color: Colors.white),
+                      style:const TextStyle(color: Colors.grey),
                       controller: _confirmPasswordController,
                       obscureText: _obscureTextConfirm,
                       decoration: InputDecoration(
                         labelText: 'Confirm Password',
-                        labelStyle: const TextStyle(color: Colors.white),
-                        prefixIcon: const Icon(Icons.lock, color: Colors.white),
+                        prefixIcon: const Icon(Icons.lock, color: Colors.grey),
                         suffixIcon: GestureDetector(
                           onTap: () {
                             setState(() {
@@ -186,8 +220,17 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                           },
                           child: Icon(
                             _obscureTextConfirm ? Icons.visibility_off : Icons.visibility,
-                            color: Colors.white,
+                            color: Colors.grey,
                           ),
+                        ),
+                        labelStyle: const TextStyle(color: Colors.grey),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(width: 0.5,color: Colors.grey)
+                        ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(width: 0.5,color: Colors.grey)
                         ),
                       ),
                       validator: (value) {
@@ -208,7 +251,7 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                         _submitForm(state);
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.indigo,
+                        backgroundColor: Theme.of(context).primaryColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
@@ -216,7 +259,7 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                       ),
                       child: _isLoading
                           ? const CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
                       )
                           : const Text(
                         'Sign Up',
