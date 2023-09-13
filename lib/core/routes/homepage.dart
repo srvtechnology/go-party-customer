@@ -314,7 +314,7 @@ class _HomeState extends State<Home> {
                             color: Colors.white,
 
                           ),
-                          padding: const EdgeInsets.only(top: 10),
+                          padding: const EdgeInsets.only(top: 10,bottom: 10),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -331,6 +331,7 @@ class _HomeState extends State<Home> {
                             ],
                           ),
                         ),
+
                         ImageSlider(imageUrls: state.banner1Images),
                         Container(
                           alignment: Alignment.centerLeft,
