@@ -5,6 +5,7 @@ import 'package:customerapp/core/models/user.dart';
 import 'package:customerapp/core/routes/singleService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_pannable_rating_bar/flutter_pannable_rating_bar.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -283,78 +284,86 @@ class _OrderTileState extends State<OrderTile> {
   double rating=0.0;
   Future<void> _writeReview()async {
     showModalBottomSheet(context: context,
+        isScrollControlled: true,
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))),
         builder: (context){
-          return StatefulBuilder(
-              builder: (context,setState) {
-                return Container(
-                  padding: const EdgeInsets.all(20),
-                  height: 400,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text("Rate the service",style: TextStyle(fontSize: 20),),
-                      const SizedBox(height: 20,),
-                      Center(
-                        child: PannableRatingBar(
-                          rate: rating,
-                          items: List.generate(5, (index) =>
-                          const RatingWidget(
-                            selectedColor: Colors.yellow,
-                            unSelectedColor: Colors.grey,
-                            child: Icon(
-                              Icons.star,
-                              size: 30,
-                            ),
-                          )),
-                          onChanged: (value) { // the rating value is updated on tap or drag.
-                            setState(() {
-                              rating = value;
-                            });
-                          },
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(20),
-                        child: TextFormField(
-                          controller: _reviewMessage,
-                          maxLines: 4,
-                          minLines: 3,
-                          decoration: InputDecoration(
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15)
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.75,
+            // padding: EdgeInsets.only(
+            //     bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: StatefulBuilder(
+                builder: (context,setState) {
+                  return Container(
+                    padding: const EdgeInsets.all(20),
+                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text("Rate the service",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w600),),
+                        const SizedBox(height: 20,),
+                        Center(
+                          child: PannableRatingBar(
+                            rate: rating,
+                            items: List.generate(5, (index) =>
+                            const RatingWidget(
+                              selectedColor: Colors.yellow,
+                              unSelectedColor: Colors.grey,
+                              child: Icon(
+                                Icons.star,
+                                size: 30,
                               ),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15)
-                              ),
-                              labelText: "Write a review ..."
+                            )),
+                            onChanged: (value) { // the rating value is updated on tap or drag.
+                              setState(() {
+                                rating = value;
+                              });
+                            },
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 10,),
-                      Container(
-                        alignment: Alignment.center,
-                        child: ElevatedButton(
-                          child: const Text("Submit Review"),
-                          onPressed: ()async{
-                            try{
-                              await writeReview(context.read<AuthProvider>(), widget.order.id, rating.toString(), _reviewMessage.text);
-                              if(context.mounted)
-                              {
-                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Review Successfully Added")));
-                                Navigator.pop(context);
-                              }
-                            }catch(e){
-                              CustomLogger.error(e);
-                              if(context.mounted)ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Some Error Occured. Please try again later")));
-                            }
-                          },
+                        Container(
+                          padding: const EdgeInsets.all(20),
+                          child: TextFormField(
+                            onFieldSubmitted: (text){
+                              FocusScope.of(context).unfocus();
+                            },
+                            controller: _reviewMessage,
+                            maxLines: 4,
+                            minLines: 3,
+                            decoration: InputDecoration(
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15)
+                                ),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15)
+                                ),
+                                labelText: "Write a review ..."
+                            ),
+                          ),
                         ),
-                      )
-                    ],
-                  ),
-                );
-              }
+                        const SizedBox(height: 10,),
+                        Container(
+                          alignment: Alignment.center,
+                          child: ElevatedButton(
+                            child: const Text("Submit Review"),
+                            onPressed: ()async{
+                              try{
+                                await writeReview(context.read<AuthProvider>(), widget.order.id, rating.toString(), _reviewMessage.text);
+                                if(context.mounted)
+                                {
+                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Review Successfully Added")));
+                                  Navigator.pop(context);
+                                }
+                              }catch(e){
+                                CustomLogger.error(e);
+                                if(context.mounted)ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Some Error Occured. Please try again later")));
+                              }
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+                }
+            ),
           );
         });
   }
@@ -362,7 +371,6 @@ class _OrderTileState extends State<OrderTile> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 45.h,
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
@@ -397,7 +405,7 @@ class _OrderTileState extends State<OrderTile> {
             )
             ),
           ),
-          const SizedBox(height: 5,),
+          const SizedBox(height: 10,),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

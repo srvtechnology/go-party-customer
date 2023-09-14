@@ -257,22 +257,22 @@ class _CartPageState extends State<CartPage> {
       }
   }
   Widget _cartTile(CartProvider state,CartModel item,AuthProvider auth){
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 10),
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-      ),
-      height: 40.h,
-        child: Column(
-          children: [
-            Expanded(
+    return Column(
+      children: [
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+          ),
+          height: 350,
+            child: Container(
+              height: 200,
               child: Row(
               children: [
-                Expanded(
-                  child:
                 Container(
                   alignment: Alignment.topCenter,
+                  width: 40.w,
                   margin: const EdgeInsets.all(20),
                   child: Container(
                     height: 150,
@@ -284,172 +284,170 @@ class _CartPageState extends State<CartPage> {
                       )
                     ),
                   ),
-                ),),
-                Expanded(
-                  child: Container(
-                    height: double.infinity,
-                    margin: const EdgeInsets.symmetric(horizontal: 5,vertical: 12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(item.service.name,style: const TextStyle(fontSize: 18,fontWeight: FontWeight.w600),),
-                        Container(
-                          margin: const EdgeInsets.only(right: 10),
-                          child: Text(item.service.description.substring(0,min<int>(30, item.service.description.length)),style: const TextStyle(fontSize: 12),),
-                        ),
-                        Builder(
-                          builder: (context) {
-                            try{
-                              return Container(
+                ),
+                Container(
+                  width: 40.w,
+                  margin: const EdgeInsets.symmetric(horizontal: 5,vertical: 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(item.service.name,style: const TextStyle(fontSize: 18,fontWeight: FontWeight.w600),),
+                      Container(
+                        margin: const EdgeInsets.only(right: 10),
+                        child: Text(item.service.description.substring(0,min<int>(30, item.service.description.length)),style: const TextStyle(fontSize: 12),),
+                      ),
+                      Builder(
+                        builder: (context) {
+                          try{
+                            return Container(
+                            margin: const EdgeInsets.only(top: 10),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text("₹ ${item.service.price}",style: TextStyle(color: Theme.of(context).primaryColor,fontSize: 16),),
+
+                                Text("  ${item.service.priceBasis}",style:const TextStyle(fontSize: 12),)
+                              ],
+                            ),
+                          );
+                          }catch(e){
+                            return Container(
                               margin: const EdgeInsets.only(top: 10),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text("₹ ${item.service.price}",style: TextStyle(color: Theme.of(context).primaryColor,fontSize: 16),),
-
-                                  Text("  ${item.service.priceBasis}",style:const TextStyle(fontSize: 12),)
-                                ],
-                              ),
+                              child: Text("₹ ${item.service.price}",style: TextStyle(color: Theme.of(context).primaryColor,fontSize: 16),),
                             );
-                            }catch(e){
-                              return Container(
-                                margin: const EdgeInsets.only(top: 10),
-                                child: Text("₹ ${item.service.price}",style: TextStyle(color: Theme.of(context).primaryColor,fontSize: 16),),
-                              );
-                            }
                           }
+                        }
+                      ),
+                      Container(
+                        color: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        margin: const EdgeInsets.only(right: 10,top: 10),
+                        alignment: Alignment.centerLeft,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //   children: [
+                            //     const Text("Discount Price:",style: TextStyle(fontSize: 12,)),
+                            //     FittedBox(child:Text("\u20B9 ${item.service.discountedPrice}",style: TextStyle(color: Theme.of(context).primaryColor)),)
+                            //   ],
+                            // ),
+                            const DashedDivider(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text("Original Price:",style: TextStyle(fontSize: 12,),),
+                                FittedBox(child:Text("\u20B9 ${item.service.price}",style: const TextStyle(decoration: TextDecoration.lineThrough),),)
+                              ],
+                            ),
+                            const DashedDivider(),
+                            Builder(
+                              builder: (context) {
+                               try{
+                                 return Row(
+                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                   children: [
+                                     const Text("Unit:",style: TextStyle(fontSize: 12),),
+                                     Text(item.service.priceBasis,style: const TextStyle(decoration: TextDecoration.lineThrough),)
+                                   ],
+                                 );
+                               }catch(e){
+                                 return Container();
+                               }
+                              }
+                            ),
+                          ],
                         ),
-                        Container(
-                          color: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          margin: const EdgeInsets.only(right: 10,top: 10),
-                          alignment: Alignment.centerLeft,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text("Discount Price:",style: TextStyle(fontSize: 12,)),
-                                  Text("\u20B9 ${item.service.discountedPrice}",style: TextStyle(color: Theme.of(context).primaryColor)),
-                                ],
-                              ),
-                              const DashedDivider(),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text("Original Price:",style: TextStyle(fontSize: 12,),),
-                                  Text("\u20B9 ${item.service.price}",style: const TextStyle(decoration: TextDecoration.lineThrough),)
-                                ],
-                              ),
-                              const DashedDivider(),
-                              Builder(
-                                builder: (context) {
-                                 try{
-                                   return Row(
-                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                     children: [
-                                       const Text("Unit:",style: TextStyle(fontSize: 12),),
-                                       Text(item.service.priceBasis,style: const TextStyle(decoration: TextDecoration.lineThrough),)
-                                     ],
-                                   );
-                                 }catch(e){
-                                   return Container();
-                                 }
-                                }
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(right: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Text("Quantity",style: TextStyle(fontSize: 12),),
-                              const SizedBox(width: 20,),
-                              Container(
-                                width: 50,
-                                height: 30,
-                                child: TextFormField(
-                                  keyboardType: const TextInputType.numberWithOptions(signed: false,decimal: false),
-                                  textAlign: TextAlign.center,
-                                  textAlignVertical: TextAlignVertical.center,
-                                  initialValue: item.quantity,
-                                  decoration:const InputDecoration(
-                                    contentPadding: EdgeInsets.all(0),
-                                    enabledBorder: OutlineInputBorder(
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(right: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Text("Quantity",style: TextStyle(fontSize: 12),),
+                            const SizedBox(width: 20,),
+                            Container(
+                              width: 50,
+                              height: 30,
+                              child: TextFormField(
+                                keyboardType: const TextInputType.numberWithOptions(signed: false,decimal: false),
+                                textAlign: TextAlign.center,
+                                textAlignVertical: TextAlignVertical.center,
+                                initialValue: item.quantity,
+                                decoration:const InputDecoration(
+                                  contentPadding: EdgeInsets.all(0),
+                                  enabledBorder: OutlineInputBorder(
 
-                                    ),
-                                    border: OutlineInputBorder(
-
-                                    )
                                   ),
-                                  onChanged: (text){
-                                    if(text.isNotEmpty){
-                                      setState(() {
-                                        item.quantity = text;
-                                        item.totalPrice=(double.parse(text) * double.parse(item.price)).toString();
-                                        changedQuantity[item.id]=text;
-                                        state.calculateTotal();
-                                      });
-                                    }
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(right: 10,top: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Text("Total",style: TextStyle(fontSize: 12),),
-                              const SizedBox(width: 20,),
-                              Text("\u20B9 ${item.totalPrice}",style: const TextStyle(fontSize: 12),),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(top: 20),
-                          child:Row(
-                            children: [
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  shadowColor: Colors.grey,
-                                  elevation: 2.5,
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
-                                ),
-                                onPressed: ()async{
-                                  await removeFromCart(context.read<AuthProvider>(), item.id);
-                                  state.getCart(auth);
+                                  border: OutlineInputBorder(
 
-                                }, child: const Text("Delete",style: TextStyle(color: Colors.black),),),
-                              const SizedBox(width: 20,),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
+                                  )
                                 ),
-                                onPressed: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>SingleServiceRoute(service: item.service,)));
-                                }, child: const Text("View",),)
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
+                                onChanged: (text){
+                                  if(text.isNotEmpty){
+                                    setState(() {
+                                      item.quantity = text;
+                                      item.totalPrice=(double.parse(text) * double.parse(item.price)).toString();
+                                      changedQuantity[item.id]=text;
+                                      state.calculateTotal();
+                                    });
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(right: 10,top: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Text("Total",style: TextStyle(fontSize: 12),),
+                            const SizedBox(width: 20,),
+                            FittedBox(child: Text("\u20B9 ${item.totalPrice}",style: const TextStyle(fontSize: 12),)),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 20),
+                        child:Row(
+                          children: [
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                shadowColor: Colors.grey,
+                                elevation: 2.5,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
+                              ),
+                              onPressed: ()async{
+                                await removeFromCart(context.read<AuthProvider>(), item.id);
+                                state.getCart(auth);
+
+                              }, child: const Text("Delete",style: TextStyle(color: Colors.black,fontSize: 12),),),
+                            const SizedBox(width: 10,),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
+                              ),
+                              onPressed: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=>SingleServiceRoute(service: item.service,)));
+                              }, child: const Text("View",style: TextStyle(fontSize: 12),),)
+                          ],
+                        ),
+                      )
+                    ],
                   ),
                 ),
               ],
-      ),
-            ),
-            const DashedDivider(),
-          ],
-        )
+          ),
+            )
+        ),
+        const DashedDivider(),
+      ],
     );
   }
 }
