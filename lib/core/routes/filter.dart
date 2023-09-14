@@ -62,7 +62,7 @@ class _FilterPageState extends State<FilterPage> {
                       ),
                     onTap: (){
                         showModalBottomSheet(
-                            shape:  RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))),
                             context: context, builder: (context){
                            return Column(
                              children:  state.data.map((e) => filterTile(e.name,
@@ -109,7 +109,7 @@ class _FilterPageState extends State<FilterPage> {
                     ),
                       onTap: (){
                         showModalBottomSheet(
-                            shape:  RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))),
                             context: context, builder: (context){
                             return StatefulBuilder(
                               builder: (context,setState) {

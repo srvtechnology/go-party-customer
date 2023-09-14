@@ -8,9 +8,12 @@ import 'package:customerapp/core/models/service.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/categoryProvider.dart';
 import 'package:customerapp/core/repo/cart.dart';
+import 'package:customerapp/core/repo/services.dart';
 import 'package:customerapp/core/routes/product.dart';
 import 'package:customerapp/core/routes/signin.dart';
+import 'package:customerapp/core/utils/logger.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_pannable_rating_bar/flutter_pannable_rating_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -20,7 +23,7 @@ import '../providers/reviewProvider.dart';
 
 class SingleServiceRoute extends StatefulWidget {
   final ServiceModel service;
-  SingleServiceRoute({Key? key,required this.service}) : super(key: key);
+  const SingleServiceRoute({Key? key,required this.service}) : super(key: key);
 
   @override
   State<SingleServiceRoute> createState() => _SingleServiceRouteState();
@@ -73,7 +76,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
   }
   void addToCartDialog(BuildContext context,CategoryProvider categories){
     showModalBottomSheet(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))),
         context: context, builder: (context){
       return Container(
         child: Form(
@@ -170,16 +173,15 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
       );
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_)=>CategoryProvider(),),
-        ChangeNotifierProvider(create: (_)=>ReviewProvider(serviceId: widget.service.id),),
       ],
-      child: Consumer3<CategoryProvider,AuthProvider,ReviewProvider>(
-        builder: (context,categories,auth,reviews,child) {
-
+      child: Consumer2<CategoryProvider,AuthProvider>(
+        builder: (context,categories,auth,child) {
 
           return Scaffold(
             appBar: AppBar(
@@ -246,10 +248,25 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                     ),
                     ImageSlider(imageUrls: widget.service.images),
                     Container(
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
                       alignment: Alignment.centerLeft,
                       child: Text(widget.service.name,style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.w600),),
                     ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.star,color: Colors.orange,),
+                          const SizedBox(width: 10,),
+                          Text(widget.service.rating??"Not Rated",style: const TextStyle(fontWeight: FontWeight.w600),),
+                          const SizedBox(width: 10,),
+                          Text("( ${widget.service.reviews.length} rating${widget.service.reviews.length>1?"s":""} )",style: const TextStyle(fontSize: 12),),
+
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10,),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
                       alignment: Alignment.centerLeft,
@@ -318,31 +335,22 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                     const SizedBox(height: 10,),
                     Container(
                         margin: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text("Reviews",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
-                            const SizedBox(width: 40,),
-                            ElevatedButton(
-                                style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
-                                onPressed: (){}, child: const Text("Write a Review")),
-                          ],
-                        )),
+                        child: const Text("Reviews",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),)),
                     const SizedBox(height: 10,),
                     const Divider(thickness: 1,),
                     Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 40),
+                        margin: const EdgeInsets.symmetric(horizontal: 20),
                         child: Column(
-                          children: reviews.data.getRange(0, min(4,reviews.data.length-1)).map((e) => ReviewTile(e: e)).toList(),
+                          children: widget.service.reviews.getRange(0, min(4,widget.service.reviews.length)).map((e) => ReviewTile(e: e)).toList(),
                         )
                     ),
                     Container(
                       width: double.infinity,
-                      margin: const EdgeInsets.symmetric(horizontal: 40,vertical: 10),
+                      margin: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
                       child: OutlinedButton(
                           style: OutlinedButton.styleFrom(side: BorderSide(color: Theme.of(context).primaryColorDark)),
                           onPressed: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>ReviewPage(reviews: reviews.data)));
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>ReviewPage(reviews: widget.service.reviews)));
                       }, child: Text("View All Reviews",style: TextStyle(fontSize: 18,color: Theme.of(context).primaryColorDark),)),
                     ),
                     const SizedBox(height: 100,),

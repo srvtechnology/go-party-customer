@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:customerapp/config.dart';
 import 'package:customerapp/core/models/service.dart';
+import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/utils/logger.dart';
 import 'package:dio/dio.dart';
 
@@ -15,9 +16,10 @@ Future<List<ServiceModel>> getServices()async{
       try{
         services.add(ServiceModel.fromJson(serviceJson));
       }catch(e){
-        CustomLogger.error(serviceJson);
+        CustomLogger.error(e);
       }
     }
+    CustomLogger.debug(response.data);
     return services;
   }
   catch(e){
@@ -28,7 +30,6 @@ Future<List<EventModel>> getEvents()async{
   try{
     Response response = await Dio().get("${APIConfig.baseUrl}/api/view-all-events");
     List<EventModel> events = [];
-    CustomLogger.debug(response.data);
     for (var eventJson in response.data["data"]){
       try{
         events.add(EventModel.fromJson(eventJson));
@@ -122,3 +123,27 @@ Future<List<String>> getMobileBannerImages()async{
 }
 
 
+Future<void> writeReview(AuthProvider auth,String orderId,String rating,String message)async{
+  try{
+    Response response = await Dio().post("${APIConfig.baseUrl}/api/customer/submit-order-rating",
+    data: {
+      "order_id":orderId,
+      "rate":rating,
+      "message":message
+    },
+        options: Options(
+            headers: {
+              "Authorization":"Bearer ${auth.token}"
+            }
+        )
+    );
+    CustomLogger.debug(response.data);
+  }
+  catch(e){
+    if(e is DioException){
+      CustomLogger.error(e.response!.data);
+    }
+    CustomLogger.error(e);
+    rethrow;
+  }
+}

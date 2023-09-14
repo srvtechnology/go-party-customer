@@ -16,18 +16,3 @@ class UserModel {
       }
 }
 
-class ReviewModel{
-      String name,message,rating;
-      ReviewModel(
-      {
-            required this.name,
-            required this.message,
-            required this.rating,
-      }
-      );
-
-      factory ReviewModel.fromJson(Map json){
-            return ReviewModel(name: "Raghav", message: "Clear Review", rating: "4.3");
-      }
-
-}

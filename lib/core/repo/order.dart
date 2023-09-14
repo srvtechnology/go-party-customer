@@ -41,7 +41,6 @@ Future<List<OrderModel>> getUpcomingOrderItems(AuthProvider auth)async{
         )
     );
     List<OrderModel> list = [];
-    CustomLogger.debug(response.data);
     for(var i in response.data["data"])
     {
       try{
@@ -70,6 +69,7 @@ Future<List<OrderModel>> getDeliveredOrderItems(AuthProvider auth)async{
             }
         )
     );
+    CustomLogger.debug(response.data);
     List<OrderModel> list = [];
     for(var i in response.data["data"])
     {

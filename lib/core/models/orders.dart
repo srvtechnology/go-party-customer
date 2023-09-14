@@ -19,7 +19,7 @@ class OrderModel {
   String customerEmail;
   String customerPhone;
   String forAddress;
-  String vandorOrderStatus;
+  String vendorOrderStatus;
   String price;
   String quantity;
   String totalPrice;
@@ -47,7 +47,7 @@ class OrderModel {
     required this.customerEmail,
     required this.customerPhone,
     required this.forAddress,
-    required this.vandorOrderStatus,
+    required this.vendorOrderStatus,
     required this.service,
     required this.category,
     required this.price,
@@ -79,7 +79,7 @@ class OrderModel {
       customerEmail: json['customer_email'].toString(),
       customerPhone: json['customer_phone'].toString(),
       forAddress: json['for_address'].toString(),
-      vandorOrderStatus: json['vandor_order_status'].toString(),
+      vendorOrderStatus: json['vandor_order_status'].toString(),
       service: ServiceModel.fromJson(json["service_details"]),
       category: CategoryModel.fromJson(json["category_details"]),
       price: json['price'].toString(),

@@ -159,7 +159,7 @@ class _OrdersState extends State<Orders> {
     }
     return SingleChildScrollView(
       child: Column(
-          children: deliveredOrders.map((e) => OrderTile(order:e)).toList()
+          children: deliveredOrders.map((e) => OrderTile(order:e,review:true)).toList()
       ),
     );
   }
@@ -172,13 +172,7 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
-  final CarouselController _carouselController = CarouselController();
-  int _currentCarouselIndex = 0;
-  @override
-  void initState() {
-    super.initState();
-  }
+class _HomeState extends State<Home>{
   @override
   Widget build(BuildContext context) {
     return ListenableProvider(

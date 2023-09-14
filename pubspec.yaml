@@ -52,6 +52,8 @@ dependencies:
   carousel_slider: ^4.2.1
   cc_avenue: ^1.0.3
   webview_flutter: ^4.2.4
+  flutter_pannable_rating_bar: ^2.7.2+1
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
