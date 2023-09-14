@@ -11,6 +11,7 @@ import 'package:customerapp/core/routes/cart.dart';
 import 'package:customerapp/core/routes/eventsPage.dart';
 import 'package:customerapp/core/routes/product.dart';
 import 'package:customerapp/core/routes/profile.dart';
+import 'package:customerapp/core/routes/singlePackage.dart';
 import 'package:customerapp/core/routes/singleService.dart';
 import 'package:customerapp/core/utils/logger.dart';
 import 'package:flutter/material.dart';
@@ -342,7 +343,7 @@ class _HomeState extends State<Home>{
                                   children: [
                                     Text("Packages",style: Theme.of(context).textTheme.labelLarge!.copyWith(fontSize: 20),),
                                     TextButton(onPressed: (){
-                                      Navigator.pushNamed(context, ProductPageRoute.routeName);
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>PackageListPageRoute(packages: state.packageData!)));
                                     }, child: Text("View All",style: TextStyle(color: Theme.of(context).primaryColorDark,fontSize: 15),))
                                   ],
                                 ),
@@ -350,9 +351,9 @@ class _HomeState extends State<Home>{
                               SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
                                 child: Row(
-                                  children: state.data!.getRange(4, min(7,state.data!.length)).map((e) => OrderCard(service: e,
+                                  children: state.packageData!.getRange(0, min(4,state.packageData!.length)).map((e) => PackageCard(package: e,
                                     onTap: (){
-                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>SingleServiceRoute(service: e)));
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>SinglePackageRoute(package: e,)));
                                   },
                                   )).toList()
                                 ),

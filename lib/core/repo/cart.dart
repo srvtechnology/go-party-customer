@@ -16,6 +16,7 @@ Future<void> addtoCart(AuthProvider auth,Map data)async{
         }
       )
     );
+
   }catch(e){
     if(e is DioException){
       CustomLogger.error(e.response!.data);
@@ -25,6 +26,7 @@ Future<void> addtoCart(AuthProvider auth,Map data)async{
 }
 
 Future<List<CartModel>> getCartItems(AuthProvider auth)async{
+  CustomLogger.debug(auth.token);
   try{
     Response response = await customDioClient.client.get(
         "${APIConfig.baseUrl}/api/customer/show-cart",
@@ -37,8 +39,13 @@ Future<List<CartModel>> getCartItems(AuthProvider auth)async{
     List<CartModel> list = [];
     for(var i in response.data["data"]["cart"])
     {
-      list.add(CartModel.fromJson(i));
+      try{
+        list.add(CartModel.fromJson(i));
+      }catch(e){
+        CustomLogger.error(e);
+      }
     }
+    CustomLogger.debug(list);
     return list;
   } catch(e){
     if(e is DioException){

@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
               FeedbackPage.routeName:(context)=>const FeedbackPage(),
               CartPage.routeName:(context)=>const CartPage(),
               AddressPage.routeName:(context)=>const AddressPage(),
-              AddressAddPage.routeName:(context)=>const AddressAddPage()
+              AddressAddPage.routeName:(context)=>const AddressAddPage(),
             },
           ),
         );

@@ -1,10 +1,12 @@
 import 'package:customerapp/core/models/category.dart';
 import 'package:customerapp/core/models/service.dart';
 
+import 'package.dart';
+
 class CartModel{
   List<ServiceModel> items = [];
   String id,price,quantity,totalPrice,startDate,endDate,days,duration;
-  ServiceModel service;
+  dynamic service;
   CategoryModel category;
   
   CartModel({
@@ -22,7 +24,7 @@ class CartModel{
   factory CartModel.fromJson(Map json){
     return CartModel(
         id: json["id"].toString(),
-        service: ServiceModel.fromJson(json["service_details"]),
+        service: json["service_details"]==null?PackageModel.fromJson(json["package_details"]):ServiceModel.fromJson(json["service_details"]),
         category: CategoryModel.fromJson(json["category_details"]),
         price: json["price"].toString(),
         quantity: json["quantity"].toString(),

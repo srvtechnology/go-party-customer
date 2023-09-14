@@ -1,25 +1,17 @@
 import 'dart:math';
-import 'package:collection/collection.dart';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:customerapp/core/components/card.dart';
 import 'package:customerapp/core/components/divider.dart';
 import 'package:customerapp/core/models/service.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/categoryProvider.dart';
 import 'package:customerapp/core/repo/cart.dart';
-import 'package:customerapp/core/repo/services.dart';
 import 'package:customerapp/core/routes/product.dart';
 import 'package:customerapp/core/routes/signin.dart';
-import 'package:customerapp/core/utils/logger.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_pannable_rating_bar/flutter_pannable_rating_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-
 import '../components/banner.dart';
-import '../models/user.dart';
-import '../providers/reviewProvider.dart';
 
 class SingleServiceRoute extends StatefulWidget {
   final ServiceModel service;
@@ -262,7 +254,6 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                           Text(widget.service.rating??"Not Rated",style: const TextStyle(fontWeight: FontWeight.w600),),
                           const SizedBox(width: 10,),
                           Text("( ${widget.service.reviews.length} rating${widget.service.reviews.length>1?"s":""} )",style: const TextStyle(fontSize: 12),),
-
                         ],
                       ),
                     ),

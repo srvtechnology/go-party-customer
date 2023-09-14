@@ -295,18 +295,29 @@ class _CartPageState extends State<CartPage> {
                         Text(item.service.name,style: const TextStyle(fontSize: 18,fontWeight: FontWeight.w600),),
                         Container(
                           margin: const EdgeInsets.only(right: 10),
-                          child: Text(item.service.description.substring(0,min(30, item.service.description.length)),style: const TextStyle(fontSize: 12),),
+                          child: Text(item.service.description.substring(0,min<int>(30, item.service.description.length)),style: const TextStyle(fontSize: 12),),
                         ),
-                        Container(
-                          margin: const EdgeInsets.only(top: 10),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text("₹ ${item.service.price}",style: TextStyle(color: Theme.of(context).primaryColor,fontSize: 16),),
+                        Builder(
+                          builder: (context) {
+                            try{
+                              return Container(
+                              margin: const EdgeInsets.only(top: 10),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text("₹ ${item.service.price}",style: TextStyle(color: Theme.of(context).primaryColor,fontSize: 16),),
 
-                              Text("  ${item.service.priceBasis}",style:const TextStyle(fontSize: 12),)
-                            ],
-                          ),
+                                  Text("  ${item.service.priceBasis}",style:const TextStyle(fontSize: 12),)
+                                ],
+                              ),
+                            );
+                            }catch(e){
+                              return Container(
+                                margin: const EdgeInsets.only(top: 10),
+                                child: Text("₹ ${item.service.price}",style: TextStyle(color: Theme.of(context).primaryColor,fontSize: 16),),
+                              );
+                            }
+                          }
                         ),
                         Container(
                           color: Colors.white,
@@ -332,12 +343,20 @@ class _CartPageState extends State<CartPage> {
                                 ],
                               ),
                               const DashedDivider(),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text("Unit:",style: TextStyle(fontSize: 12),),
-                                  Text(item.service.priceBasis,style: const TextStyle(decoration: TextDecoration.lineThrough),)
-                                ],
+                              Builder(
+                                builder: (context) {
+                                 try{
+                                   return Row(
+                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                     children: [
+                                       const Text("Unit:",style: TextStyle(fontSize: 12),),
+                                       Text(item.service.priceBasis,style: const TextStyle(decoration: TextDecoration.lineThrough),)
+                                     ],
+                                   );
+                                 }catch(e){
+                                   return Container();
+                                 }
+                                }
                               ),
                             ],
                           ),

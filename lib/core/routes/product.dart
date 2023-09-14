@@ -1,5 +1,6 @@
 import 'package:customerapp/core/providers/serviceProvider.dart';
 import 'package:customerapp/core/routes/filter.dart';
+import 'package:customerapp/core/routes/singlePackage.dart';
 import 'package:customerapp/core/routes/singleService.dart';
 import 'package:customerapp/core/utils/logger.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import '../components/card.dart';
 import '../components/loading.dart';
+import '../models/package.dart';
 
 class ProductPageRoute extends StatefulWidget {
   static const routeName ="/product";
@@ -155,4 +157,66 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
       ),
     );
     }
+}
+
+
+class PackageListPageRoute extends StatefulWidget {
+  final List<PackageModel> packages;
+  static const routeName ="/packagelist";
+
+  const PackageListPageRoute({Key? key,required this.packages}) : super(key: key);
+
+  @override
+  State<PackageListPageRoute> createState() => _PackageListPageRouteState();
+}
+
+class _PackageListPageRouteState extends State<PackageListPageRoute> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+          elevation: 1,
+          backgroundColor: Colors.white,
+          automaticallyImplyLeading: false,
+          centerTitle: false,
+          title: Image.asset("assets/images/logo/logo-resized.png",width: 120,),
+          actions: [
+            Container(
+              width: 250,
+              margin: const EdgeInsets.only(right: 10),
+              padding: const EdgeInsets.all(5),
+              child: GestureDetector(
+                onTap: (){
+                  Navigator.pushNamed(context, ProductPageRoute.routeName);
+                },
+                child: TextFormField(
+                  enabled: false,
+                  decoration: InputDecoration(
+                      filled: true,
+                      fillColor: const Color(0xffe5e5e5),
+                      labelText: "Search ...",
+                      prefixIcon: const Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      )
+                  ),
+                ),
+              ),
+            )
+          ],),
+      body: Container(
+        padding: const EdgeInsets.all(20),
+        child: ListView.builder(
+          itemCount: widget.packages.length,
+          itemBuilder: (context,index){
+            return PackageTile(
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>SinglePackageRoute(package: widget.packages[index],)));
+                },
+                package: widget.packages[index]);
+          },
+        ),
+      ),
+    );
+  }
 }

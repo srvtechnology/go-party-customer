@@ -3,6 +3,7 @@ import 'package:customerapp/core/utils/logger.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:collection/collection.dart';
+import '../models/package.dart';
 import '../models/service.dart';
 
 class ServiceProvider with ChangeNotifier{
@@ -11,6 +12,8 @@ class ServiceProvider with ChangeNotifier{
   List<String> mobileBannerImages = [];
   List<EventModel>? _eventData = [];
   List<EventModel>? get eventData =>_eventData;
+  List<PackageModel>? _packageData = [];
+  List<PackageModel>? get packageData =>_packageData;
   List<ServiceModel>? get data=> _data;
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -38,6 +41,7 @@ class ServiceProvider with ChangeNotifier{
       banner1Images  = await getBannerImages();
       mobileBannerImages = await getMobileBannerImages();
       _eventData = await getEvents();
+      _packageData = await getPackages();
     }catch(e)
     {
       if(e is DioException){

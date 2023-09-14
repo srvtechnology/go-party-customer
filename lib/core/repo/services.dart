@@ -6,6 +6,7 @@ import 'package:customerapp/core/utils/logger.dart';
 import 'package:dio/dio.dart';
 
 
+import '../models/package.dart';
 import '../utils/dio.dart';
 
 Future<List<ServiceModel>> getServices()async{
@@ -19,8 +20,26 @@ Future<List<ServiceModel>> getServices()async{
         CustomLogger.error(e);
       }
     }
-    CustomLogger.debug(response.data);
     return services;
+  }
+  catch(e){
+    return Future.error(e);
+  }
+}
+
+Future<List<PackageModel>> getPackages()async{
+  try{
+    Response response = await customDioClient.client.get("${APIConfig.baseUrl}/api/customer-all-packages");
+    List<PackageModel> packages = [];
+    for (var serviceJson in response.data["packages"]){
+      try{
+        packages.add(PackageModel.fromJson(serviceJson));
+      }catch(e){
+        CustomLogger.error(serviceJson);
+        CustomLogger.error(e);
+      }
+    }
+    return packages;
   }
   catch(e){
     return Future.error(e);

@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../models/orders.dart';
+import '../models/package.dart';
 import '../models/service.dart';
 import '../providers/AuthProvider.dart';
 import '../repo/services.dart';
@@ -68,6 +69,131 @@ class OrderCard extends StatelessWidget {
             Expanded(child: Text("₹ ${service.discountedPrice}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18,color: Theme.of(context).primaryColorDark)),),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class PackageCard extends StatelessWidget {
+  PackageModel package;
+  OnTap? onTap;
+  PackageCard({Key? key,required this.package,this.onTap}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 5,horizontal: 10),
+        height: 30.h,
+        width: 50.w,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(flex: 4,child:
+            Container(
+              height: 20.h,
+              decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                        offset: const Offset(1,1),
+                        spreadRadius: 2,
+                        blurRadius: 2,
+                        color: Colors.grey[400]!
+                    ),
+                  ],
+                  borderRadius: BorderRadius.circular(10),
+                  image: DecorationImage(
+                      fit: BoxFit.fitHeight,
+                      image: CachedNetworkImageProvider(package.images[0],)
+                  )
+              ),
+            )),
+            const SizedBox(height: 10,),
+            Expanded(child: Row(
+              children: [
+                Text(package.name,style: const TextStyle(fontSize: 18),),
+
+              ],
+            )),
+            FittedBox(child: Text("${package.description.substring(0,min(26,package.description.length))} ...",overflow: TextOverflow.visible,textAlign: TextAlign.left,)),
+            const SizedBox(height: 20,),
+            Expanded(child: Text("₹ ${package.discountedPrice}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18,color: Theme.of(context).primaryColorDark)),),
+          ],
+        ),
+      ),
+    );
+  }
+}
+class PackageTile extends StatelessWidget {
+  final PackageModel package;
+  final OnTap? onTap;
+  const PackageTile({Key? key,required this.package,this.onTap}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+
+      margin: const EdgeInsets.symmetric(vertical: 5,horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+              offset: const Offset(1,1),
+              blurRadius: 1,
+              color: Colors.grey[300]!
+          ),
+          BoxShadow(
+              offset: const Offset(-1,-1),
+              blurRadius: 1,
+              color: Colors.grey[300]!
+          )
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 20.h,
+            decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                      offset: const Offset(1,1),
+                      spreadRadius: 2,
+                      blurRadius: 2,
+                      color: Colors.grey[400]!
+                  ),
+                ],
+                borderRadius: BorderRadius.circular(10),
+                image: DecorationImage(
+                    fit: BoxFit.fitHeight,
+                    image: CachedNetworkImageProvider(package.images[0],)
+                )
+            ),
+          ),
+          const SizedBox(height: 10,),
+          Row(
+            children: [
+              Text(package.name,style: const TextStyle(fontSize: 18,fontWeight: FontWeight.w600),),
+            ],
+          ),
+          FittedBox(child: Text("${package.description.substring(0,min(26,package.description.length))} ...",overflow: TextOverflow.visible,textAlign: TextAlign.left,)),
+          const SizedBox(height: 10,),
+          Text("₹ ${package.discountedPrice}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18,color: Theme.of(context).primaryColorDark)),
+          Center(
+            child: SizedBox(
+              width: 200,
+              child: ElevatedButton(
+                onPressed: (){
+                  onTap!();
+                },
+                child:const Text("View"),
+              ),
+            ),
+          )
+        ],
       ),
     );
   }

@@ -24,7 +24,7 @@ class ServiceModel{
   factory ServiceModel.fromJson(Map json){
     List<String> temp = ["${APIConfig.baseUrl}/storage/app/public/service/${json["image"]}"];
 
-    if(json["additional_images"]!=null)
+    if(json["additional_images"]!=null && json["additional_images"] is! String)
       {
         for (String i in json["additional_images"]){
           temp.add("${APIConfig.baseUrl}/storage/app/public/service/$i");

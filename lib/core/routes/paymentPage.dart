@@ -1,5 +1,4 @@
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
-import 'package:cc_avenue/cc_avenue.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/repo/order.dart';
 import 'package:customerapp/core/routes/mainpage.dart';
