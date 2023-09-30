@@ -1,0 +1,53 @@
+name: customerapp
+description: A new Flutter project.
+
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.18.2 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+
+  provider: ^6.0.5
+  simple_icons: ^7.10.0
+  dio: ^5.2.1+1
+  shared_preferences: ^2.1.2
+  logger: ^1.4.0
+  cached_network_image: ^3.2.3
+  card_loading: ^0.3.0
+  connectivity: ^3.0.6
+  animated_custom_dropdown: ^1.5.0
+  csc_picker: ^0.2.7
+  geolocator: ^10.0.0
+  geocoding: ^2.1.0
+  convex_bottom_bar: ^3.2.0
+  carousel_slider: ^4.2.1
+  webview_flutter: ^4.2.4
+  flutter_pannable_rating_bar: ^2.7.2+1
+  intl: ^0.18.1
+  responsive_sizer: 3.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/logo/logo-nav.png"
+  min_sdk_android: 21
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
+    - assets/images/
+    - assets/images/logo/
