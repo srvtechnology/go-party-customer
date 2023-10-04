@@ -32,6 +32,7 @@ dependencies:
   flutter_pannable_rating_bar: ^2.7.2+1
   intl: ^0.18.1
   responsive_sizer: 3.1.0
+  percent_indicator: ^4.2.3
 
 dev_dependencies:
   flutter_test:
