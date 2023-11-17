@@ -4,44 +4,48 @@ import 'package:flutter/material.dart';
 import '../models/cart.dart';
 import '../repo/cart.dart' as cartRepo;
 
-class CartProvider with ChangeNotifier{
-  List<CartModel> _data=[];
+class CartProvider with ChangeNotifier {
+  List<CartModel> _data = [];
   double _totalPrice = 0;
   double get totalPrice => _totalPrice;
-  List<String> _serviceIds =[];
+  final List<String> _serviceIds = [];
   List<String> get serviceIds => _serviceIds;
-  List<CartModel> get data=> _data;
+  List<CartModel> get data => _data;
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  CartProvider(AuthProvider auth){
+  CartProvider(AuthProvider auth) {
     getCart(auth);
   }
-  void startLoading(){
+  void startLoading() {
     _isLoading = true;
     notifyListeners();
   }
-  void stopLoading(){
+
+  void stopLoading() {
     _isLoading = false;
     notifyListeners();
   }
-  void calculateTotal(){
+
+  void calculateTotal() {
     startLoading();
     _totalPrice = 0;
-    for (var i in _data){
-      _totalPrice+=double.parse(i.totalPrice);
+    for (var i in _data) {
+      _totalPrice += double.parse(i.totalPrice);
     }
     stopLoading();
   }
-  Future<void> getCart(AuthProvider auth)async{
+
+  Future<void> getCart(AuthProvider auth) async {
     startLoading();
-    try{
+    try {
       _data = await cartRepo.getCartItems(auth);
-      for(var i in data){
+
+      for (var i in data) {
         _serviceIds.add(i.service.id);
       }
       calculateTotal();
-    }catch(e){
+    } catch (e) {
       CustomLogger.error(e);
     }
     stopLoading();

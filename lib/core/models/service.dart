@@ -1,14 +1,12 @@
-import 'package:customerapp/core/utils/logger.dart';
-
 import '../../config.dart';
 
-class ServiceModel{
-  String id,name,description,price,discountedPrice,priceBasis;
+class ServiceModel {
+  String id, name, description, price, discountedPrice, priceBasis;
   List<String> images;
-
-  String? rating,categoryId;
+  int minQnty;
+  String? rating, categoryId;
   final String imageUrl = "storage/app/public/service/";
-  List<ReviewModel> reviews=[];
+  List<ReviewModel> reviews = [];
   ServiceModel({
     required this.id,
     required this.name,
@@ -20,23 +18,25 @@ class ServiceModel{
     required this.reviews,
     this.rating,
     this.categoryId,
+    required this.minQnty,
   });
-  factory ServiceModel.fromJson(Map json){
-    List<String> temp = ["${APIConfig.baseUrl}/storage/app/public/service/${json["image"]}"];
+  factory ServiceModel.fromJson(Map json) {
+    List<String> temp = [
+      "${APIConfig.baseUrl}/storage/app/public/service/${json["image"]}"
+    ];
 
-    if(json["additional_images"]!=null && json["additional_images"] is! String)
-      {
-        for (String i in json["additional_images"]){
-          temp.add("${APIConfig.baseUrl}/storage/app/public/service/$i");
-        }
+    if (json["additional_images"] != null &&
+        json["additional_images"] is! String) {
+      for (String i in json["additional_images"]) {
+        temp.add("${APIConfig.baseUrl}/storage/app/public/service/$i");
       }
+    }
 
-    List<ReviewModel> tempReviews =[];
+    List<ReviewModel> tempReviews = [];
     String? tempavgReview;
-    if(json["reviews"]!=null){
-      tempavgReview=json["reviews"]["avg_rating"].toString();
-      for(var reviewJson in json["reviews"]["list_of_ratings"])
-      {
+    if (json["reviews"] != null) {
+      tempavgReview = json["reviews"]["avg_rating"].toString();
+      for (var reviewJson in json["reviews"]["list_of_ratings"]) {
         tempReviews.add(ReviewModel.fromJson(reviewJson));
       }
     }
@@ -50,37 +50,40 @@ class ServiceModel{
       priceBasis: json["price_basis"],
       discountedPrice: json["discount_price"],
       images: temp,
+      minQnty: json["min_qty"],
     );
   }
 }
 
-
 class EventModel {
-  String id,name,image;
+  String id, name, image;
 
   EventModel({
     required this.id,
-   required this.name,
-   required this.image,
-});
+    required this.name,
+    required this.image,
+  });
 
-  factory EventModel.fromJson(Map json){
-    return EventModel(id: json["id"].toString(), name: json["category_name"], image: json["image"]);
+  factory EventModel.fromJson(Map json) {
+    return EventModel(
+        id: json["id"].toString(),
+        name: json["category_name"],
+        image: json["image"]);
   }
 }
 
-class ReviewModel{
-  String name,message,rating;
-  ReviewModel(
-      {
-        required this.name,
-        required this.message,
-        required this.rating,
-      }
-      );
+class ReviewModel {
+  String name, message, rating;
+  ReviewModel({
+    required this.name,
+    required this.message,
+    required this.rating,
+  });
 
-  factory ReviewModel.fromJson(Map json){
-    return ReviewModel(name: json["user"]["name"], message: json["message"], rating: json["rating"].toString());
+  factory ReviewModel.fromJson(Map json) {
+    return ReviewModel(
+        name: json["user"]["name"],
+        message: json["message"],
+        rating: json["rating"].toString());
   }
-
 }

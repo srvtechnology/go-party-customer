@@ -13,6 +13,13 @@ import '../utils/dio.dart';
 
 Future<OrderRes?> placeOrder(AuthProvider auth, PaymentPostData payload) async {
   try {
+    print({
+      "payment_method": payload.paymentMethod,
+      "address_id": payload.addressId,
+      "current_city": payload.currentCity,
+      "full_amount": payload.fullAmount,
+      "partial_amount": payload.partialAmount,
+    });
     Response response = await customDioClient.client.post(
         "${APIConfig.baseUrl}/api/customer/address-submit",
         data: {
@@ -58,10 +65,13 @@ Future<GenerateOrderValue?> generateOrderVal(AuthProvider auth, int orderId,
 
 Future<List<OrderModel>> getUpcomingOrderItems(AuthProvider auth) async {
   try {
+    // log("getUpcomingOrderItems");
     Response response = await customDioClient.client.get(
         "${APIConfig.baseUrl}/api/customer-upcoming-order",
         options: Options(headers: {"Authorization": "Bearer ${auth.token}"}));
+    // log(response.data.toString(), name: "response");
     List<OrderModel> list = [];
+
     for (var i in response.data["data"]) {
       try {
         list.add(OrderModel.fromJson(i));
@@ -84,10 +94,15 @@ Future<List<OrderModel>> getDeliveredOrderItems(AuthProvider auth) async {
     Response response = await customDioClient.client.get(
         "${APIConfig.baseUrl}/api/customer-delivered-order",
         options: Options(headers: {"Authorization": "Bearer ${auth.token}"}));
-    CustomLogger.debug(response.data);
+
     List<OrderModel> list = [];
     for (var i in response.data["data"]) {
-      list.add(OrderModel.fromJson(i));
+      try {
+        list.add(OrderModel.fromJson(i));
+      } catch (e) {
+        CustomLogger.error(i);
+        CustomLogger.error(e);
+      }
     }
     return list;
   } catch (e) {

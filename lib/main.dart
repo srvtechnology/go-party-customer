@@ -1,3 +1,4 @@
+import 'package:customerapp/core/Constant/themData.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/categoryProvider.dart';
 import 'package:customerapp/core/providers/networkProvider.dart';
@@ -33,14 +34,8 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => NetworkProvider()),
         ],
         child: MaterialApp(
-          theme: ThemeData(
-            elevatedButtonTheme: ElevatedButtonThemeData(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).primaryColorDark)),
-            primaryColor: const Color(0xff0264a5),
-            appBarTheme: const AppBarTheme(color: Color(0xff0264a5)),
-            primarySwatch: Colors.blue,
-          ),
+          debugShowCheckedModeBanner: false,
+          theme: themeData(context),
           initialRoute: SplashScreen.routeName,
           routes: {
             SplashScreen.routeName: (context) => const SplashScreen(),
@@ -56,6 +51,8 @@ class MyApp extends StatelessWidget {
             CartPage.routeName: (context) => const CartPage(),
             AddressPage.routeName: (context) => const AddressPage(),
             AddressAddPage.routeName: (context) => const AddressAddPage(),
+            PrivacyPolicy.routeName: (context) => const PrivacyPolicy(),
+            TermsAndCondition.routeName: (context) => const TermsAndCondition(),
           },
         ),
       );

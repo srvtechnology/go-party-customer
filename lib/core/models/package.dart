@@ -1,37 +1,40 @@
 import 'package:customerapp/core/models/service.dart';
-import 'package:customerapp/core/utils/logger.dart';
 
 import '../../config.dart';
 
 class PackageModel {
-  String id,name,description,price,discountedPrice;
+  String id, name, description, price, discountedPrice, category, unit;
   List<String> images;
   List<ServiceModel> services;
+  int minQnty;
 
-  PackageModel({
-    required this.id,
-    required this.name,
-    required this.description,
-    required this.price,
-    required this.discountedPrice,
-    required this.images,
-    required this.services
-});
-  factory PackageModel.fromJson(Map json){
+  PackageModel(
+      {required this.id,
+      required this.name,
+      required this.description,
+      required this.price,
+      required this.unit,
+      required this.minQnty,
+      required this.category,
+      required this.discountedPrice,
+      required this.images,
+      required this.services});
+  factory PackageModel.fromJson(Map json) {
+    List<String> temp = [
+      "${APIConfig.baseUrl}/storage/app/public/packages/${json["image"]}"
+    ];
 
-    List<String> temp = ["${APIConfig.baseUrl}/storage/app/public/packages/${json["image"]}"];
-
-    if(json["additional_images"]!=null && json["additional_images"] is! String)
-    {
-      for (String i in json["additional_images"]){
+    if (json["additional_images"] != null &&
+        json["additional_images"] is! String) {
+      for (String i in json["additional_images"]) {
         temp.add("${APIConfig.baseUrl}/storage/app/public/packages/$i");
       }
     }
 
     List<ServiceModel> servicesList = [];
 
-    if(json["packages_to_service"]!=null){
-      for(var i in json["packages_to_service"]){
+    if (json["packages_to_service"] != null) {
+      for (var i in json["packages_to_service"]) {
         servicesList.add(ServiceModel.fromJson(i["service"]));
       }
     }
@@ -42,7 +45,9 @@ class PackageModel {
         price: json["price"].toString(),
         discountedPrice: json["discount_price"].toString(),
         images: temp,
-        services: servicesList
-      );
+        services: servicesList,
+        category: json["category"],
+        unit: json["unit"],
+        minQnty: json["min_qty"]);
   }
 }

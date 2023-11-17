@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:csc_picker/csc_picker.dart';
 import 'package:customerapp/core/components/divider.dart';
@@ -56,6 +58,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   void initState() {
     super.initState();
     _countryFuture = getCountries(context.read<AuthProvider>());
+
     _addressController.addListener(() {
       if (_addressController.text.isNotEmpty) {
         setState(() {
@@ -93,6 +96,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
               List<Country> data = snapshot.data ?? [];
               return Scaffold(
                 appBar: AppBar(
+                  elevation: 0,
                   title: const Text("Checkout"),
                 ),
                 body: Form(
@@ -101,7 +105,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     child: Column(
                       children: [
                         Container(
-                          color: Theme.of(context).primaryColorLight,
+                          color: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 20),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -645,8 +649,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
     try {
       if (_selectedAddress != null) {
         String addressId = _selectedAddress!.id.toString();
+        log(addressId, name: 'checkout');
+        log(widget.serviceIds.toString(), name: 'checkout');
         List notAvailable =
             await getServiceAvailability(widget.serviceIds, addressId);
+        print(notAvailable);
         if (notAvailable.isNotEmpty) {
           showNotAvailableDialog(notAvailable);
         } else {
@@ -655,7 +662,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => PaymentPage(
-                          addressId: addressId,
+                          selectedAddress: _selectedAddress!,
                           total: widget.cartSubToatal,
                         )));
           }
@@ -705,25 +712,80 @@ class _CheckoutPageState extends State<CheckoutPage> {
         "default_address": defaultAddress.substring(0, 1)
       };
       String addressId = await addAddress(auth, data);
-      List notAvailable =
-          await getServiceAvailability(widget.serviceIds, addressId);
-      if (notAvailable.isNotEmpty) {
-        showNotAvailableDialog(notAvailable);
-      } else {
-        if (context.mounted) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => PaymentPage(
-                        addressId: addressId,
-                        total: widget.cartSubToatal,
-                      )));
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text("You have Successfully placed your order.")));
-        }
+      AddressModel? add = getSelectedAddress(
+          data, int.parse(addressId), int.parse(auth.user!.id));
+      if (context.mounted) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => PaymentPage(
+                      selectedAddress: add,
+                      total: widget.cartSubToatal,
+                    )));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("You have Successfully placed your order.")));
       }
+      // List notAvailable =
+      //     await getServiceAvailability(widget.serviceIds, addressId);
+      // if (notAvailable.isNotEmpty) {
+      //   showNotAvailableDialog(notAvailable);
+      // } else {
+      //   AddressModel? add = getSelectedAddress(
+      //       data, int.parse(addressId), int.parse(auth.user!.id));
+      //   if (context.mounted) {
+      //     Navigator.push(
+      //         context,
+      //         MaterialPageRoute(
+      //             builder: (context) => PaymentPage(
+      //                   selectedAddress: add,
+      //                   total: widget.cartSubToatal,
+      //                 )));
+      //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      //         content: Text("You have Successfully placed your order.")));
+      //   }
+      // }
     } catch (e) {
       CustomLogger.error(e);
     }
+  }
+
+  AddressModel? getSelectedAddress(Map<dynamic, dynamic> data, int Id, userId) {
+    //  "billing_name": _billingNameController.text,
+    //     "billing_mobile": _billingMobileController.text,
+    //     "address": "0",
+    //     "address_latitude": "0.000001",
+    //     "address_longitude": "0.000001",
+    //     "pin_code": _pinCodeController.text,
+    //     "house_number": _houseNumberController.text,
+    //     "area": _areaController.text,
+    //     "landmark": _landmarkController.text,
+    //     "country": countryId,
+    //     "city": city,
+    //     "state": state,
+    //     "for_address": _addressForController.text.toLowerCase(),
+    //     "address_type": _addressTypeController.text.toLowerCase(),
+    //     "default_address": defaultAddress.substring(0, 1)
+    return AddressModel(
+      address: data['address'],
+      addressType: data['address_type'],
+      area: data['area'],
+      billingMobile: data['billing_mobile'],
+      billingName: data['billing_name'],
+      city: data['city'],
+      country: data['country'],
+      countryName: 'India',
+      createdAt: DateTime.now(),
+      defaultAddress: data['default_address'],
+      forAddress: data['for_address'],
+      houseNumber: data['house_number'],
+      id: Id,
+      landmark: data['landmark'],
+      latitude: data['address_latitude'],
+      longitude: data['address_longitude'],
+      pinCode: data['pin_code'],
+      state: data['state'],
+      updatedAt: DateTime.now(),
+      userId: userId,
+    );
   }
 }
