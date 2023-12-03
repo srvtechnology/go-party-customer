@@ -14,6 +14,7 @@ import 'package:customerapp/core/routes/eventsPage.dart';
 import 'package:customerapp/core/routes/product.dart';
 import 'package:customerapp/core/routes/singlePackage.dart';
 import 'package:customerapp/core/routes/singleService.dart';
+import 'package:customerapp/core/routes/view_all_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +23,8 @@ import '../models/orders.dart';
 
 class HomePageScreen extends StatefulWidget {
   static const routeName = "/home";
-  const HomePageScreen({Key? key}) : super(key: key);
+  final int? index;
+  const HomePageScreen({Key? key, this.index}) : super(key: key);
 
   @override
   State<HomePageScreen> createState() => _HomePageScreenState();
@@ -57,7 +59,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
                   child: const ShimmerWidget(),
                 ),
               )
-            : const BottomNav();
+            : BottomNav(
+                index: widget.index,
+              );
       }),
     );
   }
@@ -339,8 +343,10 @@ class _HomeState extends State<Home> {
                                     // .getRange(0, min(4, state.data!.length))
                                     .map((e) => GestureDetector(
                                           onTap: () {
+                                            // Navigator.pushNamed(context,
+                                            //     ProductPageRoute.routeName);
                                             Navigator.pushNamed(context,
-                                                ProductPageRoute.routeName);
+                                                ViewAllServiceRoute.routeName);
                                           },
                                           child: CircularEventCard(
                                             event: e,
@@ -377,7 +383,7 @@ class _HomeState extends State<Home> {
                               TextButton(
                                   onPressed: () {
                                     Navigator.pushNamed(
-                                        context, ProductPageRoute.routeName);
+                                        context, ViewAllServiceRoute.routeName);
                                     // Navigator.push(
                                     //     context,
                                     //     MaterialPageRoute(
@@ -492,7 +498,7 @@ class _HomeState extends State<Home> {
                               TextButton(
                                   onPressed: () {
                                     Navigator.pushNamed(
-                                        context, ProductPageRoute.routeName);
+                                        context, ViewAllServiceRoute.routeName);
                                   },
                                   child: Text(
                                     "View All",
@@ -546,7 +552,7 @@ class _HomeState extends State<Home> {
                               TextButton(
                                   onPressed: () {
                                     Navigator.pushNamed(
-                                        context, ProductPageRoute.routeName);
+                                        context, ViewAllServiceRoute.routeName);
                                   },
                                   child: Text(
                                     "View All",

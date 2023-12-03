@@ -13,7 +13,7 @@ const Color descriptionColor = Color(0xffF5F5F5);
 const Color titleColor = Color(0xffF5F5F5);
 // const Color whiteTextColor = Color(0xffffffff);
 const Color darkAppBarColor = Color(0xff252525);
-const Color textColor = Color(0xff2e3031);
+const Color textColor = Color.fromARGB(255, 73, 92, 102);
 
 const MaterialColor kprimary = MaterialColor(
   0xff0264a5,

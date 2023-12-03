@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:customerapp/core/features/ccavenues/models/enc_val_res.dart';
@@ -27,6 +28,7 @@ class _PaymentWebViewState extends State<PaymentWebView> {
   void initState() {
     super.initState();
     loadPaymentView();
+    log(jsonEncode(widget.generateOrderValue.toMap()), name: 'URL PAY');
   }
 
   loadPaymentView() {
@@ -44,6 +46,7 @@ class _PaymentWebViewState extends State<PaymentWebView> {
             });
           },
           onPageStarted: (String url) {
+            log(url, name: 'URL PAY');
             if (url == widget.generateOrderValue.redirectUrl) {
               setState(() => isloading = true);
             }
@@ -54,7 +57,7 @@ class _PaymentWebViewState extends State<PaymentWebView> {
             }
           },
           onPageFinished: (String url) {
-            log(url, name: 'PaymentWebView');
+            log(url, name: 'URL PAY');
             log('Page finished loading: ${widget.generateOrderValue.cancelUrl}',
                 name: 'PaymentWebView');
             try {

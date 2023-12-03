@@ -8,11 +8,13 @@ import 'package:customerapp/core/routes/profile.dart';
 
 class BottomNav extends StatefulWidget {
   final Widget? child;
+  final int? index;
   final Function(int)? onTabChange;
   const BottomNav({
     Key? key,
     this.child,
     this.onTabChange,
+    this.index,
   }) : super(key: key);
 
   @override
@@ -22,6 +24,15 @@ class BottomNav extends StatefulWidget {
 class _BottomNavState extends State<BottomNav> {
   int currentIndex = 1;
   bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.index != null) {
+      currentIndex = widget.index!;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

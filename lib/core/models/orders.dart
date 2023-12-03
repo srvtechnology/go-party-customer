@@ -30,6 +30,7 @@ class OrderModel {
   String eventCity;
   String eventAddress;
   String orderId;
+  String? paidStatus;
 
   OrderModel({
     required this.id,
@@ -60,6 +61,7 @@ class OrderModel {
     required this.eventCity,
     required this.eventAddress,
     required this.orderId,
+    this.paidStatus,
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
@@ -92,6 +94,7 @@ class OrderModel {
       eventCity: json['event_city'].toString(),
       eventAddress: json['event_address'].toString(),
       orderId: json['order_id'].toString(),
+      paidStatus: json['paid_status'].toString(),
     );
   }
 }

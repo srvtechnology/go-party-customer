@@ -1,5 +1,13 @@
 import 'dart:math';
+
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
+import 'package:customerapp/core/components/Rating_view.dart';
+import 'package:customerapp/core/models/orders.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
+
 import 'package:customerapp/core/Constant/themData.dart';
 import 'package:customerapp/core/components/bottomNav.dart';
 import 'package:customerapp/core/components/card.dart';
@@ -13,16 +21,14 @@ import 'package:customerapp/core/models/service.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/cartProvider.dart';
 import 'package:customerapp/core/providers/categoryProvider.dart';
+import 'package:customerapp/core/providers/orderProvider.dart';
 import 'package:customerapp/core/repo/cart.dart';
 import 'package:customerapp/core/repo/services.dart';
 import 'package:customerapp/core/routes/cart.dart';
 import 'package:customerapp/core/routes/checkoutPage.dart';
 import 'package:customerapp/core/routes/product.dart';
 import 'package:customerapp/core/routes/signin.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-import 'package:responsive_sizer/responsive_sizer.dart';
+
 import '../components/banner.dart';
 
 class SingleServiceRoute extends StatefulWidget {
@@ -201,19 +207,19 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                     const SizedBox(
                                       height: 20,
                                     ),
-                                    CustomDropdown.search(
-                                      borderSide: BorderSide(
-                                          width: 0.5,
-                                          color:
-                                              Theme.of(context).primaryColor),
-                                      borderRadius: BorderRadius.circular(10),
-                                      hintText: "Select Service City",
-                                      controller: _selectedCity,
-                                      items: _cities.map((e) => e).toList(),
-                                    ),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
+                                    // CustomDropdown.search(
+                                    //   borderSide: BorderSide(
+                                    //       width: 0.5,
+                                    //       color:
+                                    //           Theme.of(context).primaryColor),
+                                    //   borderRadius: BorderRadius.circular(10),
+                                    //   hintText: "Select Service City",
+                                    //   controller: _selectedCity,
+                                    //   items: _cities.map((e) => e).toList(),
+                                    // ),
+                                    // const SizedBox(
+                                    //   height: 20,
+                                    // ),
                                     datePickField(
                                         _startDate, "Event Start Date"),
                                     const SizedBox(height: 20),
@@ -335,7 +341,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                             padding: const EdgeInsets.only(
                                                 right: 8.0),
                                             child: Text(
-                                              "\u20B9 ${widget.service.discountedPrice}",
+                                              "\u20B9 ${double.parse(widget.service.discountedPrice) * int.parse(_quantity.text)}",
                                               style: const TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w600),
@@ -397,8 +403,8 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                                           "days": _days.text,
                                                           "time": _duration.text
                                                               .substring(0, 1),
-                                                          "service_city":
-                                                              _selectedCity.text
+                                                          // "service_city":
+                                                          //     _selectedCity.text
                                                         };
                                                         await addtoCart(
                                                             context.read<
@@ -946,25 +952,9 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                           fontWeight: FontWeight.w600),
                                     ),
                                     // write review button
-                                    GestureDetector(
-                                      child: Container(
-                                        height: 4.h,
-                                        width: 30.w,
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                          color: primaryColor,
-                                          borderRadius:
-                                              BorderRadius.circular(50),
-                                        ),
-                                        child: const Text('Write a Review',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.white,
-                                            )),
-                                      ),
-                                    )
+                                    WriteReview(
+                                      serviceId: widget.service.id.toString(),
+                                    ),
                                   ],
                                 )),
                             Container(
@@ -1067,6 +1057,72 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
           );
         }),
       ),
+    );
+  }
+}
+
+class WriteReview extends StatelessWidget {
+  final String serviceId;
+  const WriteReview({
+    Key? key,
+    required this.serviceId,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final auth = context.read<AuthProvider>();
+    if (auth.authState != AuthState.LoggedIn) return const SizedBox();
+    return ListenableProvider(
+      create: (_) => OrderProvider(context.read<AuthProvider>()),
+      child: Consumer<OrderProvider>(builder: (context, state, child) {
+        if (state.isLoading) return const SizedBox();
+        OrderModel? order;
+        try {
+          order = state.deliveredData.firstWhere(
+            (element) => element.service.id == serviceId,
+          );
+        } catch (e) {
+          order = null;
+        }
+        if (order == null) return const SizedBox();
+        return GestureDetector(
+          onTap: () {
+            showModalBottomSheet(
+              context: context,
+              useRootNavigator: true,
+              isScrollControlled: true,
+              backgroundColor: scaffoldBackgroundColor,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(10),
+                    topLeft: Radius.circular(10)),
+              ),
+              builder: (context) => StatefulBuilder(
+                builder: (context, setState) => RatingView(
+                  // rating: value,
+                  orderID: order?.id,
+                ),
+              ),
+            );
+          },
+          child: Container(
+            height: 4.h,
+            width: 30.w,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: primaryColor,
+              borderRadius: BorderRadius.circular(50),
+            ),
+            child: const Text('Write a Review',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                )),
+          ),
+        );
+      }),
     );
   }
 }

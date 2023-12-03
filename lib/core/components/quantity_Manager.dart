@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:customerapp/core/Constant/themData.dart';
 import 'package:flutter/material.dart';
 
@@ -16,18 +18,23 @@ class QuantityManager extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(left: 10),
+      decoration: BoxDecoration(
+          color: primaryColor, borderRadius: BorderRadius.circular(10)),
       width: 150,
       height: 50,
       child: Row(children: [
         Expanded(
           child: ElevatedButton(
             onPressed: () {
+              log(qnty);
+              log(minQnty.toString());
               if (int.parse(qnty) > minQnty) {
                 onChanged((int.parse(qnty) - 1).toString());
               }
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
+              // backgroundColor: Colors.red,
+              elevation: 0,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(10),
@@ -43,13 +50,13 @@ class QuantityManager extends StatelessWidget {
         Expanded(
           child: Container(
             alignment: Alignment.center,
-            color: Colors.white,
+            color: primaryColor,
             child: Text(
               qnty.isEmpty ? '0' : qnty,
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: primaryColor,
+                color: Colors.white,
               ),
             ),
           ),
@@ -60,7 +67,8 @@ class QuantityManager extends StatelessWidget {
               onChanged((int.parse(qnty) + 1).toString());
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
+              // backgroundColor: Colors.green,
+              elevation: 0,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(10),

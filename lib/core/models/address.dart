@@ -1,6 +1,6 @@
 class AddressModel {
   int id;
-  String defaultAddress;
+  String? defaultAddress;
   int userId;
   String city;
   String state;
@@ -43,7 +43,7 @@ class AddressModel {
     required this.updatedAt,
   });
 
-   factory AddressModel.fromJson(Map<String, dynamic> json) {
+  factory AddressModel.fromJson(Map<String, dynamic> json) {
     return AddressModel(
       id: json['id'],
       defaultAddress: json['default_address'],

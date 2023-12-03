@@ -5,11 +5,11 @@ import 'package:customerapp/core/providers/serviceProvider.dart';
 import 'package:customerapp/core/routes/filter.dart';
 import 'package:customerapp/core/routes/singlePackage.dart';
 import 'package:customerapp/core/routes/singleService.dart';
+import 'package:customerapp/core/utils/debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import '../components/card.dart';
-import '../components/loading.dart';
 import '../models/package.dart';
 
 class ProductPageRoute extends StatefulWidget {
@@ -22,7 +22,7 @@ class ProductPageRoute extends StatefulWidget {
 
 class _ProductPageRouteState extends State<ProductPageRoute> {
   final TextEditingController _searchController = TextEditingController();
-
+  // Timer? _timer;
   @override
   Widget build(BuildContext context) {
     return BottomNav(
@@ -32,25 +32,25 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
           return ListenableProvider(
             create: (_) => ServiceProvider(filters: filters),
             child: Consumer<ServiceProvider>(builder: (context, state, child) {
-              if (state.isLoading) {
-                return Scaffold(
-                    body: Container(
-                        alignment: Alignment.center,
-                        child: const ShimmerWidget()));
-              }
-              if (state.data == null) {
-                return Scaffold(
-                  appBar: AppBar(
-                    title: const Text("Services"),
-                    centerTitle: true,
-                    elevation: 0,
-                  ),
-                  body: Container(
-                    alignment: Alignment.center,
-                    child: const Text("No services available"),
-                  ),
-                );
-              }
+              // if (state.isLoading) {
+              //   return Scaffold(
+              //       body: Container(
+              //           alignment: Alignment.center,
+              //           child: const ShimmerWidget()));
+              // }
+              // if (state.data == null) {
+              //   return Scaffold(
+              //     appBar: AppBar(
+              //       title: const Text("Services"),
+              //       centerTitle: true,
+              //       elevation: 0,
+              //     ),
+              //     body: Container(
+              //       alignment: Alignment.center,
+              //       child: const Text("No services available"),
+              //     ),
+              //   );
+              // }
               return GestureDetector(
                 onTap: () {
                   FocusManager.instance.primaryFocus!.unfocus();
@@ -97,22 +97,77 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                       // color: Colors.white,
                       child: SingleChildScrollView(
                         // padding: EdgeInsets.only(bottom: 5.h, top: 2.h),
-                        child: Container(
-                          child: Column(
-                              children: state.data!
-                                  .map((e) => ProductTile(
-                                        service: e,
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      SingleServiceRoute(
-                                                          service: e)));
-                                        },
-                                      ))
-                                  .toList()),
-                        ),
+                        child: state.isLoading
+                            ? Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.6,
+                                width: MediaQuery.of(context).size.width,
+                                alignment: Alignment.center,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    // search icon
+                                    CircularProgressIndicator(),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    // search text
+                                    Text(
+                                      "Searching for services",
+                                      style: TextStyle(
+                                          fontSize: 14, color: Colors.grey),
+                                    )
+                                  ],
+                                ),
+                              )
+                            : Column(
+                                children: state.data == null
+                                    ? [
+                                        Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.6,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          alignment: Alignment.center,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: const [
+                                              // search icon
+                                              Icon(
+                                                Icons.search,
+                                                size: 100,
+                                                color: Colors.grey,
+                                              ),
+                                              SizedBox(
+                                                height: 5,
+                                              ),
+                                              // search text
+                                              Text(
+                                                "Search for services",
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.grey),
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      ]
+                                    : state.searchData!
+                                        .map((e) => ProductTile(
+                                              service: e,
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            SingleServiceRoute(
+                                                                service: e)));
+                                              },
+                                            ))
+                                        .toList()),
                       ),
                     ),
                   ),
@@ -136,6 +191,17 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
       child: TextFormField(
         // autofocus: true,
         controller: controller,
+        onChanged: (v) {
+          // if (_timer != null) _timer?.cancel();
+          Debouncer(milliseconds: 500).run(() {
+            serviceState.getFilteredServices(filterState,
+                searchString: _searchController.text);
+          });
+          // _timer = Timer(const Duration(milliseconds: 500), () async {
+          //   await serviceState.getFilteredServices(filterState,
+          //       searchString: _searchController.text);
+          // });
+        },
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.only(top: 10, left: 20),
             hintText: "Search ...",

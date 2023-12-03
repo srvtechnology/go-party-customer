@@ -1,10 +1,10 @@
 import 'dart:developer';
 
-import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:customerapp/core/Constant/themData.dart';
 import 'package:customerapp/core/features/ccavenues/models/enc_val_res.dart';
 import 'package:customerapp/core/features/ccavenues/patmentWebview.dart';
 import 'package:customerapp/core/models/address.dart';
+import 'package:customerapp/core/models/cart.dart';
 import 'package:customerapp/core/repo/order.dart';
 import 'package:customerapp/core/utils/geolocator.dart';
 import 'package:flutter/material.dart';
@@ -17,10 +17,12 @@ import 'package:customerapp/core/providers/AuthProvider.dart';
 class PaymentPage extends StatefulWidget {
   AddressModel? selectedAddress;
   double total;
+  List<CartModel> cartItems;
   PaymentPage({
     Key? key,
     required this.selectedAddress,
     required this.total,
+    required this.cartItems,
   }) : super(key: key);
 
   @override
@@ -30,8 +32,7 @@ class PaymentPage extends StatefulWidget {
 class _PaymentPageState extends State<PaymentPage> {
   final TextEditingController _paymentModeController =
       TextEditingController(text: "Online");
-  final TextEditingController _paymentTypeController =
-      TextEditingController(text: "Complete");
+  final TextEditingController _paymentTypeController = TextEditingController();
   final TextEditingController _cardNumberController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool showCard = true;
@@ -39,6 +40,11 @@ class _PaymentPageState extends State<PaymentPage> {
   @override
   void initState() {
     super.initState();
+  }
+
+  String _getAddress(AddressModel address) {
+    return "${address.address} , ${address.city}, ${address.state}";
+    // "${address.houseNumber}, ${address.landmark}, \n${address.area} , ${address.city}, \n${address.state} ${address.pinCode}  ${address.countryName}";
   }
 
   @override
@@ -142,13 +148,105 @@ class _PaymentPageState extends State<PaymentPage> {
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10)),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: widget.cartItems.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        //if length is 1 then show border bottom
+                        border: Border(
+                          bottom: BorderSide(
+                            color: widget.cartItems.length == 1
+                                ? Colors.transparent
+                                : Colors.grey.withOpacity(0.5),
+                          ),
+                        ),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Image of service
+                          Container(
+                            height: 100,
+                            width: 100,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                image: DecorationImage(
+                                    image: NetworkImage(widget.cartItems[index]
+                                            .service?.images?.first ??
+                                        ''),
+                                    fit: BoxFit.cover)),
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  height: 0,
+                                ),
+                                Text(
+                                  widget.cartItems[index].service.name ?? "",
+                                  style: TextStyle(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                Text(
+                                  widget.cartItems[index].service.description ??
+                                      "",
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "₹ ${widget.cartItems[index].price}",
+                                      style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          color: primaryColor),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
                         Text(
-                          "Delivery Address",
+                          "Choose Delivery Address",
                           style: TextStyle(
                               fontSize: 15.sp, fontWeight: FontWeight.w600),
                         )
@@ -156,7 +254,7 @@ class _PaymentPageState extends State<PaymentPage> {
                     ),
                     const Divider(),
                     const SizedBox(
-                      height: 5,
+                      height: 0,
                     ),
                     Text(
                       widget.selectedAddress?.billingName ?? "",
@@ -164,12 +262,11 @@ class _PaymentPageState extends State<PaymentPage> {
                           fontSize: 16, color: Theme.of(context).primaryColor),
                     ),
                     Text(
-                      widget.selectedAddress?.addressType ?? "",
+                      widget.selectedAddress?.billingMobile ?? "",
                       style: const TextStyle(
                           fontSize: 13, fontWeight: FontWeight.bold),
                     ),
-                    Text(
-                        "${widget.selectedAddress?.houseNumber ?? ''}, ${widget.selectedAddress?.landmark ?? ''}, ${widget.selectedAddress?.area ?? ''}, ${widget.selectedAddress?.state ?? ''}"),
+                    Text(_getAddress(widget.selectedAddress!)),
                     const SizedBox(
                       height: 10,
                     ),
@@ -187,7 +284,7 @@ class _PaymentPageState extends State<PaymentPage> {
                           width: 5,
                         ),
                         Text(
-                          "Payment Details",
+                          "Choose Payment Method",
                           style: TextStyle(
                               fontSize: 15.sp, fontWeight: FontWeight.w600),
                         )
@@ -196,37 +293,63 @@ class _PaymentPageState extends State<PaymentPage> {
                     const SizedBox(
                       height: 20,
                     ),
-                    CustomDropdown(
-                        onChanged: (text) {
-                          // if (text == "Online") {
-                          //   setState(() {
-                          //     showCard = true;
-                          //   });
-                          // } else {
-                          //   setState(() {
-                          //     showCard = false;
-                          //   });
-                          // }
-                        },
-                        hintText: "Select Payment Mode",
-                        items: const ["Online"],
-                        controller: _paymentModeController),
-                    const SizedBox(
-                      height: 10,
+                    // CustomDropdown(
+                    //     onChanged: (text) {
+                    //       // if (text == "Online") {
+                    //       //   setState(() {
+                    //       //     showCard = true;
+                    //       //   });
+                    //       // } else {
+                    //       //   setState(() {
+                    //       //     showCard = false;
+                    //       //   });
+                    //       // }
+                    //     },
+                    //     hintText: "Select Payment Mode",
+                    //     items: const ["Online"],
+                    //     controller: _paymentModeController),
+
+                    // radio button options for payment type 'complete' or 'partial' in variable _paymentTypeController and vartial amount is 25% of total amount
+                    Column(
+                      children: [
+                        RadioListTile(
+                          contentPadding: EdgeInsets.zero,
+                          value: "Complete",
+                          groupValue: _paymentTypeController.text,
+                          onChanged: (text) {
+                            setState(() {
+                              _paymentTypeController.text = text.toString();
+                            });
+                          },
+                          title: const Text("Complete"),
+                        ),
+                        RadioListTile(
+                          contentPadding: EdgeInsets.zero,
+                          value: "Partial",
+                          groupValue: _paymentTypeController.text,
+                          onChanged: (text) {
+                            setState(() {
+                              _paymentTypeController.text = text.toString();
+                            });
+                          },
+                          title: const Text("Partial"),
+                        ),
+                      ],
                     ),
-                    CustomDropdown(
-                        onChanged: (p0) {
-                          if (p0 == "Partial") {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text(
-                                        "25% of total amount will be paid now. Rest will be paid at the time of delivery")));
-                          }
-                          setState(() {});
-                        },
-                        hintText: "Select Payment Type",
-                        items: const ["Complete", "Partial"],
-                        controller: _paymentTypeController),
+
+                    // CustomDropdown(
+                    //     onChanged: (p0) {
+                    //       if (p0 == "Partial") {
+                    //         ScaffoldMessenger.of(context).showSnackBar(
+                    //             const SnackBar(
+                    //                 content: Text(
+                    //                     "25% of total amount will be paid now. Rest will be paid at the time of delivery")));
+                    //       }
+                    //       setState(() {});
+                    //     },
+                    //     hintText: "Select Payment Type",
+                    //     items: const ["Complete", "Partial"],
+                    //     controller: _paymentTypeController),
                     const SizedBox(
                       height: 20,
                     ),
@@ -356,7 +479,68 @@ class _PaymentPageState extends State<PaymentPage> {
                                 ),
                               ))
                             ],
-                          )
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          // policy Rich Text  for payment
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              RichText(
+                                  text: const TextSpan(
+                                text:
+                                    '''When your order is placed, we'll send you an e-mail message acknowledging receipt of your order. If you choose to pay using an electronic payment method (credit card, debit card or net banking), you will be directed to your bank's website to complete your payment. Your contract to book a service will not be complete until we receive your electronic payment and successfully complete the service. If you choose to pay using a partial payment method, you can checkout to pay some amount of the total bill and you can pay the remaining balance using cash or electronic payment method 24 hours before your services starts.''',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 12,
+                                ),
+                              )),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              RichText(
+                                text: const TextSpan(
+                                  text: 'See Utsavlife.com ',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 12,
+                                  ),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: 'Refund Policy.',
+                                      style: TextStyle(
+                                        color: primaryColor,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              RichText(
+                                text: const TextSpan(
+                                  text:
+                                      'Need to add more services to your order? Continue shopping on the',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 12,
+                                  ),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: ' utsavlife homepage.',
+                                      style: TextStyle(
+                                        color: primaryColor,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),

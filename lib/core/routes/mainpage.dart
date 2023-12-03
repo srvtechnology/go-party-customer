@@ -7,7 +7,8 @@ import '../components/errors.dart';
 
 class MainPageRoute extends StatefulWidget {
   static const routeName = "/main";
-  const MainPageRoute({Key? key}) : super(key: key);
+  final int? index;
+  const MainPageRoute({Key? key, this.index}) : super(key: key);
 
   @override
   State<MainPageRoute> createState() => _MainPageRouteState();
@@ -16,17 +17,17 @@ class MainPageRoute extends StatefulWidget {
 class _MainPageRouteState extends State<MainPageRoute> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<NetworkProvider>(
-      builder: (context,state,child) {
-        if(!state.isOnline){
-          return CustomErrorWidget(
-            backgroundColor: Colors.grey[300]!,
-            message: "Looks like you are not connected to the internet",
-            icon: Icons.wifi,
-          );
-        }
-        return const HomePageScreen();
+    return Consumer<NetworkProvider>(builder: (context, state, child) {
+      if (!state.isOnline) {
+        return CustomErrorWidget(
+          backgroundColor: Colors.grey[300]!,
+          message: "Looks like you are not connected to the internet",
+          icon: Icons.wifi,
+        );
       }
-    );
+      return HomePageScreen(
+        index: widget.index,
+      );
+    });
   }
 }

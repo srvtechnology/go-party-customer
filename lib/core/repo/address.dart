@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:customerapp/core/providers/AuthProvider.dart';
@@ -46,6 +47,7 @@ Future<List<AddressModel>> getAddress(AuthProvider auth) async {
     Response response = await customDioClient.client.get(
         "${APIConfig.baseUrl}/api/customer/view-address",
         options: Options(headers: {"Authorization": "Bearer ${auth.token}"}));
+    log(jsonEncode(response.data), name: "Address Response");
     List<AddressModel> list = [];
     for (var i in response.data["data"]["all_address"]) {
       try {

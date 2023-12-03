@@ -74,7 +74,7 @@ class OrderCard extends StatelessWidget {
                       style: const TextStyle(
                           fontSize: 16,
                           color: textColor,
-                          fontWeight: FontWeight.w600)),
+                          fontWeight: FontWeight.w500)),
                 ),
               ],
             )),
@@ -162,7 +162,7 @@ class PackageCard extends StatelessWidget {
                     style: const TextStyle(
                         fontSize: 16,
                         color: textColor,
-                        fontWeight: FontWeight.w600),
+                        fontWeight: FontWeight.w500),
                   ),
                 ),
               ],
@@ -266,7 +266,7 @@ class PackageTile extends StatelessWidget {
                       style: TextStyle(
                           color: Theme.of(context).primaryColor,
                           fontSize: 18.sp,
-                          fontWeight: FontWeight.w600),
+                          fontWeight: FontWeight.w500),
                     ),
                   ),
                   Expanded(
@@ -432,7 +432,7 @@ class CircularOrderCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(right: 2.w),
       width: 24.w,
-      height: 20.h,
+      height: 18.h,
       child: GestureDetector(
         onTap: () {
           Navigator.push(
@@ -471,9 +471,9 @@ class CircularOrderCard extends StatelessWidget {
                 child: Text(
                   service.name,
                   textAlign: TextAlign.center,
-                  overflow: TextOverflow.visible,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w500,
                       color: textColor,
                       fontSize: 12),
                 ),
@@ -517,7 +517,7 @@ class CircularEventCard extends StatelessWidget {
           Text(
             event.name,
             style:
-                const TextStyle(fontWeight: FontWeight.w600, color: textColor),
+                const TextStyle(fontWeight: FontWeight.w500, color: textColor),
           )
         ],
       ),

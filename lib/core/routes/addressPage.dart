@@ -1,7 +1,7 @@
+import 'dart:developer';
+
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:csc_picker/csc_picker.dart';
-import 'package:customerapp/core/Constant/themData.dart';
-import 'package:customerapp/core/components/divider.dart';
 import 'package:customerapp/core/models/address.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/addressProvider.dart';
@@ -37,6 +37,7 @@ class _AddressAddPageState extends State<AddressAddPage> {
   String? country, state, city;
   String defaultAddress = "Yes";
   bool clicked = false;
+  bool isAddressLoading = false;
   late Future<List<Country>> _countryFuture;
   late Future<Map> _geolocationFuture;
   final focusNode = FocusNode();
@@ -54,12 +55,18 @@ class _AddressAddPageState extends State<AddressAddPage> {
   }
 
   getLocationByPin() async {
+    setState(() {
+      isAddressLoading = true;
+    });
     final data = await getCityStateCountryByPin(_pinCodeController.text);
     if (data.isEmpty) return {};
     setState(() {
       country = data["country"];
       state = data["state"];
       city = data["city"];
+    });
+    setState(() {
+      isAddressLoading = false;
     });
     return data;
   }
@@ -197,6 +204,8 @@ class _AddressAddPageState extends State<AddressAddPage> {
                       const SizedBox(
                         height: 20,
                       ),
+
+                      // Pin Code add
                       SizedBox(
                         height: 6.h,
                         child: TextFormField(
@@ -261,28 +270,32 @@ class _AddressAddPageState extends State<AddressAddPage> {
                       const SizedBox(
                         height: 20,
                       ),
-                      CSCPicker(
-                        currentCountry: country,
-                        currentState: state,
-                        currentCity: city,
-                        flagState: CountryFlag.DISABLE,
-                        onCountryChanged: (value) {
-                          setState(() {
-                            country = value;
-                          });
-                        },
-                        onStateChanged: (value) {
-                          setState(() {
-                            state = value;
-                          });
-                        },
-                        onCityChanged: (value) {
-                          setState(() {
-                            city = value;
-                            // _cityController.text = value!;
-                          });
-                        },
-                      ),
+                      isAddressLoading
+                          ? const Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : CSCPicker(
+                              currentCountry: country,
+                              currentState: state,
+                              currentCity: city,
+                              flagState: CountryFlag.DISABLE,
+                              onCountryChanged: (value) {
+                                setState(() {
+                                  country = value;
+                                });
+                              },
+                              onStateChanged: (value) {
+                                setState(() {
+                                  state = value;
+                                });
+                              },
+                              onCityChanged: (value) {
+                                setState(() {
+                                  city = value;
+                                  // _cityController.text = value!;
+                                });
+                              },
+                            ),
                       const SizedBox(
                         height: 20,
                       ),
@@ -469,6 +482,7 @@ class AddressPage extends StatefulWidget {
 }
 
 class _AddressPageState extends State<AddressPage> {
+  String searchText = "";
   @override
   Widget build(BuildContext context) {
     return ListenableProvider(
@@ -485,40 +499,88 @@ class _AddressPageState extends State<AddressPage> {
           appBar: AppBar(
             title: const Text("Manage Addresses"),
           ),
-          bottomNavigationBar: Container(
-            height: 6.h,
-            margin: EdgeInsets.only(bottom: 2.h, left: 4.w, right: 4.w),
-            child: ElevatedButton(
-              onPressed: () async {
-                await Navigator.pushNamed(context, AddressAddPage.routeName);
-                if (context.mounted) {
-                  await state.getAddress(context.read<AuthProvider>());
-                }
-              },
-              child: const Text("Add a New Address"),
-            ),
-          ),
-          body: Container(
+          body: SizedBox(
             height: double.infinity,
             width: double.infinity,
-            padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+            // padding: const EdgeInsets.all(30),
+
             child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Manage Addresses",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 18.sp),
-                      )
-                    ],
+                  const Divider(),
+                  InkWell(
+                    onTap: () async {
+                      await Navigator.pushNamed(
+                          context, AddressAddPage.routeName);
+                      if (context.mounted) {
+                        await state.getAddress(context.read<AuthProvider>());
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                      ),
+                      child: Row(
+                        children: [
+                          const Text(
+                            "Add New Address",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const Spacer(),
+                          IconButton(
+                            iconSize: 20,
+                            onPressed: () async {},
+                            icon: const Icon(Icons.arrow_forward_ios),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  const Divider(),
+                  const SizedBox(
+                    height: 10,
                   ),
                   SizedBox(
-                    height: 2.h,
+                    height: 50,
+                    child: TextFormField(
+                      onChanged: (text) {
+                        setState(() {
+                          searchText = text;
+                        });
+                      },
+                      decoration: InputDecoration(
+                          filled: true,
+                          // fillColor: const Color(0xffe5e5e5),
+                          hintText: "Search ...",
+                          prefixIcon: const Icon(Icons.search),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          )),
+                    ),
                   ),
-                  ...state.data.map((e) => _addressTile(e, state)).toList()
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.start,
+                  //   children: [
+                  //     Text(
+                  //       "Your Addresses",
+                  //       style: TextStyle(
+                  //           fontWeight: FontWeight.w600, fontSize: 15.sp),
+                  //     )
+                  //   ],
+                  // ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+
+                  ...state.data
+                      .where((element) =>
+                          _getAddress(element).contains(searchText))
+                      .map((e) => _addressTile(e, state))
+                      .toList()
                 ],
               ),
             ),
@@ -528,58 +590,73 @@ class _AddressPageState extends State<AddressPage> {
     );
   }
 
+  String _getAddress(AddressModel address) {
+    return "${address.address} , ${address.city}, ${address.state}";
+    // "${address.houseNumber}, ${address.landmark}, \n${address.area} , ${address.city}, \n${address.state} ${address.pinCode}  ${address.countryName}";
+  }
+
   Widget _addressTile(AddressModel address, AddressProvider state) {
     return Container(
-      height: 30.h,
-      padding: EdgeInsets.symmetric(vertical: 1.h),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.grey[300]!),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (address.defaultAddress == "Y") ...[
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              children: [
+                const Text(
+                  "Default :  ",
+                  style: TextStyle(color: Colors.grey),
+                ),
+                Image.asset(
+                  "assets/images/logo/logo-resized.png",
+                  height: 20,
+                )
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            const Divider(),
+          ],
+          Text(
+            "${address.billingName} ",
+            style: const TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Container(
+            constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.8),
+            child: Text(
+              _getAddress(address),
+              style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 14),
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
           Row(
             children: [
-              Text(
-                "${address.addressType[0].toUpperCase()}${address.addressType.substring(1).toLowerCase()}",
-                style: const TextStyle(
-                    fontWeight: FontWeight.w600, color: primaryColor),
-              ),
               Container(
-                margin: EdgeInsets.symmetric(horizontal: 2.w),
-                color: primaryColor,
-                height: 16,
-                width: 1,
-              ),
-              Text(
-                "${address.forAddress[0].toUpperCase()}${address.forAddress.substring(1).toLowerCase()}",
-                style: const TextStyle(
-                    fontWeight: FontWeight.w600, color: Colors.grey),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 1.h,
-          ),
-          Text(
-            address.billingName,
-            style: const TextStyle(fontWeight: FontWeight.w600),
-          ),
-          Text(
-            "${address.houseNumber}, ${address.landmark}, \n${address.area} , ${address.city}, \n${address.state}, ${address.countryName}",
-            style: const TextStyle(fontWeight: FontWeight.w500),
-          ),
-          Text('Phone Num: ${address.billingMobile}',
-              style: const TextStyle(
-                  fontWeight: FontWeight.w600, color: primaryColor)),
-          SizedBox(
-            height: 1.h,
-          ),
-          Row(
-            children: [
-              ElevatedButton(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: ElevatedButton(
                   style:
-                      ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                      ElevatedButton.styleFrom(backgroundColor: Colors.white),
                   onPressed: () {
                     Navigator.push(
                         context,
@@ -589,21 +666,40 @@ class _AddressPageState extends State<AddressPage> {
                         (value) =>
                             state.getAddress(context.read<AuthProvider>()));
                   },
-                  child: const Text("Edit")),
-              const SizedBox(
-                width: 20,
+                  child: const Text(
+                    "Edit",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
               ),
-              ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.redAccent),
+              const SizedBox(
+                width: 10,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: ElevatedButton(
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: Colors.white),
                   onPressed: () async {
                     await state.deleteAddress(
                         context.read<AuthProvider>(), address.id.toString());
                   },
-                  child: const Text("Delete")),
+                  child: const Text(
+                    "Remove",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
-          const DashedDivider(),
         ],
       ),
     );
@@ -631,7 +727,10 @@ class _AddressEditPageState extends State<AddressEditPage> {
   String? country, state, city;
   String defaultAddress = "Yes";
   bool clicked = false;
+  bool isAddressLoading = false;
   late Future<List<Country>> _countryFuture;
+  final focusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -648,6 +747,32 @@ class _AddressEditPageState extends State<AddressEditPage> {
     _landmarkController.text = widget.address.landmark;
     city = widget.address.city;
     state = widget.address.state;
+    focusNode.addListener(() {
+      if (focusNode.hasFocus == false) {
+        getLocationByPin();
+      }
+    });
+  }
+
+  getLocationByPin() async {
+    setState(() {
+      isAddressLoading = true;
+    });
+    final data = await getCityStateCountryByPin(_pinCodeController.text);
+    log(data.toString());
+    if (data.isEmpty) return {};
+    setState(() {
+      country = data["country"];
+      state = data["state"];
+      city = data["city"];
+    });
+    log(country.toString());
+    log(state.toString());
+    log(city.toString());
+    setState(() {
+      isAddressLoading = false;
+    });
+    return data;
   }
 
   @override
@@ -771,7 +896,38 @@ class _AddressEditPageState extends State<AddressEditPage> {
                         ),
                       ),
                       const SizedBox(
-                        height: 10,
+                        height: 20,
+                      ),
+                      // Pin Code edit
+                      SizedBox(
+                        height: 6.h,
+                        child: TextFormField(
+                          focusNode: focusNode,
+                          controller: _pinCodeController,
+                          onChanged: (text) {
+                            if (text.length == 6) {
+                              setState(() {
+                                getLocationByPin();
+                              });
+                            }
+                          },
+                          validator: (text) {
+                            if (text == null || text.isEmpty) return "Required";
+                            if (text.length != 6) {
+                              return "Please enter a valid pincode";
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                      width: 0.2, color: Colors.grey[200]!)),
+                              labelText: "Pin Code"),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
                       ),
                       SizedBox(
                         height: 6.h,
@@ -809,52 +965,61 @@ class _AddressEditPageState extends State<AddressEditPage> {
                       const SizedBox(
                         height: 20,
                       ),
-                      CSCPicker(
-                        currentCountry: country,
-                        currentState: state,
-                        currentCity: city,
-                        flagState: CountryFlag.DISABLE,
-                        onCountryChanged: (value) {
-                          setState(() {
-                            country = value;
-                            //   _countryController.text=value;
-                          });
-                        },
-                        onStateChanged: (value) {
-                          setState(() {
-                            state = value;
-                            // _stateController.text=value!;
-                          });
-                        },
-                        onCityChanged: (value) {
-                          setState(() {
-                            city = value;
-                            // _cityController.text = value!;
-                          });
-                        },
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      SizedBox(
-                        height: 6.h,
-                        child: TextFormField(
-                          controller: _pinCodeController,
-                          validator: (text) {
-                            if (text == null || text.isEmpty) return "Required";
-                            if (text.length != 6) {
-                              return "Please enter a valid pincode";
-                            }
-                            return null;
-                          },
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                      width: 0.2, color: Colors.grey[200]!)),
-                              labelText: "Pin Code"),
-                        ),
-                      ),
+                      isAddressLoading
+                          ? const Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : CSCPicker(
+                              currentCountry: country,
+                              currentState: state,
+                              currentCity: city,
+                              flagState: CountryFlag.DISABLE,
+                              onCountryChanged: (value) {
+                                setState(() {
+                                  country = value;
+                                });
+                              },
+                              onStateChanged: (value) {
+                                setState(() {
+                                  state = value;
+                                });
+                              },
+                              onCityChanged: (value) {
+                                setState(() {
+                                  city = value;
+                                  // _cityController.text = value!;
+                                });
+                              },
+                            ),
+
+                      // const SizedBox(
+                      //   height: 20,
+                      // ),
+                      // SizedBox(
+                      //   height: 6.h,
+                      //   child: TextFormField(
+                      //     controller: _pinCodeController,
+                      //     focusNode: focusNode,
+                      //     onChanged: (text) {
+                      //       if (text.length == 6) {
+                      //         getLocationByPin();
+                      //       }
+                      //     },
+                      //     validator: (text) {
+                      //       if (text == null || text.isEmpty) return "Required";
+                      //       if (text.length != 6) {
+                      //         return "Please enter a valid pincode";
+                      //       }
+                      //       return null;
+                      //     },
+                      //     decoration: InputDecoration(
+                      //         border: OutlineInputBorder(
+                      //             borderRadius: BorderRadius.circular(10),
+                      //             borderSide: BorderSide(
+                      //                 width: 0.2, color: Colors.grey[200]!)),
+                      //         labelText: "Pin Code"),
+                      //   ),
+                      // ),
                       const SizedBox(
                         height: 20,
                       ),

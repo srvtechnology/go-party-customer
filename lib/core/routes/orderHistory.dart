@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:customerapp/core/Constant/themData.dart';
+import 'package:customerapp/core/components/Rating_view.dart';
 import 'package:customerapp/core/components/divider.dart';
 import 'package:customerapp/core/routes/cart.dart';
 import 'package:flutter/material.dart';
@@ -253,6 +254,26 @@ class OrderHistory extends StatelessWidget {
                   ),
                   PannableRatingBar(
                     rate: 1,
+                    onCompleted: (value) {
+                      // the rating value is updated when the user stops dragging.
+                      showModalBottomSheet(
+                        context: context,
+                        useRootNavigator: true,
+                        isScrollControlled: true,
+                        backgroundColor: scaffoldBackgroundColor,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(10),
+                              topLeft: Radius.circular(10)),
+                        ),
+                        builder: (context) => StatefulBuilder(
+                          builder: (context, setState) => RatingView(
+                            rating: value,
+                            orderID: order.id,
+                          ),
+                        ),
+                      );
+                    },
                     items: List.generate(
                         5,
                         (index) => const RatingWidget(

@@ -12,6 +12,7 @@ import 'package:customerapp/core/routes/profile.dart';
 import 'package:customerapp/core/routes/signin.dart';
 import 'package:customerapp/core/routes/signup.dart';
 import 'package:customerapp/core/routes/splash.dart';
+import 'package:customerapp/core/routes/view_all_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -45,6 +46,8 @@ class MyApp extends StatelessWidget {
             SignUpPageRoute.routeName: (context) => const SignUpPageRoute(),
             HomePageScreen.routeName: (context) => const HomePageScreen(),
             ProductPageRoute.routeName: (context) => const ProductPageRoute(),
+            ViewAllServiceRoute.routeName: (context) =>
+                const ViewAllServiceRoute(),
             MainPageRoute.routeName: (context) => const MainPageRoute(),
             EditProfilePage.routeName: (context) => const EditProfilePage(),
             FeedbackPage.routeName: (context) => const FeedbackPage(),
