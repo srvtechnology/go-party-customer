@@ -2,12 +2,31 @@ import 'package:customerapp/core/features/ccavenues/models/payment_res.dart';
 import 'package:customerapp/core/routes/mainpage.dart';
 import 'package:flutter/material.dart';
 
-class PaymentStatusView extends StatelessWidget {
+class PaymentStatusView extends StatefulWidget {
   final PaymentRes? paymentRes;
   const PaymentStatusView({
     Key? key,
     required this.paymentRes,
   }) : super(key: key);
+
+  @override
+  State<PaymentStatusView> createState() => _PaymentStatusViewState();
+}
+
+class _PaymentStatusViewState extends State<PaymentStatusView> {
+  @override
+  void initState() {
+    super.initState();
+    // 2 seconds delay and automatically navigate to main page
+    Future.delayed(const Duration(seconds: 2), () {
+      if (context.mounted) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const MainPageRoute()),
+            (route) => route.isFirst);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +57,8 @@ class PaymentStatusView extends StatelessWidget {
               )),
           body: SizedBox(
               width: MediaQuery.of(context).size.width,
-              child: (paymentRes?.code ?? 400) == 200 ||
-                      (paymentRes?.code ?? 400) == 202
+              child: (widget.paymentRes?.code ?? 400) == 200 ||
+                      (widget.paymentRes?.code ?? 400) == 202
                   ? _buildPaymentStatus(context, true)
                   : _buildPaymentStatus(context, false))),
     );
@@ -80,7 +99,7 @@ class PaymentStatusView extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           width: MediaQuery.of(context).size.width,
           child: Text(
-            paymentRes?.type?.statusMessage ?? "",
+            widget.paymentRes?.type?.statusMessage ?? "",
             style: const TextStyle(
                 fontSize: 12, color: Colors.grey, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
@@ -93,7 +112,7 @@ class PaymentStatusView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "Order ID: ${paymentRes?.type?.orderId ?? ""}",
+              "Order ID: ${widget.paymentRes?.type?.orderId ?? ""}",
               style: TextStyle(
                 fontSize: 12,
                 color: Theme.of(context).primaryColor,
@@ -102,7 +121,7 @@ class PaymentStatusView extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             Text(
-              "Tracking ID: ${paymentRes?.type?.trackingId ?? ""}",
+              "Tracking ID: ${widget.paymentRes?.type?.trackingId ?? ""}",
               style: TextStyle(
                 fontSize: 12,
                 color: Theme.of(context).primaryColor,
@@ -113,7 +132,7 @@ class PaymentStatusView extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         Text(
-          "Payment Mode: ${paymentRes?.type?.paymentMode ?? ""}",
+          "Payment Mode: ${widget.paymentRes?.type?.paymentMode ?? ""}",
           style: TextStyle(
             fontSize: 12,
             color: Theme.of(context).primaryColor,

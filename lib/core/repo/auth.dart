@@ -63,7 +63,7 @@ Future<Map<String, dynamic>> de_Activate(String token, customerId) async {
   }
 }
 
-Future register(
+Future<Response?> register(
     String email, String password, String name, String phone) async {
   try {
     Response response = await customDioClient.client
@@ -74,8 +74,8 @@ Future register(
       "mobile": phone
     });
     log(jsonEncode(response.data.toString()));
-    return Future.value(true);
+    return Future.value(response);
   } catch (e) {
-    return Future.value(e);
+    return Future.value(null);
   }
 }

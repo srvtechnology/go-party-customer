@@ -5,7 +5,7 @@ import 'package:customerapp/core/Constant/themData.dart';
 import 'package:customerapp/core/components/divider.dart';
 import 'package:customerapp/core/components/htmlTextView.dart';
 import 'package:customerapp/core/routes/orderHistory.dart';
-import 'package:customerapp/core/routes/orderInfoView.dart';
+import 'package:customerapp/core/routes/orderStatusPage.dart';
 import 'package:customerapp/core/routes/singleService.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pannable_rating_bar/flutter_pannable_rating_bar.dart';
@@ -58,7 +58,7 @@ class OrderCard extends StatelessWidget {
                         image: DecorationImage(
                             fit: BoxFit.fitHeight,
                             image: CachedNetworkImageProvider(
-                              service.images[0],
+                              service.images![0],
                             ))),
                   ),
                 )),
@@ -69,7 +69,7 @@ class OrderCard extends StatelessWidget {
                 child: Row(
               children: [
                 Expanded(
-                  child: Text(service.name,
+                  child: Text(service.name ?? "",
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                           fontSize: 16,
@@ -461,7 +461,7 @@ class CircularOrderCard extends StatelessWidget {
                 child: CircleAvatar(
                   // radius: 40,
                   backgroundImage:
-                      CachedNetworkImageProvider(service.images[0]),
+                      CachedNetworkImageProvider(service.images![0]),
                 ),
               ),
               SizedBox(
@@ -469,7 +469,7 @@ class CircularOrderCard extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  service.name,
+                  service.name ?? "",
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -668,7 +668,7 @@ class _OrderTileState extends State<OrderTile> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => OrderInfoView(
+            builder: (context) => OrderStatusPage(
               order: widget.order,
             ),
           ),
@@ -686,15 +686,15 @@ class _OrderTileState extends State<OrderTile> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  height: 16.h,
-                  width: 40.w,
+                  height: 14.h,
+                  width: 32.w,
                   margin: const EdgeInsets.symmetric(horizontal: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
                     image: DecorationImage(
                         fit: BoxFit.cover,
                         image: CachedNetworkImageProvider(
-                            widget.order.service.images[0])),
+                            widget.order.service.images![0])),
                   ),
                 ),
                 SizedBox(
@@ -705,7 +705,7 @@ class _OrderTileState extends State<OrderTile> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.order.service.name,
+                        widget.order.service.name ?? "",
                         style: TextStyle(
                             fontSize: 18.sp, fontWeight: FontWeight.w600),
                       ),
@@ -745,7 +745,9 @@ class _OrderTileState extends State<OrderTile> {
                               ],
                             )
                           : Text(
-                              '${DateFormat('dd MMM yy').format(DateTime.parse(widget.order.eventDate))} To ${DateFormat('dd MMM yy').format(DateTime.parse(widget.order.eventEndDate))}'
+                              (widget.isDelivered
+                                      ? 'Delivered ${DateFormat('dd MMM yy').format(DateTime.parse(widget.order.eventEndDate))}'
+                                      : 'Arriving ${DateFormat('dd MMM yy').format(DateTime.parse(widget.order.eventDate))}')
                                   .toUpperCase(),
                               style: TextStyle(
                                   fontSize: 16.sp,
@@ -837,7 +839,7 @@ class ProductTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(5),
                   image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: CachedNetworkImageProvider(service.images[0]))),
+                      image: CachedNetworkImageProvider(service.images![0]))),
             ),
             SizedBox(
               width: 5.w,
@@ -849,7 +851,7 @@ class ProductTile extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      service.name,
+                      service.name ?? "",
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                           color: Theme.of(context).primaryColor,
@@ -859,7 +861,7 @@ class ProductTile extends StatelessWidget {
                   ),
                   Expanded(
                     child: HtmlTextView(
-                      htmlText: service.description,
+                      htmlText: service.description ?? "",
                     ),
                   ),
                   Expanded(

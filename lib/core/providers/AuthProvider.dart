@@ -44,8 +44,10 @@ class AuthProvider with ChangeNotifier {
   Future<void> register(
       String name, String email, String phone, String password) async {
     try {
-      await authRepo.register(email, password, name, phone);
-      await login(email, password);
+      final res = await authRepo.register(email, password, name, phone);
+      if (res?.statusCode == 200) {
+        login(email, password);
+      }
     } catch (e) {
       CustomLogger.error(e);
       _authState = AuthState.Error;
@@ -53,7 +55,7 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  void init() async {
+  Future init() async {
     startLoading();
     pref = await SharedPreferences.getInstance();
     String? tempToken = await getTokenFromStorage();

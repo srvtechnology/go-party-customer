@@ -1,12 +1,17 @@
 import 'dart:developer';
 
 import 'package:customerapp/core/Constant/themData.dart';
+import 'package:customerapp/core/components/htmlTextView.dart';
 import 'package:customerapp/core/features/ccavenues/models/enc_val_res.dart';
 import 'package:customerapp/core/features/ccavenues/patmentWebview.dart';
 import 'package:customerapp/core/models/address.dart';
 import 'package:customerapp/core/models/cart.dart';
 import 'package:customerapp/core/repo/order.dart';
+import 'package:customerapp/core/routes/mainpage.dart';
+import 'package:customerapp/core/routes/profile.dart';
+import 'package:customerapp/core/utils/addressFormater.dart';
 import 'package:customerapp/core/utils/geolocator.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -37,14 +42,10 @@ class _PaymentPageState extends State<PaymentPage> {
   final _formKey = GlobalKey<FormState>();
   bool showCard = true;
   bool isloading = false;
+  bool _isShowMore = false;
   @override
   void initState() {
     super.initState();
-  }
-
-  String _getAddress(AddressModel address) {
-    return "${address.address} , ${address.city}, ${address.state}";
-    // "${address.houseNumber}, ${address.landmark}, \n${address.area} , ${address.city}, \n${address.state} ${address.pinCode}  ${address.countryName}";
   }
 
   @override
@@ -195,13 +196,50 @@ class _PaymentPageState extends State<PaymentPage> {
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.w600),
                                 ),
-                                Text(
-                                  widget.cartItems[index].service.description ??
-                                      "",
-                                  style: const TextStyle(
-                                    fontSize: 14,
+                                AnimatedContainer(
+                                    constraints: BoxConstraints(
+                                        minHeight: 1.h,
+                                        maxHeight:
+                                            _isShowMore ? double.infinity : 6.h,
+                                        minWidth: double.infinity,
+                                        maxWidth: double.infinity),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 0.w,
+                                    ),
+                                    alignment: Alignment.centerLeft,
+                                    duration: const Duration(milliseconds: 600),
+                                    child: LayoutBuilder(
+                                      builder: (context, constraints) {
+                                        print(constraints.maxHeight.toString());
+                                        return HtmlTextView(
+                                            htmlText: widget.cartItems[index]
+                                                .service.description);
+                                      },
+                                    )),
+                                if (widget.cartItems[index].service.description
+                                        .length >
+                                    100)
+                                  GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _isShowMore = !_isShowMore;
+                                      });
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 0.w,
+                                      ),
+                                      child: Text(
+                                        _isShowMore ? "Show Less" : "Show More",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge!
+                                            .copyWith(
+                                                fontSize: 14,
+                                                color: primaryColor),
+                                      ),
+                                    ),
                                   ),
-                                ),
                                 const SizedBox(
                                   height: 5,
                                 ),
@@ -266,7 +304,7 @@ class _PaymentPageState extends State<PaymentPage> {
                       style: const TextStyle(
                           fontSize: 13, fontWeight: FontWeight.bold),
                     ),
-                    Text(_getAddress(widget.selectedAddress!)),
+                    Text(getAddressFormat(widget.selectedAddress!)),
                     const SizedBox(
                       height: 10,
                     ),
@@ -334,6 +372,9 @@ class _PaymentPageState extends State<PaymentPage> {
                           },
                           title: const Text("Partial"),
                         ),
+                        if (_paymentTypeController.text.contains("Partial"))
+                          const Text(
+                              "You have to pay 25 % of the total amount as a token. you can pay the remaining balance using cash or electronic payment method 24 hours before your services or event starts."),
                       ],
                     ),
 
@@ -500,20 +541,24 @@ class _PaymentPageState extends State<PaymentPage> {
                                 height: 10,
                               ),
                               RichText(
-                                text: const TextSpan(
+                                text: TextSpan(
                                   text: 'See Utsavlife.com ',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 12,
                                   ),
                                   children: <TextSpan>[
                                     TextSpan(
-                                      text: 'Refund Policy.',
-                                      style: TextStyle(
-                                        color: primaryColor,
-                                        fontSize: 12,
-                                      ),
-                                    ),
+                                        text: 'Refund Policy.',
+                                        style: const TextStyle(
+                                          color: primaryColor,
+                                          fontSize: 12,
+                                        ),
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () {
+                                            Navigator.pushNamed(context,
+                                                RefundPolicy.routeName);
+                                          }),
                                   ],
                                 ),
                               ),
@@ -521,21 +566,29 @@ class _PaymentPageState extends State<PaymentPage> {
                                 height: 10,
                               ),
                               RichText(
-                                text: const TextSpan(
+                                text: TextSpan(
                                   text:
                                       'Need to add more services to your order? Continue shopping on the',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 12,
                                   ),
                                   children: <TextSpan>[
                                     TextSpan(
-                                      text: ' utsavlife homepage.',
-                                      style: TextStyle(
-                                        color: primaryColor,
-                                        fontSize: 12,
-                                      ),
-                                    ),
+                                        text: ' utsavlife homepage.',
+                                        style: const TextStyle(
+                                          color: primaryColor,
+                                          fontSize: 12,
+                                        ),
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () {
+                                            Navigator.pushAndRemoveUntil(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const MainPageRoute()),
+                                                (route) => route.isFirst);
+                                          }),
                                   ],
                                 ),
                               ),

@@ -154,6 +154,26 @@ Future<bool> cancelOrder(AuthProvider auth, String payload) async {
   }
 }
 
+Future<String?> getInvoiceLink(AuthProvider auth, String id) async {
+  try {
+    log("Bearer ${auth.token}", name: "Token");
+    // url
+    log("${APIConfig.baseUrl}/api/customer/orders/download-invoice",
+        name: "GetInvoiceLink");
+    Response response = await customDioClient.client.post(
+        "${APIConfig.baseUrl}/api/customer/orders/download-invoice",
+        data: {"order_id": id},
+        options: Options(headers: {"Authorization": "Bearer ${auth.token}"}));
+    log(jsonEncode(response.data), name: "GetInvoiceLink");
+    return response.data["pdf_path"];
+  } catch (e) {
+    if (e is DioException) {
+      CustomLogger.error(e.response!.data);
+    }
+    return Future.error(e);
+  }
+}
+
 Future<List<OrderModel>> getDeliveredOrderItems(AuthProvider auth) async {
   try {
     Response response = await customDioClient.client.get(

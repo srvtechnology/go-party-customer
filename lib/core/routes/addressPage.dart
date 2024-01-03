@@ -5,6 +5,7 @@ import 'package:csc_picker/csc_picker.dart';
 import 'package:customerapp/core/models/address.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/addressProvider.dart';
+import 'package:customerapp/core/utils/addressFormater.dart';
 import 'package:customerapp/core/utils/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -578,7 +579,7 @@ class _AddressPageState extends State<AddressPage> {
 
                   ...state.data
                       .where((element) =>
-                          _getAddress(element).contains(searchText))
+                          getAddressFormat(element).contains(searchText))
                       .map((e) => _addressTile(e, state))
                       .toList()
                 ],
@@ -588,11 +589,6 @@ class _AddressPageState extends State<AddressPage> {
         );
       }),
     );
-  }
-
-  String _getAddress(AddressModel address) {
-    return "${address.address} , ${address.city}, ${address.state}";
-    // "${address.houseNumber}, ${address.landmark}, \n${address.area} , ${address.city}, \n${address.state} ${address.pinCode}  ${address.countryName}";
   }
 
   Widget _addressTile(AddressModel address, AddressProvider state) {
@@ -641,7 +637,7 @@ class _AddressPageState extends State<AddressPage> {
             constraints: BoxConstraints(
                 maxWidth: MediaQuery.of(context).size.width * 0.8),
             child: Text(
-              _getAddress(address),
+              getAddressFormat(address),
               style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 14),
             ),
           ),

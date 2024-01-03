@@ -1,7 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:customerapp/core/components/TramsAndConditionsCheckBox.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
+import 'package:customerapp/core/routes/forgotPassword.dart';
 import 'package:customerapp/core/routes/mainpage.dart';
+import 'package:customerapp/core/routes/profile.dart';
 import 'package:customerapp/core/routes/signup.dart';
 import 'package:customerapp/core/utils/logger.dart';
 import 'package:flutter/material.dart';
@@ -90,48 +93,47 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   SizedBox(height: 8.h),
-                  Container(
-                    height: 20.h,
-                    color: Theme.of(context).primaryColor,
+                  SizedBox(
                     child: Image.asset(
-                      'assets/images/logo/logo-white.png',
-                      height: 150.0,
+                      'assets/images/logo/Utsavlife full logo.png',
                     ),
                   ),
-                  const SizedBox(height: 32.0),
                   Container(
                     alignment: Alignment.center,
                     child: Text(
-                      "LOG IN",
+                      "Welcome ",
                       style: TextStyle(
                           color: Theme.of(context).primaryColor,
                           fontSize: 26,
                           fontWeight: FontWeight.w600),
                     ),
                   ),
+                  const SizedBox(height: 16.0),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      const Text("Don't have an account ?"),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SignUpPageRoute(
-                                        comeback: widget.comeBack,
-                                      ))).then((value) {
-                            if (Navigator.canPop(context)) {
-                              Navigator.pop(context);
-                            }
-                          });
+                      // radio
+                      Radio(
+                        value: true,
+                        onChanged: (v) {
+                          Navigator.pushNamed(
+                              context, SignUpPageRoute.routeName);
                         },
-                        child: Text(
-                          'Create Here',
-                          style:
-                              TextStyle(color: Theme.of(context).primaryColor),
-                        ),
+                        groupValue: false,
                       ),
+                      const Text("Create an account. New to Utsavlife?"),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      // radio
+                      Radio(
+                        value: true,
+                        onChanged: (v) {},
+                        groupValue: true,
+                      ),
+                      const Text("Sign in. Already a customer?"),
                     ],
                   ),
                   if (state.authState == AuthState.Error)
@@ -211,7 +213,14 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 32.0),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, ForgotPassword.routeName);
+                      },
+                      child: const Text(
+                        "Forgot Password?",
+                      )),
+                  const SizedBox(height: 16.0),
                   ElevatedButton(
                     onPressed: _isLoading
                         ? null
@@ -231,13 +240,48 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                                 AlwaysStoppedAnimation<Color>(Colors.white),
                           )
                         : const Text(
-                            'Log in',
+                            'Sign In',
                             style: TextStyle(
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
                           ),
+                  ),
+                  TramsAndConditionsCheckBox(
+                    value: false,
+                    onChanged: (value) {},
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                                context, TermsAndCondition.routeName);
+                          },
+                          child: const Text(
+                            "Terms & Condition",
+                          )),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                                context, PrivacyPolicy.routeName);
+                          },
+                          child: const Text(
+                            "Privacy & policy",
+                          )),
+                    ],
+                  ),
+                  const SizedBox(height: 16.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Text(
+                        '© 2023 - UTSAVLIFE. All Rights Reserved.',
+                        style: TextStyle(fontSize: 12, color: Colors.black),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 16.0),
                 ],

@@ -16,6 +16,7 @@ import 'package:customerapp/core/routes/signin.dart';
 import 'package:customerapp/core/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -38,6 +39,8 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
   final TextEditingController _categoryName = TextEditingController();
   final TextEditingController _startDate = TextEditingController();
   final TextEditingController _endDate = TextEditingController();
+  final TextEditingController _startDateView = TextEditingController();
+  final TextEditingController _endDateView = TextEditingController();
   final TextEditingController quantity = TextEditingController();
   bool isProcessing = false;
   final TextEditingController _days = TextEditingController();
@@ -49,14 +52,30 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
           .isAfter(DateTime.parse(_endDate.text))) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("Start date should be less than end date")));
-        _endDate.clear();
-        _days.clear();
       }
     }
-    _days.text = (DateTime.parse(_endDate.text)
+    _days.text = getDay((DateTime.parse(_endDate.text)
             .difference(DateTime.parse(_startDate.text))
             .inDays)
-        .toString();
+        .toString());
+  }
+
+  String getDay(String v) {
+    try {
+      int day = int.parse(v);
+      if (day == 0) {
+        return "1";
+      }
+      if (day < 0) {
+        print('0'.toString() + "getDay");
+        return "0";
+      }
+
+      print("$v getDay");
+      return day.toString();
+    } catch (e) {
+      return v;
+    }
   }
 
   bool _isShowMore = false;
@@ -74,8 +93,9 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
     log(widget.package.minQnty.toString(), name: "Package");
   }
 
-  TextFormField datePickField(
-      TextEditingController controller, String hintText) {
+  TextFormField datePickField(TextEditingController controller,
+      TextEditingController controllerView, String hintText,
+      {String? Function(String?)? validator}) {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
@@ -90,12 +110,13 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                 BorderSide(width: 0.5, color: Theme.of(context).primaryColor),
             borderRadius: BorderRadius.circular(10),
           )),
-      validator: (text) {
-        if (text == null || text.isEmpty) {
-          return "Required";
-        }
-        return null;
-      },
+      validator: validator ??
+          (text) {
+            if (text == null || text.isEmpty) {
+              return "Required";
+            }
+            return null;
+          },
       readOnly: true,
       onTap: () async {
         DateTime? date = await showDatePicker(
@@ -104,6 +125,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
             firstDate: DateTime.now(),
             lastDate: DateTime(3000));
         if (date != null) {
+          controllerView.text = DateFormat("dd-MM-yyyy").format(date);
           controller.text = date.toString().substring(0, 10);
         }
       },
@@ -125,7 +147,8 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
             return FractionallySizedBox(
               heightFactor: 0.8,
               child: ListenableProvider(
-                  create: (_) => CartProvider(context.read<AuthProvider>()),
+                  create: (_) =>
+                      CartProvider(auth: context.read<AuthProvider>()),
                   child: Consumer2<CartProvider, AuthProvider>(
                       builder: (context, cart, auth, child) {
                     return SizedBox(
@@ -174,8 +197,22 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                   alignment: Alignment.topCenter,
                                   margin: const EdgeInsets.only(bottom: 20),
                                   child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
+                                      Container(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 5),
+                                        child: Text(
+                                          "Select Your Event",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14.sp,
+                                            color: primaryColor,
+                                          ),
+                                        ),
+                                      ),
                                       CustomDropdown.search(
                                         borderSide: BorderSide(
                                             width: 0.5,
@@ -189,12 +226,57 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                             .toList(),
                                       ),
                                       const SizedBox(
-                                        height: 20,
+                                        height: 10,
                                       ),
-                                      datePickField(
-                                          _startDate, "Event Start Date"),
-                                      const SizedBox(height: 20),
-                                      datePickField(_endDate, "Event End Date"),
+                                      Container(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 5),
+                                        child: Text(
+                                          "Event Start Date",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14.sp,
+                                            color: primaryColor,
+                                          ),
+                                        ),
+                                      ),
+                                      datePickField(_startDate, _startDateView,
+                                          "Event Start Date", validator: (v) {
+                                        if (v == null || v.isEmpty) {
+                                          return "Start Date Required";
+                                        }
+
+                                        return null;
+                                      }),
+                                      const SizedBox(height: 10),
+                                      Container(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 5),
+                                        child: Text(
+                                          "Event End Date",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14.sp,
+                                            color: primaryColor,
+                                          ),
+                                        ),
+                                      ),
+                                      datePickField(_endDate, _endDateView,
+                                          "Event End Date", validator: (v) {
+                                        if (v == null || v.isEmpty) {
+                                          return "End Date Required";
+                                        }
+                                        print(
+                                          _startDate.text,
+                                        );
+                                        // check end date is greater than start date
+                                        if (DateTime.parse(_startDate.text)
+                                            .isAfter(DateTime.parse(
+                                                _endDate.text))) {
+                                          return "End date should be greater than start date";
+                                        }
+                                        return null;
+                                      }),
                                       // const SizedBox(
                                       //   height: 20,
                                       // ),
@@ -227,7 +309,19 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                       //       hintText: "Select Quantity"),
                                       // ),
                                       const SizedBox(
-                                        height: 20,
+                                        height: 10,
+                                      ),
+                                      Container(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 5),
+                                        child: Text(
+                                          "Days",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14.sp,
+                                            color: primaryColor,
+                                          ),
+                                        ),
                                       ),
                                       Row(
                                         children: [
@@ -797,7 +891,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                           children: [
                             ...widget.package.services.map((e) => Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text(e.name),
+                                  child: Text(e.name ?? ''),
                                 ))
                           ],
                         ),

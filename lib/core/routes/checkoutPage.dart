@@ -12,8 +12,12 @@ import 'package:customerapp/core/repo/address.dart';
 import 'package:customerapp/core/repo/countries.dart';
 import 'package:collection/collection.dart';
 import 'package:customerapp/core/repo/services.dart';
+import 'package:customerapp/core/routes/addressPage.dart';
 import 'package:customerapp/core/routes/paymentPage.dart';
+import 'package:customerapp/core/utils/addressFormater.dart';
+import 'package:customerapp/core/utils/geolocator.dart';
 import 'package:customerapp/core/utils/logger.dart';
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -54,6 +58,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
   String defaultAddress = "Yes";
   bool otherAddress = true;
   late Future<List<Country>> _countryFuture;
+  bool isAddressLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -66,6 +72,23 @@ class _CheckoutPageState extends State<CheckoutPage> {
         });
       }
     });
+  }
+
+  getLocationByPin() async {
+    setState(() {
+      isAddressLoading = true;
+    });
+    final data = await getCityStateCountryByPin(_pinCodeController.text);
+    if (data.isEmpty) return {};
+    setState(() {
+      country = data["country"];
+      state = data["state"];
+      city = data["city"];
+    });
+    setState(() {
+      isAddressLoading = false;
+    });
+    return data;
   }
 
   @override
@@ -182,351 +205,441 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         const SizedBox(
                           height: 10,
                         ),
-                        if (addressState.data.isNotEmpty)
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 5),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  "Select a delivery Address",
-                                  style: TextStyle(
-                                      fontSize: 15.sp,
-                                      fontWeight: FontWeight.w600),
-                                )
-                              ],
-                            ),
+                        // if (addressState.data.isNotEmpty)
+                        //   Container(
+                        //     padding: const EdgeInsets.symmetric(
+                        //         horizontal: 30, vertical: 5),
+                        //     child: Row(
+                        //       mainAxisAlignment: MainAxisAlignment.start,
+                        //       children: [
+                        //         const SizedBox(
+                        //           width: 5,
+                        //         ),
+                        //         Text(
+                        //           "Select a delivery Address",
+                        //           style: TextStyle(
+                        //               fontSize: 15.sp,
+                        //               fontWeight: FontWeight.w600),
+                        //         )
+                        //       ],
+                        //     ),
+                        //   ),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: Colors.grey[300]!),
                           ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        if (addressState.data.isNotEmpty)
-                          Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: Colors.white),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 10),
-                            child: Column(
-                              children: addressState.data
-                                  .mapIndexed((index, e) => _addressTile(
-                                      index, e, data, addressState))
-                                  .toList(),
+                          child: ExpandablePanel(
+                            theme: const ExpandableThemeData(
+                              hasIcon: true,
+                              iconColor: Colors.black,
+                              iconPadding: EdgeInsets.only(right: 10, top: 16),
+                              collapseIcon: Icons.keyboard_arrow_down,
+                              expandIcon: Icons.keyboard_arrow_right,
                             ),
-                          ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        if (otherAddress)
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 30),
-                            child: Column(
-                              children: [
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                if (addressState.data.isNotEmpty)
+                            header: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 16),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: const [
+                                  Text(
+                                    'Add New Address',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                ],
+                              ),
+                            ),
+                            collapsed: const SizedBox(),
+                            expanded: Container(
+                              // color: Colors.white,
+                              padding: EdgeInsets.only(
+                                  top: 10,
+                                  left: 10,
+                                  right: 10,
+                                  bottom:
+                                      MediaQuery.of(context).viewInsets.bottom),
+                              child: Column(
+                                children: [
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       const SizedBox(
                                         width: 5,
                                       ),
                                       Text(
-                                        "OR",
+                                        "Billing Details",
                                         style: TextStyle(
                                             fontSize: 15.sp,
                                             fontWeight: FontWeight.w600),
                                       )
                                     ],
                                   ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(
-                                      width: 5,
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  SizedBox(
+                                    height: 6.h,
+                                    child: TextFormField(
+                                      controller: _billingNameController,
+                                      validator: (text) {
+                                        if (text == null || text.isEmpty) {
+                                          return "Required";
+                                        }
+                                        return null;
+                                      },
+                                      decoration: InputDecoration(
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          labelText: "Name"),
                                     ),
-                                    Text(
-                                      "Billing Details",
-                                      style: TextStyle(
-                                          fontSize: 15.sp,
-                                          fontWeight: FontWeight.w600),
-                                    )
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                SizedBox(
-                                  height: 6.h,
-                                  child: TextFormField(
-                                    controller: _billingNameController,
-                                    validator: (text) {
-                                      if (text == null || text.isEmpty) {
-                                        return "Required";
-                                      }
-                                      return null;
-                                    },
-                                    decoration: InputDecoration(
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  SizedBox(
+                                    height: 6.h,
+                                    child: TextFormField(
+                                      controller: _billingMobileController,
+                                      validator: (text) {
+                                        if (text == null || text.isEmpty) {
+                                          return "Required";
+                                        }
+                                        if (text.length != 10) {
+                                          return "Please enter a valid number";
+                                        }
+                                        return null;
+                                      },
+                                      decoration: InputDecoration(
                                         border: OutlineInputBorder(
                                             borderRadius:
                                                 BorderRadius.circular(10)),
-                                        labelText: "Name"),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                SizedBox(
-                                  height: 6.h,
-                                  child: TextFormField(
-                                    controller: _billingMobileController,
-                                    validator: (text) {
-                                      if (text == null || text.isEmpty) {
-                                        return "Required";
-                                      }
-                                      if (text.length != 10) {
-                                        return "Please enter a valid number";
-                                      }
-                                      return null;
-                                    },
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      labelText: "Phone",
+                                        labelText: "Phone",
+                                      ),
+                                      keyboardType: TextInputType.number,
                                     ),
-                                    keyboardType: TextInputType.number,
                                   ),
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                SizedBox(
-                                  height: 6.h,
-                                  child: TextFormField(
-                                    controller: _houseNumberController,
-                                    validator: (text) {
-                                      if (text == null || text.isEmpty) {
-                                        return "Required";
-                                      }
-                                      return null;
-                                    },
-                                    decoration: InputDecoration(
-                                        border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        labelText:
-                                            "House / Flat / Building Number"),
+                                  const SizedBox(
+                                    height: 20,
                                   ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                SizedBox(
-                                  height: 6.h,
-                                  child: TextFormField(
-                                    controller: _areaController,
-                                    validator: (text) {
-                                      if (text == null || text.isEmpty) {
-                                        return "Required";
-                                      }
-                                      return null;
-                                    },
-                                    decoration: InputDecoration(
-                                        border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        labelText: "Area"),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                SizedBox(
-                                  height: 6.h,
-                                  child: TextFormField(
-                                    controller: _landmarkController,
-                                    validator: (text) {
-                                      if (text == null || text.isEmpty) {
-                                        return "Required";
-                                      }
-                                      return null;
-                                    },
-                                    decoration: InputDecoration(
-                                        border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            borderSide: BorderSide(
-                                                width: 0.2,
-                                                color: Colors.grey[200]!)),
-                                        labelText: "Landmark"),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                CSCPicker(
-                                  flagState: CountryFlag.DISABLE,
-                                  onCountryChanged: (value) {
-                                    setState(() {
-                                      country = value;
-                                      //   _countryController.text=value;
-                                    });
-                                  },
-                                  onStateChanged: (value) {
-                                    setState(() {
-                                      state = value;
-                                      // _stateController.text=value!;
-                                    });
-                                  },
-                                  onCityChanged: (value) {
-                                    setState(() {
-                                      city = value;
-                                      // _cityController.text = value!;
-                                    });
-                                  },
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                SizedBox(
-                                  height: 6.h,
-                                  child: TextFormField(
-                                    controller: _pinCodeController,
-                                    validator: (text) {
-                                      if (text == null || text.isEmpty) {
-                                        return "Required";
-                                      }
-                                      if (text.length != 6) {
-                                        return "Please enter a valid pincode";
-                                      }
-                                      return null;
-                                    },
-                                    decoration: InputDecoration(
-                                        border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            borderSide: BorderSide(
-                                                width: 0.2,
-                                                color: Colors.grey[200]!)),
-                                        labelText: "Pin Code"),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(
-                                      width: 5,
+                                  SizedBox(
+                                    height: 6.h,
+                                    child: TextFormField(
+                                      controller: _houseNumberController,
+                                      validator: (text) {
+                                        if (text == null || text.isEmpty) {
+                                          return "Required";
+                                        }
+                                        return null;
+                                      },
+                                      decoration: InputDecoration(
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          labelText:
+                                              "House / Flat / Building Number"),
                                     ),
-                                    Text(
-                                      "Who is it for ?",
-                                      style: TextStyle(
-                                          fontSize: 15.sp,
-                                          fontWeight: FontWeight.w600),
-                                    )
-                                  ],
-                                ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  SizedBox(
+                                    height: 6.h,
+                                    child: TextFormField(
+                                      controller: _areaController,
+                                      validator: (text) {
+                                        if (text == null || text.isEmpty) {
+                                          return "Required";
+                                        }
+                                        return null;
+                                      },
+                                      decoration: InputDecoration(
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          labelText: "Area"),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  SizedBox(
+                                    height: 6.h,
+                                    child: TextFormField(
+                                      controller: _landmarkController,
+                                      validator: (text) {
+                                        if (text == null || text.isEmpty) {
+                                          return "Required";
+                                        }
+                                        return null;
+                                      },
+                                      decoration: InputDecoration(
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              borderSide: BorderSide(
+                                                  width: 0.2,
+                                                  color: Colors.grey[200]!)),
+                                          labelText: "Landmark"),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  isAddressLoading
+                                      ? const Center(
+                                          child: CircularProgressIndicator(),
+                                        )
+                                      : CSCPicker(
+                                          currentCountry: country,
+                                          currentState: state,
+                                          currentCity: city,
+                                          flagState: CountryFlag.DISABLE,
+                                          onCountryChanged: (value) {
+                                            setState(() {
+                                              country = value;
+                                              //   _countryController.text=value;
+                                            });
+                                          },
+                                          onStateChanged: (value) {
+                                            setState(() {
+                                              state = value;
+                                              // _stateController.text=value!;
+                                            });
+                                          },
+                                          onCityChanged: (value) {
+                                            setState(() {
+                                              city = value;
+                                              // _cityController.text = value!;
+                                            });
+                                          },
+                                        ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  SizedBox(
+                                    height: 6.h,
+                                    child: TextFormField(
+                                      controller: _pinCodeController,
+                                      onChanged: (text) {
+                                        if (text.length == 6) {
+                                          getLocationByPin();
+                                        }
+                                      },
+                                      validator: (text) {
+                                        if (text == null || text.isEmpty) {
+                                          return "Required";
+                                        }
+                                        if (text.length != 6) {
+                                          return "Please enter a valid pincode";
+                                        }
+                                        return null;
+                                      },
+                                      decoration: InputDecoration(
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              borderSide: BorderSide(
+                                                  width: 0.2,
+                                                  color: Colors.grey[200]!)),
+                                          labelText: "Pin Code"),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                        "Who is it for ?",
+                                        style: TextStyle(
+                                            fontSize: 15.sp,
+                                            fontWeight: FontWeight.w600),
+                                      )
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  CustomDropdown(items: const [
+                                    "Self",
+                                    "Family",
+                                    "Friend",
+                                    "Other"
+                                  ], controller: _addressForController),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                        "Select Type of Address",
+                                        style: TextStyle(
+                                            fontSize: 15.sp,
+                                            fontWeight: FontWeight.w600),
+                                      )
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  CustomDropdown(
+                                      items: const ["Home", "Office", "Other"],
+                                      controller: _addressTypeController),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                        "Do you want to make this address default ?",
+                                        style: TextStyle(
+                                            fontSize: 15.sp,
+                                            fontWeight: FontWeight.w600),
+                                      )
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      const Text("Yes"),
+                                      Radio(
+                                          value: "Yes",
+                                          groupValue: defaultAddress,
+                                          onChanged: (text) {
+                                            setState(() {
+                                              defaultAddress = text!;
+                                            });
+                                          }),
+                                      const Text("No"),
+                                      Radio(
+                                          value: "No",
+                                          groupValue: defaultAddress,
+                                          onChanged: (text) {
+                                            setState(() {
+                                              defaultAddress = text!;
+                                            });
+                                          }),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(
+                                        left: 0,
+                                        right: 0,
+                                        bottom: MediaQuery.of(context)
+                                            .viewInsets
+                                            .bottom),
+                                    height: 50,
+                                    width: MediaQuery.of(context).size.width,
+                                    child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor: primaryColor),
+                                        onPressed: () {
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            submit(context.read<AuthProvider>(),
+                                                data, addressState);
+                                          }
+                                        },
+                                        child: const Text(
+                                            "Deliver to this Address")),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        if (addressState.data.isNotEmpty)
+                          Container(
+                            decoration: const BoxDecoration(
+                                // borderRadius: BorderRadius.circular(20),
+                                color: Colors.white),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                CustomDropdown(items: const [
-                                  "Self",
-                                  "Family",
-                                  "Friend",
-                                  "Other"
-                                ], controller: _addressForController),
+                                Text(
+                                  "Select a delivery Address",
+                                  style: TextStyle(
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.w600),
+                                ),
                                 const SizedBox(
                                   height: 20,
                                 ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                      "Select Type of Address",
-                                      style: TextStyle(
-                                          fontSize: 15.sp,
-                                          fontWeight: FontWeight.w600),
-                                    )
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                CustomDropdown(
-                                    items: const ["Home", "Office", "Other"],
-                                    controller: _addressTypeController),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                      "Do you want to make this address default ?",
-                                      style: TextStyle(
-                                          fontSize: 15.sp,
-                                          fontWeight: FontWeight.w600),
-                                    )
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    const Text("Yes"),
-                                    Radio(
-                                        value: "Yes",
-                                        groupValue: defaultAddress,
-                                        onChanged: (text) {
-                                          setState(() {
-                                            defaultAddress = text!;
-                                          });
-                                        }),
-                                    const Text("No"),
-                                    Radio(
-                                        value: "No",
-                                        groupValue: defaultAddress,
-                                        onChanged: (text) {
-                                          setState(() {
-                                            defaultAddress = text!;
-                                          });
-                                        }),
-                                  ],
-                                ),
-                                ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor: primaryColor),
-                                    onPressed: () {
-                                      if (_formKey.currentState!.validate()) {
-                                        submit(context.read<AuthProvider>(),
-                                            data, addressState);
-                                      }
-                                    },
-                                    child:
-                                        const Text("Deliver to this Address")),
-                                const SizedBox(
-                                  height: 100,
-                                )
+                                ...addressState.data
+                                    .mapIndexed((index, e) => _addressTile(
+                                        index, e, data, addressState))
+                                    .toList()
                               ],
                             ),
                           ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+
+                        const SizedBox(
+                          height: 100,
+                        )
+                        // if (otherAddress)
+                        //   Container(
+                        //     padding: const EdgeInsets.symmetric(horizontal: 30),
+                        //     child: Column(
+                        //       children: [
+                        //         const SizedBox(
+                        //           height: 20,
+                        //         ),
+                        //         if (addressState.data.isNotEmpty)
+                        //           Row(
+                        //             mainAxisAlignment: MainAxisAlignment.center,
+                        //             children: [
+                        //               const SizedBox(
+                        //                 width: 5,
+                        //               ),
+                        //               Text(
+                        //                 "OR",
+                        //                 style: TextStyle(
+                        //                     fontSize: 15.sp,
+                        //                     fontWeight: FontWeight.w600),
+                        //               )
+                        //             ],
+                        //           ),
+                        //         // add hare
+                        //       ],
+                        //     ),
+                        //   ),
                       ],
                     ),
                   ),
@@ -642,7 +755,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   constraints: BoxConstraints(
                       maxWidth: MediaQuery.of(context).size.width * 0.8),
                   child: Text(
-                    _getAddress(e),
+                    getAddressFormat(e),
                     style: const TextStyle(
                         fontWeight: FontWeight.w400, fontSize: 14),
                   ),
@@ -660,13 +773,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white),
                         onPressed: () {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) =>
-                          //             AddressEditPage(address: address))).then(
-                          //     (value) =>
-                          //         state.getAddress(context.read<AuthProvider>()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      AddressEditPage(address: e))).then(
+                              (value) => addressState
+                                  .getAddress(context.read<AuthProvider>()));
                         },
                         child: const Text(
                           "Edit",
@@ -688,8 +801,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white),
                         onPressed: () async {
-                          // await state.deleteAddress(
-                          //     context.read<AuthProvider>(), address.id.toString());
+                          await addressState.deleteAddress(
+                              context.read<AuthProvider>(), e.id.toString());
+                          await addressState
+                              .getAddress(context.read<AuthProvider>());
                         },
                         child: const Text(
                           "Remove",
@@ -708,10 +823,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       style: ElevatedButton.styleFrom(
                           backgroundColor: primaryColor),
                       onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          submit(
-                              context.read<AuthProvider>(), data, addressState);
-                        }
+                        submit(
+                            context.read<AuthProvider>(), data, addressState);
                       },
                       child: const Text("Deliver to this Address")),
                 ]
@@ -782,14 +895,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
     // );
   }
 
-  String _getAddress(AddressModel address) {
-    return "${address.address} , ${address.city}, ${address.state}";
-    // "${address.houseNumber}, ${address.landmark}, \n${address.area} , ${address.city}, \n${address.state} ${address.pinCode}  ${address.countryName}";
-  }
-
   Future<void> submit(AuthProvider auth, List<Country> countries,
       AddressProvider addressState) async {
     try {
+      log('ffd');
       if (_selectedAddress != null) {
         String addressId = _selectedAddress!.id.toString();
         log(addressId, name: 'checkout');
@@ -856,8 +965,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
         "default_address": defaultAddress.substring(0, 1)
       };
       String addressId = await addAddress(auth, data);
+      log(addressId.toString(), name: 'checkout');
       AddressModel? add = getSelectedAddress(
           data, int.parse(addressId), int.parse(auth.user!.id));
+      print('data ==== >$add');
       if (context.mounted) {
         Navigator.push(
             context,
@@ -867,8 +978,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       cartItems: widget.cartItems,
                       total: widget.cartSubToatal,
                     )));
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("You have Successfully placed your order.")));
+        // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        //     content: Text("You have Successfully placed your order.")));
       }
       // List notAvailable =
       //     await getServiceAvailability(widget.serviceIds, addressId);
@@ -891,25 +1002,12 @@ class _CheckoutPageState extends State<CheckoutPage> {
       // }
     } catch (e) {
       CustomLogger.error(e);
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Something went wrong. Try again.")));
     }
   }
 
-  AddressModel? getSelectedAddress(Map<dynamic, dynamic> data, int Id, userId) {
-    //  "billing_name": _billingNameController.text,
-    //     "billing_mobile": _billingMobileController.text,
-    //     "address": "0",
-    //     "address_latitude": "0.000001",
-    //     "address_longitude": "0.000001",
-    //     "pin_code": _pinCodeController.text,
-    //     "house_number": _houseNumberController.text,
-    //     "area": _areaController.text,
-    //     "landmark": _landmarkController.text,
-    //     "country": countryId,
-    //     "city": city,
-    //     "state": state,
-    //     "for_address": _addressForController.text.toLowerCase(),
-    //     "address_type": _addressTypeController.text.toLowerCase(),
-    //     "default_address": defaultAddress.substring(0, 1)
+  AddressModel? getSelectedAddress(Map<dynamic, dynamic> data, int id, userId) {
     return AddressModel(
       address: data['address'],
       addressType: data['address_type'],
@@ -923,10 +1021,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
       defaultAddress: data['default_address'],
       forAddress: data['for_address'],
       houseNumber: data['house_number'],
-      id: Id,
+      id: id,
       landmark: data['landmark'],
-      latitude: data['address_latitude'],
-      longitude: data['address_longitude'],
+      latitude: 0.000001,
+      longitude: 0.000001,
       pinCode: data['pin_code'],
       state: data['state'],
       updatedAt: DateTime.now(),

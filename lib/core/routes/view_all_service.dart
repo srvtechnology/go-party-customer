@@ -1,8 +1,10 @@
+import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:customerapp/core/Constant/themData.dart';
 import 'package:customerapp/core/components/bottomNav.dart';
 import 'package:customerapp/core/providers/serviceProvider.dart';
 import 'package:customerapp/core/routes/filter.dart';
 import 'package:customerapp/core/routes/singleService.dart';
+import 'package:customerapp/core/utils/debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -42,9 +44,37 @@ class _ViewAllServiceRouteState extends State<ViewAllServiceRoute> {
                     centerTitle: true,
                     elevation: 0,
                   ),
-                  body: Container(
-                    alignment: Alignment.center,
-                    child: const Text("No services available"),
+                  body: CustomMaterialIndicator(
+                    indicatorBuilder:
+                        (BuildContext context, IndicatorController controller) {
+                      return Container(
+                          padding: EdgeInsets.all(2.w),
+                          alignment: Alignment.center,
+                          child: const CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          ));
+                    },
+                    backgroundColor: primaryColor,
+                    onRefresh: () async {
+                      await filters.refresh();
+                      return state.refresh();
+                    },
+                    child: SingleChildScrollView(
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: MediaQuery.of(context).size.height * 0.9,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              alignment: Alignment.center,
+                              child: const Text("No services available"),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 );
               }
@@ -53,63 +83,125 @@ class _ViewAllServiceRouteState extends State<ViewAllServiceRoute> {
                   FocusManager.instance.primaryFocus!.unfocus();
                 },
                 child: Scaffold(
-                  body: NestedScrollView(
-                    floatHeaderSlivers: true,
-                    headerSliverBuilder: (context, isChange) {
-                      return [
-                        SliverAppBar(
-                          title: const Text("Services"),
-                          floating: true,
-                          snap: true,
-                          pinned: true,
-                          actions: [
-                            // filter button
+                  appBar: PreferredSize(
+                    preferredSize: Size(MediaQuery.of(context).size.width, 60),
+                    child: Material(
+                      elevation: 0.1,
+                      child: Container(
+                        margin: EdgeInsets.only(
+                            top: MediaQuery.of(context).padding.top),
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        color: primaryColor,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
                             IconButton(
-                              icon: const Icon(Icons.tune),
                               onPressed: () {
-                                Navigator.push(
+                                Navigator.pop(context);
+                              },
+                              icon: const Icon(Icons.arrow_back_ios),
+                              color: Colors.white,
+                            ),
+                            Expanded(
+                                child: _searchBar(
+                              controller: _searchController,
+                              filterState: filters,
+                              serviceState: state,
+                            )),
+                            IconButton(
+                              color: Colors.white,
+                              icon: const Icon(Icons.tune),
+                              onPressed: () async {
+                                await Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
                                             FilterPage(filterState: filters)));
+                                state.getFilteredServices(filters,
+                                    isUpdateMainData: true);
                               },
                             )
                           ],
-                          elevation: 0,
-                          backgroundColor: primaryColor,
-                          // bottom: PreferredSize(
-                          //   preferredSize: const Size.fromHeight(80),
-                          //   child: Container(
-                          //     child: _searchBar(
-                          //         controller: _searchController,
-                          //         filterState: filters,
-                          //         serviceState: state),
-                          //   ),
-                          // ),
-                        )
+                        ),
+                      ),
+                    ),
+                  ),
+                  body: NestedScrollView(
+                    floatHeaderSlivers: true,
+                    headerSliverBuilder: (context, isChange) {
+                      return [
+                        // SliverAppBar(
+                        //   title: const Text("Services"),
+                        //   floating: true,
+                        //   snap: true,
+                        //   pinned: true,
+                        //   actions: [
+                        //     // filter button
+                        //     IconButton(
+                        //       icon: const Icon(Icons.tune),
+                        //       onPressed: () async {
+                        //         await Navigator.push(
+                        //             context,
+                        //             MaterialPageRoute(
+                        //                 builder: (context) =>
+                        //                     FilterPage(filterState: filters)));
+                        //         state.getFilteredServices(filters,
+                        //             isUpdateMainData: true);
+                        //       },
+                        //     )
+                        //   ],
+                        //   elevation: 0,
+                        //   backgroundColor: primaryColor,
+                        //   bottom: PreferredSize(
+                        //     preferredSize: const Size.fromHeight(80),
+                        //     child: Container(
+                        //       child: _searchBar(
+                        //           controller: _searchController,
+                        //           filterState: filters,
+                        //           serviceState: state),
+                        //     ),
+                        //   ),
+                        // )
                       ];
                     },
                     body: SizedBox(
                       height: double.infinity,
                       width: double.infinity,
                       // color: Colors.white,
-                      child: SingleChildScrollView(
-                        // padding: EdgeInsets.only(bottom: 5.h, top: 2.h),
-                        child: Container(
-                          child: Column(
-                              children: state.data!
-                                  .map((e) => ProductTile(
-                                        service: e,
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      SingleServiceRoute(
-                                                          service: e)));
-                                        },
-                                      ))
-                                  .toList()),
+                      child: CustomMaterialIndicator(
+                        indicatorBuilder: (BuildContext context,
+                            IndicatorController controller) {
+                          return Container(
+                              padding: EdgeInsets.all(2.w),
+                              alignment: Alignment.center,
+                              child: const CircularProgressIndicator(
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                              ));
+                        },
+                        backgroundColor: primaryColor,
+                        onRefresh: () async {
+                          await filters.refresh();
+                          return state.refresh();
+                        },
+                        child: SingleChildScrollView(
+                          // padding: EdgeInsets.only(bottom: 5.h, top: 2.h),
+                          child: Container(
+                            child: Column(
+                                children: state.data!
+                                    .map((e) => ProductTile(
+                                          service: e,
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        SingleServiceRoute(
+                                                            service: e)));
+                                          },
+                                        ))
+                                    .toList()),
+                          ),
                         ),
                       ),
                     ),
@@ -130,10 +222,21 @@ class _ViewAllServiceRouteState extends State<ViewAllServiceRoute> {
     return Container(
       // color: Colors.white,
       height: 10.49.h,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
       child: TextFormField(
         // autofocus: true,
         controller: controller,
+        onChanged: (v) {
+          // if (_timer != null) _timer?.cancel();
+          Debouncer(milliseconds: 800).run(() {
+            serviceState.getFilteredServices(filterState,
+                searchString: _searchController.text, isUpdateMainData: true);
+          });
+          // _timer = Timer(const Duration(milliseconds: 500), () async {
+          //   await serviceState.getFilteredServices(filterState,
+          //       searchString: _searchController.text);
+          // });
+        },
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.only(top: 10, left: 20),
             hintText: "Search ...",
@@ -171,7 +274,6 @@ class _ViewAllServiceRouteState extends State<ViewAllServiceRoute> {
     );
   }
 }
-
 // class PackageListPageRoute extends StatefulWidget {
 //   final List<PackageModel> packages;
 //   static const routeName = "/packagelist";

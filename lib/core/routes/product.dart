@@ -56,39 +56,94 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                   FocusManager.instance.primaryFocus!.unfocus();
                 },
                 child: Scaffold(
+                  appBar: PreferredSize(
+                    preferredSize: Size(MediaQuery.of(context).size.width, 60),
+                    child: Material(
+                      elevation: 0.1,
+                      child: Container(
+                        margin: EdgeInsets.only(
+                            top: MediaQuery.of(context).padding.top),
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        color: primaryColor,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              icon: const Icon(Icons.arrow_back_ios),
+                              color: Colors.white,
+                            ),
+                            Expanded(
+                                child: _searchBar(
+                              controller: _searchController,
+                              filterState: filters,
+                              serviceState: state,
+                            )),
+                            IconButton(
+                              icon: const Icon(Icons.tune),
+                              color: Colors.white,
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => FilterPage(
+                                              filterState: filters,
+                                            )));
+                                if (_searchController.text.isNotEmpty) {
+                                  state.getFilteredServices(filters,
+                                      searchString: _searchController.text);
+                                }
+                              },
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                   body: NestedScrollView(
                     floatHeaderSlivers: true,
                     headerSliverBuilder: (context, isChange) {
                       return [
-                        SliverAppBar(
-                            title: const Text("Services"),
-                            floating: true,
-                            snap: true,
-                            pinned: true,
-                            actions: [
-                              // filter button
-                              IconButton(
-                                icon: const Icon(Icons.tune),
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => FilterPage(
-                                              filterState: filters)));
-                                },
-                              )
-                            ],
-                            elevation: 0,
-                            backgroundColor: primaryColor,
-                            bottom: PreferredSize(
-                              preferredSize: const Size.fromHeight(80),
-                              child: Container(
-                                child: _searchBar(
-                                    controller: _searchController,
-                                    filterState: filters,
-                                    serviceState: state),
-                              ),
-                            ))
+                        // SliverAppBar(
+                        //     title: _searchBar(
+                        //       controller: _searchController,
+                        //       filterState: filters,
+                        //       serviceState: state,
+                        //     ),
+                        //     floating: true,
+                        //     snap: true,
+                        //     pinned: true,
+                        //     actions: [
+                        //       // filter button
+                        //       IconButton(
+                        //         icon: const Icon(Icons.tune),
+                        //         onPressed: () {
+                        //           Navigator.push(
+                        //               context,
+                        //               MaterialPageRoute(
+                        //                   builder: (context) => FilterPage(
+                        //                         filterState: filters,
+                        //                       )));
+                        //           if (_searchController.text.isNotEmpty) {
+                        //             state.getFilteredServices(filters,
+                        //                 searchString: _searchController.text);
+                        //           }
+                        //         },
+                        //       )
+                        //     ],
+                        //     elevation: 0,
+                        //     backgroundColor: primaryColor,
+                        //     bottom: PreferredSize(
+                        //       preferredSize: const Size.fromHeight(80),
+                        //       child: Container(
+                        //         child: _searchBar(
+                        //             controller: _searchController,
+                        //             filterState: filters,
+                        //             serviceState: state),
+                        //       ),
+                        //     ))
                       ];
                     },
                     body: SizedBox(
@@ -121,7 +176,8 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                                 ),
                               )
                             : Column(
-                                children: state.data == null
+                                children: state.data == null ||
+                                        state.searchData!.isEmpty
                                     ? [
                                         Container(
                                           height: MediaQuery.of(context)
@@ -187,7 +243,7 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
     return Container(
       // color: Colors.white,
       height: 10.49.h,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
       child: TextFormField(
         // autofocus: true,
         controller: controller,
@@ -258,6 +314,7 @@ class _PackageListPageRouteState extends State<PackageListPageRoute> {
       appBar: CommonHeader.header(context, onBack: () {
         Navigator.pop(context);
       }, onSearch: () {
+        print("search");
         Navigator.pushNamed(context, ProductPageRoute.routeName);
       }),
       body: Container(

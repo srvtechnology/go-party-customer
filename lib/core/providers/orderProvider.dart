@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:customerapp/core/providers/AuthProvider.dart';
+import 'package:customerapp/core/utils/file_open.dart';
 import 'package:customerapp/core/utils/logger.dart';
 import 'package:flutter/material.dart';
 import '../models/orders.dart';
@@ -60,6 +61,23 @@ class OrderProvider with ChangeNotifier {
     stopLoading();
   }
 
+  Future<String?> downloadAndOpenInvoicePdf(
+      BuildContext context, AuthProvider auth, String payload) async {
+    startLoading();
+    try {
+      final pdfUrl = await OrderRepo.getInvoiceLink(auth, payload);
+      if (pdfUrl != null) {
+        log("Invoice Link $pdfUrl");
+        final file = await getFileFromUrl(pdfUrl);
+        openFile(file);
+      }
+    } catch (e) {
+      CustomLogger.error(e);
+    }
+    stopLoading();
+    return null;
+  }
+
   Future<void> getDeliveredOrders(AuthProvider auth) async {
     startLoading();
     try {
@@ -85,5 +103,12 @@ class OrderProvider with ChangeNotifier {
       CustomLogger.error(e);
       return false;
     }
+  }
+
+  Future<void> refresh() async {
+    _isLoading = true;
+    await getUpcomingOrders(AuthProvider());
+    await getDeliveredOrders(AuthProvider());
+    notifyListeners();
   }
 }

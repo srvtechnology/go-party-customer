@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:customerapp/core/repo/services.dart';
@@ -58,8 +59,12 @@ class ServiceProvider with ChangeNotifier {
   }
 
   Future<void> getFilteredServices(FilterProvider filters,
-      {String? searchString}) async {
+      {String? searchString, bool isUpdateMainData = false}) async {
     try {
+      log("Getting filtered Services");
+      log(filters.categories.toString());
+      log(filters.startPrice.toString(), name: "Start Price");
+      log(filters.endPrice.toString(), name: "End Price");
       startLoading();
       Map<String, dynamic> data = {};
       if (filters.startPrice != null && filters.endPrice != null) {
@@ -72,10 +77,32 @@ class ServiceProvider with ChangeNotifier {
       filters.categories.forEachIndexed((index, value) {
         data["category[$index]"] = value;
       });
-      CustomLogger.debug(data);
+      log(jsonEncode(data), name: "Filter Data");
+      if (isUpdateMainData) {
+        _data = await searchServices(data);
+        return;
+      }
       searchData = await searchServices(data);
-      log(searchData.toString());
+      log(searchData.toString(), name: "Search Data");
     } catch (e) {
+      CustomLogger.error(e);
+    } finally {
+      stopLoading();
+    }
+  }
+
+  Future<void> refresh() async {
+    try {
+      startLoading();
+      _data = await getServices();
+      banner1Images = await getBannerImages();
+      mobileBannerImages = await getMobileBannerImages();
+      _eventData = await getEvents();
+      _packageData = await getPackages();
+    } catch (e) {
+      if (e is DioException) {
+        CustomLogger.error(e);
+      }
       CustomLogger.error(e);
     } finally {
       stopLoading();
@@ -100,6 +127,14 @@ class FilterProvider with ChangeNotifier {
     _startPrice = startPrice;
     _endPrice = endPrice;
     _hasFilters = true;
+    notifyListeners();
+  }
+
+  Future<void> refresh() async {
+    _categories = [];
+    _startPrice = null;
+    _endPrice = null;
+    _hasFilters = false;
     notifyListeners();
   }
 }

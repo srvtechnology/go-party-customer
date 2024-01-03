@@ -1,12 +1,12 @@
 import '../../config.dart';
 
 class ServiceModel {
-  String id, name, description, price, discountedPrice, priceBasis;
-  List<String> images;
-  int minQnty;
+  String? id, name, description, price, discountedPrice, priceBasis;
+  List<String>? images;
+  int? minQnty;
   String? rating, categoryId;
-  final String imageUrl = "storage/app/public/service/";
-  List<ReviewModel> reviews = [];
+  final String? imageUrl = "storage/app/public/service/";
+  List<ReviewModel>? reviews = [];
   ServiceModel({
     required this.id,
     required this.name,

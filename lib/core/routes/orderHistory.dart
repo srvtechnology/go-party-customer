@@ -2,7 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:customerapp/core/Constant/themData.dart';
 import 'package:customerapp/core/components/Rating_view.dart';
 import 'package:customerapp/core/components/divider.dart';
+import 'package:customerapp/core/routes/OrderSummry.dart';
 import 'package:customerapp/core/routes/cart.dart';
+import 'package:customerapp/core/routes/singleService.dart';
 import 'package:flutter/material.dart';
 
 import 'package:customerapp/core/components/commonHeader.dart';
@@ -41,146 +43,187 @@ class OrderHistory extends StatelessWidget {
                 horizontal: 4.w,
                 vertical: 2.h,
               ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(
-                      right: 4.w,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: CachedNetworkImageProvider(
-                          order.service.images[0],
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              SingleServiceRoute(service: order.service)));
+                },
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(
+                        right: 4.w,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: CachedNetworkImageProvider(
+                            order.service.images![0],
+                          ),
                         ),
                       ),
+                      height: 36.w,
+                      width: 36.w,
                     ),
-                    height: 40.w,
-                    width: 40.w,
-                  ),
-                  Expanded(
-                      child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        order.service.name,
-                        style: TextStyle(
-                            fontSize: 18.sp, fontWeight: FontWeight.w600),
-                      ),
-                      Text(
-                        order.category.name,
-                        style: TextStyle(
-                            fontSize: 15.sp, fontWeight: FontWeight.w600),
-                      ),
-                      Text(
-                        "${order.houseNumber}, ${order.landmark}, ${order.area}, ${order.state}",
-                        overflow: TextOverflow.visible,
-                      ),
-                      SizedBox(
-                        height: 1.h,
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            "₹ ${order.totalPrice}",
-                            style: TextStyle(
-                                fontSize: 18.sp,
-                                color: Theme.of(context).primaryColor,
-                                fontWeight: FontWeight.w600),
-                          ),
-                          const SizedBox(
-                            width: 2,
-                          ),
-                          Text(
-                            "  ${order.service.priceBasis}",
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 1.h,
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            "Discount Price: ",
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const Spacer(),
-                          Text(
-                            "₹ ${order.service.discountedPrice}",
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              color: primaryColor,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const DashedDivider(),
-                      Row(
-                        children: [
-                          Text(
-                            "Price: ",
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const Spacer(),
-                          Text(
-                            "₹ ${order.service.price}",
-                            // price cut decoration
+                    Expanded(
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          order.service.name ?? "",
+                          style: TextStyle(
+                              fontSize: 18.sp, fontWeight: FontWeight.w600),
+                        ),
+                        Text(
+                          order.category.name,
+                          style: TextStyle(
+                              fontSize: 15.sp, fontWeight: FontWeight.w600),
+                        ),
+                        Text(
+                          "${order.houseNumber}, ${order.landmark}, ${order.area}, ${order.state}",
+                          overflow: TextOverflow.visible,
+                        ),
+                        SizedBox(
+                          height: 1.h,
+                        ),
+                        // Row(
+                        //   children: [
+                        //     Text(
+                        //       "₹ ${order.totalPrice}",
+                        //       style: TextStyle(
+                        //           fontSize: 18.sp,
+                        //           color: Theme.of(context).primaryColor,
+                        //           fontWeight: FontWeight.w600),
+                        //     ),
+                        //     const SizedBox(
+                        //       width: 2,
+                        //     ),
+                        //     Text(
+                        //       "  ${order.service.priceBasis}",
+                        //       style: TextStyle(
+                        //         fontSize: 14.sp,
+                        //         color: Colors.grey,
+                        //         fontWeight: FontWeight.w600,
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
+                        // SizedBox(
+                        //   height: 1.h,
+                        // ),
+                        // Row(
+                        //   children: [
+                        //     Text(
+                        //       "Discount Price: ",
+                        //       style: TextStyle(
+                        //         fontSize: 16.sp,
+                        //         fontWeight: FontWeight.w500,
+                        //       ),
+                        //     ),
+                        //     const Spacer(),
+                        //     Text(
+                        //       "₹ ${order.service.discountedPrice}",
+                        //       style: TextStyle(
+                        //         fontSize: 16.sp,
+                        //         color: primaryColor,
+                        //         fontWeight: FontWeight.w600,
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
+                        // const DashedDivider(),
+                        // Row(
+                        //   children: [
+                        //     Text(
+                        //       "Price: ",
+                        //       style: TextStyle(
+                        //         fontSize: 16.sp,
+                        //         fontWeight: FontWeight.w500,
+                        //       ),
+                        //     ),
+                        //     const Spacer(),
+                        //     Text(
+                        //       "₹ ${order.service.price}",
+                        //       // price cut decoration
 
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              decoration: TextDecoration.lineThrough,
-                              color: primaryColor,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const DashedDivider(),
-                      Row(
-                        children: [
-                          Text(
-                            "Unit: ",
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const Spacer(),
-                          Text(
-                            order.service.priceBasis,
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              color: primaryColor,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  )),
-                ],
+                        //       style: TextStyle(
+                        //         fontSize: 16.sp,
+                        //         decoration: TextDecoration.lineThrough,
+                        //         color: primaryColor,
+                        //         fontWeight: FontWeight.w600,
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
+                        // const DashedDivider(),
+                        // Row(
+                        //   children: [
+                        //     Text(
+                        //       "Unit: ",
+                        //       style: TextStyle(
+                        //         fontSize: 16.sp,
+                        //         fontWeight: FontWeight.w500,
+                        //       ),
+                        //     ),
+                        //     const Spacer(),
+                        //     Text(
+                        //       order.service.priceBasis ?? "",
+                        //       style: TextStyle(
+                        //         fontSize: 16.sp,
+                        //         color: primaryColor,
+                        //         fontWeight: FontWeight.w600,
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
+                      ],
+                    )),
+                  ],
+                ),
               ),
             ),
-            Divider(
-              thickness: 1,
-              height: 2.h,
+            InkWell(
+              onTap: () async {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => OrderSummary(
+                      order: order,
+                    ),
+                  ),
+                );
+              },
+              child: Column(
+                children: [
+                  const DashedDivider(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          'View Order Details',
+                          style: TextStyle(
+                              fontSize: 17.sp, fontWeight: FontWeight.w600),
+                        ),
+                        const Spacer(),
+                        const Icon(
+                          Icons.arrow_forward_ios_rounded,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const DashedDivider(),
+                ],
+              ),
             ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),

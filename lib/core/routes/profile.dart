@@ -1,17 +1,18 @@
 import 'package:customerapp/core/Constant/themData.dart';
+import 'package:customerapp/core/routes/addressPage.dart';
+import 'package:customerapp/core/routes/cart.dart';
+import 'package:customerapp/core/routes/settingsPage.dart';
+import 'package:customerapp/core/routes/signin.dart';
+import 'package:customerapp/core/routes/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import 'package:customerapp/core/components/commonHeader.dart';
-import 'package:customerapp/core/components/divider.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/repo/customer.dart';
 import 'package:customerapp/core/routes/product.dart';
-import 'package:customerapp/core/routes/signin.dart';
-
-import 'addressPage.dart';
 
 class Profile extends StatefulWidget {
   final Function(int) onTabChange;
@@ -30,210 +31,245 @@ class _ProfileState extends State<Profile> {
     return Consumer<AuthProvider>(builder: (context, state, child) {
       if (state.authState != AuthState.LoggedIn || state.user == null) {
         return Scaffold(
-          appBar:
-              CommonHeader.headerMain(context, isShowLogo: false, onSearch: () {
-            Navigator.pushNamed(context, ProductPageRoute.routeName);
-          }),
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(20.0),
-                child: const Center(
-                  child: CircleAvatar(
-                    radius: 50.0,
-                    child: Icon(Icons.person),
+          // appBar:
+          //     CommonHeader.headerMain(context, isShowLogo: false, onSearch: () {
+          //   Navigator.pushNamed(context, ProductPageRoute.routeName);
+          // }),
+          body: Container(
+            padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+            width: double.infinity,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 20.h,
+                ),
+                Image.asset(
+                  'assets/images/logo/Utsavlife full logo.png',
+                  // height: 20,
+                ),
+                const Spacer(),
+                TextButton(
+                  onPressed: () {},
+                  child: const Text(
+                    'View services in your Utsavlife cart,',
+                    style: TextStyle(color: Colors.black),
                   ),
                 ),
-              ),
-              const Text("Please Sign in to view"),
-              SizedBox(
-                height: 5.h,
-              ),
-              ElevatedButton(
-                  onPressed: () {
+                TextButton(
+                  onPressed: () {},
+                  child: const Text(
+                    'Find & rebook your required services,',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {},
+                  child: const Text(
+                    'Track your booked Services',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+                SizedBox(
+                  height: 2.h,
+                ),
+                InkWell(
+                  onTap: () {
                     Navigator.pushNamed(context, SignInPageRoute.routeName);
                   },
-                  child: const Text("Sign in / Sign up"))
-            ],
+                  child: Container(
+                    height: 6.h,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: tertiaryColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Text('Already a customer ? Sign in',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: primaryColor,
+                        )),
+                  ),
+                ),
+                TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, SignUpPageRoute.routeName);
+                    },
+                    child: const Text(
+                      "New to Utsavlife? Create an account",
+                      style: TextStyle(color: Colors.black),
+                    )),
+                SizedBox(
+                  height: 10.h,
+                ),
+                // Container(
+                //   margin: EdgeInsets.symmetric(horizontal: 4.w),
+                //   height: 50,
+                //   width: double.infinity,
+                //   child: ElevatedButton(
+                //       style: ButtonStyle(
+                //           backgroundColor: MaterialStateProperty.all<Color>(
+                //               Theme.of(context).primaryColor.withOpacity(0.5))),
+                //       onPressed: () {
+                //         Navigator.pushNamed(context, SignInPageRoute.routeName);
+                //       },
+                //       child: const Text("Already a customer ? Sign in")),
+                // )
+              ],
+            ),
           ),
         );
       }
       return Scaffold(
         backgroundColor: Colors.white,
-        appBar:
-            CommonHeader.headerMain(context, isShowLogo: false, onSearch: () {
+        appBar: CommonHeader.headerMain(context, elevation: 0, onSearch: () {
           Navigator.pushNamed(context, ProductPageRoute.routeName);
         }),
-        body: Container(
-          padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
-          child: Column(
-            children: [
-              Container(
-                  child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+        body: Column(
+          children: [
+            Container(
+              height: 60,
+              width: double.infinity,
+              color: primaryColor,
+              padding: EdgeInsets.symmetric(horizontal: 4.w),
+              child: Row(
                 children: [
-                  CircleAvatar(
-                    radius: 15,
-                    backgroundColor: Theme.of(context).primaryColorLight,
-                    child: const Icon(
-                      Icons.person,
-                      color: Colors.white,
-                      size: 16,
-                    ),
-                  ),
                   SizedBox(
                     width: 2.w,
                   ),
                   Text(
                     "Hello, ${state.user!.name}",
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 20,
-                        color: Theme.of(context).primaryColor),
+                        color: Colors.white),
                   ),
                 ],
-              )),
-              const Divider(
-                thickness: 1,
               ),
-              SizedBox(
-                height: 2.h,
-              ),
-              Expanded(
-                child: ListView.separated(
-                  itemBuilder: (BuildContext context, int index) {
-                    return tiles(context, state)[index];
-                  },
-                  itemCount: tiles(context, state).length,
-                  separatorBuilder: (BuildContext context, int index) {
-                    return const DashedDivider();
-                  },
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  height: 50,
+                                  width: 150,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(50),
+                                    border: Border.all(color: primaryColor),
+                                  ),
+                                  child: TextButton(
+                                    onPressed: () {
+                                      widget.onTabChange(3);
+                                    },
+                                    child: const Text(
+                                      'Your Orders',
+                                      style: TextStyle(color: primaryColor),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 2.w,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  height: 50,
+                                  width: 150,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(50),
+                                    border: Border.all(color: primaryColor),
+                                  ),
+                                  child: TextButton(
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                          context, AddressPage.routeName);
+                                    },
+                                    child: const Text(
+                                      'Manage Address',
+                                      style: TextStyle(color: primaryColor),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  height: 50,
+                                  width: 150,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(50),
+                                    border: Border.all(color: primaryColor),
+                                  ),
+                                  child: TextButton(
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                          context, SettingsPage.routeName);
+                                    },
+                                    child: const Text(
+                                      'Settings',
+                                      style: TextStyle(color: primaryColor),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 2.w,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  height: 50,
+                                  width: 150,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(50),
+                                    border: Border.all(color: primaryColor),
+                                  ),
+                                  child: TextButton(
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                          context, FeedbackPage.routeName);
+                                    },
+                                    child: const Text(
+                                      'Feedback',
+                                      style: TextStyle(color: primaryColor),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const ExtraDetails(),
+                  ],
                 ),
-              )
-            ],
-          ),
+              ),
+            ),
+          ],
         ),
       );
     });
-  }
-
-  List<Widget> tiles(context, AuthProvider state) {
-    return [
-      _roundedButton(
-        title: 'Your Orders',
-        onTap: () {
-          widget.onTabChange(0);
-        },
-      ),
-      _roundedButton(
-        title: 'Your Addresses',
-        onTap: () {
-          Navigator.pushNamed(context, AddressPage.routeName);
-        },
-      ),
-      _roundedButton(
-        title: 'Manage Your Profile',
-        onTap: () {
-          Navigator.pushNamed(context, EditProfilePage.routeName);
-        },
-      ),
-      _roundedButton(
-        title: 'Terms and Conditions',
-        onTap: () {
-          // Navigator.pushNamed(context, FeedbackPage.routeName);
-          Navigator.pushNamed(context, TermsAndCondition.routeName);
-        },
-      ),
-      _roundedButton(
-        title: 'Privacy Policy',
-        onTap: () {
-          Navigator.pushNamed(context, PrivacyPolicy.routeName);
-        },
-      ),
-      _roundedButton(
-        title: 'Sign Out',
-        onTap: () {
-          state.logout();
-        },
-      ),
-      _roundedButton(
-        title: 'De-activate Your Account',
-        onTap: () {
-          // state.deActivateAccount();
-          //open dialog having two options
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  titlePadding: const EdgeInsets.all(0),
-                  // icon: const Icon(Icons.warning),
-                  actionsPadding:
-                      EdgeInsets.symmetric(vertical: 0.5.h, horizontal: 4.w),
-                  title: Container(
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(4),
-                          topRight: Radius.circular(4)),
-                      color: primaryColor,
-                    ),
-                    padding:
-                        EdgeInsets.symmetric(vertical: 1.h, horizontal: 4.w),
-                    child: const Text(
-                        "Are you sure you want to de-activate your account?",
-                        style: TextStyle(color: Colors.white, fontSize: 16)),
-                  ),
-                  content: const Text(
-                      "Once de-activate your account , you won't be able to login again"),
-                  actions: [
-                    TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text("No")),
-                    TextButton(
-                        onPressed: () async {
-                          await state.deActivateAccount();
-                          Navigator.pop(context);
-                        },
-                        child: const Text("Yes")),
-                  ],
-                );
-              });
-        },
-      ),
-    ];
-  }
-
-  Widget _roundedButton({required String title, required Function onTap}) {
-    return GestureDetector(
-      onTap: () {
-        onTap();
-      },
-      child: Container(
-        height: 4.h,
-        decoration: const BoxDecoration(),
-        child: Row(
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                color: Theme.of(context).primaryColorDark,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const Spacer(),
-            Icon(
-              Icons.arrow_forward_ios,
-              color: Theme.of(context).primaryColorDark,
-              size: 16,
-            )
-          ],
-        ),
-      ),
-    );
   }
 }
 
@@ -908,6 +944,78 @@ class TermsAndCondition extends StatelessWidget {
       <p class="modal-para">All Services offered on the Platform other than those offered under the ‘International Goals’ section on the Platform are provisioned by Utsavlife Private Limited (Utsavlife India), R- 16, Uttam Nagar west metro station Gate Number 1, Metro pillar Number 690, Bikaner vali Gali, New Delhi, India 110059.</p>
       <p class="modal-para">Terms and Conditions – Version 1.0</p>
       <p class="modal-para">Last Updated on 16th JANUARY, 2023</p>
+      </div>
+       """,
+          // remove padding margin from h1 and h4
+          customStylesBuilder: (e) {
+            if (e.classes.contains("modal-heading")) {
+              return {
+                "margin": "0px",
+                "padding": "0px",
+              };
+            }
+            if (e.classes.contains("modal-heading2")) {
+              return {
+                "margin": "0px",
+                "padding": "0px",
+              };
+            }
+            if (e.classes.contains("modal-para")) {
+              return {
+                "margin": "0px",
+                "padding": "0px",
+              };
+            }
+            if (e.classes.contains("modal-para")) {
+              return {
+                "margin": "0px",
+                "padding": "0px",
+              };
+            }
+            if (e.classes.contains("modal-heading2")) {
+              return {
+                "margin": "0px",
+                "padding": "0px",
+              };
+            }
+            if (e.classes.contains("modal-heading")) {
+              return {
+                "margin": "0px",
+                "padding": "0px",
+              };
+            }
+            return null;
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class RefundPolicy extends StatelessWidget {
+  static const String routeName = '/refund'; // Add route name
+
+  const RefundPolicy({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        elevation: 0,
+        title: const Text(
+          'Refund Policy',
+        ),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20,
+        ),
+        child: HtmlWidget(
+          """
+       <div class="modal-body">
+        <h4 class="modal-heading">Refund And Cancellation Policy</h4>  
+        <p class="modal-para">Please read the Booking terms and conditions carefully before purchasing/Booking to any of the services, as once you have purchased/Booked you cannot change, cancel your Order. Once you Booked and make the required payment, it shall be final and there cannot be any changes or modifications to the same and neither will there be any refund.</p>
       </div>
        """,
           // remove padding margin from h1 and h4

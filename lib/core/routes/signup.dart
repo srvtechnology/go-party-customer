@@ -1,4 +1,6 @@
+import 'package:customerapp/core/components/TramsAndConditionsCheckBox.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
+import 'package:customerapp/core/routes/profile.dart';
 import 'package:customerapp/core/routes/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -76,13 +78,35 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  SizedBox(height: 10.h),
-                  Container(
-                    color: Theme.of(context).primaryColor,
+                  SizedBox(height: 8.h),
+                  SizedBox(
                     child: Image.asset(
-                      'assets/images/logo/logo-white.png',
-                      height: 150.0,
+                      'assets/images/logo/Utsavlife full logo.png',
                     ),
+                  ),
+                  const SizedBox(height: 32.0),
+                  Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Welcome ",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 26,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  const SizedBox(height: 16.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      // radio
+                      Radio(
+                        value: true,
+                        onChanged: (v) {},
+                        groupValue: true,
+                      ),
+                      const Text("Create an account. New to Utsavlife?"),
+                    ],
                   ),
                   SizedBox(
                     height: 32.0,
@@ -282,21 +306,57 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                           ),
                   ),
                   const SizedBox(height: 16.0),
+                  TramsAndConditionsCheckBox(
+                    value: false,
+                    onChanged: (value) {},
+                  ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pushReplacementNamed(
+                      // radio
+                      Radio(
+                        value: true,
+                        onChanged: (v) {
+                          Navigator.pushNamed(
                               context, SignInPageRoute.routeName);
                         },
-                        child: const Text(
-                          'Have an account? Sign In',
-                          style: TextStyle(color: Colors.white),
-                        ),
+                        groupValue: false,
+                      ),
+                      const Text("Sign in. Already a customer?"),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                                context, TermsAndCondition.routeName);
+                          },
+                          child: const Text(
+                            "Terms & Condition",
+                          )),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                                context, PrivacyPolicy.routeName);
+                          },
+                          child: const Text(
+                            "Privacy & policy",
+                          )),
+                    ],
+                  ),
+                  const SizedBox(height: 16.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Text(
+                        '© 2023 - UTSAVLIFE. All Rights Reserved.',
+                        style: TextStyle(fontSize: 12, color: Colors.black),
                       ),
                     ],
                   ),
+                  const SizedBox(height: 16.0),
                 ],
               ),
             ),

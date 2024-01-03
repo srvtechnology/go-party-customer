@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/utils/logger.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +16,7 @@ class CartProvider with ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  CartProvider(AuthProvider auth) {
+  CartProvider({AuthProvider? auth}) {
     getCart(auth);
   }
   void startLoading() {
@@ -36,7 +38,12 @@ class CartProvider with ChangeNotifier {
     stopLoading();
   }
 
-  Future<void> getCart(AuthProvider auth) async {
+  Future<void> getCart(AuthProvider? auth) async {
+    log("GET CART CALL");
+    if (auth == null && auth!.authState != AuthState.LoggedIn) {
+      log("GET CART CALL FAILED");
+      return;
+    }
     startLoading();
     try {
       _data = await cartRepo.getCartItems(auth);
@@ -49,5 +56,21 @@ class CartProvider with ChangeNotifier {
       CustomLogger.error(e);
     }
     stopLoading();
+    notifyListeners();
+  }
+
+  Future<void> refresh() async {
+    startLoading();
+    try {
+      _data = await cartRepo.getCartItems(AuthProvider());
+      calculateTotal();
+    } catch (e) {
+      CustomLogger.error(e);
+    }
+    stopLoading();
+  }
+
+  Future init(AuthProvider? auth) async {
+    await getCart(auth);
   }
 }

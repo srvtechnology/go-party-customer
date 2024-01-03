@@ -1,10 +1,9 @@
-import 'dart:math';
-
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:customerapp/core/components/Rating_view.dart';
 import 'package:customerapp/core/models/orders.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -43,6 +42,8 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
   final TextEditingController _categoryName = TextEditingController();
   final TextEditingController _startDate = TextEditingController();
   final TextEditingController _endDate = TextEditingController();
+  final TextEditingController _startDateView = TextEditingController();
+  final TextEditingController _endDateView = TextEditingController();
   final TextEditingController _selectedCity = TextEditingController();
   final TextEditingController _quantity = TextEditingController();
   final TextEditingController _days = TextEditingController();
@@ -53,19 +54,23 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
   List<String> _cities = [];
   bool isloading = false;
   void _calculateDays() {
-    if (_startDate.text.isNotEmpty && _endDate.text.isNotEmpty) {
-      if (DateTime.parse(_startDate.text)
-          .isAfter(DateTime.parse(_endDate.text))) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Start date should be less than end date")));
-        _endDate.clear();
-        _days.clear();
+    try {
+      if (_startDate.text.isNotEmpty && _endDate.text.isNotEmpty) {
+        if (DateTime.parse(_startDate.text)
+            .isAfter(DateTime.parse(_endDate.text))) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Start date should be less than end date")));
+          // _endDate.clear();
+          // _days.clear();
+        }
       }
+      _days.text = getDay(DateTime.parse(_endDate.text)
+          .difference(DateTime.parse(_startDate.text))
+          .inDays
+          .toString());
+    } catch (e) {
+      print('${e.toString()} getDay error');
     }
-    _days.text = (DateTime.parse(_endDate.text)
-            .difference(DateTime.parse(_startDate.text))
-            .inDays)
-        .toString();
   }
 
   @override
@@ -85,7 +90,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
 
   getAvailableCities() async {
     setState(() => isloading = true);
-    List cities = await getServicesCities(widget.service.id);
+    List cities = await getServicesCities(widget.service.id!);
 
     setState(() {
       _cities = cities.map((e) => e.toString()).toList();
@@ -94,10 +99,11 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
     print(_cities.toString());
   }
 
-  TextFormField datePickField(
-      TextEditingController controller, String hintText) {
+  TextFormField datePickField(TextEditingController controller,
+      TextEditingController controllerView, String hintText,
+      {String? Function(String?)? validator}) {
     return TextFormField(
-      controller: controller,
+      controller: controllerView,
       decoration: InputDecoration(
           hintText: hintText,
           border: OutlineInputBorder(
@@ -110,12 +116,13 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                 BorderSide(width: 0.5, color: Theme.of(context).primaryColor),
             borderRadius: BorderRadius.circular(10),
           )),
-      validator: (text) {
-        if (text == null || text.isEmpty) {
-          return "Required";
-        }
-        return null;
-      },
+      validator: validator ??
+          (text) {
+            if (text == null || text.isEmpty) {
+              return "Required";
+            }
+            return null;
+          },
       readOnly: true,
       onTap: () async {
         DateTime? date = await showDatePicker(
@@ -124,6 +131,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
             firstDate: DateTime.now(),
             lastDate: DateTime(3000));
         if (date != null) {
+          controllerView.text = DateFormat("dd-MM-yyyy").format(date);
           controller.text = date.toString().substring(0, 10);
         }
       },
@@ -145,7 +153,8 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
             return FractionallySizedBox(
               heightFactor: 0.8,
               child: ListenableProvider(
-                  create: (_) => CartProvider(context.read<AuthProvider>()),
+                  create: (_) =>
+                      CartProvider(auth: context.read<AuthProvider>()),
                   child: Consumer2<CartProvider, AuthProvider>(
                       builder: (context, cart, auth, child) {
                     return Column(
@@ -168,7 +177,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                   )),
                               // package name
                               Text(
-                                widget.service.name,
+                                widget.service.name ?? "",
                                 style: Theme.of(context)
                                     .textTheme
                                     .headlineSmall!
@@ -191,7 +200,19 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                     horizontal: 20, vertical: 5),
                                 alignment: Alignment.topCenter,
                                 child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
+                                    Container(
+                                      padding: const EdgeInsets.only(bottom: 5),
+                                      child: Text(
+                                        "Select Your Event",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14.sp,
+                                          color: primaryColor,
+                                        ),
+                                      ),
+                                    ),
                                     CustomDropdown.search(
                                       borderSide: BorderSide(
                                           width: 0.5,
@@ -205,7 +226,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                           .toList(),
                                     ),
                                     const SizedBox(
-                                      height: 20,
+                                      height: 10,
                                     ),
                                     // CustomDropdown.search(
                                     //   borderSide: BorderSide(
@@ -220,10 +241,53 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                     // const SizedBox(
                                     //   height: 20,
                                     // ),
-                                    datePickField(
-                                        _startDate, "Event Start Date"),
-                                    const SizedBox(height: 20),
-                                    datePickField(_endDate, "Event End Date"),
+                                    Container(
+                                      padding: const EdgeInsets.only(bottom: 5),
+                                      child: Text(
+                                        "Event Start Date",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14.sp,
+                                          color: primaryColor,
+                                        ),
+                                      ),
+                                    ),
+                                    datePickField(_startDate, _startDateView,
+                                        "Event Start Date", validator: (v) {
+                                      if (v == null || v.isEmpty) {
+                                        return "Start Date Required";
+                                      }
+
+                                      return null;
+                                    }),
+                                    const SizedBox(height: 10),
+                                    Container(
+                                      padding: const EdgeInsets.only(bottom: 5),
+                                      child: Text(
+                                        "Event End Date",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14.sp,
+                                          color: primaryColor,
+                                        ),
+                                      ),
+                                    ),
+                                    datePickField(_endDate, _endDateView,
+                                        "Event End Date", validator: (v) {
+                                      if (v == null || v.isEmpty) {
+                                        return "End Date Required";
+                                      }
+                                      print(
+                                        _startDate.text,
+                                      );
+                                      // check end date is greater than start date
+                                      if (DateTime.parse(_startDate.text)
+                                          .isAfter(
+                                              DateTime.parse(_endDate.text))) {
+                                        return "End date should be greater than start date";
+                                      }
+                                      return null;
+                                    }),
                                     // const SizedBox(
                                     //   height: 20,
                                     // ),
@@ -256,7 +320,18 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                     //       hintText: "Select Quantity"),
                                     // ),
                                     const SizedBox(
-                                      height: 20,
+                                      height: 10,
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.only(bottom: 5),
+                                      child: Text(
+                                        "Days",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14.sp,
+                                          color: primaryColor,
+                                        ),
+                                      ),
                                     ),
                                     Row(
                                       children: [
@@ -268,8 +343,9 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                             validator: (text) {
                                               if (text == null ||
                                                   text.isEmpty) {
-                                                return "Required";
+                                                return "Days Required";
                                               }
+
                                               return null;
                                             },
                                             decoration: InputDecoration(
@@ -295,7 +371,11 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                         ),
                                         QuantityManager(
                                           qnty: _quantity.text,
-                                          minQnty: widget.service.minQnty,
+                                          minQnty: widget.service.minQnty ==
+                                                  null
+                                              ? 1
+                                              : int.parse(widget.service.minQnty
+                                                  .toString()),
                                           onChanged: (v) {
                                             setState(() {
                                               _quantity.text = v;
@@ -341,7 +421,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                             padding: const EdgeInsets.only(
                                                 right: 8.0),
                                             child: Text(
-                                              "\u20B9 ${double.parse(widget.service.discountedPrice) * int.parse(_quantity.text)}",
+                                              "\u20B9 ${double.parse(widget.service.discountedPrice ?? '0') * int.parse(_quantity.text)}",
                                               style: const TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w600),
@@ -411,6 +491,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                                                 AuthProvider>(),
                                                             data);
                                                         if (context.mounted) {
+                                                          cart.getCart(auth);
                                                           ScaffoldMessenger.of(
                                                                   context)
                                                               .showSnackBar(
@@ -460,6 +541,27 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
         });
   }
 
+  String getDay(String v) {
+    try {
+      int day = int.parse(v);
+      if (day == 0) {
+        print('1'.toString() + "getDay");
+        return "1";
+      }
+      // check if - value
+      if (day < 0) {
+        print('0'.toString() + "getDay");
+        return "0";
+      }
+
+      print("$v getDay");
+      return v.toString();
+    } catch (e) {
+      print("${e}getDay");
+      return v;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion(
@@ -499,7 +601,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                 url:
                                     'https://utsavlife.com/customer/service/details/${widget.service.id}',
                                 child: PackageImageSlider(
-                                    imageUrls: widget.service.images)),
+                                    imageUrls: widget.service.images!)),
                             Container(
                               margin: EdgeInsets.only(top: 2.h),
                               padding: EdgeInsets.symmetric(
@@ -507,7 +609,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                               ),
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                widget.service.name,
+                                widget.service.name ?? "",
                                 style: Theme.of(context)
                                     .textTheme
                                     .headlineSmall!
@@ -545,10 +647,11 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                   builder: (context, constraints) {
                                     print(constraints.maxHeight.toString());
                                     return HtmlTextView(
-                                        htmlText: widget.service.description);
+                                        htmlText:
+                                            widget.service.description ?? "");
                                   },
                                 )),
-                            if (widget.service.description.length > 100)
+                            if (widget.service.description!.length > 100)
                               GestureDetector(
                                 onTap: () {
                                   setState(() {
@@ -569,36 +672,36 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                   ),
                                 ),
                               ),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 4.w,
-                              ),
-                              height: 5.h,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  const Icon(
-                                    Icons.star,
-                                    color: Color.fromARGB(255, 212, 119, 61),
-                                  ),
-                                  SizedBox(
-                                    width: 2.w,
-                                  ),
-                                  Text(
-                                    widget.service.rating ?? "Not Rated",
-                                    style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                  SizedBox(
-                                    width: 2.w,
-                                  ),
-                                  Text(
-                                      "( ${widget.service.reviews.length} rating${widget.service.reviews.length > 1 ? "s" : ""} )")
-                                ],
-                              ),
-                            ),
+                            // Container(
+                            //   padding: EdgeInsets.symmetric(
+                            //     horizontal: 4.w,
+                            //   ),
+                            //   height: 5.h,
+                            //   child: Row(
+                            //     crossAxisAlignment: CrossAxisAlignment.center,
+                            //     mainAxisAlignment: MainAxisAlignment.start,
+                            //     children: [
+                            //       const Icon(
+                            //         Icons.star,
+                            //         color: Color.fromARGB(255, 212, 119, 61),
+                            //       ),
+                            //       SizedBox(
+                            //         width: 2.w,
+                            //       ),
+                            //       Text(
+                            //         widget.service.rating ?? "Not Rated",
+                            //         style: const TextStyle(
+                            //             fontSize: 16,
+                            //             fontWeight: FontWeight.w600),
+                            //       ),
+                            //       SizedBox(
+                            //         width: 2.w,
+                            //       ),
+                            //       Text(
+                            //           "( ${widget.service.reviews!.length} rating${widget.service.reviews!.length > 1 ? "s" : ""} )")
+                            //     ],
+                            //   ),
+                            // ),
                             const Divider(
                               thickness: 1,
                             ),
@@ -906,7 +1009,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                               ),
                               alignment: Alignment.centerLeft,
                               child: HtmlTextView(
-                                  htmlText: widget.service.description),
+                                  htmlText: widget.service.description ?? ""),
                             ),
                             Container(
                                 constraints: BoxConstraints(
@@ -918,7 +1021,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                   horizontal: 4.w,
                                 ),
                                 child: Column(
-                                  children: widget.service.images
+                                  children: widget.service.images!
                                       .map((e) => Container(
                                             margin: EdgeInsets.only(
                                                 bottom: 2.h, top: 2.h),
@@ -936,114 +1039,116 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                             SizedBox(
                               height: 2.h,
                             ),
-                            Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 4.w,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    const Text(
-                                      "Reviews",
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                    // write review button
-                                    WriteReview(
-                                      serviceId: widget.service.id.toString(),
-                                    ),
-                                  ],
-                                )),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 4.w,
-                              ),
-                              height: 5.h,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  const Icon(
-                                    Icons.star,
-                                    color: Color.fromARGB(255, 212, 119, 61),
-                                  ),
-                                  SizedBox(
-                                    width: 2.w,
-                                  ),
-                                  Text(
-                                    widget.service.rating ?? "Not Rated",
-                                    style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                  SizedBox(
-                                    width: 2.w,
-                                  ),
-                                  Text(
-                                      "( ${widget.service.reviews.length} rating${widget.service.reviews.length > 1 ? "s" : ""} )")
-                                ],
-                              ),
-                            ),
-                            const Divider(
-                              thickness: 1,
-                            ),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 4.w,
-                              ),
-                              child: Column(
-                                  children: widget.service.reviews
-                                      .getRange(0,
-                                          min(4, widget.service.reviews.length))
-                                      .map((e) => ReviewTile(e: e))
-                                      .toList()),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ReviewPage(
-                                            reviews: widget.service.reviews)));
-                              },
-                              child: Container(
-                                height: 6.h,
-                                margin: EdgeInsets.symmetric(
-                                  horizontal: 4.w,
-                                ),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                      width: 0.5,
-                                      color: Theme.of(context).primaryColor),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    const Text(
-                                      'View All Reviews',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        color: primaryColor,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 2.w,
-                                    ),
-                                    const Icon(
-                                      Icons.arrow_forward_ios_rounded,
-                                      color: primaryColor,
-                                      size: 16,
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
+                            // Container(
+                            //     padding: EdgeInsets.symmetric(
+                            //       horizontal: 4.w,
+                            //     ),
+                            //     child: Row(
+                            //       mainAxisAlignment:
+                            //           MainAxisAlignment.spaceBetween,
+                            //       crossAxisAlignment: CrossAxisAlignment.center,
+                            //       children: [
+                            //         const Text(
+                            //           "Reviews",
+                            //           style: TextStyle(
+                            //               fontSize: 20,
+                            //               fontWeight: FontWeight.w600),
+                            //         ),
+                            //         // write review button
+                            //         WriteReview(
+                            //           serviceId: widget.service.id.toString(),
+                            //         ),
+                            //       ],
+                            //     )),
+                            // Container(
+                            //   padding: EdgeInsets.symmetric(
+                            //     horizontal: 4.w,
+                            //   ),
+                            //   height: 5.h,
+                            //   child: Row(
+                            //     crossAxisAlignment: CrossAxisAlignment.center,
+                            //     mainAxisAlignment: MainAxisAlignment.start,
+                            //     children: [
+                            //       const Icon(
+                            //         Icons.star,
+                            //         color: Color.fromARGB(255, 212, 119, 61),
+                            //       ),
+                            //       SizedBox(
+                            //         width: 2.w,
+                            //       ),
+                            //       Text(
+                            //         widget.service.rating ?? "Not Rated",
+                            //         style: const TextStyle(
+                            //             fontSize: 16,
+                            //             fontWeight: FontWeight.w600),
+                            //       ),
+                            //       SizedBox(
+                            //         width: 2.w,
+                            //       ),
+                            //       Text(
+                            //           "( ${widget.service.reviews?.length} rating${widget.service.reviews!.length > 1 ? "s" : ""} )")
+                            //     ],
+                            //   ),
+                            // ),
+                            // const Divider(
+                            //   thickness: 1,
+                            // ),
+                            // Container(
+                            //   padding: EdgeInsets.symmetric(
+                            //     horizontal: 4.w,
+                            //   ),
+                            //   child: Column(
+                            //       children: widget.service.reviews!
+                            //           .getRange(
+                            //               0,
+                            //               min(4,
+                            //                   widget.service.reviews!.length))
+                            //           .map((e) => ReviewTile(e: e))
+                            //           .toList()),
+                            // ),
+                            // GestureDetector(
+                            //   onTap: () {
+                            //     Navigator.push(
+                            //         context,
+                            //         MaterialPageRoute(
+                            //             builder: (context) => ReviewPage(
+                            //                 reviews: widget.service.reviews!)));
+                            //   },
+                            //   child: Container(
+                            //     height: 6.h,
+                            //     margin: EdgeInsets.symmetric(
+                            //       horizontal: 4.w,
+                            //     ),
+                            //     decoration: BoxDecoration(
+                            //       border: Border.all(
+                            //           width: 0.5,
+                            //           color: Theme.of(context).primaryColor),
+                            //       borderRadius: BorderRadius.circular(10),
+                            //     ),
+                            //     child: Row(
+                            //       mainAxisAlignment: MainAxisAlignment.center,
+                            //       crossAxisAlignment: CrossAxisAlignment.center,
+                            //       children: [
+                            //         const Text(
+                            //           'View All Reviews',
+                            //           style: TextStyle(
+                            //             fontSize: 16,
+                            //             fontWeight: FontWeight.w600,
+                            //             color: primaryColor,
+                            //           ),
+                            //         ),
+                            //         SizedBox(
+                            //           width: 2.w,
+                            //         ),
+                            //         const Icon(
+                            //           Icons.arrow_forward_ios_rounded,
+                            //           color: primaryColor,
+                            //           size: 16,
+                            //         )
+                            //       ],
+                            //     ),
+                            //   ),
+                            // ),
                             Divider(
                               thickness: 1,
                               height: 6.h,

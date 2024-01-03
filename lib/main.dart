@@ -4,11 +4,13 @@ import 'package:customerapp/core/providers/categoryProvider.dart';
 import 'package:customerapp/core/providers/networkProvider.dart';
 import 'package:customerapp/core/routes/addressPage.dart';
 import 'package:customerapp/core/routes/cart.dart';
+import 'package:customerapp/core/routes/forgotPassword.dart';
 import 'package:customerapp/core/routes/homepage.dart';
 import 'package:customerapp/core/routes/intro.dart';
 import 'package:customerapp/core/routes/mainpage.dart';
 import 'package:customerapp/core/routes/product.dart';
 import 'package:customerapp/core/routes/profile.dart';
+import 'package:customerapp/core/routes/settingsPage.dart';
 import 'package:customerapp/core/routes/signin.dart';
 import 'package:customerapp/core/routes/signup.dart';
 import 'package:customerapp/core/routes/splash.dart';
@@ -32,7 +34,9 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (_) => AuthProvider()),
           ChangeNotifierProvider(create: (_) => CategoryProvider()),
-          ChangeNotifierProvider(create: (_) => NetworkProvider()),
+          ChangeNotifierProvider(
+              create: (_) => NetworkProvider()), // CartProvider
+          // ChangeNotifierProvider(create: (_) => CartProvider()),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -55,7 +59,10 @@ class MyApp extends StatelessWidget {
             AddressPage.routeName: (context) => const AddressPage(),
             AddressAddPage.routeName: (context) => const AddressAddPage(),
             PrivacyPolicy.routeName: (context) => const PrivacyPolicy(),
+            RefundPolicy.routeName: (context) => const RefundPolicy(),
             TermsAndCondition.routeName: (context) => const TermsAndCondition(),
+            ForgotPassword.routeName: (context) => const ForgotPassword(),
+            SettingsPage.routeName: (context) => const SettingsPage(),
           },
         ),
       );

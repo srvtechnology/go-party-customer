@@ -29,7 +29,9 @@ class CommonHeader {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
                 child: GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    onSearch!();
+                  },
                   child: TextFormField(
                     enabled: false,
                     decoration: InputDecoration(
