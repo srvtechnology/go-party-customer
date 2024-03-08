@@ -12,7 +12,9 @@ import '../utils/logger.dart';
 Future<String> addAddress(AuthProvider auth, Map data) async {
   try {
     Response response = await customDioClient.client.post(
-        "${APIConfig.baseUrl}/api/customer/add-address",
+        auth.isAgent
+            ? "${APIConfig.baseUrl}/api/agent/add-address"
+            : "${APIConfig.baseUrl}/api/customer/add-address",
         data: data,
         options: Options(headers: {"Authorization": "Bearer ${auth.token}"}));
     CustomLogger.debug(response.data);
@@ -28,7 +30,9 @@ Future<String> addAddress(AuthProvider auth, Map data) async {
 Future<String> editAddress(AuthProvider auth, Map data) async {
   try {
     Response response = await customDioClient.client.post(
-        "${APIConfig.baseUrl}/api/customer/update-address",
+        auth.isAgent
+            ? "${APIConfig.baseUrl}/api/agent/update-address"
+            : "${APIConfig.baseUrl}/api/customer/update-address",
         data: data,
         options: Options(headers: {"Authorization": "Bearer ${auth.token}"}));
     CustomLogger.debug(response.data);
@@ -45,7 +49,9 @@ Future<List<AddressModel>> getAddress(AuthProvider auth) async {
   try {
     log(auth.token.toString(), name: "token");
     Response response = await customDioClient.client.get(
-        "${APIConfig.baseUrl}/api/customer/view-address",
+        auth.isAgent
+            ? "${APIConfig.baseUrl}/api/agent/view-address"
+            : "${APIConfig.baseUrl}/api/customer/view-address",
         options: Options(headers: {"Authorization": "Bearer ${auth.token}"}));
     log(jsonEncode(response.data), name: "Address Response");
     List<AddressModel> list = [];
@@ -68,7 +74,9 @@ Future<List<AddressModel>> getAddress(AuthProvider auth) async {
 Future<void> deleteAddressbyId(AuthProvider auth, String addressId) async {
   try {
     Response response = await Dio().post(
-        "${APIConfig.baseUrl}/api/customer/delete-address",
+        auth.isAgent
+            ? "${APIConfig.baseUrl}/api/agent/delete-address"
+            : "${APIConfig.baseUrl}/api/customer/delete-address",
         options: Options(headers: {"Authorization": "Bearer ${auth.token}"}),
         data: {"address_id": addressId});
   } catch (e) {

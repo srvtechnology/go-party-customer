@@ -40,7 +40,9 @@ class CartProvider with ChangeNotifier {
 
   Future<void> getCart(AuthProvider? auth) async {
     log("GET CART CALL");
-    if (auth == null && auth!.authState != AuthState.LoggedIn) {
+    if (auth == null &&
+        auth!.authState != AuthState.LoggedIn &&
+        auth.user == null) {
       log("GET CART CALL FAILED");
       return;
     }

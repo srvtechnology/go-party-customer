@@ -7,6 +7,7 @@ import 'package:customerapp/core/components/loading.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/orderProvider.dart';
 import 'package:customerapp/core/routes/cart.dart';
+import 'package:customerapp/core/utils/addressFormater.dart';
 import 'package:flutter/material.dart';
 
 import 'package:customerapp/core/components/commonHeader.dart';
@@ -354,18 +355,11 @@ class _OrderSummaryState extends State<OrderSummary> {
                         ),
                         SizedBox(height: 1.h),
                         Text(
-                          widget.order.billingName,
+                          getAddressFormatOrder(widget.order),
                           style: TextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w500,
                             color: primaryColor,
-                          ),
-                        ),
-                        Text(
-                          widget.order.address,
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],
@@ -390,18 +384,11 @@ class _OrderSummaryState extends State<OrderSummary> {
                         const Divider(),
                         SizedBox(height: 1.h),
                         Text(
-                          widget.order.billingName,
+                          getAddressFormatOrder(widget.order),
                           style: TextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w500,
                             color: primaryColor,
-                          ),
-                        ),
-                        Text(
-                          widget.order.address,
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],

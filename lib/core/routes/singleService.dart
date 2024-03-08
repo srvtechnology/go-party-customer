@@ -104,6 +104,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
       {String? Function(String?)? validator}) {
     return TextFormField(
       controller: controllerView,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
           hintText: hintText,
           border: OutlineInputBorder(
@@ -258,6 +259,18 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                         return "Start Date Required";
                                       }
 
+// if date is today and current time is greater than 3:59 pm then show error
+                                      DateTime now = DateTime.now();
+                                      DateTime date =
+                                          DateTime.parse(_startDate.text);
+
+                                      if (date.day == now.day &&
+                                          date.month == now.month &&
+                                          date.year == now.year &&
+                                          now.hour >= 16) {
+                                        return "You can't book for today after 4:00 PM";
+                                      }
+
                                       return null;
                                     }),
                                     const SizedBox(height: 10),
@@ -286,6 +299,13 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                               DateTime.parse(_endDate.text))) {
                                         return "End date should be greater than start date";
                                       }
+                                      // if start date and end date is same then show error
+                                      if (DateTime.parse(_startDate.text)
+                                          .isAtSameMomentAs(
+                                              DateTime.parse(_endDate.text))) {
+                                        return "End date should be greater than start date";
+                                      }
+
                                       return null;
                                     }),
                                     // const SizedBox(
@@ -486,6 +506,8 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                                           // "service_city":
                                                           //     _selectedCity.text
                                                         };
+                                                        //
+
                                                         await addtoCart(
                                                             context.read<
                                                                 AuthProvider>(),

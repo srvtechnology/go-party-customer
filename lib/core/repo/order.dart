@@ -43,6 +43,37 @@ Future<OrderRes?> placeOrder(AuthProvider auth, PaymentPostData payload) async {
   }
 }
 
+Future<Map> placeOrderAgent(
+  AuthProvider auth, {
+  required String payment_method,
+  required String payment_type,
+  required String txn_id,
+  required String address_id,
+  required String current_city,
+}) async {
+  try {
+    Response response = await customDioClient.client.post(
+        "${APIConfig.baseUrl}/api/agent/payment",
+        data: {
+          "payment_method": payment_method,
+          "payment_type": payment_type,
+          "txn_id": txn_id,
+          "address_id": address_id,
+          "current_city": current_city,
+        },
+        options: Options(headers: {"Authorization": "Bearer ${auth.token}"}));
+
+    final result = jsonDecode(response.toString());
+    log(jsonEncode(result), name: "placeOrderAgent");
+    return result;
+  } catch (e) {
+    if (e is DioException) {
+      CustomLogger.error(e.response!.data);
+    }
+    rethrow;
+  }
+}
+
 Future<Map?> payRemainingOrder(AuthProvider auth,
     {required String userID, amount, orderID}) async {
   try {

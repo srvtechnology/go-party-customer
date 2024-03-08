@@ -1,3 +1,6 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:customerapp/core/Constant/themData.dart';
@@ -700,13 +703,6 @@ class _PaymentPageState extends State<PaymentPage> {
           const SnackBar(content: Text("Please select payment type")));
       return;
     }
-    log(_paymentTypeController.text, name: "paymentType");
-    log(
-        (_paymentTypeController.text.contains("Partial")
-                ? widget.total * 0.25
-                : 0)
-            .toString(),
-        name: "Amount");
     setState(() {
       isloading = true;
     });
@@ -714,18 +710,51 @@ class _PaymentPageState extends State<PaymentPage> {
       Map locationData = await getCountryCityState();
       PaymentPostData data = PaymentPostData(
         paymentMethod: "ONLINE",
-        //   _paymentModeController.text.contains("Cash") ? "cod" : "online",
         paymentType: _paymentTypeController.text.contains("Partial")
             ? "partial"
             : "completed",
         addressId: widget.selectedAddress?.id.toString() ?? "",
         currentCity: locationData["city"],
         fullAmount: widget.total + widget.total * 0.18,
-        // 25% of total amount
         partialAmount: _paymentTypeController.text.contains("Partial")
             ? widget.total * 0.25 + widget.total * 0.25 * 0.18
             : 0,
       );
+      if (auth.isAgent) {
+        if (auth.user!.status != "A") {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content:
+                  Text("Your account is not active. Please contact admin")));
+          setState(() {
+            isloading = false;
+          });
+          return;
+        }
+      }
+      // if (auth.isAgent) {
+      //   await placeOrderAgent(
+      //     auth,
+      //     payment_method: "online",
+      //     payment_type: _paymentTypeController.text.contains("Partial")
+      //         ? "partial"
+      //         : "completed",
+      //     txn_id: auth.user!.id.toString(),
+      //     address_id: widget.selectedAddress?.id.toString() ?? "",
+      //     current_city: locationData["city"],
+      //   ).then((res) {
+      //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      //         content: Text(res['messgae'] ?? "Order Placed Successfully")));
+      //     if (res["status"] == true) {
+      //       Navigator.pushAndRemoveUntil(
+      //           context,
+      //           MaterialPageRoute(builder: (context) => const MainPageRoute()),
+      //           (route) => route.isFirst);
+      //     }
+      //   }).whenComplete(() => setState(() {
+      //         isloading = false;
+      //       }));
+      //   return;
+      // }
 
       await placeOrder(auth, data).then((value) {
         if (value == null) {
@@ -734,9 +763,7 @@ class _PaymentPageState extends State<PaymentPage> {
                   Text("There was something wrong. Please try again later")));
           return;
         }
-        log(value.fullPayObject!.encVal.toString(), name: "fullPayObject");
-        log(value.partialPayObject!.encVal.toString(),
-            name: "partialPayObject");
+        log(jsonEncode(value.toJson()), name: "/api/customer/address-submit");
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -760,7 +787,6 @@ class _PaymentPageState extends State<PaymentPage> {
           ),
         );
       }).whenComplete(() => setState(() => isloading = false));
-
       setState(() {
         isloading = false;
       });

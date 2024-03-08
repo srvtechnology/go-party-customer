@@ -3,6 +3,9 @@ import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/categoryProvider.dart';
 import 'package:customerapp/core/providers/networkProvider.dart';
 import 'package:customerapp/core/routes/addressPage.dart';
+import 'package:customerapp/core/routes/agent_sign_in.dart';
+import 'package:customerapp/core/routes/agent_signup.dart';
+import 'package:customerapp/core/routes/agent_wallet.dart';
 import 'package:customerapp/core/routes/cart.dart';
 import 'package:customerapp/core/routes/forgotPassword.dart';
 import 'package:customerapp/core/routes/homepage.dart';
@@ -63,6 +66,9 @@ class MyApp extends StatelessWidget {
             TermsAndCondition.routeName: (context) => const TermsAndCondition(),
             ForgotPassword.routeName: (context) => const ForgotPassword(),
             SettingsPage.routeName: (context) => const SettingsPage(),
+            AgentSignUp.routeName: (context) => const AgentSignUp(),
+            AgentSignIn.routeName: (context) => const AgentSignIn(),
+            AgentWallet.routeName: (context) => const AgentWallet(),
           },
         ),
       );

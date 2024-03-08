@@ -9,14 +9,20 @@ import 'package:dio/dio.dart';
 
 import '../utils/dio.dart';
 
-Future<void> addtoCart(AuthProvider auth, Map data) async {
+Future<void> addtoCart(
+  AuthProvider auth,
+  Map data,
+) async {
   log(jsonEncode(data), name: "addtoCart");
+  // i
   try {
     Response response = await customDioClient.client.post(
-        "${APIConfig.baseUrl}/api/customer/add-to-cart",
+        auth.isAgent
+            ? "${APIConfig.baseUrl}/api/agent/add-to-cart"
+            : "${APIConfig.baseUrl}/api/customer/add-to-cart",
         data: data,
         options: Options(headers: {"Authorization": "Bearer ${auth.token}"}));
-    log(jsonEncode(response.data), name: "addtoCart");
+    log(jsonEncode(response.data), name: "add to Cart");
   } catch (e) {
     if (e is DioException) {
       CustomLogger.error(e.response?.data ?? e.toString());
@@ -30,7 +36,9 @@ Future<List<CartModel>> getCartItems(AuthProvider auth) async {
   try {
     log("Bearer ${auth.token}", name: "/api/customer/show-cart");
     Response response = await customDioClient.client.get(
-        "${APIConfig.baseUrl}/api/customer/show-cart",
+        auth.isAgent
+            ? "${APIConfig.baseUrl}/api/agent/show-cart"
+            : "${APIConfig.baseUrl}/api/customer/show-cart",
         options: Options(headers: {"Authorization": "Bearer ${auth.token}"}));
     log(jsonEncode(response.data), name: "getCartItems");
     List<CartModel> list = [];
@@ -60,7 +68,9 @@ Future<void> changeCartItemQuantity(
 
     CustomLogger.debug(quantity);
     Response response = await customDioClient.client.post(
-        "${APIConfig.baseUrl}/api/customer/update-cart-qty",
+        auth.isAgent
+            ? "${APIConfig.baseUrl}/api/agent/update-cart-qty"
+            : "${APIConfig.baseUrl}/api/customer/update-cart-qty",
         data: {"cart_id": itemId, "qty": quantity},
         options: Options(headers: {"Authorization": "Bearer ${auth.token}"}));
     log(response.data.toString(), name: "changeCartItemQuantity");
@@ -73,7 +83,9 @@ Future<void> changeCartItemQuantity(
 Future<void> removeFromCart(AuthProvider auth, String id) async {
   try {
     Response response = await customDioClient.client.post(
-        "${APIConfig.baseUrl}/api/customer/delete-cart-item",
+        auth.isAgent
+            ? "${APIConfig.baseUrl}/api/agent/delete-cart-item"
+            : "${APIConfig.baseUrl}/api/customer/delete-cart-item",
         data: {"id": id},
         options: Options(headers: {"Authorization": "Bearer ${auth.token}"}));
   } catch (e) {

@@ -3,6 +3,7 @@ import 'package:customerapp/core/components/commonHeader.dart';
 import 'package:customerapp/core/components/divider.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/routes/addressPage.dart';
+import 'package:customerapp/core/routes/agent_wallet.dart';
 import 'package:customerapp/core/routes/product.dart';
 import 'package:customerapp/core/routes/profile.dart';
 import 'package:flutter/material.dart';
@@ -98,6 +99,14 @@ class _SettingsPageState extends State<SettingsPage> {
           Navigator.pushNamed(context, AddressPage.routeName);
         },
       ),
+      if (state.isAgent) ...[
+        _roundedButton(
+          title: 'Agent Wallet',
+          onTap: () {
+            Navigator.pushNamed(context, AgentWallet.routeName);
+          },
+        ),
+      ],
       _roundedButton(
         title: 'Manage Your Profile',
         onTap: () {

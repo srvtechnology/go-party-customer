@@ -98,6 +98,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
       {String? Function(String?)? validator}) {
     return TextFormField(
       controller: controller,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
           hintText: hintText,
           border: OutlineInputBorder(
@@ -245,7 +246,16 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                         if (v == null || v.isEmpty) {
                                           return "Start Date Required";
                                         }
+                                        DateTime now = DateTime.now();
+                                        DateTime date =
+                                            DateTime.parse(_startDate.text);
 
+                                        if (date.day == now.day &&
+                                            date.month == now.month &&
+                                            date.year == now.year &&
+                                            now.hour >= 16) {
+                                          return "You can't book for today after 4:00 PM";
+                                        }
                                         return null;
                                       }),
                                       const SizedBox(height: 10),
@@ -272,6 +282,12 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                         // check end date is greater than start date
                                         if (DateTime.parse(_startDate.text)
                                             .isAfter(DateTime.parse(
+                                                _endDate.text))) {
+                                          return "End date should be greater than start date";
+                                        }
+                                        // if start date and end date is same then show error
+                                        if (DateTime.parse(_startDate.text)
+                                            .isAtSameMomentAs(DateTime.parse(
                                                 _endDate.text))) {
                                           return "End date should be greater than start date";
                                         }
@@ -476,6 +492,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                                 .text
                                                                 .substring(0, 1)
                                                           };
+
                                                           try {
                                                             await addtoCart(
                                                                 context.read<

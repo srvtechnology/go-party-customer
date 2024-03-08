@@ -1,9 +1,12 @@
 import 'package:customerapp/core/Constant/themData.dart';
 import 'package:customerapp/core/routes/addressPage.dart';
+import 'package:customerapp/core/routes/agent_sign_in.dart';
+import 'package:customerapp/core/routes/agent_signup.dart';
 import 'package:customerapp/core/routes/cart.dart';
 import 'package:customerapp/core/routes/settingsPage.dart';
 import 'package:customerapp/core/routes/signin.dart';
 import 'package:customerapp/core/routes/signup.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:provider/provider.dart';
@@ -102,6 +105,57 @@ class _ProfileState extends State<Profile> {
                       "New to Utsavlife? Create an account",
                       style: TextStyle(color: Colors.black),
                     )),
+                // TextButton(
+                //     onPressed: () {
+                //       Navigator.pushNamed(context, SignUpPageRoute.routeName);
+                //     },
+                //     child: const Text(
+                //       "New to Utsavlife? Create an account",
+                //       style: TextStyle(color: Colors.black),
+                //     )),
+                // rich Text for sign and sign up  as a business Agent
+                RichText(
+                  text: TextSpan(
+                    text: 'Are you a agent ? ',
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                    ),
+                    children: <TextSpan>[
+                      TextSpan(
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Navigator.pushNamed(context, AgentSignIn.routeName);
+                            // navigate to desired screen
+                          },
+                        text: 'Sign in',
+                        style: const TextStyle(
+                          color: primaryColor,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const TextSpan(
+                        text: ' or ',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
+                      ),
+                      TextSpan(
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Navigator.pushNamed(context, AgentSignUp.routeName);
+                            // navigate to desired screen
+                          },
+                        text: 'Sign up',
+                        style: const TextStyle(
+                          color: primaryColor,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 SizedBox(
                   height: 10.h,
                 ),

@@ -15,10 +15,12 @@ class AuthProvider with ChangeNotifier {
   String? status;
   bool get isLoading => _isLoading;
   UserModel? _user;
+  bool isAgent = false;
   late final SharedPreferences pref;
   String? get token => _token;
   AuthState get authState => _authState;
   UserModel? get user => _user;
+  int agentRegistrationStep = 1;
   void startLoading() {
     _isLoading = true;
     notifyListeners();
@@ -55,6 +57,62 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  Future<void> registerAgent(BuildContext context,
+      {required String name,
+      required String email,
+      required String phone,
+      required String password,
+      required TextEditingController otpcontroller}) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+      log("Registering Agent");
+      final res = await authRepo.registerAgent(email, password, name, phone);
+      log(res.toString(), name: "Agent Registered");
+      if (res!.statusCode == 200) {
+        log(res.data.toString(), name: "Agent Registered OTP");
+        agentRegistrationStep = 2;
+        notifyListeners();
+        otpcontroller.text = res.data['opt_code'].toString();
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(res.data['error'] ?? "Invalid Credentials"),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Email or Phone already exists'),
+        ),
+      );
+      _authState = AuthState.Error;
+      notifyListeners();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future resendOtp(scaffoldKey, {required String email}) async {
+    try {
+      log("Resending OTP");
+      final res = await authRepo.resendOTp(email);
+      log(res.toString(), name: "OTP resend");
+      if (res?.statusCode == 200) {
+        log(res!.data['opt_code'].toString(), name: "OTP resend");
+        ScaffoldMessenger.of(scaffoldKey.currentContext!).showSnackBar(
+          SnackBar(
+            content: Text("OTP sent to $email"),
+          ),
+        );
+      }
+    } catch (e) {
+      CustomLogger.error(e);
+    }
+  }
+
   Future init() async {
     startLoading();
     pref = await SharedPreferences.getInstance();
@@ -65,7 +123,8 @@ class AuthProvider with ChangeNotifier {
       try {
         _token = tempToken;
         print("Logged in");
-        await getUser();
+        final userType = pref.getString("userType");
+        await getUser(userType: userType);
         _authState = AuthState.LoggedIn;
       } catch (e) {
         _authState = AuthState.LoggedOut;
@@ -74,8 +133,22 @@ class AuthProvider with ChangeNotifier {
     stopLoading();
   }
 
-  Future<void> getUser() async {
+  Future<void> getUser({required String? userType}) async {
     try {
+      if (userType == "agent") {
+        final res = await authRepo.get_AgentData(_token!);
+        log(res.toString(), name: "AgentData");
+        _user = UserModel(
+          id: res.data['data']['id'].toString(),
+          name: res.data['data']['name'].toString(),
+          email: res.data['data']['email'].toString(),
+          mobile: res.data['data']['mobile'].toString(),
+          status: res.data['data']['status'].toString(),
+        );
+        isAgent = true;
+        notifyListeners();
+        return;
+      }
       final res = await authRepo.get_UserData(_token!);
       status = res.status;
       log(status!, name: "User Status");
@@ -87,10 +160,15 @@ class AuthProvider with ChangeNotifier {
     } catch (e) {
       logout();
     }
+    notifyListeners();
   }
 
   void saveTokenToStorage(String tempToken) {
     pref.setString("token", tempToken);
+  }
+
+  void saveUserType(String type) {
+    pref.setString("userType", type);
   }
 
   void saveEmailPasswordToStorage(String email, String password) {
@@ -134,7 +212,8 @@ class AuthProvider with ChangeNotifier {
       saveEmailPasswordToStorage(email, password);
       _token = tempToken;
       _authState = AuthState.LoggedIn;
-      await getUser();
+      final userType = pref.getString("userType");
+      await getUser(userType: userType);
     } catch (e) {
       _authState = AuthState.Error;
       rethrow;
@@ -181,5 +260,117 @@ class AuthProvider with ChangeNotifier {
     CustomLogger.debug("Deleting all data");
     final SharedPreferences instance = await SharedPreferences.getInstance();
     instance.clear();
+  }
+
+  Future registerAgentOtp(scaffoldKey, {required String email, otp}) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+      final res = await authRepo.submitAgentOTp(
+        otp,
+        email,
+      );
+      if (res!.data['status'] == true) {
+        log(res.data.toString(), name: "Agent Registered 2");
+        agentRegistrationStep = 3;
+      } else {
+        ScaffoldMessenger.of(scaffoldKey.currentContext!).showSnackBar(
+          const SnackBar(
+            content: Text("Invalid OTP"),
+          ),
+        );
+      }
+    } catch (e) {
+      CustomLogger.error(e);
+      _authState = AuthState.Error;
+      agentRegistrationStep = 2;
+      notifyListeners();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future registerAgentBankDetails(
+    BuildContext context, {
+    required String email,
+    required String bankName,
+    required String accountNumber,
+    required String accountHolderName,
+    required String ifscCode,
+    required String password,
+  }) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+      final res = await authRepo.submitAgentBankData(
+        email: email,
+        bankName: bankName,
+        accountNumber: accountNumber,
+        accountHolderName: accountHolderName,
+        ifscCode: ifscCode,
+      );
+
+      if (res?.statusCode == 200) {
+        log(res!.data.toString(), name: "Agent Registered 3");
+        final tempToken = res.data['token'];
+        saveTokenToStorage(tempToken);
+        saveEmailPasswordToStorage(email, password);
+        saveUserType("agent");
+        _token = tempToken;
+        agentRegistrationStep = 1;
+        _authState = AuthState.LoggedIn;
+        final userType = pref.getString("userType");
+        await getUser(userType: userType);
+      }
+    } catch (e) {
+      CustomLogger.error(e);
+
+      _authState = AuthState.Error;
+      notifyListeners();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future loginAgent(
+    scaffoldKey, {
+    required String email,
+    required String password,
+  }) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+      final res = await authRepo.agentLogin(
+        email: email,
+        password: password,
+      );
+      if (res?.statusCode == 200) {
+        final tempToken = res!.data['token'];
+        if (tempToken == null) {
+          ScaffoldMessenger.of(scaffoldKey.currentContext!).showSnackBar(
+            SnackBar(
+              content: Text(res.data['error'] ?? "Invalid Credentials"),
+            ),
+          );
+          return;
+        }
+        saveTokenToStorage(tempToken);
+        saveEmailPasswordToStorage(email, password);
+        saveUserType("agent");
+        _token = tempToken;
+        _authState = AuthState.LoggedIn;
+        final userType = pref.getString("userType");
+        await getUser(userType: userType);
+      }
+    } catch (e) {
+      CustomLogger.error(e);
+      _authState = AuthState.Error;
+      notifyListeners();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 }
