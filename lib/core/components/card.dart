@@ -7,6 +7,7 @@ import 'package:customerapp/core/components/htmlTextView.dart';
 import 'package:customerapp/core/routes/orderHistory.dart';
 import 'package:customerapp/core/routes/orderStatusPage.dart';
 import 'package:customerapp/core/routes/singleService.dart';
+import 'package:customerapp/core/utils/textFormater.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pannable_rating_bar/flutter_pannable_rating_bar.dart';
 import 'package:intl/intl.dart';
@@ -32,79 +33,75 @@ class OrderCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: EdgeInsets.only(
-          right: 5.w,
-        ),
+        margin: EdgeInsets.only(right: 4.w, top: 1.w, bottom: 1.w),
         height: 28.h,
-        width: 50.w,
+        width: 60.w,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Expanded(
-                flex: 4,
-                child: Hero(
-                  tag: "Product Image ${service.id}",
-                  child: Container(
-                    height: 20.h,
-                    decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                              offset: const Offset(1, 1),
-                              spreadRadius: 2,
-                              blurRadius: 2,
-                              color: Colors.grey[400]!),
-                        ],
-                        borderRadius: BorderRadius.circular(10),
-                        image: DecorationImage(
-                            fit: BoxFit.fitHeight,
-                            image: CachedNetworkImageProvider(
-                              service.images![0],
-                            ))),
-                  ),
-                )),
-            SizedBox(
-              height: 1.h,
-            ),
-            Expanded(
-                child: Row(
-              children: [
-                Expanded(
-                  child: Text(service.name ?? "",
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                          fontSize: 16,
-                          color: textColor,
-                          fontWeight: FontWeight.w500)),
+              child: Hero(
+                tag: "Product Image ${service.id}",
+                child: Container(
+                  height: 16.h,
+                  decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                            offset: const Offset(1, 1),
+                            spreadRadius: 2,
+                            blurRadius: 2,
+                            color: Colors.grey[400]!),
+                      ],
+                      borderRadius: BorderRadius.circular(10),
+                      image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: CachedNetworkImageProvider(
+                            service.images![0],
+                          ))),
                 ),
-              ],
-            )),
-            // Expanded(
-            //     child: HtmlTextView(
-            //   htmlText: service.description,
-            // )
-            //     // FittedBox(
-            //     //     child: Text(
-            //     //   "${service.description.substring(0, min(26, service.description.length))} ...",
-            //     //   overflow: TextOverflow.visible,
-            //     //   textAlign: TextAlign.left,
-            //     //   style: const TextStyle(fontSize: 14, color: textColor),
-            //     // )),
-            //     ),
-            // short description of the product
-            const Text(
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 14, color: textColor)),
+              ),
+            ),
             SizedBox(
               height: 1.h,
             ),
-            Expanded(
-              child: Text("₹ ${service.discountedPrice}",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: Theme.of(context).primaryColorDark)),
+            Text(capitalize(service.name ?? ""),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+                style: headerTextStyle(context)),
+            SizedBox(
+              height: 0.5.h,
             ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text('only',
+                    style: TextStyle(
+                        fontSize: 14.sp,
+                        color: Colors.grey,
+                        fontWeight: FontWeight.w600)),
+                SizedBox(
+                  width: 1.w,
+                ),
+                Text("₹ ${priceFormatter(service.price ?? "0")}",
+                    style: priceStyle(context)),
+                SizedBox(
+                  // add to cart button
+                  width: 2.w,
+                ),
+                Text("₹ ${priceFormatter(service.discountedPrice ?? "0")}",
+                    style: discountedStyle(context)),
+              ],
+            ),
+            SizedBox(
+              height: 0.5.h,
+            ),
+            // short description of the product
+            Text(parseHtmlString(service.description!),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+                style: descriptionStyle(context)),
           ],
         ),
       ),
@@ -122,81 +119,70 @@ class PackageCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: EdgeInsets.only(
-          right: 5.w,
-        ),
+        margin: EdgeInsets.only(right: 4.w, top: 1.w, bottom: 1.w),
         height: 28.h,
-        width: 50.w,
+        width: 60.w,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Expanded(
-                flex: 4,
-                child: Container(
-                  height: 20.h,
-                  decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                            offset: const Offset(1, 1),
-                            spreadRadius: 2,
-                            blurRadius: 2,
-                            color: Colors.grey[400]!),
-                      ],
-                      borderRadius: BorderRadius.circular(10),
-                      image: DecorationImage(
-                          fit: BoxFit.fitHeight,
-                          image: CachedNetworkImageProvider(
-                            package.images[0],
-                          ))),
-                )),
+            Container(
+              height: 16.h,
+              decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                        offset: const Offset(1, 1),
+                        spreadRadius: 2,
+                        blurRadius: 2,
+                        color: Colors.grey[400]!),
+                  ],
+                  borderRadius: BorderRadius.circular(10),
+                  image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: CachedNetworkImageProvider(
+                        package.images[0],
+                      ))),
+            ),
+            SizedBox(
+              height: 2.h,
+            ),
+            Text(
+              capitalize(package.name),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+              style: headerTextStyle(context),
+            ),
+            SizedBox(
+              height: 0.5.h,
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text('only',
+                    style: TextStyle(
+                        fontSize: 14.sp,
+                        color: Colors.grey,
+                        fontWeight: FontWeight.w600)),
+                SizedBox(
+                  width: 1.w,
+                ),
+                Text("₹ ${priceFormatter(package.price)}",
+                    style: priceStyle(context)),
+                SizedBox(
+                  // add to cart button
+                  width: 2.w,
+                ),
+                Text("₹ ${priceFormatter(package.discountedPrice)}",
+                    style: discountedStyle(context)),
+              ],
+            ),
+            Text(parseHtmlString(package.description),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+                style: descriptionStyle(context)),
             const SizedBox(
               height: 10,
-            ),
-            Expanded(
-                child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    package.name,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                        fontSize: 16,
-                        color: textColor,
-                        fontWeight: FontWeight.w500),
-                  ),
-                ),
-              ],
-            )),
-            const Text(
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 14, color: textColor)),
-            // Expanded(
-            //   child: Html(
-            //     data: package.description,
-            //   ),
-            // ),
-            // Expanded(
-            //     child: HtmlTextView(
-            //   htmlText: package.description,
-            // )
-            //     // FittedBox(
-            //     //     child: Text(
-            //     //   "${package.description.substring(0, min(26, package.description.length))} ...",
-            //     //   overflow: TextOverflow.visible,
-            //     //   textAlign: TextAlign.left,
-            //     //   style: const TextStyle(fontSize: 14, color: textColor),
-            //     // )),
-            //     ),
-            SizedBox(
-              height: 1.h,
-            ),
-            Expanded(
-              child: Text("₹ ${package.discountedPrice}",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: Theme.of(context).primaryColorDark)),
             ),
           ],
         ),
@@ -320,8 +306,9 @@ class PackageTile extends StatelessWidget {
             ),
 
             const SizedBox(
-              height: 10,
+              height: 5,
             ),
+
             // Expanded(
             //     child: Row(
             //   children: [
@@ -430,9 +417,13 @@ class CircularOrderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(right: 2.w),
-      width: 24.w,
-      height: 18.h,
+      constraints: const BoxConstraints(
+        // mxw
+        maxWidth: 90,
+        maxHeight: 110,
+        // mxh
+      ),
+      padding: const EdgeInsets.only(right: 5),
       child: GestureDetector(
         onTap: () {
           Navigator.push(
@@ -440,15 +431,14 @@ class CircularOrderCard extends StatelessWidget {
               MaterialPageRoute(
                   builder: (context) => SingleServiceRoute(service: service)));
         },
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 1.h),
+        child: SizedBox(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
-                height: 10.h,
-                width: 20.w,
+                height: 60,
+                width: 60,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   boxShadow: [
@@ -459,24 +449,19 @@ class CircularOrderCard extends StatelessWidget {
                   ],
                 ),
                 child: CircleAvatar(
-                  // radius: 40,
+                  radius: 40,
                   backgroundImage:
                       CachedNetworkImageProvider(service.images![0]),
                 ),
               ),
               SizedBox(
-                height: 2.h,
+                height: 1.h,
               ),
-              Expanded(
-                child: Text(
-                  service.name ?? "",
-                  textAlign: TextAlign.center,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                      color: textColor,
-                      fontSize: 12),
-                ),
+              Text(
+                capitalize(service.name ?? ""),
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                style: titleStyle(context),
               )
             ],
           ),
@@ -493,20 +478,33 @@ class CircularEventCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(right: 2.w),
+      width: 90,
+      height: 110,
+      padding: const EdgeInsets.only(right: 5),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
+            alignment: Alignment.topCenter,
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(100),
               child: Container(
                 height: 60,
                 width: 60,
                 decoration: BoxDecoration(
+                  color: Colors.white,
                   image: DecorationImage(
                     fit: BoxFit.cover,
                     image: CachedNetworkImageProvider(event.image),
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                        blurRadius: 2,
+                        color: Colors.grey[400]!,
+                        spreadRadius: 1)
+                  ],
                 ),
               ),
             ),
@@ -514,10 +512,13 @@ class CircularEventCard extends StatelessWidget {
           SizedBox(
             height: 1.h,
           ),
-          Text(
-            event.name,
-            style:
-                const TextStyle(fontWeight: FontWeight.w500, color: textColor),
+          Expanded(
+            child: Text(
+              capitalize(event.name),
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: titleStyle(context),
+            ),
           )
         ],
       ),

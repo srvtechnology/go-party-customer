@@ -49,13 +49,13 @@ class CartProvider with ChangeNotifier {
     startLoading();
     try {
       _data = await cartRepo.getCartItems(auth);
-
+      log(_data.toString());
       for (var i in data) {
         _serviceIds.add(i.service.id);
       }
       calculateTotal();
     } catch (e) {
-      CustomLogger.error(e);
+      log(e.toString());
     }
     stopLoading();
     notifyListeners();

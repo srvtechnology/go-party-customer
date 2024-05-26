@@ -32,31 +32,36 @@ Future<void> addtoCart(
 }
 
 Future<List<CartModel>> getCartItems(AuthProvider auth) async {
-  CustomLogger.debug(auth.token);
-  try {
-    log("Bearer ${auth.token}", name: "/api/customer/show-cart");
-    Response response = await customDioClient.client.get(
-        auth.isAgent
-            ? "${APIConfig.baseUrl}/api/agent/show-cart"
-            : "${APIConfig.baseUrl}/api/customer/show-cart",
-        options: Options(headers: {"Authorization": "Bearer ${auth.token}"}));
-    log(jsonEncode(response.data), name: "getCartItems");
-    List<CartModel> list = [];
-    for (var i in response.data["data"]["cart"]) {
-      try {
-        list.add(CartModel.fromJson(i));
-      } catch (e) {
-        CustomLogger.error(e);
-      }
-    }
-    CustomLogger.debug(list);
-    return list;
-  } catch (e) {
-    if (e is DioException) {
-      CustomLogger.error(e.response!.data);
-    }
-    return Future.error(e);
+  // try {
+
+  if (auth.authState != AuthState.LoggedIn &&
+      auth.user == null &&
+      auth.token == null) {
+    return Future.error("User not logged in");
   }
+  final url = auth.isAgent
+      ? "${APIConfig.baseUrl}/api/agent/show-cart"
+      : "${APIConfig.baseUrl}/api/customer/show-cart";
+  log("Bearer ${auth.token}", name: "$url getCartItems");
+  Response response = await customDioClient.client.get(url,
+      options: Options(headers: {"Authorization": "Bearer ${auth.token}"}));
+  log(jsonEncode(response.data), name: "getCartItems");
+  List<CartModel> list = [];
+  for (var i in response.data["data"]["cart"]) {
+    try {
+      list.add(CartModel.fromJson(i));
+    } catch (e) {
+      CustomLogger.error(e);
+    }
+  }
+
+  return list;
+  // } catch (e) {
+  //   if (e is DioException) {
+  //     log(e.response?.data.toString() ?? '', name: "getCartItems");
+  //   }
+  //   return Future.error(e);
+  // }
 }
 
 Future<void> changeCartItemQuantity(

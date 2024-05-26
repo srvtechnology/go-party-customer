@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 const Color primaryColor = Color(0xff0264a5);
 const Color secondaryColor = Color(0xff0363a5);
@@ -60,3 +61,48 @@ ThemeData themeData(BuildContext context) => ThemeData(
       focusColor: primaryColor,
       indicatorColor: primaryColor,
     );
+
+TextStyle appBarTextStyle = GoogleFonts.poppins(
+  fontSize: 14,
+  fontWeight: FontWeight.w600,
+  color: textColor,
+);
+
+TextStyle headerTextStyle(BuildContext context) =>
+    Theme.of(context).textTheme.labelLarge!.copyWith(
+          fontSize: 16,
+          color: textColor,
+          fontWeight: FontWeight.w700,
+        );
+
+TextStyle descriptionStyle(BuildContext context) =>
+    Theme.of(context).textTheme.labelLarge!.copyWith(
+          fontSize: 12,
+          color: textColor.withOpacity(0.6),
+          fontWeight: FontWeight.w400,
+        );
+
+TextStyle buttonTextStyle(BuildContext context) =>
+    TextStyle(color: Theme.of(context).primaryColorDark, fontSize: 12);
+
+TextStyle titleStyle(BuildContext context) =>
+    Theme.of(context).textTheme.labelLarge!.copyWith(
+          fontSize: 12,
+          color: textColor,
+          fontWeight: FontWeight.w600,
+        );
+
+TextStyle priceStyle(BuildContext context) => GoogleFonts.roboto(
+      fontSize: 14,
+      color: textColor,
+      textStyle: const TextStyle(decoration: TextDecoration.lineThrough),
+      fontWeight: FontWeight.w900,
+    );
+TextStyle discountedStyle(BuildContext context) => GoogleFonts.roboto(
+      fontSize: 14,
+      color: primaryColor,
+      fontWeight: FontWeight.w900,
+    );
+
+EdgeInsetsGeometry? contentPadding =
+    EdgeInsets.only(left: 4.w, bottom: 0.h, right: 0.w);

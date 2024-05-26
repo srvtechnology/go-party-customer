@@ -346,12 +346,16 @@ class _HomeState extends State<Home> {
                     children: [
                       const CurrentLocationView(),
                       Container(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
                         alignment: Alignment.centerLeft,
-                        decoration: const BoxDecoration(
-                          color: tertiaryColor,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          border: Border.all(width: 0.15, color: Colors.grey),
                         ),
-                        padding: EdgeInsets.only(
-                            left: 5.w, top: 2.h, bottom: 2.h, right: 2.w),
+                        padding: contentPadding,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -360,30 +364,26 @@ class _HomeState extends State<Home> {
                               children: [
                                 Text(
                                   "Our Events",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelLarge!
-                                      .copyWith(fontSize: 20, color: textColor),
+                                  style: headerTextStyle(context),
                                 ),
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => EventsPage(
-                                                  events: state.eventData!)));
-                                    },
-                                    child: Text(
-                                      "View All",
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .primaryColorDark,
-                                          fontSize: 15),
-                                    ))
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8),
+                                  child: TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EventsPage(
+                                                        events:
+                                                            state.eventData!)));
+                                      },
+                                      child: Text(
+                                        "View All",
+                                        style: buttonTextStyle(context),
+                                      )),
+                                )
                               ],
-                            ),
-                            SizedBox(
-                              height: 1.h,
                             ),
                             SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
@@ -392,12 +392,10 @@ class _HomeState extends State<Home> {
                                       // .getRange(0, min(4, state.data!.length))
                                       .map((e) => GestureDetector(
                                             onTap: () {
-                                              // Navigator.pushNamed(context,
-                                              //     ProductPageRoute.routeName);
                                               Navigator.pushNamed(
-                                                  context,
-                                                  ViewAllServiceRoute
-                                                      .routeName);
+                                                context,
+                                                ViewAllServiceRoute.routeName,
+                                              );
                                             },
                                             child: CircularEventCard(
                                               event: e,
@@ -410,45 +408,38 @@ class _HomeState extends State<Home> {
                       ),
                       ImageSlider(imageUrls: state.mobileBannerImages),
                       Container(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
                         alignment: Alignment.centerLeft,
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           color: Colors.white,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          border: Border.all(width: 0.15, color: Colors.grey),
                         ),
-                        padding: EdgeInsets.only(
-                            top: 2.h, bottom: 2.h, left: 5.w, right: 2.w),
+                        padding: contentPadding,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Container(
-                                  child: Text(
-                                    "Our Top Services",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelLarge!
-                                        .copyWith(
-                                            fontSize: 20, color: textColor),
-                                  ),
+                                Text(
+                                  "Our Top Services",
+                                  style: headerTextStyle(context),
                                 ),
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.pushNamed(context,
-                                          ViewAllServiceRoute.routeName);
-                                      // Navigator.push(
-                                      //     context,
-                                      //     MaterialPageRoute(
-                                      //         builder: (context) => EventsPage(
-                                      //             events: state.eventData!)));
-                                    },
-                                    child: Text(
-                                      "View All",
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .primaryColorDark,
-                                          fontSize: 15),
-                                    ))
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: TextButton(
+                                      onPressed: () {
+                                        Navigator.pushNamed(context,
+                                            ViewAllServiceRoute.routeName);
+                                      },
+                                      child: Text(
+                                        "View All",
+                                        style: buttonTextStyle(context),
+                                      )),
+                                )
                               ],
                             ),
                             SizedBox(
@@ -469,9 +460,16 @@ class _HomeState extends State<Home> {
                       ),
                       // ImageSlider(imageUrls: state.banner1Images),
                       Container(
-                        padding: EdgeInsets.only(
-                            top: 2.h, bottom: 2.h, left: 5.w, right: 2.w),
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
                         alignment: Alignment.centerLeft,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          border: Border.all(width: 0.15, color: Colors.grey),
+                        ),
+                        padding: contentPadding,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -481,28 +479,25 @@ class _HomeState extends State<Home> {
                               children: [
                                 Text(
                                   "Packages",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelLarge!
-                                      .copyWith(fontSize: 20, color: textColor),
+                                  style: headerTextStyle(context),
                                 ),
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  PackageListPageRoute(
-                                                      packages:
-                                                          state.packageData!)));
-                                    },
-                                    child: Text(
-                                      "View All",
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .primaryColorDark,
-                                          fontSize: 15),
-                                    ))
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    PackageListPageRoute(
+                                                        packages: state
+                                                            .packageData!)));
+                                      },
+                                      child: Text(
+                                        "View All",
+                                        style: buttonTextStyle(context),
+                                      )),
+                                )
                               ],
                             ),
                             SingleChildScrollView(
@@ -528,13 +523,18 @@ class _HomeState extends State<Home> {
                           ],
                         ),
                       ),
+                      ImageSlider(imageUrls: state.banner1Images),
                       Container(
-                          color: Colors.white,
-                          child: ImageSlider(imageUrls: state.banner1Images)),
-                      Container(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
                         alignment: Alignment.centerLeft,
-                        padding: EdgeInsets.only(
-                            top: 2.h, bottom: 2.h, left: 5.w, right: 2.w),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          border: Border.all(width: 0.15, color: Colors.grey),
+                        ),
+                        padding: contentPadding,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -544,23 +544,20 @@ class _HomeState extends State<Home> {
                               children: [
                                 Text(
                                   "Trending",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelLarge!
-                                      .copyWith(fontSize: 20, color: textColor),
+                                  style: headerTextStyle(context),
                                 ),
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.pushNamed(context,
-                                          ViewAllServiceRoute.routeName);
-                                    },
-                                    child: Text(
-                                      "View All",
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .primaryColorDark,
-                                          fontSize: 15),
-                                    ))
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: TextButton(
+                                      onPressed: () {
+                                        Navigator.pushNamed(context,
+                                            ViewAllServiceRoute.routeName);
+                                      },
+                                      child: Text(
+                                        "View All",
+                                        style: buttonTextStyle(context),
+                                      )),
+                                )
                               ],
                             ),
                             SingleChildScrollView(
@@ -585,10 +582,16 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                       Container(
-                        color: Colors.white,
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
                         alignment: Alignment.centerLeft,
-                        padding: EdgeInsets.only(
-                            top: 2.h, bottom: 2.h, left: 5.w, right: 2.w),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          border: Border.all(width: 0.15, color: Colors.grey),
+                        ),
+                        padding: contentPadding,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -598,24 +601,20 @@ class _HomeState extends State<Home> {
                                 Expanded(
                                   child: Text("Top Searches of the week",
                                       overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelLarge!
-                                          .copyWith(
-                                              fontSize: 20, color: textColor)),
+                                      style: headerTextStyle(context)),
                                 ),
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.pushNamed(context,
-                                          ViewAllServiceRoute.routeName);
-                                    },
-                                    child: Text(
-                                      "View All",
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .primaryColorDark,
-                                          fontSize: 15),
-                                    ))
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: TextButton(
+                                      onPressed: () {
+                                        Navigator.pushNamed(context,
+                                            ViewAllServiceRoute.routeName);
+                                      },
+                                      child: Text(
+                                        "View All",
+                                        style: buttonTextStyle(context),
+                                      )),
+                                )
                               ],
                             ),
                             SingleChildScrollView(

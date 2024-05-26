@@ -86,13 +86,19 @@ class _ImageSliderState extends State<ImageSlider> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 4.h),
-      height: 32.h,
+      margin: const EdgeInsets.only(top: 5, bottom: 5, right: 0, left: 10),
+      // padding: EdgeInsets.symmetric(vertical: 2.h),
+      height: 24.h,
+      // decoration: BoxDecoration(
+      //   color: Colors.white,
+      //   border: Border.all(width: 0.15, color: Colors.grey),
+      //   borderRadius: BorderRadius.circular(10),
+      // ),
       child: Stack(
         alignment: Alignment.topLeft,
         children: [
           SizedBox(
-            height: 20.h,
+            height: 21.h,
             width: MediaQuery.of(context).size.width,
             child: CarouselSlider(
               carouselController: _carouselController,
@@ -110,12 +116,12 @@ class _ImageSliderState extends State<ImageSlider> {
                   autoPlayAnimationDuration: const Duration(milliseconds: 800),
                   autoPlayCurve: Curves.fastOutSlowIn,
                   enlargeFactor: 0,
-                  viewportFraction: 0.9),
+                  viewportFraction: 1.0),
               items: widget.imageUrls
                   .getRange(0, min(3, widget.imageUrls.length))
                   .map((e) => Container(
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(10),
                           image: DecorationImage(
                             image: NetworkImage(e),
                             fit: BoxFit.cover,
@@ -154,10 +160,10 @@ class _ImageSliderState extends State<ImageSlider> {
             alignment: Alignment.bottomCenter,
             child: AnimatedSmoothIndicator(
               count: widget.imageUrls.length,
-              effect: const ExpandingDotsEffect(
+              effect: ExpandingDotsEffect(
                 dotHeight: 8,
                 dotWidth: 8,
-                dotColor: Colors.white,
+                dotColor: textColor.withOpacity(0.3),
                 activeDotColor: primaryColor,
                 expansionFactor: 2,
                 spacing: 4,

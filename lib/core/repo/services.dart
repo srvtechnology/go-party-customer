@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:collection/collection.dart';
 import 'package:customerapp/config.dart';
 import 'package:customerapp/core/models/service.dart';
+import 'package:customerapp/core/models/single_package.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/utils/logger.dart';
 import 'package:dio/dio.dart';
@@ -25,6 +26,17 @@ Future<List<ServiceModel>> getServices() async {
       }
     }
     return services;
+  } catch (e) {
+    return Future.error(e);
+  }
+}
+
+Future<SinglePackageData> getSinglePackageData(String id) async {
+  try {
+    Response response = await customDioClient.client
+        .get("${APIConfig.baseUrl}/api/customer-single-package/$id");
+    log(jsonEncode(response.data), name: "Single Package Response");
+    return SinglePackageData.fromJson(response.data);
   } catch (e) {
     return Future.error(e);
   }

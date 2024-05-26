@@ -8,7 +8,9 @@ import 'package:customerapp/core/components/htmlTextView.dart';
 import 'package:customerapp/core/components/quantity_Manager.dart';
 import 'package:customerapp/core/components/share_rapper.dart';
 import 'package:customerapp/core/models/cart.dart';
+import 'package:customerapp/core/models/single_package.dart';
 import 'package:customerapp/core/providers/cartProvider.dart';
+import 'package:customerapp/core/repo/services.dart';
 import 'package:customerapp/core/routes/cart.dart';
 import 'package:customerapp/core/routes/checkoutPage.dart';
 import 'package:customerapp/core/routes/product.dart';
@@ -36,6 +38,7 @@ class SinglePackageRoute extends StatefulWidget {
 }
 
 class _SinglePackageRouteState extends State<SinglePackageRoute> {
+  bool isLoading = false;
   final TextEditingController _categoryName = TextEditingController();
   final TextEditingController _startDate = TextEditingController();
   final TextEditingController _endDate = TextEditingController();
@@ -46,6 +49,8 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
   final TextEditingController _days = TextEditingController();
   final TextEditingController _duration = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  List<PopupCategory> popupCategories = [];
+  PopupCategory? selectedCategory;
   void _calculateDays() {
     if (_startDate.text.isNotEmpty && _endDate.text.isNotEmpty) {
       if (DateTime.parse(_startDate.text)
@@ -83,6 +88,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
   @override
   void initState() {
     super.initState();
+    getSinglePackage();
     _startDate.addListener(_calculateDays);
     _endDate.addListener(_calculateDays);
     quantity.text = widget.package.minQnty.toString() == "0" ||
@@ -91,6 +97,37 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
         : widget.package.minQnty.toString();
     _duration.text = "Full Day";
     log(widget.package.minQnty.toString(), name: "Package");
+    // _categoryName.addListener(() {
+    //   if (popupCategories.isNotEmpty) {
+    //     selectedCategory = popupCategories.firstWhere(
+    //         (element) => element.category?.categoryName == _categoryName.text);
+    //     setState(() {});
+    //     log(selectedCategory!.category!.categoryName.toString(),
+    //         name: "Selected Category");
+    //   }
+    // });
+  }
+
+  Future<void> getSinglePackage() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      SinglePackageData data =
+          await getSinglePackageData(widget.package.id.toString());
+      log(data.toString(), name: "Single Package Data");
+      popupCategories = data.packages?.popupCategories ?? [];
+      if (popupCategories.isNotEmpty) {
+        selectedCategory = popupCategories.first;
+        _categoryName.text = selectedCategory!.category?.categoryName ?? "";
+      }
+    } catch (e) {
+      CustomLogger.error(e);
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   TextFormField datePickField(TextEditingController controller,
@@ -215,6 +252,16 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                         ),
                                       ),
                                       CustomDropdown.search(
+                                        onChanged: (p0) {
+                                          setState(() {
+                                            selectedCategory = popupCategories
+                                                .firstWhere((element) =>
+                                                    element.category
+                                                        ?.categoryName ==
+                                                    p0);
+                                            _categoryName.text = p0;
+                                          });
+                                        },
                                         borderSide: BorderSide(
                                             width: 0.5,
                                             color:
@@ -222,8 +269,9 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                         borderRadius: BorderRadius.circular(10),
                                         hintText: "Select Your Event ",
                                         controller: _categoryName,
-                                        items: categories.data
-                                            .map((e) => e.name)
+                                        items: popupCategories
+                                            .map((e) =>
+                                                e.category?.categoryName ?? "")
                                             .toList(),
                                       ),
                                       const SizedBox(
@@ -379,7 +427,8 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                           ),
                                           QuantityManager(
                                             qnty: quantity.text,
-                                            minQnty: widget.package.minQnty,
+                                            minQnty: selectedCategory?.minQty ??
+                                                widget.package.minQnty,
                                             onChanged: (v) {
                                               setState(() {
                                                 quantity.text = v;
@@ -415,7 +464,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                               padding: const EdgeInsets.only(
                                                   right: 8.0),
                                               child: Text(
-                                                "\u20B9 ${widget.package.discountedPrice}",
+                                                "\u20B9 ${selectedCategory?.discountPrice ?? widget.package.discountedPrice}",
                                                 style: const TextStyle(
                                                     fontSize: 16,
                                                     fontWeight:
@@ -651,90 +700,148 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                       const Divider(
                         thickness: 1,
                       ),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 4.w, vertical: 2.h),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            RichText(
-                              text: TextSpan(
+                      if (isLoading)
+                        const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      if (!isLoading)
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 4.w, vertical: 2.h),
+                          child: Row(
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  TextSpan(
-                                      text:
-                                          "\u20B9 ${widget.package.discountedPrice} ",
-                                      style: TextStyle(
-                                          fontSize: 20.sp,
-                                          fontWeight: FontWeight.w600,
-                                          color: Theme.of(context)
-                                              .primaryColorDark),
-                                      children: const [
-                                        // TextSpan(
-                                        //   text: "/ ${widget.package.}",
-                                        //   style: TextStyle(
-                                        //       fontSize: 15.sp,
-                                        //       color: Colors.black),
-                                        // ),
-                                      ]),
+                                  RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                            text:
+                                                "\u20B9 ${selectedCategory?.discountPrice ?? widget.package.discountedPrice} ",
+                                            style: TextStyle(
+                                                fontSize: 20.sp,
+                                                fontWeight: FontWeight.w600,
+                                                color: Theme.of(context)
+                                                    .primaryColorDark),
+                                            children: const [
+                                              // TextSpan(
+                                              //   text: "/ ${widget.package.}",
+                                              //   style: TextStyle(
+                                              //       fontSize: 15.sp,
+                                              //       color: Colors.black),
+                                              // ),
+                                              TextSpan(
+                                                  text: " inc. all taxes",
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.grey,
+                                                  ))
+                                            ]),
+                                      ],
+                                    ),
+                                  ),
+                                  const Text(
+                                    'Check price for other event ',
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                  const Text(
+                                    '',
+                                    style: TextStyle(fontSize: 12),
+                                  ),
                                 ],
                               ),
-                            ),
-                            const Text(
-                              'inc. all taxes',
-                              style: TextStyle(fontSize: 12),
-                            ),
-                          ],
+                              const Spacer(),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  DropdownButton<PopupCategory?>(
+                                      style: TextStyle(
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                      underline: Container(),
+                                      iconSize: 16,
+                                      icon: const Icon(
+                                        Icons.arrow_drop_down_circle_outlined,
+                                        color: primaryColor,
+                                      ),
+                                      value: selectedCategory,
+                                      items: popupCategories
+                                          .map((e) =>
+                                              DropdownMenuItem<PopupCategory>(
+                                                  value: e,
+                                                  child: Text(e.category
+                                                          ?.categoryName ??
+                                                      "")))
+                                          .toList(),
+                                      onChanged: (v) {
+                                        setState(() {
+                                          selectedCategory = v;
+                                          _categoryName.text = selectedCategory
+                                                  ?.category?.categoryName ??
+                                              "";
+                                        });
+                                      })
+                                ],
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                      const Divider(
-                        thickness: 1,
-                        height: 1,
-                      ),
-                      Container(
-                        decoration: const BoxDecoration(color: tertiaryColor),
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 4.w, vertical: 2.h),
-                        alignment: Alignment.centerLeft,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Pricing Info",
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.w500),
-                            ),
-                            SizedBox(
-                              height: 2.h,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  "Discount Price:",
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                                Text("\u20B9 ${widget.package.discountedPrice}")
-                              ],
-                            ),
-                            const DashedDivider(),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  "Original Price:",
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                                Text(
-                                  "\u20B9 ${widget.package.price}",
-                                  style: const TextStyle(
-                                      decoration: TextDecoration.lineThrough),
-                                )
-                              ],
-                            ),
-                            const DashedDivider(),
-                          ],
+                      if (!isLoading)
+                        const Divider(
+                          thickness: 1,
+                          height: 1,
                         ),
-                      ),
+                      if (!isLoading)
+                        Container(
+                          decoration: const BoxDecoration(color: tertiaryColor),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 4.w, vertical: 2.h),
+                          alignment: Alignment.centerLeft,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Pricing Info",
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.w500),
+                              ),
+                              SizedBox(
+                                height: 2.h,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    "Discount Price:",
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  Text(
+                                      "\u20B9 ${selectedCategory?.discountPrice ?? widget.package.discountedPrice}")
+                                ],
+                              ),
+                              const DashedDivider(),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    "Original Price:",
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  Text(
+                                    "\u20B9 ${selectedCategory?.servicePrice ?? widget.package.price}",
+                                    style: const TextStyle(
+                                        decoration: TextDecoration.lineThrough),
+                                  )
+                                ],
+                              ),
+                              const DashedDivider(),
+                            ],
+                          ),
+                        ),
                       Container(
                         padding: EdgeInsets.symmetric(
                             horizontal: 4.w, vertical: 2.h),
@@ -972,6 +1079,27 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
             ),
           );
         }),
+      ),
+    );
+  }
+}
+
+class SelectCategory extends StatelessWidget {
+  const SelectCategory({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: ['Weeding', 'Birthday', 'Party']
+            .map((e) => ListTile(
+                  title: Text(e),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ))
+            .toList(),
       ),
     );
   }

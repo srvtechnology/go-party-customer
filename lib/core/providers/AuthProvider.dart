@@ -135,6 +135,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> getUser({required String? userType}) async {
     try {
+      log(userType.toString(), name: "UserType");
       if (userType == "agent") {
         final res = await authRepo.get_AgentData(_token!);
         log(res.toString(), name: "AgentData");
@@ -145,7 +146,7 @@ class AuthProvider with ChangeNotifier {
           mobile: res.data['data']['mobile'].toString(),
           status: res.data['data']['status'].toString(),
         );
-        isAgent = true;
+        // isAgent = true;
         notifyListeners();
         return;
       }
@@ -222,6 +223,8 @@ class AuthProvider with ChangeNotifier {
   }
 
   void deleteAllFromStorage() {
+    pref.remove("token");
+    pref.remove("userType");
     pref.clear();
   }
 
