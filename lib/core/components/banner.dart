@@ -88,7 +88,7 @@ class _ImageSliderState extends State<ImageSlider> {
     return Container(
       margin: const EdgeInsets.only(top: 5, bottom: 5, right: 0, left: 10),
       // padding: EdgeInsets.symmetric(vertical: 2.h),
-      height: 24.h,
+      height: 20.h,
       // decoration: BoxDecoration(
       //   color: Colors.white,
       //   border: Border.all(width: 0.15, color: Colors.grey),
@@ -158,18 +158,21 @@ class _ImageSliderState extends State<ImageSlider> {
             ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: AnimatedSmoothIndicator(
-              count: widget.imageUrls.length,
-              effect: ExpandingDotsEffect(
-                dotHeight: 8,
-                dotWidth: 8,
-                dotColor: textColor.withOpacity(0.3),
-                activeDotColor: primaryColor,
-                expansionFactor: 2,
-                spacing: 4,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: AnimatedSmoothIndicator(
+                count: widget.imageUrls.length,
+                effect: ExpandingDotsEffect(
+                  dotHeight: 8,
+                  dotWidth: 8,
+                  dotColor: Colors.white.withOpacity(0.9),
+                  activeDotColor: primaryColor,
+                  expansionFactor: 2,
+                  spacing: 4,
+                ),
+                onDotClicked: (index) {},
+                activeIndex: _currentCarouselIndex,
               ),
-              onDotClicked: (index) {},
-              activeIndex: _currentCarouselIndex,
             ),
           )
         ],

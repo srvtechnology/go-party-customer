@@ -345,9 +345,12 @@ class _HomeState extends State<Home> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const CurrentLocationView(),
+                      const SizedBox(
+                        height: 5,
+                      ),
                       Container(
                         margin: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10),
+                            horizontal: 10, vertical: 5),
                         alignment: Alignment.centerLeft,
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -409,7 +412,7 @@ class _HomeState extends State<Home> {
                       ImageSlider(imageUrls: state.mobileBannerImages),
                       Container(
                         margin: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10),
+                            horizontal: 10, vertical: 5),
                         alignment: Alignment.centerLeft,
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -461,7 +464,7 @@ class _HomeState extends State<Home> {
                       // ImageSlider(imageUrls: state.banner1Images),
                       Container(
                         margin: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10),
+                            horizontal: 10, vertical: 5),
                         alignment: Alignment.centerLeft,
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -526,7 +529,7 @@ class _HomeState extends State<Home> {
                       ImageSlider(imageUrls: state.banner1Images),
                       Container(
                         margin: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10),
+                            horizontal: 10, vertical: 5),
                         alignment: Alignment.centerLeft,
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -583,7 +586,7 @@ class _HomeState extends State<Home> {
                       ),
                       Container(
                         margin: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10),
+                            horizontal: 10, vertical: 5),
                         alignment: Alignment.centerLeft,
                         decoration: BoxDecoration(
                           color: Colors.white,

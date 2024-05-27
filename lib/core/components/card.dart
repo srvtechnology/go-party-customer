@@ -102,6 +102,9 @@ class OrderCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
                 style: descriptionStyle(context)),
+            const SizedBox(
+              height: 10,
+            ),
           ],
         ),
       ),
@@ -410,6 +413,7 @@ class PackageTile extends StatelessWidget {
   }
 }
 
+// SAME
 class CircularOrderCard extends StatelessWidget {
   final ServiceModel service;
   const CircularOrderCard({Key? key, required this.service}) : super(key: key);
@@ -419,7 +423,7 @@ class CircularOrderCard extends StatelessWidget {
     return Container(
       constraints: const BoxConstraints(
         // mxw
-        maxWidth: 90,
+        maxWidth: 82.5,
         maxHeight: 110,
         // mxh
       ),
@@ -471,6 +475,7 @@ class CircularOrderCard extends StatelessWidget {
   }
 }
 
+// SAME
 class CircularEventCard extends StatelessWidget {
   final EventModel event;
   const CircularEventCard({Key? key, required this.event}) : super(key: key);
@@ -478,8 +483,12 @@ class CircularEventCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 90,
-      height: 110,
+      constraints: const BoxConstraints(
+        // mxw
+        maxWidth: 82.5,
+        maxHeight: 110,
+        // mxh
+      ),
       padding: const EdgeInsets.only(right: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -488,17 +497,12 @@ class CircularEventCard extends StatelessWidget {
         children: [
           Container(
             alignment: Alignment.topCenter,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(100),
-              child: Container(
+            child: Container(
                 height: 60,
                 width: 60,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: CachedNetworkImageProvider(event.image),
-                  ),
+                  shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
                         blurRadius: 2,
@@ -506,8 +510,10 @@ class CircularEventCard extends StatelessWidget {
                         spreadRadius: 1)
                   ],
                 ),
-              ),
-            ),
+                child: CircleAvatar(
+                  radius: 40,
+                  backgroundImage: CachedNetworkImageProvider(event.image),
+                )),
           ),
           SizedBox(
             height: 1.h,
