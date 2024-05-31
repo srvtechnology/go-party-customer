@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:customerapp/core/Constant/themData.dart';
+import 'package:customerapp/core/components/cutom_card.dart';
 import 'package:customerapp/core/components/divider.dart';
 import 'package:customerapp/core/components/htmlTextView.dart';
 import 'package:customerapp/core/routes/orderHistory.dart';
@@ -681,11 +682,12 @@ class _OrderTileState extends State<OrderTile> {
           ),
         );
       },
-      child: Container(
-        width: double.infinity,
-        constraints: BoxConstraints(minHeight: 19.h, maxHeight: 21.h),
-        margin:
-            widget.isShowPrice ? null : EdgeInsets.symmetric(horizontal: 4.w),
+      child: CustomCard(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        // width: double.infinity,
+        // constraints: BoxConstraints(minHeight: 19.h, maxHeight: 21.h),
+        // margin:
+        //     widget.isShowPrice ? null : EdgeInsets.symmetric(horizontal: 4.w),
         child: Column(
           children: [
             Row(
@@ -795,7 +797,6 @@ class _OrderTileState extends State<OrderTile> {
                 //   )
               ],
             ),
-            if (!widget.isShowPrice) const DashedDivider(),
           ],
         ),
       ),

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:customerapp/core/components/currentLocatton.dart';
+import 'package:customerapp/core/components/cutom_card.dart';
 import 'package:customerapp/core/routes/checkoutPage.dart';
 import 'package:customerapp/core/routes/view_all_service.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,6 @@ import 'package:customerapp/core/routes/signin.dart';
 import 'package:customerapp/core/routes/singlePackage.dart';
 import 'package:customerapp/core/routes/singleService.dart';
 
-import '../components/divider.dart';
 import '../components/loading.dart';
 
 class CartPage extends StatefulWidget {
@@ -179,11 +179,9 @@ class _CartPageState extends State<CartPage> {
                         child: Column(
                           children: [
                             const CurrentLocationView(),
-                            Container(
-                              width: double.infinity,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 4.w, vertical: 2.h),
-                              height: 22.h,
+                            CustomCard(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -271,7 +269,6 @@ class _CartPageState extends State<CartPage> {
                                 ],
                               ),
                             ),
-                            const DashedDivider(),
                             Column(
                                 children: cart.data
                                     .map((e) => _cartTile(cart, e, auth))
@@ -302,9 +299,8 @@ class _CartPageState extends State<CartPage> {
                 builder: (context) =>
                     SingleServiceRoute(service: item.service)));
       },
-      child: Container(
+      child: CustomCard(
         padding: EdgeInsets.symmetric(vertical: 2.h),
-        color: Colors.white,
         child: Column(
           children: [
             Container(
@@ -333,14 +329,6 @@ class _CartPageState extends State<CartPage> {
                           style: const TextStyle(
                               fontSize: 18, fontWeight: FontWeight.w600),
                         ),
-                        // Container(
-                        //   margin: const EdgeInsets.only(right: 10),
-                        //   child: Text(
-                        //     item.service.description.substring(
-                        //         0, min<int>(30, item.service.description.length)),
-                        //     style: const TextStyle(fontSize: 12),
-                        //   ),
-                        // ),
                         Container(
                             constraints: BoxConstraints(
                                 minHeight: 1.h,
@@ -400,60 +388,18 @@ class _CartPageState extends State<CartPage> {
                                       style: TextStyle(
                                         fontSize: 12,
                                       )),
-                                  FittedBox(
-                                    child: Text(
-                                        "\u20B9 ${item.service.discountedPrice}",
-                                        style: TextStyle(
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            fontWeight: FontWeight.w600)),
+                                  Expanded(
+                                    child: FittedBox(
+                                      child: Text(
+                                          "\u20B9 ${item.service.discountedPrice}",
+                                          style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                              fontWeight: FontWeight.w600)),
+                                    ),
                                   )
                                 ],
                               ),
-                              // const DashedDivider(),
-                              // Row(
-                              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              //   children: [
-                              //     const Text(
-                              //       "Original Price:",
-                              //       style: TextStyle(
-                              //         fontSize: 12,
-                              //       ),
-                              //     ),
-                              //     FittedBox(
-                              //       child: Text(
-                              //         "\u20B9 ${item.service.price}",
-                              //         style: const TextStyle(
-                              //             decoration: TextDecoration.lineThrough,
-                              //             fontWeight: FontWeight.bold,
-                              //             color: primaryColor),
-                              //       ),
-                              //     )
-                              //   ],
-                              // ),
-                              // const DashedDivider(),
-                              // Builder(builder: (context) {
-                              //   try {
-                              //     return Row(
-                              //       mainAxisAlignment:
-                              //           MainAxisAlignment.spaceBetween,
-                              //       children: [
-                              //         const Text(
-                              //           "Unit:",
-                              //           style: TextStyle(fontSize: 12),
-                              //         ),
-                              //         Text(
-                              //           item.service.priceBasis,
-                              //           style: const TextStyle(
-                              //               fontWeight: FontWeight.bold,
-                              //               color: primaryColor),
-                              //         )
-                              //       ],
-                              //     );
-                              //   } catch (e) {
-                              //     return Container();
-                              //   }
-                              // }),
                             ],
                           ),
                         ),
@@ -548,7 +494,7 @@ class _CartPageState extends State<CartPage> {
                                 child: const Text(
                                   "Delete",
                                   style: TextStyle(
-                                      color: Colors.black, fontSize: 12),
+                                      color: Colors.black, fontSize: 8),
                                 ),
                               ),
                               SizedBox(
@@ -571,7 +517,7 @@ class _CartPageState extends State<CartPage> {
                                   },
                                   child: const Text(
                                     "See More",
-                                    style: TextStyle(fontSize: 12),
+                                    style: TextStyle(fontSize: 8),
                                   ),
                                 ),
                               )
@@ -584,7 +530,6 @@ class _CartPageState extends State<CartPage> {
                 ],
               ),
             ),
-            const DashedDivider(),
           ],
         ),
       ),
@@ -626,56 +571,51 @@ class ExtraDetails extends StatelessWidget {
                 return Container();
               }
               return Container(
-                color: color ?? tertiaryColor,
                 child: Column(
                   children: [
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      padding: EdgeInsets.only(
-                          top: 2.h, bottom: 2.h, left: 5.w, right: 2.w),
+                    CustomCard(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Browse Similar Packages",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelLarge!
-                                        .copyWith(
-                                            fontSize: 20, color: textColor),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10, right: 5),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Browse Similar Packages",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge!
+                                            .copyWith(
+                                                fontSize: 14, color: textColor),
+                                      ),
+                                    ],
                                   ),
-                                  Text(
-                                    "our most popular packages",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelLarge!
-                                        .copyWith(
-                                            fontSize: 12, color: Colors.grey),
-                                  ),
-                                ],
-                              ),
-                              const Spacer(),
-                              TextButton(
-                                  onPressed: () {
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            PackageListPageRoute(
-                                                packages: state.packageData!));
-                                  },
-                                  child: Text(
-                                    "View All",
-                                    style: TextStyle(
-                                        color:
-                                            Theme.of(context).primaryColorDark,
-                                        fontSize: 15),
-                                  ))
-                            ],
+                                ),
+                                const Spacer(),
+                                TextButton(
+                                    onPressed: () {
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              PackageListPageRoute(
+                                                  packages:
+                                                      state.packageData!));
+                                    },
+                                    child: Text(
+                                      "View All",
+                                      style: TextStyle(
+                                          color: Theme.of(context)
+                                              .primaryColorDark,
+                                          fontSize: 12),
+                                    ))
+                              ],
+                            ),
                           ),
                           SizedBox(
                             height: 2.h,
@@ -703,53 +643,46 @@ class ExtraDetails extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const Divider(),
-                    Container(
-                      color: color ?? Colors.white,
-                      alignment: Alignment.centerLeft,
-                      padding: EdgeInsets.only(
-                          top: 2.h, bottom: 2.h, left: 5.w, right: 2.w),
+                    CustomCard(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Browse Similar Services",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelLarge!
-                                        .copyWith(
-                                            fontSize: 20, color: textColor),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10, right: 5),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Browse Similar Services",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge!
+                                            .copyWith(
+                                                fontSize: 14, color: textColor),
+                                      ),
+                                    ],
                                   ),
-                                  Text(
-                                    "our most popular services",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelLarge!
-                                        .copyWith(
-                                            fontSize: 12, color: Colors.grey),
-                                  ),
-                                ],
-                              ),
-                              const Spacer(),
-                              TextButton(
-                                  onPressed: () {
-                                    Navigator.pushNamed(
-                                        context, ViewAllServiceRoute.routeName);
-                                  },
-                                  child: Text(
-                                    "View All",
-                                    style: TextStyle(
-                                        color:
-                                            Theme.of(context).primaryColorDark,
-                                        fontSize: 15),
-                                  ))
-                            ],
+                                ),
+                                const Spacer(),
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pushNamed(context,
+                                          ViewAllServiceRoute.routeName);
+                                    },
+                                    child: Text(
+                                      "View All",
+                                      style: TextStyle(
+                                          color: Theme.of(context)
+                                              .primaryColorDark,
+                                          fontSize: 12),
+                                    ))
+                              ],
+                            ),
                           ),
                           SizedBox(
                             height: 2.h,
