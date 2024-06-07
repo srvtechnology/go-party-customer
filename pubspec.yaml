@@ -46,11 +46,27 @@ dependencies:
   permission_handler:
   open_file_plus:
 
+  #--- sourav -07-06-24
+  flutter_bloc: ^8.1.5
+  bloc: ^8.1.4
+  equatable: ^2.0.5
+  freezed: ^2.4.1
+  freezed_annotation: ^2.4.1
+  json_annotation: ^4.8.1
+  get_it: ^7.6.0
+  fluttertoast: ^8.2.5
+  another_flushbar: ^1.12.30
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
   flutter_launcher_icons: ^0.13.1
+
+  #--- sourav -07-06-24
+  build_runner: ^2.3.3
+  json_serializable: ^6.6.2
+
 
 flutter_launcher_icons:
   android: "launcher_icon"

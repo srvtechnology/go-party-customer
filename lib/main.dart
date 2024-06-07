@@ -2,27 +2,17 @@ import 'package:customerapp/core/Constant/themData.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/categoryProvider.dart';
 import 'package:customerapp/core/providers/networkProvider.dart';
-import 'package:customerapp/core/routes/addressPage.dart';
-import 'package:customerapp/core/routes/agent_sign_in.dart';
-import 'package:customerapp/core/routes/agent_signup.dart';
-import 'package:customerapp/core/routes/agent_wallet.dart';
-import 'package:customerapp/core/routes/cart.dart';
-import 'package:customerapp/core/routes/forgotPassword.dart';
-import 'package:customerapp/core/routes/homepage.dart';
-import 'package:customerapp/core/routes/intro.dart';
-import 'package:customerapp/core/routes/mainpage.dart';
-import 'package:customerapp/core/routes/product.dart';
-import 'package:customerapp/core/routes/profile.dart';
-import 'package:customerapp/core/routes/settingsPage.dart';
-import 'package:customerapp/core/routes/signin.dart';
-import 'package:customerapp/core/routes/signup.dart';
-import 'package:customerapp/core/routes/splash.dart';
-import 'package:customerapp/core/routes/view_all_service.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import '../../../views/view.dart';
+
+
+GetIt getIt = GetIt.asNewInstance();
 
 void main() {
+  serviceLocator();
   runApp(const MyApp());
 }
 
@@ -74,4 +64,10 @@ class MyApp extends StatelessWidget {
       );
     });
   }
+}
+
+void serviceLocator() {
+  /*getIt.registerLazySingleton<LoginRepository>(() => LoginHttpRepository());
+  getIt.registerLazySingleton<MoviesRepository>(() => MoviesHttpRepository());*/
+
 }
