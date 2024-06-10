@@ -2,12 +2,12 @@ import 'package:customerapp/core/Constant/themData.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/categoryProvider.dart';
 import 'package:customerapp/core/providers/networkProvider.dart';
+import 'package:customerapp/core/providers/orderProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import '../../../views/view.dart';
-
 
 GetIt getIt = GetIt.asNewInstance();
 
@@ -27,6 +27,12 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (_) => AuthProvider()),
           ChangeNotifierProvider(create: (_) => CategoryProvider()),
+          ChangeNotifierProxyProvider<AuthProvider, OrderProvider>(
+            create: (context) => OrderProvider(context.read<AuthProvider>()),
+            update: (context, authProvider, orderProvider) =>
+                OrderProvider(authProvider),
+          ),
+          /*ChangeNotifierProvider(create: (_) => OrderProvider(context.read<AuthProvider>())),*/
           ChangeNotifierProvider(
               create: (_) => NetworkProvider()), // CartProvider
           // ChangeNotifierProvider(create: (_) => CartProvider()),
@@ -69,5 +75,4 @@ class MyApp extends StatelessWidget {
 void serviceLocator() {
   /*getIt.registerLazySingleton<LoginRepository>(() => LoginHttpRepository());
   getIt.registerLazySingleton<MoviesRepository>(() => MoviesHttpRepository());*/
-
 }

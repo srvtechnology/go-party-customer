@@ -644,7 +644,7 @@ class _OrderTileState extends State<OrderTile> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content: Text(
-                                          "Some Error Occured. Please try again later")));
+                                          "Some Error Occurred. Please try again later")));
                             }
                           }
                         },

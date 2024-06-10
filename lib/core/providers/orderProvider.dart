@@ -15,11 +15,11 @@ class OrderProvider with ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  double _rateing = 0;
-  double get rating => _rateing;
+  double _rating = 0;
+  double get rating => _rating;
 
   set rating(double value) {
-    _rateing = value;
+    _rating = value;
     notifyListeners();
   }
 

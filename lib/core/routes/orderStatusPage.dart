@@ -190,7 +190,8 @@ class _OrderStatusPageState extends State<OrderStatusPage> {
                                 width: 150,
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    context
+                                    showCancelOrderDialog(context,  widget.order.id);
+                                    /*context
                                         .read<OrderProvider>()
                                         .cancelOrder(
                                             context.read<AuthProvider>(),
@@ -203,7 +204,7 @@ class _OrderStatusPageState extends State<OrderStatusPage> {
                                                         const MainPageRoute(
                                                           index: 0,
                                                         )),
-                                                (route) => route.isFirst));
+                                                (route) => route.isFirst));*/
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.white,
@@ -347,3 +348,44 @@ class _OrderStatusPageState extends State<OrderStatusPage> {
     );
   }
 }
+
+Future<void> showCancelOrderDialog(BuildContext context, String orderId) async {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false, // Prevents the dialog from being dismissed by tapping outside
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Delete'),
+        content: const Text('Are you sure? You can\'t undo this.'),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the dialog
+            },
+          ),
+          TextButton(
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            onPressed: () {
+              // Call the cancel order function here
+              context
+                  .read<OrderProvider>()
+                  .cancelOrder(context.read<AuthProvider>(), orderId)
+                  .whenComplete(() {
+                Navigator.of(context).pop(); // Close the dialog
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MainPageRoute(index: 0),
+                  ),
+                      (route) => route.isFirst,
+                );
+              });
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
