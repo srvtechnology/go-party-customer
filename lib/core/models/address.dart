@@ -60,7 +60,7 @@ class AddressModel {
       landmark: json['landmark'],
       country: json['country'],
       countryName: json["country_name"],
-      area: json['area'],
+      area: json['area'] ?? "",
       pinCode: json['pin_code'],
       addressType: json['address_type'],
       createdAt: DateTime.parse(json['created_at']),
