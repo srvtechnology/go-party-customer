@@ -8,6 +8,7 @@ typedef OnSelect = Function(String);
 
 class FilterPage extends StatefulWidget {
   final FilterProvider filterState;
+
   const FilterPage({Key? key, required this.filterState}) : super(key: key);
 
   @override
@@ -19,6 +20,7 @@ class _FilterPageState extends State<FilterPage> {
   List<String> _selectedCategoryIds = [];
   bool _rangeSelected = false;
   String? _discount;
+
   @override
   void initState() {
     super.initState();
@@ -56,7 +58,7 @@ class _FilterPageState extends State<FilterPage> {
                     ]),
                 child: ListTile(
                   title: const Text(
-                    "Categories",
+                    "Events",
                     style: TextStyle(fontSize: 18),
                   ),
                   trailing: Container(
@@ -73,6 +75,98 @@ class _FilterPageState extends State<FilterPage> {
                   ),
                   onTap: () {
                     showModalBottomSheet(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        ),
+                      ),
+                      context: context,
+                      builder: (context) {
+                        return StatefulBuilder(
+                          builder: (BuildContext context,
+                              StateSetter setModalState) {
+                            return Column(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(20),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: const [
+                                      Text(
+                                        "Select Events",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          color: primaryColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    child: Column(
+                                      children: state.data.map((e) {
+                                        bool isSelected = _selectedCategoryIds
+                                            .contains(e.id.toString());
+
+                                        return ListTile(
+                                          leading: Checkbox(
+                                            value: isSelected,
+                                            onChanged: (bool? value) {
+                                              setModalState(() {
+                                                if (value == true) {
+                                                  _selectedCategoryIds
+                                                      .add(e.id.toString());
+                                                } else {
+                                                  _selectedCategoryIds
+                                                      .remove(e.id.toString());
+                                                }
+                                              });
+                                            },
+                                          ),
+                                          title: GestureDetector(
+                                            onTap: () {
+                                              setModalState(() {
+                                                if (isSelected) {
+                                                  _selectedCategoryIds
+                                                      .remove(e.id.toString());
+                                                } else {
+                                                  _selectedCategoryIds
+                                                      .add(e.id.toString());
+                                                }
+                                              });
+                                            },
+                                            child: Text(
+                                              e.name,
+                                              style: TextStyle(
+                                                color: isSelected
+                                                    ? Colors.blue
+                                                    : Colors.black,
+                                                fontWeight: isSelected
+                                                    ? FontWeight.bold
+                                                    : FontWeight.normal,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                    );
+
+                    /* showModalBottomSheet(
                         shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(20),
@@ -128,7 +222,7 @@ class _FilterPageState extends State<FilterPage> {
                               ),
                             ],
                           );
-                        });
+                        });*/
                   },
                 ),
               ),
