@@ -48,7 +48,7 @@ class OrderProvider with ChangeNotifier {
     stopLoading();
   }
 
-  Future<void> cancelOrder(AuthProvider auth, String payload) async {
+  Future<void> cancelOrder(AuthProvider auth, String payload, String reason) async {
     startLoading();
     try {
       final v = await OrderRepo.cancelOrder(auth, payload);

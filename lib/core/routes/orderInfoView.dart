@@ -581,16 +581,37 @@ class _OrderInfoViewState extends State<OrderInfoView> {
 }
 
 Future<void> showCancelOrderDialog(BuildContext context, String orderId) async {
+  final TextEditingController reasonController = TextEditingController(); // Controller to capture the input
+
   return showDialog<void>(
     context: context,
     barrierDismissible: false, // Prevents the dialog from being dismissed by tapping outside
     builder: (BuildContext context) {
       return AlertDialog(
-        title: const Text('Delete'),
-        content: const Text('Are you sure? You can\'t undo this.'),
+        title: const Text(''),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            /*const Text('Are you sure? You can\'t undo this.'),*/
+            /* const SizedBox(height: 16),*/
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text('Enter reason:'),
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: reasonController, // Attach the controller to the TextField
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Reason for cancellation',
+              ),
+              maxLines: 5,
+            ),
+          ],
+        ),
         actions: <Widget>[
           TextButton(
-            child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
+            child: const Text('Close', style: TextStyle(color: Colors.grey)),
             onPressed: () {
               Navigator.of(context).pop(); // Close the dialog
             },
@@ -598,10 +619,10 @@ Future<void> showCancelOrderDialog(BuildContext context, String orderId) async {
           TextButton(
             child: const Text('Delete', style: TextStyle(color: Colors.red)),
             onPressed: () {
-              // Call the cancel order function here
+              final String reason = reasonController.text;
               context
                   .read<OrderProvider>()
-                  .cancelOrder(context.read<AuthProvider>(), orderId)
+                  .cancelOrder(context.read<AuthProvider>(), orderId, reason)
                   .whenComplete(() {
                 Navigator.of(context).pop(); // Close the dialog
                 Navigator.pushAndRemoveUntil(

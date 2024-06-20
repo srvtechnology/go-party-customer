@@ -1,4 +1,4 @@
-import 'package:customerapp/core/models/category.dart';
+import 'package:customerapp/core/models/event.dart';
 import 'package:customerapp/core/models/service.dart';
 
 class OrderModel {

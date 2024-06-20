@@ -10,17 +10,24 @@ import '../models/package.dart';
 import '../models/service.dart';
 
 class ServiceProvider with ChangeNotifier {
+
   List<ServiceModel>? _data;
+
   List<String> banner1Images = [];
   List<String> mobileBannerImages = [];
+
   List<EventModel>? _eventData = [];
   List<EventModel>? get eventData => _eventData;
+
   List<PackageModel>? _packageData = [];
   List<PackageModel>? get packageData => _packageData;
+
   List<ServiceModel>? get data => _data;
   List<ServiceModel>? searchData = [];
+
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+
   ServiceProvider({required FilterProvider filters}) {
     if (filters.hasFilters == true) {
       CustomLogger.debug("Getting filtered Services");
@@ -29,6 +36,7 @@ class ServiceProvider with ChangeNotifier {
       getAllServices();
     }
   }
+
   void startLoading() {
     _isLoading = true;
     notifyListeners();
@@ -42,7 +50,6 @@ class ServiceProvider with ChangeNotifier {
   Future<void> getAllServices() async {
     try {
       startLoading();
-      // comment for new Changes
       _data = await getServices();
       banner1Images = await getBannerImages();
       mobileBannerImages = await getMobileBannerImages();
@@ -63,6 +70,9 @@ class ServiceProvider with ChangeNotifier {
     try {
       log("Getting filtered Services");
       log(filters.categories.toString());
+      log(filters.services.toString());
+      log(filters.cities.toString());
+      log(filters.sortOptions.toString());
       log(filters.startPrice.toString(), name: "Start Price");
       log(filters.endPrice.toString(), name: "End Price");
       startLoading();
@@ -74,9 +84,34 @@ class ServiceProvider with ChangeNotifier {
       if (searchString != null) {
         data["search"] = searchString;
       }
+
       filters.categories.forEachIndexed((index, value) {
         data["category[$index]"] = value;
       });
+
+      filters.services.forEachIndexed((index, value) {
+        data["service[$index]"] = value;
+      });
+
+      filters.cities.forEachIndexed((index, value) {
+        data["city_ids[$index]"] = value;
+      });
+
+
+
+      filters.sortOptions.forEachIndexed((index, element) {
+        if (element.contains("High to Low")) {
+          data["high_to_low"] = "high";
+        } else {
+          data["high_to_low"] = "";
+        }
+        if (element.contains("Low to high")) {
+          data["low_to_high"] = "low";
+        } else {
+          data["low_to_high"] = "";
+        }
+      });
+
       log(jsonEncode(data), name: "Filter Data");
       if (isUpdateMainData) {
         _data = await searchServices(data);
@@ -111,19 +146,35 @@ class ServiceProvider with ChangeNotifier {
 }
 
 class FilterProvider with ChangeNotifier {
-  List<String> _categories = [];
+  List<String> _events = [];
+  List<String> _services = [];
+  List<String> _cities = [];
+  List<String> _sortOptions = [];
   String? _startPrice, _endPrice;
-  List<String> get categories => _categories;
+
+  List<String> get categories => _events;
+  List<String> get services => _services;
+  List<String> get cities => _cities;
+  List<String> get sortOptions => _sortOptions;
   bool _hasFilters = false;
+
   bool get hasFilters => _hasFilters;
+
   String? get startPrice => _startPrice;
+
   String? get endPrice => _endPrice;
 
   void setFilters(
-      {required List<String> categories,
+      {required List<String> events,
+      required List<String> services,
+      required List<String> cities,
+      required List<String> sortOptions,
       String? startPrice,
       String? endPrice}) {
-    _categories = [...categories];
+    _events = [...events];
+    _services = [...services];
+    _cities = [...cities];
+    _sortOptions = [...sortOptions];
     _startPrice = startPrice;
     _endPrice = endPrice;
     _hasFilters = true;
@@ -131,7 +182,9 @@ class FilterProvider with ChangeNotifier {
   }
 
   Future<void> refresh() async {
-    _categories = [];
+    _events = [];
+    _services = [];
+    _cities = [];
     _startPrice = null;
     _endPrice = null;
     _hasFilters = false;

@@ -124,6 +124,7 @@ Future<List<ServiceModel>> searchServices(Map<String, dynamic> data) async {
       "${APIConfig.baseUrl}/api/customer/search",
       data: FormData.fromMap(data),
     );
+    log(jsonEncode(response.data), name: "Search Services");
     List<ServiceModel> services = [];
     for (var serviceJson in response.data["data"]) {
       try {

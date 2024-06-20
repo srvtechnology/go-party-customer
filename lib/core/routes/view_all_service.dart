@@ -186,22 +186,20 @@ class _ViewAllServiceRouteState extends State<ViewAllServiceRoute> {
                         },
                         child: SingleChildScrollView(
                           // padding: EdgeInsets.only(bottom: 5.h, top: 2.h),
-                          child: Container(
-                            child: Column(
-                                children: state.data!
-                                    .map((e) => ProductTile(
-                                          service: e,
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        SingleServiceRoute(
-                                                            service: e)));
-                                          },
-                                        ))
-                                    .toList()),
-                          ),
+                          child: Column(
+                              children: state.data!
+                                  .map((e) => ProductTile(
+                                        service: e,
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SingleServiceRoute(
+                                                          service: e)));
+                                        },
+                                      ))
+                                  .toList()),
                         ),
                       ),
                     ),
