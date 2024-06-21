@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:customerapp/core/Constant/themData.dart';
 import 'package:customerapp/core/components/commonHeader.dart';
@@ -16,6 +17,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:timelines/timelines.dart';
+
+import '../utils/flush_bar_helper.dart';
 
 class OrderStatusPage extends StatefulWidget {
   final OrderModel order;
@@ -389,19 +392,24 @@ Future<void> showCancelOrderDialog(BuildContext context, String orderId) async {
             child: const Text('Delete', style: TextStyle(color: Colors.red)),
             onPressed: () {
               final String reason = reasonController.text;
-              context
-                  .read<OrderProvider>()
-                  .cancelOrder(context.read<AuthProvider>(), orderId, reason)
-                  .whenComplete(() {
-                Navigator.of(context).pop(); // Close the dialog
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const MainPageRoute(index: 0),
-                  ),
-                      (route) => route.isFirst,
-                );
-              });
+              if(reason.isNotEmpty) {
+                context
+                    .read<OrderProvider>()
+                    .cancelOrder(context.read<AuthProvider>(), orderId, reason)
+                    .whenComplete(() {
+                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MainPageRoute(index: 0),
+                    ),
+                        (route) => route.isFirst,
+                  );
+                });
+              } else {
+                FlushBarHelper.flushBarErrorMessage('Please enter reason before cancelling!', context);
+              }
+
             },
           ),
         ],
