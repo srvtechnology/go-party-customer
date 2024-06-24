@@ -20,6 +20,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
+import '../utils/flush_bar_helper.dart';
+
 class OrderInfoView extends StatefulWidget {
   static String routeName = "/orderDetailsView";
   final OrderModel order;
@@ -35,6 +37,7 @@ class OrderInfoView extends StatefulWidget {
 
 class _OrderInfoViewState extends State<OrderInfoView> {
   bool isLoading = false;
+
   payNow(double amount) async {
     setState(() => isLoading = true);
     log(amount.toString(), name: "URL PAY");
@@ -166,7 +169,7 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                         SizedBox(height: 2.h),
                         InkWell(
                           onTap: () async {
-                            showCancelOrderDialog(context,  widget.order.id);
+                            showCancelOrderDialog(context, widget.order.id);
                             /*context
                                 .read<OrderProvider>()
                                 .cancelOrder(context.read<AuthProvider>(),
@@ -581,11 +584,13 @@ class _OrderInfoViewState extends State<OrderInfoView> {
 }
 
 Future<void> showCancelOrderDialog(BuildContext context, String orderId) async {
-  final TextEditingController reasonController = TextEditingController(); // Controller to capture the input
+  final TextEditingController reasonController =
+      TextEditingController(); // Controller to capture the input
 
   return showDialog<void>(
     context: context,
-    barrierDismissible: false, // Prevents the dialog from being dismissed by tapping outside
+    barrierDismissible: false,
+    // Prevents the dialog from being dismissed by tapping outside
     builder: (BuildContext context) {
       return AlertDialog(
         title: const Text(''),
@@ -600,7 +605,8 @@ Future<void> showCancelOrderDialog(BuildContext context, String orderId) async {
             ),
             const SizedBox(height: 8),
             TextField(
-              controller: reasonController, // Attach the controller to the TextField
+              controller: reasonController,
+              // Attach the controller to the TextField
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Reason for cancellation',
@@ -620,19 +626,24 @@ Future<void> showCancelOrderDialog(BuildContext context, String orderId) async {
             child: const Text('Delete', style: TextStyle(color: Colors.red)),
             onPressed: () {
               final String reason = reasonController.text;
-              context
-                  .read<OrderProvider>()
-                  .cancelOrder(context.read<AuthProvider>(), orderId, reason)
-                  .whenComplete(() {
-                Navigator.of(context).pop(); // Close the dialog
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const MainPageRoute(index: 0),
-                  ),
-                      (route) => route.isFirst,
-                );
-              });
+              if (reason.isNotEmpty) {
+                context
+                    .read<OrderProvider>()
+                    .cancelOrder(context.read<AuthProvider>(), orderId, reason)
+                    .whenComplete(() {
+                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MainPageRoute(index: 0),
+                    ),
+                    (route) => route.isFirst,
+                  );
+                });
+              } else {
+                FlushBarHelper.flushBarErrorMessage(
+                    'Please enter reason before cancelling!', context);
+              }
             },
           ),
         ],

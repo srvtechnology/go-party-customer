@@ -165,15 +165,26 @@ Future<bool> rateOrder(AuthProvider auth,
   }
 }
 
-Future<bool> cancelOrder(AuthProvider auth, String payload) async {
+Future<bool> cancelOrder(
+    AuthProvider auth, String payload, String reason) async {
   try {
     log("Bearer ${auth.token}", name: "Token");
     // url
     log("${APIConfig.baseUrl}/api/customer/cancel-order/$payload",
         name: "customer-cancel-order");
-    Response response = await customDioClient.client.get(
-        "${APIConfig.baseUrl}/api/customer/cancel-order/$payload",
+
+    Response response = await customDioClient.client.post(
+        "${APIConfig.baseUrl}/api/customer/cancel-order",
+        data: {
+          "id": payload,
+          "reason": reason,
+        },
         options: Options(headers: {"Authorization": "Bearer ${auth.token}"}));
+
+    /* Response response = await customDioClient.client.get(
+        "${APIConfig.baseUrl}/api/customer/cancel-order/$payload",
+        options: Options(headers: {"Authorization": "Bearer ${auth.token}"}));*/
+
     log(jsonEncode(response.data), name: "customer-cancel-order");
 
     return response.data["success"];

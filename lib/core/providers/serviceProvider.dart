@@ -12,6 +12,9 @@ import '../models/service.dart';
 class ServiceProvider with ChangeNotifier {
 
   List<ServiceModel>? _data;
+  List<ServiceModel>? get data => _data;
+
+  List<ServiceModel>? searchData = [];
 
   List<String> banner1Images = [];
   List<String> mobileBannerImages = [];
@@ -22,8 +25,7 @@ class ServiceProvider with ChangeNotifier {
   List<PackageModel>? _packageData = [];
   List<PackageModel>? get packageData => _packageData;
 
-  List<ServiceModel>? get data => _data;
-  List<ServiceModel>? searchData = [];
+
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
