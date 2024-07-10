@@ -52,6 +52,470 @@ class _FilterPageState extends State<FilterPage> {
                 margin:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(
+                      width: 0.5, color: Theme.of(context).primaryColor),
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.blue[100]!,
+                      offset: const Offset(0, 2),
+                      spreadRadius: 1,
+                      blurRadius: 10,
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15, vertical: 10),
+                      child: Text(
+                        "Services Based on Price",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                    ),
+                    CheckboxListTile(
+                      title: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            if (!_selectedSortOptions.contains("High to Low")) {
+                              _selectedSortOptions.add("High to Low");
+                              _selectedSortOptions.remove("Low to High");
+                            }
+                          });
+                        },
+                        child: Text(
+                          "High to Low",
+                          style: TextStyle(
+                            color: _selectedSortOptions.contains("High to Low")
+                                ? Colors.blue
+                                : Colors.black,
+                            fontWeight:
+                                _selectedSortOptions.contains("High to Low")
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                      value: _selectedSortOptions.contains("High to Low"),
+                      onChanged: (bool? value) {
+                        setState(() {
+                          if (value == true) {
+                            _selectedSortOptions.add("High to Low");
+                            _selectedSortOptions.remove("Low to High");
+                          } else {
+                            _selectedSortOptions.remove("High to Low");
+                          }
+                        });
+                      },
+                    ),
+                    CheckboxListTile(
+                      title: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            if (!_selectedSortOptions.contains("Low to High")) {
+                              _selectedSortOptions.add("Low to High");
+                              _selectedSortOptions.remove("High to Low");
+                            }
+                          });
+                        },
+                        child: Text(
+                          "Low to High",
+                          style: TextStyle(
+                            color: _selectedSortOptions.contains("Low to High")
+                                ? Colors.blue
+                                : Colors.black,
+                            fontWeight:
+                                _selectedSortOptions.contains("Low to High")
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                      value: _selectedSortOptions.contains("Low to High"),
+                      onChanged: (bool? value) {
+                        setState(() {
+                          if (value == true) {
+                            _selectedSortOptions.add("Low to High");
+                            _selectedSortOptions.remove("High to Low");
+                          } else {
+                            _selectedSortOptions.remove("Low to High");
+                          }
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+
+              /*--- Services Section --*/
+              Container(
+                margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(
+                      width: 0.5, color: Theme.of(context).primaryColor),
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.blue[100]!,
+                      offset: const Offset(0, 2),
+                      spreadRadius: 1,
+                      blurRadius: 10,
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Services",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Column(
+                      children: state.filterServices.map((e) {
+                        bool isSelected =
+                            _selectedServiceIds.contains(e.id.toString());
+
+                        return ListTile(
+                          trailing: Checkbox(
+                            value: isSelected,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                if (value == true) {
+                                  _selectedServiceIds.add(e.id.toString());
+                                } else {
+                                  _selectedServiceIds.remove(e.id.toString());
+                                }
+                              });
+                            },
+                          ),
+                          title: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                if (isSelected) {
+                                  _selectedServiceIds.remove(e.id.toString());
+                                } else {
+                                  _selectedServiceIds.add(e.id.toString());
+                                }
+                              });
+                            },
+                            child: Text(
+                              e.service,
+                              style: TextStyle(
+                                color: isSelected ? Colors.blue : Colors.black,
+                                fontWeight: isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              ),
+              /*--- Events section ---*/
+              Container(
+                margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(
+                      width: 0.5, color: Theme.of(context).primaryColor),
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.blue[100]!,
+                      offset: const Offset(0, 2),
+                      spreadRadius: 1,
+                      blurRadius: 10,
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Events",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Column(
+                      children: state.data.map((e) {
+                        bool isSelected =
+                            _selectedEventIds.contains(e.id.toString());
+
+                        return ListTile(
+                          trailing: Checkbox(
+                            value: isSelected,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                if (value == true) {
+                                  _selectedEventIds.add(e.id.toString());
+                                } else {
+                                  _selectedEventIds.remove(e.id.toString());
+                                }
+                              });
+                            },
+                          ),
+                          title: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                if (isSelected) {
+                                  _selectedEventIds.remove(e.id.toString());
+                                } else {
+                                  _selectedEventIds.add(e.id.toString());
+                                }
+                              });
+                            },
+                            child: Text(
+                              e.name,
+                              style: TextStyle(
+                                color: isSelected ? Colors.blue : Colors.black,
+                                fontWeight: isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              ),
+              /*--- Cities Section --*/
+              Container(
+                margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(
+                      width: 0.5, color: Theme.of(context).primaryColor),
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.blue[100]!,
+                      offset: const Offset(0, 2),
+                      spreadRadius: 1,
+                      blurRadius: 10,
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Cities",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Column(
+                      children: state.filterCities.map((e) {
+                        bool isSelected =
+                            _selectedCities.contains(e.city.toString());
+
+                        return ListTile(
+                          trailing: Checkbox(
+                            value: isSelected,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                if (value == true) {
+                                  _selectedCities.add(e.city.toString());
+                                } else {
+                                  _selectedCities.remove(e.city.toString());
+                                }
+                              });
+                            },
+                          ),
+                          title: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                if (isSelected) {
+                                  _selectedCities.remove(e.city.toString());
+                                } else {
+                                  _selectedCities.add(e.city.toString());
+                                }
+                              });
+                            },
+                            child: Text(
+                              e.city,
+                              style: TextStyle(
+                                color: isSelected ? Colors.blue : Colors.black,
+                                fontWeight: isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              ),
+
+              /*--- Price Section --*/
+              Container(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(
+                      width: 0.5, color: Theme.of(context).primaryColor),
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.blue[100]!,
+                      offset: const Offset(0, 2),
+                      spreadRadius: 1,
+                      blurRadius: 10,
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ListTile(
+                      title: Text(
+                        "Select Price Range",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                      onTap: () {
+                        // Handle onTap if needed
+                      },
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        RangeSlider(
+                          values: _currentRangeValues,
+                          min: 0,
+                          max: 500000,
+                          divisions: 10,
+                          labels: RangeLabels(
+                            _currentRangeValues.start.round().toString(),
+                            _currentRangeValues.end.round().toString(),
+                          ),
+                          onChanged: (RangeValues values) {
+                            setState(() {
+                              _rangeSelected = true;
+                              _currentRangeValues = values;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
+              /*--- Apply Button --*/
+              Align(
+                alignment: Alignment.center,
+                child: Container(
+                  width: 150,
+                  padding: const EdgeInsets.all(20.0),
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).primaryColor),
+                      onPressed: () {
+                        if (_rangeSelected) {
+                          widget.filterState.setFilters(
+                              events: _selectedEventIds,
+                              services: _selectedServiceIds,
+                              cities: _selectedCities,
+                              sortOptions: _selectedSortOptions,
+                              startPrice: _currentRangeValues.start.toString(),
+                              endPrice: _currentRangeValues.end.toString());
+                        } else {
+                          widget.filterState.setFilters(
+                            events: _selectedEventIds,
+                            services: _selectedServiceIds,
+                            cities: _selectedCities,
+                            sortOptions: _selectedSortOptions,
+                          );
+                        }
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Apply")),
+                ),
+              )
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
+  Widget filterTile(String title, {Function()? onTap, bool selected = false}) {
+    return ListTile(
+      onTap: onTap,
+      title: Text(
+        title,
+        style: TextStyle(color: selected ? Colors.redAccent : Colors.black),
+      ),
+    );
+  }
+}
+
+
+/* --- Service Based on Price -- */
+/* 
+              Container(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                decoration: BoxDecoration(
                     color: Colors.white,
                     border: Border.all(
                         width: 0.5, color: Theme.of(context).primaryColor),
@@ -81,147 +545,131 @@ class _FilterPageState extends State<FilterPage> {
                     ),
                   ),
                   onTap: () {
-                    showModalBottomSheet(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20),
+                    Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: const [
+                              Text(
+                                "Services Based on Price",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: primaryColor,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      context: context,
-                      builder: (context) {
-                        return StatefulBuilder(
-                          builder: (BuildContext context,
-                              StateSetter setModalState) {
-                            return Column(
+                        const Divider(),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Column(
                               children: [
-                                Container(
-                                  padding: const EdgeInsets.all(20),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: const [
-                                      Text(
-                                        "Services Based on Price",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
-                                          color: primaryColor,
-                                        ),
+                                ListTile(
+                                  leading: Checkbox(
+                                    value: _selectedSortOptions
+                                        .contains("High to Low"),
+                                    onChanged: (bool? value) {
+                                      setState(() {
+                                        if (value == true) {
+                                          _selectedSortOptions
+                                              .add("High to Low");
+                                        } else {
+                                          _selectedSortOptions
+                                              .remove("High to Low");
+                                        }
+                                      });
+                                    },
+                                  ),
+                                  title: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        if (_selectedSortOptions
+                                            .contains("High to Low")) {
+                                          _selectedSortOptions
+                                              .remove("High to Low");
+                                        } else {
+                                          _selectedSortOptions
+                                              .add("High to Low");
+                                        }
+                                      });
+                                    },
+                                    child: Text(
+                                      "High to Low",
+                                      style: TextStyle(
+                                        color: _selectedSortOptions
+                                                .contains("High to Low")
+                                            ? Colors.blue
+                                            : Colors.black,
+                                        fontWeight: _selectedSortOptions
+                                                .contains("High to Low")
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
                                       ),
-                                    ],
+                                    ),
                                   ),
                                 ),
-                                const Divider(),
-                                Expanded(
-                                  child: SingleChildScrollView(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
-                                    child: Column(
-                                      children: [
-                                        ListTile(
-                                          leading: Checkbox(
-                                            value: _selectedSortOptions
-                                                .contains("High to Low"),
-                                            onChanged: (bool? value) {
-                                              setModalState(() {
-                                                if (value == true) {
-                                                  _selectedSortOptions
-                                                      .add("High to Low");
-                                                } else {
-                                                  _selectedSortOptions
-                                                      .remove("High to Low");
-                                                }
-                                              });
-                                            },
-                                          ),
-                                          title: GestureDetector(
-                                            onTap: () {
-                                              setModalState(() {
-                                                if (_selectedSortOptions
-                                                    .contains("High to Low")) {
-                                                  _selectedSortOptions
-                                                      .remove("High to Low");
-                                                } else {
-                                                  _selectedSortOptions
-                                                      .add("High to Low");
-                                                }
-                                              });
-                                            },
-                                            child: Text(
-                                              "High to Low",
-                                              style: TextStyle(
-                                                color: _selectedSortOptions
-                                                        .contains("High to Low")
-                                                    ? Colors.blue
-                                                    : Colors.black,
-                                                fontWeight: _selectedSortOptions
-                                                        .contains("High to Low")
-                                                    ? FontWeight.bold
-                                                    : FontWeight.normal,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        ListTile(
-                                          leading: Checkbox(
-                                            value: _selectedSortOptions
-                                                .contains("Low to High"),
-                                            onChanged: (bool? value) {
-                                              setModalState(() {
-                                                if (value == true) {
-                                                  _selectedSortOptions
-                                                      .add("Low to High");
-                                                } else {
-                                                  _selectedSortOptions
-                                                      .remove("Low to High");
-                                                }
-                                              });
-                                            },
-                                          ),
-                                          title: GestureDetector(
-                                            onTap: () {
-                                              setModalState(() {
-                                                if (_selectedSortOptions
-                                                    .contains("Low to High")) {
-                                                  _selectedSortOptions
-                                                      .remove("Low to High");
-                                                } else {
-                                                  _selectedSortOptions
-                                                      .add("Low to High");
-                                                }
-                                              });
-                                            },
-                                            child: Text(
-                                              "Low to High",
-                                              style: TextStyle(
-                                                color: _selectedSortOptions
-                                                        .contains("Low to High")
-                                                    ? Colors.blue
-                                                    : Colors.black,
-                                                fontWeight: _selectedSortOptions
-                                                        .contains("Low to High")
-                                                    ? FontWeight.bold
-                                                    : FontWeight.normal,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                                ListTile(
+                                  leading: Checkbox(
+                                    value: _selectedSortOptions
+                                        .contains("Low to High"),
+                                    onChanged: (bool? value) {
+                                      setState(() {
+                                        if (value == true) {
+                                          _selectedSortOptions
+                                              .add("Low to High");
+                                        } else {
+                                          _selectedSortOptions
+                                              .remove("Low to High");
+                                        }
+                                      });
+                                    },
+                                  ),
+                                  title: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        if (_selectedSortOptions
+                                            .contains("Low to High")) {
+                                          _selectedSortOptions
+                                              .remove("Low to High");
+                                        } else {
+                                          _selectedSortOptions
+                                              .add("Low to High");
+                                        }
+                                      });
+                                    },
+                                    child: Text(
+                                      "Low to High",
+                                      style: TextStyle(
+                                        color: _selectedSortOptions
+                                                .contains("Low to High")
+                                            ? Colors.blue
+                                            : Colors.black,
+                                        fontWeight: _selectedSortOptions
+                                                .contains("Low to High")
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ],
-                            );
-                          },
-                        );
-                      },
+                            ),
+                          ),
+                        ),
+                      ],
                     );
                   },
                 ),
-              ),
-              /*--- Services Section --*/
-              Container(
+              ), 
+              */
+
+/*--- Services Section --*/
+ /*  Container(
                 margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
                 decoration: BoxDecoration(
                     color: Colors.white,
@@ -271,7 +719,7 @@ class _FilterPageState extends State<FilterPage> {
                                   padding: const EdgeInsets.all(20),
                                   child: Row(
                                     mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.spaceBetween,
                                     children: const [
                                       Text(
                                         "Select Services",
@@ -346,8 +794,12 @@ class _FilterPageState extends State<FilterPage> {
                     );
                   },
                 ),
-              ),
-              /*--- Events section ---*/
+              ), 
+              */
+
+ /*--- Events section ---*/
+
+              /* 
               Container(
                 margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
                 decoration: BoxDecoration(
@@ -472,7 +924,12 @@ class _FilterPageState extends State<FilterPage> {
                       },
                     );
 
-                    /* showModalBottomSheet(
+                   
+                  },
+                ),
+              ), 
+              */
+  /* showModalBottomSheet(
                         shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(20),
@@ -528,12 +985,14 @@ class _FilterPageState extends State<FilterPage> {
                               ),
                             ],
                           );
-                        });*/
-                  },
-                ),
-              ),
-              /*--- Cities Section --*/
-              Container(
+                        });
+                        */
+
+/*--- Cities Section --*/
+
+/* 
+
+Container(
                 margin: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
                     color: Colors.white,
@@ -615,8 +1074,8 @@ class _FilterPageState extends State<FilterPage> {
                                                   _selectedCities
                                                       .add(e.city.toString());
                                                 } else {
-                                                  _selectedCities
-                                                      .remove(e.city.toString());
+                                                  _selectedCities.remove(
+                                                      e.city.toString());
                                                 }
                                               });
                                             },
@@ -625,8 +1084,8 @@ class _FilterPageState extends State<FilterPage> {
                                             onTap: () {
                                               setModalState(() {
                                                 if (isSelected) {
-                                                  _selectedCities
-                                                      .remove(e.city.toString());
+                                                  _selectedCities.remove(
+                                                      e.city.toString());
                                                 } else {
                                                   _selectedCities
                                                       .add(e.city.toString());
@@ -659,8 +1118,12 @@ class _FilterPageState extends State<FilterPage> {
                   },
                 ),
               ),
-              /*--- Price Section --*/
-              Container(
+
+ */
+
+ /*--- Price Section --*/
+/* 
+Container(
                 margin:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 decoration: BoxDecoration(
@@ -744,48 +1207,7 @@ class _FilterPageState extends State<FilterPage> {
                   },
                 ),
               ),
-              /*--- Apply Button --*/
-              Container(
-                width: 150,
-                padding: const EdgeInsets.all(20.0),
-                child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).primaryColor),
-                    onPressed: () {
-                      if (_rangeSelected) {
-                        widget.filterState.setFilters(
-                            events: _selectedEventIds,
-                            services: _selectedServiceIds,
-                            cities: _selectedCities,
-                            sortOptions: _selectedSortOptions,
-                            startPrice: _currentRangeValues.start.toString(),
-                            endPrice: _currentRangeValues.end.toString());
-                      } else {
-                        widget.filterState.setFilters(
-                          events: _selectedEventIds,
-                          services: _selectedServiceIds,
-                          cities: _selectedCities,
-                          sortOptions: _selectedSortOptions,
-                        );
-                      }
-                      Navigator.pop(context);
-                    },
-                    child: const Text("Apply")),
-              )
-            ],
-          ),
-        ),
-      );
-    });
-  }
 
-  Widget filterTile(String title, {Function()? onTap, bool selected = false}) {
-    return ListTile(
-      onTap: onTap,
-      title: Text(
-        title,
-        style: TextStyle(color: selected ? Colors.redAccent : Colors.black),
-      ),
-    );
-  }
-}
+
+ */
+

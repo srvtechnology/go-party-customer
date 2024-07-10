@@ -165,8 +165,78 @@ class _ViewAllServiceRouteState extends State<ViewAllServiceRoute> {
                       ),
                     ),
                   ),
+                ),
+              );
+            }),
+          );
+        }),
+      ),
+    );
+  }
 
-                  /* NestedScrollView(
+  Widget _searchBar(
+      {required TextEditingController controller,
+      required FilterProvider filterState,
+      required ServiceProvider serviceState}) {
+    return Container(
+      // color: Colors.white,
+      height: 10.49.h,
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+      child: TextFormField(
+        // autofocus: true,
+        controller: controller,
+        onChanged: (v) {
+          // if (_timer != null) _timer?.cancel();
+          Debouncer(milliseconds: 800).run(() {
+            serviceState.getFilteredServices(filterState,
+                searchString: _searchController.text, isUpdateMainData: true);
+          });
+          // _timer = Timer(const Duration(milliseconds: 500), () async {
+          //   await serviceState.getFilteredServices(filterState,
+          //       searchString: _searchController.text);
+          // });
+        },
+        decoration: InputDecoration(
+            contentPadding: const EdgeInsets.only(top: 10, left: 20),
+            hintText: "Search ...",
+            filled: true,
+            fillColor: Colors.white,
+            prefixIcon: IconButton(
+                onPressed: () {
+                  serviceState.getFilteredServices(filterState,
+                      searchString: _searchController.text);
+                },
+                icon: const Icon(Icons.search)),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: const BorderSide(width: 0.5, color: Colors.white))),
+      ),
+      // height: 10.h,
+      // padding: const EdgeInsets.all(20),
+      // child: Row(
+      //   children: [
+
+      //     SizedBox(
+      //       width: 4.w,
+      //     ),
+      //     IconButton(
+      //         onPressed: () {
+      //           serviceState.getFilteredServices(filterState,
+      //               searchString: _searchController.text);
+      //         },
+      //         icon: const Icon(Icons.search)),
+      //   ],
+      // ),
+    );
+  }
+}
+
+
+/* -- Modified Line from 129 : 
+    /* NestedScrollView(
                     floatHeaderSlivers: true,
                     headerSliverBuilder: (context, isChange) {
                       return [
@@ -244,112 +314,51 @@ class _ViewAllServiceRouteState extends State<ViewAllServiceRoute> {
                       ),
                     ),
                   ), */
-                ),
-              );
-            }),
-          );
-        }),
-      ),
-    );
-  }
 
-  Widget _searchBar(
-      {required TextEditingController controller,
-      required FilterProvider filterState,
-      required ServiceProvider serviceState}) {
-    return Container(
-      // color: Colors.white,
-      height: 10.49.h,
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-      child: TextFormField(
-        // autofocus: true,
-        controller: controller,
-        onChanged: (v) {
-          // if (_timer != null) _timer?.cancel();
-          Debouncer(milliseconds: 800).run(() {
-            serviceState.getFilteredServices(filterState,
-                searchString: _searchController.text, isUpdateMainData: true);
-          });
-          // _timer = Timer(const Duration(milliseconds: 500), () async {
-          //   await serviceState.getFilteredServices(filterState,
-          //       searchString: _searchController.text);
-          // });
-        },
-        decoration: InputDecoration(
-            contentPadding: const EdgeInsets.only(top: 10, left: 20),
-            hintText: "Search ...",
-            filled: true,
-            fillColor: Colors.white,
-            prefixIcon: IconButton(
-                onPressed: () {
-                  serviceState.getFilteredServices(filterState,
-                      searchString: _searchController.text);
-                },
-                icon: const Icon(Icons.search)),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(width: 0.5, color: Colors.white))),
-      ),
-      // height: 10.h,
-      // padding: const EdgeInsets.all(20),
-      // child: Row(
-      //   children: [
 
-      //     SizedBox(
-      //       width: 4.w,
-      //     ),
-      //     IconButton(
-      //         onPressed: () {
-      //           serviceState.getFilteredServices(filterState,
-      //               searchString: _searchController.text);
-      //         },
-      //         icon: const Icon(Icons.search)),
-      //   ],
-      // ),
-    );
-  }
+ */
+
+
+
+/* 
+class PackageListPageRoute extends StatefulWidget {
+  final List<PackageModel> packages;
+  static const routeName = "/packagelist";
+
+  const PackageListPageRoute({Key? key, required this.packages})
+      : super(key: key);
+
+  @override
+  State<PackageListPageRoute> createState() => _PackageListPageRouteState();
 }
-// class PackageListPageRoute extends StatefulWidget {
-//   final List<PackageModel> packages;
-//   static const routeName = "/packagelist";
 
-//   const PackageListPageRoute({Key? key, required this.packages})
-//       : super(key: key);
-
-//   @override
-//   State<PackageListPageRoute> createState() => _PackageListPageRouteState();
-// }
-
-// class _PackageListPageRouteState extends State<PackageListPageRoute> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: CommonHeader.header(context, onBack: () {
-//         Navigator.pop(context);
-//       }, onSearch: () {
-//         Navigator.pushNamed(context, ViewAllServiceRoute.routeName);
-//       }),
-//       body: Container(
-//         // padding: const EdgeInsets.symmetric(vertical: 10),
-//         child: ListView.builder(
-//           itemCount: widget.packages.length,
-//           itemBuilder: (context, index) {
-//             return PackageTile(
-//                 onTap: () {
-//                   Navigator.push(
-//                       context,
-//                       MaterialPageRoute(
-//                           builder: (context) => SinglePackageRoute(
-//                                 package: widget.packages[index],
-//                               )));
-//                 },
-//                 package: widget.packages[index]);
-//           },
-//         ),
-//       ),
-//     );
-//   }
-// }
+class _PackageListPageRouteState extends State<PackageListPageRoute> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: CommonHeader.header(context, onBack: () {
+        Navigator.pop(context);
+      }, onSearch: () {
+        Navigator.pushNamed(context, ViewAllServiceRoute.routeName);
+      }),
+      body: Container(
+        // padding: const EdgeInsets.symmetric(vertical: 10),
+        child: ListView.builder(
+          itemCount: widget.packages.length,
+          itemBuilder: (context, index) {
+            return PackageTile(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SinglePackageRoute(
+                                package: widget.packages[index],
+                              )));
+                },
+                package: widget.packages[index]);
+          },
+        ),
+      ),
+    );
+  }
+} */

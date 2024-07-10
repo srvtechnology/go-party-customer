@@ -10,7 +10,6 @@ import '../models/package.dart';
 import '../models/service.dart';
 
 class ServiceProvider with ChangeNotifier {
-
   List<ServiceModel>? _data;
   List<ServiceModel>? get data => _data;
 
@@ -24,8 +23,6 @@ class ServiceProvider with ChangeNotifier {
 
   List<PackageModel>? _packageData = [];
   List<PackageModel>? get packageData => _packageData;
-
-
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -77,14 +74,72 @@ class ServiceProvider with ChangeNotifier {
       log(filters.sortOptions.toString());
       log(filters.startPrice.toString(), name: "Start Price");
       log(filters.endPrice.toString(), name: "End Price");
+
       startLoading();
+
       Map<String, dynamic> data = {};
+
+      if (searchString != null) {
+        data["search"] = searchString;
+      } else {
+        data["search"] = "";
+      }
+
       if (filters.startPrice != null && filters.endPrice != null) {
         data["start_price"] = filters.startPrice;
         data["end_price"] = filters.endPrice;
+      } else {
+        data["start_price"] = "";
+        data["end_price"] = "";
       }
-      if (searchString != null) {
-        data["search"] = searchString;
+
+      if (filters.categories.isNotEmpty) {
+        filters.categories.forEachIndexed((index, value) {
+          data["category[$index]"] = value;
+        });
+      } else {
+        data["category"] = "";
+      }
+
+      if (filters.services.isNotEmpty) {
+        filters.services.forEachIndexed((index, value) {
+          data["service_ids[$index]"] = value;
+        });
+      } else {
+        data["service_ids"] = "";
+      }
+
+      if (filters.cities.isNotEmpty) {
+        filters.cities.forEachIndexed((index, value) {
+          data["city_ids[$index]"] = value;
+        });
+      } else {
+        data["city_ids"] = "";
+      }
+
+      String highToLow = "";
+      String lowToHigh = "";
+
+      for (var element in filters.sortOptions) {
+        if (element.contains("High to Low")) {
+          highToLow = "high";
+          lowToHigh = "";
+        } else if (element.contains("Low to High")) {
+          lowToHigh = "low";
+          highToLow = "";
+        } else {
+          highToLow = "";
+          lowToHigh = "";
+        }
+      }
+
+      data["high_to_low"] = highToLow;
+      data["low_to_high"] = lowToHigh;
+
+      /*  
+      if (filters.startPrice != null && filters.endPrice != null) {
+        data["start_price"] = filters.startPrice;
+        data["end_price"] = filters.endPrice;
       }
 
       filters.categories.forEachIndexed((index, value) {
@@ -98,10 +153,8 @@ class ServiceProvider with ChangeNotifier {
       filters.cities.forEachIndexed((index, value) {
         data["city_ids[$index]"] = value;
       });
-
-
-
-      filters.sortOptions.forEachIndexed((index, element) {
+      
+       filters.sortOptions.forEachIndexed((index, element) {
         if (element.contains("High to Low")) {
           data["high_to_low"] = "high";
         } else {
@@ -113,14 +166,17 @@ class ServiceProvider with ChangeNotifier {
           data["low_to_high"] = "";
         }
       });
+      
+       */
 
       log(jsonEncode(data), name: "Filter Data");
       if (isUpdateMainData) {
         _data = await searchServices(data);
         return;
       }
-      searchData = await searchServices(data);
+
       log(searchData.toString(), name: "Search Data");
+      searchData = await searchServices(data);
     } catch (e) {
       CustomLogger.error(e);
     } finally {
