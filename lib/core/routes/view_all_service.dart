@@ -126,7 +126,47 @@ class _ViewAllServiceRouteState extends State<ViewAllServiceRoute> {
                       ),
                     ),
                   ),
-                  body: NestedScrollView(
+                  body: SizedBox(
+                    height: double.infinity,
+                    width: double.infinity,
+                    // color: Colors.white,
+                    child: CustomMaterialIndicator(
+                      indicatorBuilder: (BuildContext context,
+                          IndicatorController controller) {
+                        return Container(
+                            padding: EdgeInsets.all(2.w),
+                            alignment: Alignment.center,
+                            child: const CircularProgressIndicator(
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                            ));
+                      },
+                      backgroundColor: primaryColor,
+                      onRefresh: () async {
+                        await filters.refresh();
+                        return state.refresh();
+                      },
+                      child: SingleChildScrollView(
+                        // padding: EdgeInsets.only(bottom: 5.h, top: 2.h),
+                        child: Column(
+                            children: state.data!
+                                .map((e) => ProductTile(
+                                      service: e,
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    SingleServiceRoute(
+                                                        service: e)));
+                                      },
+                                    ))
+                                .toList()),
+                      ),
+                    ),
+                  ),
+
+                  /* NestedScrollView(
                     floatHeaderSlivers: true,
                     headerSliverBuilder: (context, isChange) {
                       return [
@@ -203,7 +243,7 @@ class _ViewAllServiceRouteState extends State<ViewAllServiceRoute> {
                         ),
                       ),
                     ),
-                  ),
+                  ), */
                 ),
               );
             }),

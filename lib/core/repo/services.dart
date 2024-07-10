@@ -16,7 +16,7 @@ Future<List<ServiceModel>> getServices() async {
   try {
     Response response = await customDioClient.client
         .get("${APIConfig.baseUrl}/api/customer-all-service");
-    // log(jsonEncode(response.data), name: "Package Services");
+    log(jsonEncode(response.data), name: "GetServices Response");
     List<ServiceModel> services = [];
     for (var serviceJson in response.data["services"]) {
       try {
@@ -46,7 +46,7 @@ Future<List<PackageModel>> getPackages() async {
   try {
     Response response = await customDioClient.client
         .get("${APIConfig.baseUrl}/api/customer-all-packages");
-    log(jsonEncode(response.data), name: "Package Response");
+    log(jsonEncode(response.data), name: "GetPackage Response");
     List<PackageModel> packages = [];
     for (var serviceJson in response.data["packages"]) {
       try {

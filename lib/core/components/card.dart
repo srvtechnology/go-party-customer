@@ -428,7 +428,7 @@ class CircularOrderCard extends StatelessWidget {
         maxHeight: 110,
         // mxh
       ),
-      padding: const EdgeInsets.only(right: 5),
+      padding: const EdgeInsets.only(right: 20),
       child: GestureDetector(
         onTap: () {
           Navigator.push(
@@ -857,7 +857,7 @@ class ProductTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
+                  /* Expanded(
                     child: Text(
                       service.name ?? "",
                       overflow: TextOverflow.ellipsis,
@@ -866,34 +866,61 @@ class ProductTile extends StatelessWidget {
                           fontSize: 18.sp,
                           fontWeight: FontWeight.w600),
                     ),
+                  ), */
+                  Text(
+                    service.name ?? "",
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w600),
                   ),
+
+                  Text(
+                    "By utsavlife",
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w600),
+                  ),
+
                   Expanded(
                     child: HtmlTextView(
                       htmlText: service.description ?? "",
                     ),
                   ),
-                  Expanded(
-                      child: Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "₹ ${service.price}",
+                        "Per ${service.priceBasis} unit",
                         style: TextStyle(
-                          fontSize: 18.sp,
-                          color: Theme.of(context).primaryColor,
+                          fontSize: 16.sp,
+                          color: Colors.black,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      // unit == "per hour"
                       Text(
-                        " / ${service.priceBasis}",
+                        "₹ ${service.price}",
                         style: TextStyle(
-                          fontSize: 14.sp,
-                          color: Colors.grey,
+                            fontSize: 16.sp,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w600,
+                            decoration: TextDecoration.lineThrough),
+                      ),
+                      // unit == "per hour"
+
+                      Text(
+                        "₹ ${service.discountedPrice}",
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          color: Colors.black,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],
-                  )),
+                  ),
                   // add to cart button
                   Expanded(
                     child: Row(
@@ -901,8 +928,12 @@ class ProductTile extends StatelessWidget {
                       children: [
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20))),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                            minimumSize: const Size(80, 30), // Reduced size
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 5),
+                          ),
                           onPressed: () {
                             if (onTap != null) {
                               onTap!();
