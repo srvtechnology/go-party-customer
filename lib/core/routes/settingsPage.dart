@@ -1,4 +1,4 @@
-import 'package:customerapp/core/Constant/themData.dart';
+import '../constant/themData.dart';
 import 'package:customerapp/core/components/commonHeader.dart';
 import 'package:customerapp/core/components/divider.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';

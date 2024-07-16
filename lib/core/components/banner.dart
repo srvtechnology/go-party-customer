@@ -2,7 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:collection/collection.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:customerapp/core/Constant/themData.dart';
+import '../constant/themData.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';

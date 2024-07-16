@@ -1,4 +1,4 @@
-import 'package:customerapp/core/Constant/themData.dart';
+import '../constant/themData.dart';
 import 'package:customerapp/core/routes/addressPage.dart';
 import 'package:customerapp/core/routes/agent_sign_in.dart';
 import 'package:customerapp/core/routes/agent_signup.dart';

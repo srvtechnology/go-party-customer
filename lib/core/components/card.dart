@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:customerapp/core/Constant/themData.dart';
+import '../constant/themData.dart';
 import 'package:customerapp/core/components/cutom_card.dart';
 import 'package:customerapp/core/components/divider.dart';
 import 'package:customerapp/core/components/htmlTextView.dart';

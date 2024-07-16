@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:customerapp/core/Constant/themData.dart';
+import '../constant/themData.dart';
 import 'package:flutter/material.dart';
 
 class QuantityManager extends StatelessWidget {

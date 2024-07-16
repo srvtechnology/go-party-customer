@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:csc_picker/csc_picker.dart';
-import 'package:customerapp/core/Constant/themData.dart';
+import '../constant/themData.dart';
 import 'package:customerapp/core/components/errors.dart';
 import 'package:customerapp/core/components/loading.dart';
 import 'package:customerapp/core/models/address.dart';

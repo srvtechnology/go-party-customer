@@ -1,6 +1,6 @@
 import 'package:another_flushbar/flushbar_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:customerapp/core/Constant/themData.dart';
+import '../constant/themData.dart';
 import 'package:customerapp/core/components/commonHeader.dart';
 import 'package:customerapp/core/components/divider.dart';
 import 'package:customerapp/core/components/loading.dart';
@@ -193,7 +193,8 @@ class _OrderStatusPageState extends State<OrderStatusPage> {
                                 width: 150,
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    showCancelOrderDialog(context,  widget.order.id);
+                                    showCancelOrderDialog(
+                                        context, widget.order.id);
                                     /*context
                                         .read<OrderProvider>()
                                         .cancelOrder(
@@ -353,11 +354,13 @@ class _OrderStatusPageState extends State<OrderStatusPage> {
 }
 
 Future<void> showCancelOrderDialog(BuildContext context, String orderId) async {
-  final TextEditingController reasonController = TextEditingController(); // Controller to capture the input
+  final TextEditingController reasonController =
+      TextEditingController(); // Controller to capture the input
 
   return showDialog<void>(
     context: context,
-    barrierDismissible: false, // Prevents the dialog from being dismissed by tapping outside
+    barrierDismissible:
+        false, // Prevents the dialog from being dismissed by tapping outside
     builder: (BuildContext context) {
       return AlertDialog(
         title: const Text(''),
@@ -365,14 +368,15 @@ Future<void> showCancelOrderDialog(BuildContext context, String orderId) async {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             /*const Text('Are you sure? You can\'t undo this.'),*/
-           /* const SizedBox(height: 16),*/
+            /* const SizedBox(height: 16),*/
             const Align(
               alignment: Alignment.centerLeft,
               child: Text('Enter reason:'),
             ),
             const SizedBox(height: 8),
             TextField(
-              controller: reasonController, // Attach the controller to the TextField
+              controller:
+                  reasonController, // Attach the controller to the TextField
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Reason for cancellation',
@@ -392,7 +396,7 @@ Future<void> showCancelOrderDialog(BuildContext context, String orderId) async {
             child: const Text('Delete', style: TextStyle(color: Colors.red)),
             onPressed: () {
               final String reason = reasonController.text;
-              if(reason.isNotEmpty) {
+              if (reason.isNotEmpty) {
                 context
                     .read<OrderProvider>()
                     .cancelOrder(context.read<AuthProvider>(), orderId, reason)
@@ -403,13 +407,13 @@ Future<void> showCancelOrderDialog(BuildContext context, String orderId) async {
                     MaterialPageRoute(
                       builder: (context) => const MainPageRoute(index: 0),
                     ),
-                        (route) => route.isFirst,
+                    (route) => route.isFirst,
                   );
                 });
               } else {
-                FlushBarHelper.flushBarErrorMessage('Please enter reason before cancelling!', context);
+                FlushBarHelper.flushBarErrorMessage(
+                    'Please enter reason before cancelling!', context);
               }
-
             },
           ),
         ],
@@ -417,5 +421,3 @@ Future<void> showCancelOrderDialog(BuildContext context, String orderId) async {
     },
   );
 }
-
-

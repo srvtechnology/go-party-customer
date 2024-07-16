@@ -1,4 +1,4 @@
-import 'package:customerapp/core/Constant/themData.dart';
+import '../constant/themData.dart';
 import 'package:customerapp/core/providers/categoryProvider.dart';
 import 'package:customerapp/core/providers/serviceProvider.dart';
 import 'package:flutter/material.dart';
