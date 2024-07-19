@@ -46,7 +46,7 @@ class Packages {
   int? discountPrice;
   String? unit;
   int? minQty;
-  String? videoUrl;
+  /* String? videoUrl; */
   String? tags;
   String? image;
   List<String>? additionalImages;
@@ -70,7 +70,7 @@ class Packages {
     this.discountPrice,
     this.unit,
     this.minQty,
-    this.videoUrl,
+    /* this.videoUrl, */
     this.tags,
     this.image,
     this.additionalImages,
@@ -95,7 +95,7 @@ class Packages {
         discountPrice: json["discount_price"],
         unit: json["unit"],
         minQty: json["min_qty"],
-        videoUrl: json["video_url"],
+        /* videoUrl: json["video_url"], */
         tags: json["tags"],
         image: json["image"],
         additionalImages: json["additional_images"] == null
@@ -134,7 +134,7 @@ class Packages {
         "discount_price": discountPrice,
         "unit": unit,
         "min_qty": minQty,
-        "video_url": videoUrl,
+        /* "video_url": videoUrl, */
         "tags": tags,
         "image": image,
         "additional_images": additionalImages == null
@@ -211,7 +211,7 @@ class Service {
   int? price;
   String? status;
   String? discountPrice;
-  String? videoUrl;
+  /* String? videoUrl; */
   String? image;
   dynamic additionalImages;
   dynamic featuredImage;
@@ -255,7 +255,7 @@ class Service {
     this.price,
     this.status,
     this.discountPrice,
-    this.videoUrl,
+    /* this.videoUrl, */
     this.image,
     this.additionalImages,
     this.featuredImage,
@@ -300,7 +300,7 @@ class Service {
         price: json["price"],
         status: json["status"],
         discountPrice: json["discount_price"],
-        videoUrl: json["video_url"],
+        /* videoUrl: json["video_url"], */
         image: json["image"],
         additionalImages: json["additional_images"],
         featuredImage: json["featured_image"],
@@ -349,7 +349,7 @@ class Service {
         "price": price,
         "status": status,
         "discount_price": discountPrice,
-        "video_url": videoUrl,
+        /* "video_url": videoUrl, */
         "image": image,
         "additional_images": additionalImages,
         "featured_image": featuredImage,
