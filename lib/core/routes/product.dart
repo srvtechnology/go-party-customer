@@ -317,23 +317,20 @@ class _PackageListPageRouteState extends State<PackageListPageRoute> {
         print("search");
         Navigator.pushNamed(context, ProductPageRoute.routeName);
       }),
-      body: Container(
-        // padding: const EdgeInsets.symmetric(vertical: 10),
-        child: ListView.builder(
-          itemCount: widget.packages.length,
-          itemBuilder: (context, index) {
-            return PackageTile(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SinglePackageRoute(
-                                package: widget.packages[index],
-                              )));
-                },
-                package: widget.packages[index]);
-          },
-        ),
+      body: ListView.builder(
+        itemCount: widget.packages.length,
+        itemBuilder: (context, index) {
+          return PackageTile(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SinglePackageRoute(
+                              package: widget.packages[index],
+                            )));
+              },
+              package: widget.packages[index]);
+        },
       ),
     );
   }

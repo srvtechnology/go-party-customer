@@ -27,6 +27,7 @@ typedef OnTap = void Function();
 class OrderCard extends StatelessWidget {
   ServiceModel service;
   OnTap? onTap;
+
   OrderCard({Key? key, required this.service, this.onTap}) : super(key: key);
 
   @override
@@ -116,6 +117,7 @@ class OrderCard extends StatelessWidget {
 class PackageCard extends StatelessWidget {
   PackageModel package;
   OnTap? onTap;
+
   PackageCard({Key? key, required this.package, this.onTap}) : super(key: key);
 
   @override
@@ -198,6 +200,7 @@ class PackageCard extends StatelessWidget {
 class PackageTile extends StatelessWidget {
   final PackageModel package;
   final OnTap? onTap;
+
   const PackageTile({Key? key, required this.package, this.onTap})
       : super(key: key);
 
@@ -249,45 +252,53 @@ class PackageTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                    child: Text(
-                      package.name,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w500),
-                    ),
+                  Text(
+                    package.name,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w500),
                   ),
                   Expanded(
                     child: HtmlTextView(
                       htmlText: package.description,
                     ),
                   ),
-                  Expanded(
-                      child: Row(
+
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "₹ ${package.price}",
-                        style: TextStyle(
-                          fontSize: 18.sp,
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      // unit == "per hour"
-                      // Text(
-                      //   " / ${package.priceBasis}",
-                      //   style: TextStyle(
-                      //     fontSize: 14.sp,
-                      //     color: Colors.grey,
-                      //     fontWeight: FontWeight.w600,
-                      //   ),
-                      // ),
+                  Text(
+                    "Discounted Price : ₹ ${package.discountedPrice}",
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      color: Theme.of(context).primaryColor,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  Text(
+                    "Price : ₹ ${package.price}",
+                    style: TextStyle(
+                        fontSize: 15.sp,
+                        color: Colors.grey,
+                        fontWeight: FontWeight.w600,
+                        decoration: TextDecoration.lineThrough),
+                  ),
+                  // unit == "per hour"
+                  // Text(
+                  //   " / ${package.priceBasis}",
+                  //   style: TextStyle(
+                  //     fontSize: 14.sp,
+                  //     color: Colors.grey,
+                  //     fontWeight: FontWeight.w600,
+                  //   ),
+                  // ),
                     ],
-                  )),
+                  ),
                   // add to cart button
-                  Expanded(
+                  /*--- commented on 24-07-24 ---*/
+                  /*Expanded(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -304,7 +315,7 @@ class PackageTile extends StatelessWidget {
                         ),
                       ],
                     ),
-                  )
+                  )*/
                 ],
               ),
             ),
@@ -417,6 +428,7 @@ class PackageTile extends StatelessWidget {
 // SAME
 class CircularOrderCard extends StatelessWidget {
   final ServiceModel service;
+
   const CircularOrderCard({Key? key, required this.service}) : super(key: key);
 
   @override
@@ -479,6 +491,7 @@ class CircularOrderCard extends StatelessWidget {
 // SAME
 class CircularEventCard extends StatelessWidget {
   final EventModel event;
+
   const CircularEventCard({Key? key, required this.event}) : super(key: key);
 
   @override
@@ -538,6 +551,7 @@ class OrderTile extends StatefulWidget {
   bool review;
   bool isShowPrice;
   bool isDelivered;
+
   OrderTile(
       {Key? key,
       required this.order,
@@ -553,6 +567,7 @@ class OrderTile extends StatefulWidget {
 class _OrderTileState extends State<OrderTile> {
   final TextEditingController _reviewMessage = TextEditingController();
   double rating = 0.0;
+
   Future<void> _writeReview() async {
     showModalBottomSheet(
         context: context,
@@ -807,6 +822,7 @@ class _OrderTileState extends State<OrderTile> {
 class ProductTile extends StatelessWidget {
   ServiceModel service;
   Function? onTap;
+
   ProductTile({Key? key, required this.service, this.onTap}) : super(key: key);
 
   @override
@@ -901,28 +917,30 @@ class ProductTile extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      Text(
-                        "₹ ${service.price}",
-                        style: TextStyle(
-                            fontSize: 16.sp,
-                            color: Colors.grey,
-                            fontWeight: FontWeight.w600,
-                            decoration: TextDecoration.lineThrough),
-                      ),
+
                       // unit == "per hour"
 
                       Text(
-                        "₹ ${service.discountedPrice}",
+                        "Discounted Price : ₹ ${service.discountedPrice}",
                         style: TextStyle(
-                          fontSize: 18.sp,
+                          fontSize: 16.sp,
                           color: Colors.black,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
+                      Text(
+                        "Price : ₹ ${service.price}",
+                        style: TextStyle(
+                            fontSize: 15.sp,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.normal,
+                            decoration: TextDecoration.lineThrough),
+                      ),
                     ],
                   ),
                   // add to cart button
-                  Expanded(
+                  /*---- commented on 24-07-24 ----*/
+                  /*Expanded(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -943,7 +961,7 @@ class ProductTile extends StatelessWidget {
                         ),
                       ],
                     ),
-                  )
+                  )*/
                 ],
               ),
             ),
@@ -977,6 +995,7 @@ class ProductTile extends StatelessWidget {
 
 class ReviewTile extends StatelessWidget {
   final ReviewModel e;
+
   const ReviewTile({Key? key, required this.e}) : super(key: key);
 
   @override

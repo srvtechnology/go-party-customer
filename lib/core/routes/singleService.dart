@@ -730,36 +730,82 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                             Container(
                               padding: EdgeInsets.symmetric(
                                   horizontal: 4.w, vertical: 2.h),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              child: Row(
                                 children: [
-                                  RichText(
-                                    textAlign: TextAlign.center,
-                                    text: TextSpan(
-                                      children: [
-                                        TextSpan(
-                                            text:
-                                                "\u20B9 ${widget.service.discountedPrice} ",
-                                            style: TextStyle(
-                                                fontSize: 20.sp,
-                                                fontWeight: FontWeight.w600,
-                                                color: Theme.of(context)
-                                                    .primaryColorDark),
-                                            children: [
-                                              TextSpan(
-                                                text: widget.service.priceBasis,
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      RichText(
+                                        textAlign: TextAlign.center,
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                                text:
+                                                    "\u20B9 ${widget.service.discountedPrice} ",
                                                 style: TextStyle(
-                                                    fontSize: 15.sp,
-                                                    color: Colors.black),
-                                              ),
-                                            ]),
-                                      ],
-                                    ),
+                                                    fontSize: 20.sp,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Theme.of(context)
+                                                        .primaryColorDark),
+                                                children: [
+                                                  TextSpan(
+                                                    text: widget.service.priceBasis,
+                                                    style: TextStyle(
+                                                        fontSize: 15.sp,
+                                                        color: Colors.black),
+                                                  ),
+                                                ]),
+                                          ],
+                                        ),
+                                      ),
+                                      const Text(
+                                        'inc. all taxes',
+                                        style: TextStyle(fontSize: 12),
+                                      ),
+                                      const Text(
+                                        'Check price for other event ',
+                                        style: TextStyle(fontSize: 12),
+                                      ),
+                                      const Text(
+                                        '',
+                                        style: TextStyle(fontSize: 12),
+                                      ),
+                                    ],
                                   ),
-                                  const Text(
-                                    'inc. all taxes',
-                                    style: TextStyle(fontSize: 12),
-                                  ),
+                                  const Spacer(),
+                                  /*Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      DropdownButton<PopupCategory?>(
+                                          style: TextStyle(
+                                              color:
+                                              Theme.of(context).primaryColor),
+                                          underline: Container(),
+                                          iconSize: 16,
+                                          icon: const Icon(
+                                            Icons.arrow_drop_down_circle_outlined,
+                                            color: primaryColor,
+                                          ),
+                                          value: selectedCategory,
+                                          items: popupCategories
+                                              .map((e) =>
+                                              DropdownMenuItem<PopupCategory>(
+                                                  value: e,
+                                                  child: Text(e.category
+                                                      ?.categoryName ??
+                                                      "")))
+                                              .toList(),
+                                          onChanged: (v) {
+                                            setState(() {
+                                              selectedCategory = v;
+                                              _categoryName.text = selectedCategory
+                                                  ?.category?.categoryName ??
+                                                  "";
+                                            });
+                                          })
+                                    ],
+                                  )*/
                                 ],
                               ),
                             ),
