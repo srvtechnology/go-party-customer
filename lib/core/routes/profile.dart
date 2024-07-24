@@ -116,7 +116,7 @@ class _ProfileState extends State<Profile> {
                 // rich Text for sign and sign up  as a business Agent
                 RichText(
                   text: TextSpan(
-                    text: 'Are you a agent ? ',
+                    text: 'Are you an agent ? ',
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 16,

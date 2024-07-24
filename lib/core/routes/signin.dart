@@ -7,9 +7,13 @@ import 'package:customerapp/core/routes/mainpage.dart';
 import 'package:customerapp/core/routes/profile.dart';
 import 'package:customerapp/core/routes/signup.dart';
 import 'package:customerapp/core/utils/logger.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+
+import '../../views/view.dart';
+import '../constant/themData.dart';
 
 class SignInPageRoute extends StatefulWidget {
   static const String routeName = '/signin';
@@ -247,6 +251,56 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                               color: Colors.white,
                             ),
                           ),
+                  ),
+                 const  SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          text: 'Are you an agent ? ',
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                          ),
+                          children: <TextSpan>[
+                            TextSpan(
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.pushNamed(
+                                      context, AgentSignIn.routeName);
+                                  // navigate to desired screen
+                                },
+                              text: 'Sign in',
+                              style: const TextStyle(
+                                color: primaryColor,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const TextSpan(
+                              text: ' or ',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                              ),
+                            ),
+                            TextSpan(
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.pushNamed(
+                                      context, AgentSignUp.routeName);
+                                  // navigate to desired screen
+                                },
+                              text: 'Sign up',
+                              style: const TextStyle(
+                                color: primaryColor,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                   TramsAndConditionsCheckBox(
                     value: false,

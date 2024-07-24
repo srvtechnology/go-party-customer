@@ -4,6 +4,10 @@ import 'package:customerapp/core/routes/mainpage.dart';
 import 'package:customerapp/core/routes/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
+
+import '../../views/view.dart';
+import '../Constant/themData.dart';
 
 class AgentSignIn extends StatefulWidget {
   static String routeName = "/agent_signIn";
@@ -167,6 +171,27 @@ class _AgentSignInState extends State<AgentSignIn> {
                               color: Colors.white,
                             ),
                           ),
+                  ),
+                  const SizedBox(height: 10,),
+                  InkWell(
+                    onTap: () {
+                      Navigator.pushNamed(context, SignInPageRoute.routeName);
+                    },
+                    child: Container(
+                      height: 6.h,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: tertiaryColor,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Text('Already a customer ? Sign in',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: primaryColor,
+                          )),
+                    ),
                   ),
                   const SizedBox(height: 16.0),
                   TramsAndConditionsCheckBox(
