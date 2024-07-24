@@ -73,7 +73,8 @@ class AuthProvider with ChangeNotifier {
         log(res.data.toString(), name: "Agent Registered OTP");
         agentRegistrationStep = 2;
         notifyListeners();
-        otpcontroller.text = res.data['opt_code'].toString();
+        /*-- commented on 24-07-24 because OTP is set by default ---*/
+        /*otpcontroller.text = res.data['opt_code'].toString();*/
         return;
       }
       ScaffoldMessenger.of(context).showSnackBar(

@@ -36,6 +36,7 @@ class _AgentSignUpState extends State<AgentSignUp> {
 
   bool _obscureTextConfirm = true;
   bool _obscureText = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
