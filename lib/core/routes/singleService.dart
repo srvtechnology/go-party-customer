@@ -1,6 +1,7 @@
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:customerapp/core/components/Rating_view.dart';
 import 'package:customerapp/core/models/orders.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -32,6 +33,7 @@ import '../components/banner.dart';
 
 class SingleServiceRoute extends StatefulWidget {
   final ServiceModel service;
+
   const SingleServiceRoute({Key? key, required this.service}) : super(key: key);
 
   @override
@@ -52,7 +54,10 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
   bool _isShowMore = false;
   bool isProcessing = false;
   List<String> _cities = [];
-  bool isloading = false;
+  String? selectedCity = " Select a City";
+  String defaultCityMessage = "Open for every city";
+  bool isLoading = false;
+
   void _calculateDays() {
     try {
       if (_startDate.text.isNotEmpty && _endDate.text.isNotEmpty) {
@@ -88,7 +93,25 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
     // log(widget.service.minQnty.toString(), name: "Package");
   }
 
-  getAvailableCities() async {
+  Future<void> getAvailableCities() async {
+    setState(() => isLoading = true);
+    List cities = await getServicesCities(widget.service.id!);
+
+    setState(() {
+      _cities = cities.map((e) => e.toString()).toList();
+      if (_cities.isNotEmpty) {
+        selectedCity = _cities.first;
+      } else {
+        selectedCity = defaultCityMessage;
+      }
+      isLoading = false;
+    });
+    if (kDebugMode) {
+      print(_cities.toString());
+    }
+  }
+
+  /*getAvailableCities() async {
     setState(() => isloading = true);
     List cities = await getServicesCities(widget.service.id!);
 
@@ -97,7 +120,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
       isloading = false;
     });
     print(_cities.toString());
-  }
+  }*/
 
   TextFormField datePickField(TextEditingController controller,
       TextEditingController controllerView, String hintText,
@@ -259,7 +282,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                         return "Start Date Required";
                                       }
 
-// if date is today and current time is greater than 3:59 pm then show error
+                                    // if date is today and current time is greater than 3:59 pm then show error
                                       DateTime now = DateTime.now();
                                       DateTime date =
                                           DateTime.parse(_startDate.text);
@@ -606,7 +629,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
               }, onSearch: () {
                 Navigator.pushNamed(context, ProductPageRoute.routeName);
               }),
-              body: isloading
+              body: isLoading
                   ? const Center(
                       child: CircularProgressIndicator(),
                     )
@@ -729,11 +752,12 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                             ),
                             Container(
                               padding: EdgeInsets.symmetric(
-                                  horizontal: 4.w, vertical: 2.h),
+                                  horizontal: 4.w, vertical: 1.h),
                               child: Row(
                                 children: [
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       RichText(
                                         textAlign: TextAlign.center,
@@ -749,7 +773,8 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                                         .primaryColorDark),
                                                 children: [
                                                   TextSpan(
-                                                    text: widget.service.priceBasis,
+                                                    text: widget
+                                                        .service.priceBasis,
                                                     style: TextStyle(
                                                         fontSize: 15.sp,
                                                         color: Colors.black),
@@ -806,6 +831,66 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                           })
                                     ],
                                   )*/
+                                ],
+                              ),
+                            ),
+                            /*-- 25-07-24 : for available city ----*/
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 4.w,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Available City',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  DropdownButton<String?>(
+                                    style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                    underline: Container(),
+                                    iconSize: 16,
+                                    icon: _cities.isEmpty
+                                        ? Container() // Hide icon if the list is empty
+                                        : const Icon(
+                                            Icons
+                                                .arrow_drop_down_circle_outlined,
+                                            color: primaryColor,
+                                          ),
+                                    value: selectedCity,
+                                    items: _cities.isEmpty
+                                        ? [
+                                            DropdownMenuItem<String>(
+                                              value: defaultCityMessage,
+                                              child: Text(defaultCityMessage,
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.black,
+                                                  )),
+                                            ),
+                                          ]
+                                        : _cities.map((city) {
+                                            return DropdownMenuItem<String>(
+                                              value: city,
+                                              child: Text(city),
+                                            );
+                                          }).toList(),
+                                    onChanged: _cities.isEmpty
+                                        ? null // Disable onChanged if the list is empty
+                                        : (city) {
+                                            setState(() {
+                                              selectedCity = city;
+                                            });
+                                          },
+                                  ),
                                 ],
                               ),
                             ),
@@ -1236,6 +1321,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
 
 class WriteReview extends StatelessWidget {
   final String serviceId;
+
   const WriteReview({
     Key? key,
     required this.serviceId,
@@ -1302,6 +1388,7 @@ class WriteReview extends StatelessWidget {
 
 class ReviewPage extends StatefulWidget {
   final List<ReviewModel> reviews;
+
   const ReviewPage({Key? key, required this.reviews}) : super(key: key);
 
   @override
