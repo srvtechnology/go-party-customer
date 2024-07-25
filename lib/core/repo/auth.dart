@@ -80,7 +80,7 @@ Future<Map<String, dynamic>> de_Activate(String token, customerId) async {
   }
 }
 
-Future<Response?> register(
+/*Future<Response?> register(
     String email, String password, String name, String phone) async {
   try {
     Response response = await customDioClient.client
@@ -94,6 +94,30 @@ Future<Response?> register(
     return Future.value(response);
   } catch (e) {
     return Future.value(null);
+  }
+}*/
+
+/*--- modified on 25-07-24 ----*/
+Future<Response?> register(
+    String email, String password, String name, String phone) async {
+  try {
+    Response response = await customDioClient.client
+        .post("${APIConfig.baseUrl}/api/customer-registration", data: {
+      "name": name,
+      "email": email,
+      "password": password,
+      "mobile": phone
+    });
+    log(jsonEncode(response.data.toString()));
+    if (response.statusCode == 200) {
+      return response;
+    } else {
+      String errorMessage = response.data['message'] ?? 'Unknown error';
+      throw Exception(errorMessage);
+    }
+  } catch (e) {
+    log(e.toString(), name: "User Registration Error");
+    return null;
   }
 }
 

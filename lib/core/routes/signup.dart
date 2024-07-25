@@ -37,7 +37,7 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
     super.dispose();
   }
 
-  void _signUp(AuthProvider auth) async {
+/*  void _signUp(AuthProvider auth) async {
     setState(() {
       _isLoading = true;
     });
@@ -54,6 +54,37 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
     } catch (e) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+  }*/
+
+  /*--- modified on 25-07-24 ----*/
+  void _signUp(AuthProvider auth) async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      await auth.register(_nameController.text, _emailController.text,
+          _phoneNumberController.text, _passwordController.text);
+      if (context.mounted) {
+        if (widget.comeback) {
+          Navigator.pop(context);
+        } else {
+          Navigator.pushReplacementNamed(context, MainPageRoute.routeName);
+        }
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Email or Phone already exists'),
+        ),
+      );
+
+      /*ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Registration failed: ${e.toString()}')));*/
     }
   }
 

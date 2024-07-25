@@ -13,14 +13,19 @@ class AuthProvider with ChangeNotifier {
   String? _token;
   bool _isLoading = false;
   String? status;
+
   bool get isLoading => _isLoading;
   UserModel? _user;
   bool isAgent = false;
   late final SharedPreferences pref;
+
   String? get token => _token;
+
   AuthState get authState => _authState;
+
   UserModel? get user => _user;
   int agentRegistrationStep = 1;
+
   void startLoading() {
     _isLoading = true;
     notifyListeners();
@@ -43,7 +48,9 @@ class AuthProvider with ChangeNotifier {
   AuthProvider() {
     init();
   }
-  Future<void> register(
+
+
+/*  Future<void> register(
       String name, String email, String phone, String password) async {
     try {
       final res = await authRepo.register(email, password, name, phone);
@@ -54,6 +61,24 @@ class AuthProvider with ChangeNotifier {
       CustomLogger.error(e);
       _authState = AuthState.Error;
       notifyListeners();
+    }
+  }*/
+
+  /*--- modified on 25-07-24 ----*/
+  Future<void> register(
+      String name, String email, String phone, String password) async {
+    try {
+      final res = await authRepo.register(email, password, name, phone);
+      if (res != null && res.statusCode == 200) {
+        login(email, password);
+      } else {
+        throw Exception('Registration failed.');
+      }
+    } catch (e) {
+      CustomLogger.error(e);
+      _authState = AuthState.Error;
+      notifyListeners();
+      rethrow;
     }
   }
 
