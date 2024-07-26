@@ -232,6 +232,8 @@ class OrderHistory extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  /*--- commented on 26-07-24 ---*/
+                  /*
                   Text(
                     'Shipping to ${order.billingName}',
                     style: TextStyle(
@@ -247,6 +249,7 @@ class OrderHistory extends StatelessWidget {
                     ),
                   ),
                   const DashedDivider(),
+                  */
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -270,9 +273,9 @@ class OrderHistory extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
-                              "Delivered ${DateFormat('dd MMMM').format(DateTime.parse(order.eventDate))} ",
+                              "Delivered on ${DateFormat('dd MMMM yyyy').format(DateTime.parse(order.eventDate))} ",
                               style: TextStyle(
-                                fontSize: 18.sp,
+                                fontSize: 16.sp,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -296,7 +299,7 @@ class OrderHistory extends StatelessWidget {
                     height: 1.h,
                   ),
                   PannableRatingBar(
-                    rate: 1,
+                    rate: 0,
                     onCompleted: (value) {
                       // the rating value is updated when the user stops dragging.
                       showModalBottomSheet(

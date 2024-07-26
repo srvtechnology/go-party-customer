@@ -92,7 +92,7 @@ class _OrderSummaryState extends State<OrderSummary> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'View Oders Details',
+                          'View Order Details',
                           style: TextStyle(
                             fontSize: 18.sp,
                             fontWeight: FontWeight.bold,

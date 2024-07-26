@@ -16,6 +16,7 @@ import 'package:customerapp/core/routes/checkoutPage.dart';
 import 'package:customerapp/core/routes/product.dart';
 import 'package:customerapp/core/routes/signin.dart';
 import 'package:customerapp/core/utils/logger.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -38,6 +39,7 @@ class SinglePackageRoute extends StatefulWidget {
 }
 
 class _SinglePackageRouteState extends State<SinglePackageRoute> {
+
   bool isLoading = false;
   final TextEditingController _categoryName = TextEditingController();
   final TextEditingController _startDate = TextEditingController();
@@ -51,6 +53,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
   final _formKey = GlobalKey<FormState>();
   List<PopupCategory> popupCategories = [];
   PopupCategory? selectedCategory;
+
   void _calculateDays() {
     if (_startDate.text.isNotEmpty && _endDate.text.isNotEmpty) {
       if (DateTime.parse(_startDate.text)
@@ -134,7 +137,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
       TextEditingController controllerView, String hintText,
       {String? Function(String?)? validator}) {
     return TextFormField(
-      controller: controller,
+      controller: controllerView,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
           hintText: hintText,
@@ -324,9 +327,11 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                         if (v == null || v.isEmpty) {
                                           return "End Date Required";
                                         }
-                                        print(
+                                        if (kDebugMode) {
+                                          print(
                                           _startDate.text,
                                         );
+                                        }
                                         // check end date is greater than start date
                                         if (DateTime.parse(_startDate.text)
                                             .isAfter(DateTime.parse(
