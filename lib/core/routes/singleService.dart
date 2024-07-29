@@ -59,6 +59,9 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
   String defaultCityMessage = "Open for every city";
   bool isLoading = false;
 
+  List<ServicePopUpCategory> popupCategories = [];
+  ServicePopUpCategory? selectedCategory;
+
   void _calculateDays() {
     try {
       if (_startDate.text.isNotEmpty && _endDate.text.isNotEmpty) {
@@ -91,7 +94,12 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
     _duration.text = "Full Day";
     getAvailableCities();
 
-    // log(widget.service.minQnty.toString(), name: "Package");
+    popupCategories = widget.service.popupCategories ?? [];
+    if (popupCategories.isNotEmpty) {
+      selectedCategory = popupCategories.first;
+      _categoryName.text = selectedCategory!.category?.categoryName ?? "";
+    }
+
   }
 
   Future<void> getAvailableCities() async {
@@ -239,6 +247,16 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                       ),
                                     ),
                                     CustomDropdown.search(
+                                      onChanged: (p0) {
+                                        setState(() {
+                                          selectedCategory = popupCategories
+                                              .firstWhere((element) =>
+                                          element.category
+                                              ?.categoryName ==
+                                              p0);
+                                          _categoryName.text = p0;
+                                        });
+                                      },
                                       borderSide: BorderSide(
                                           width: 0.5,
                                           color:
@@ -246,9 +264,13 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                       borderRadius: BorderRadius.circular(10),
                                       hintText: "Select Your Event",
                                       controller: _categoryName,
-                                      items: categories.data
-                                          .map((e) => e.name)
+                                      items: popupCategories
+                                          .map((e) =>
+                                      e.category?.categoryName ?? "")
                                           .toList(),
+                                      /*categories.data
+                                          .map((e) => e.name)
+                                          .toList(),*/
                                     ),
                                     const SizedBox(
                                       height: 10,
@@ -799,11 +821,12 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                     ],
                                   ),
                                   const Spacer(),
-                                  /*Column(
+                                  /*-- 26-07-24 : for popup categories ----*/
+                                  Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
-                                      DropdownButton<PopupCategory?>(
+                                      DropdownButton<ServicePopUpCategory?>(
                                           style: TextStyle(
                                               color:
                                               Theme.of(context).primaryColor),
@@ -816,7 +839,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                           value: selectedCategory,
                                           items: popupCategories
                                               .map((e) =>
-                                              DropdownMenuItem<PopupCategory>(
+                                              DropdownMenuItem<ServicePopUpCategory>(
                                                   value: e,
                                                   child: Text(e.category
                                                       ?.categoryName ??
@@ -831,7 +854,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                             });
                                           })
                                     ],
-                                  )*/
+                                  )
                                 ],
                               ),
                             ),
@@ -926,7 +949,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                         style: TextStyle(fontSize: 16),
                                       ),
                                       Text(
-                                          "\u20B9 ${widget.service.discountedPrice}")
+                                          "\u20B9 ${selectedCategory?.discountPrice ?? widget.service.discountedPrice}")
                                     ],
                                   ),
                                   const DashedDivider(),
