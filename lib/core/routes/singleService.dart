@@ -1087,7 +1087,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                                     CheckoutPage(
                                                   serviceIds: serviceIds,
                                                   cartItems: data,
-                                                  cartSubToatal: totalPrice,
+                                                  cartSubTotal: totalPrice,
                                                 ),
                                               ),
                                             );
@@ -1113,7 +1113,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                                         CheckoutPage(
                                                       serviceIds: serviceIds,
                                                       cartItems: data,
-                                                      cartSubToatal: totalPrice,
+                                                      cartSubTotal: totalPrice,
                                                     ),
                                                   ),
                                                 );

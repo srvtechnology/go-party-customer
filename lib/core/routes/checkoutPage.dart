@@ -18,6 +18,7 @@ import 'package:customerapp/core/utils/addressFormater.dart';
 import 'package:customerapp/core/utils/geolocator.dart';
 import 'package:customerapp/core/utils/logger.dart';
 import 'package:expandable/expandable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -29,12 +30,13 @@ class CheckoutPage extends StatefulWidget {
   static const routeName = "/checkout";
   List<String> serviceIds;
   List<CartModel> cartItems;
-  double cartSubToatal;
+  double cartSubTotal;
+
   CheckoutPage(
       {Key? key,
       required this.serviceIds,
       required this.cartItems,
-      required this.cartSubToatal})
+      required this.cartSubTotal})
       : super(key: key);
 
   @override
@@ -914,9 +916,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => PaymentPage(
+                          serviceIds: widget.serviceIds,
                           cartItems: widget.cartItems,
                           selectedAddress: _selectedAddress!,
-                          total: widget.cartSubToatal,
+                          total: widget.cartSubTotal,
                         )));
           }
         }
@@ -968,15 +971,18 @@ class _CheckoutPageState extends State<CheckoutPage> {
       log(addressId.toString(), name: 'checkout');
       AddressModel? add = getSelectedAddress(
           data, int.parse(addressId), int.parse(auth.user!.id));
-      print('data ==== >$add');
+      if (kDebugMode) {
+        print('data ==== >$add');
+      }
       if (context.mounted) {
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => PaymentPage(
+                      serviceIds: widget.serviceIds,
                       selectedAddress: add,
                       cartItems: widget.cartItems,
-                      total: widget.cartSubToatal,
+                      total: widget.cartSubTotal,
                     )));
         // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         //     content: Text("You have Successfully placed your order.")));

@@ -250,7 +250,7 @@ class _CartPageState extends State<CartPage> {
                                                                   .serviceIds,
                                                               cartItems:
                                                                   cart.data,
-                                                              cartSubToatal: cart
+                                                              cartSubTotal: cart
                                                                   .totalPrice,
                                                             )));
                                               }

@@ -22,12 +22,17 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:customerapp/core/models/paymentPostData.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 
+import 'checkoutPage.dart';
+
 class PaymentPage extends StatefulWidget {
+  List<String> serviceIds;
   AddressModel? selectedAddress;
   double total;
   List<CartModel> cartItems;
+
   PaymentPage({
     Key? key,
+    required this.serviceIds,
     required this.selectedAddress,
     required this.total,
     required this.cartItems,
@@ -46,6 +51,7 @@ class _PaymentPageState extends State<PaymentPage> {
   bool showCard = true;
   bool isloading = false;
   bool _isShowMore = false;
+
   @override
   void initState() {
     super.initState();
@@ -199,7 +205,68 @@ class _PaymentPageState extends State<PaymentPage> {
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.w600),
                                 ),
-                                AnimatedContainer(
+                                AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 600),
+                                  child: Column(
+                                    key: ValueKey<bool>(_isShowMore),
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      AnimatedContainer(
+                                        duration:
+                                            const Duration(milliseconds: 600),
+                                        constraints: BoxConstraints(
+                                          minHeight: 1.h,
+                                          maxHeight: _isShowMore
+                                              ? double.infinity
+                                              : 10.h,
+                                          minWidth: double.infinity,
+                                          maxWidth: double.infinity,
+                                        ),
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 0.w,
+                                        ),
+                                        alignment: Alignment.centerLeft,
+                                        child: SingleChildScrollView(
+                                          physics: _isShowMore
+                                              ? const NeverScrollableScrollPhysics()
+                                              : null,
+                                          child: HtmlTextView(
+                                              htmlText: widget.cartItems[index]
+                                                  .service.description),
+                                        ),
+                                      ),
+                                      if (widget.cartItems[index].service
+                                              .description.length >
+                                          100)
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              _isShowMore = !_isShowMore;
+                                            });
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 4.w,
+                                            ),
+                                            child: Text(
+                                              _isShowMore
+                                                  ? "Show Less"
+                                                  : "Show More",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .labelLarge!
+                                                  .copyWith(
+                                                      fontSize: 14,
+                                                      color: primaryColor),
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                                /* --- commented for the fix below on : 29-07-24 --*/
+                                /*AnimatedContainer(
                                     constraints: BoxConstraints(
                                         minHeight: 1.h,
                                         maxHeight:
@@ -219,9 +286,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                                 .service.description);
                                       },
                                     )),
-                                if (widget.cartItems[index].service.description
-                                        .length >
-                                    100)
+                                if (widget.cartItems[index].service.description.length > 100)
                                   GestureDetector(
                                     onTap: () {
                                       setState(() {
@@ -242,7 +307,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                                 color: primaryColor),
                                       ),
                                     ),
-                                  ),
+                                  ),*/
                                 const SizedBox(
                                   height: 5,
                                 ),
@@ -286,11 +351,25 @@ class _PaymentPageState extends State<PaymentPage> {
                   children: [
                     Row(
                       children: [
-                        Text(
-                          "Choose Delivery Address",
-                          style: TextStyle(
-                              fontSize: 15.sp, fontWeight: FontWeight.w600),
-                        )
+                        GestureDetector(
+                          onTap: () {
+                            if (context.mounted) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => CheckoutPage(
+                                            serviceIds: widget.serviceIds,
+                                            cartItems: widget.cartItems,
+                                            cartSubTotal: widget.total,
+                                          )));
+                            }
+                          },
+                          child: Text(
+                            "Choose Delivery Address",
+                            style: TextStyle(
+                                fontSize: 15.sp, fontWeight: FontWeight.w600),
+                          ),
+                        ),
                       ],
                     ),
                     const Divider(),
@@ -302,10 +381,16 @@ class _PaymentPageState extends State<PaymentPage> {
                       style: TextStyle(
                           fontSize: 16, color: Theme.of(context).primaryColor),
                     ),
+                    const SizedBox(
+                      height: 5,
+                    ),
                     Text(
-                      widget.selectedAddress?.billingMobile ?? "",
+                      "Mobile: ${widget.selectedAddress?.billingMobile}" ?? "",
                       style: const TextStyle(
                           fontSize: 13, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 5,
                     ),
                     Text(getAddressFormat(widget.selectedAddress!)),
                     const SizedBox(

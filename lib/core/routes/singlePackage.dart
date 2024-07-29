@@ -756,7 +756,6 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                           ],
                         ),
                       ),
-
                       const Divider(
                         thickness: 1,
                       ),
@@ -998,7 +997,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                           builder: (context) => CheckoutPage(
                                             serviceIds: serviceIds,
                                             cartItems: data,
-                                            cartSubToatal: totalPrice,
+                                            cartSubTotal: totalPrice,
                                           ),
                                         ),
                                       );
@@ -1023,7 +1022,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                   CheckoutPage(
                                                 serviceIds: serviceIds,
                                                 cartItems: data,
-                                                cartSubToatal: totalPrice,
+                                                cartSubTotal: totalPrice,
                                               ),
                                             ),
                                           );
