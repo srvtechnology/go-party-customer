@@ -6,7 +6,7 @@ import 'package:customerapp/core/components/divider.dart';
 import 'package:customerapp/core/components/loading.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/orderProvider.dart';
-import 'package:customerapp/core/routes/cart.dart';
+import 'package:customerapp/core/routes/cartPage.dart';
 import 'package:customerapp/core/utils/addressFormater.dart';
 import 'package:flutter/material.dart';
 

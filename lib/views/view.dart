@@ -4,7 +4,7 @@ export 'package:customerapp/core/routes/addressPage.dart';
 export 'package:customerapp/core/routes/agent_sign_in.dart';
 export 'package:customerapp/core/routes/agent_signup.dart';
 export 'package:customerapp/core/routes/agent_wallet.dart';
-export 'package:customerapp/core/routes/cart.dart';
+export 'package:customerapp/core/routes/cartPage.dart';
 export 'package:customerapp/core/routes/forgotPassword.dart';
 export 'package:customerapp/core/routes/homepage.dart';
 export 'package:customerapp/core/routes/intro.dart';

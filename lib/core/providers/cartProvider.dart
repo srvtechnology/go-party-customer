@@ -2,9 +2,10 @@ import 'dart:developer';
 
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/utils/logger.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import '../models/cart.dart';
-import '../repo/cart.dart' as cartRepo;
+import '../models/cartModel.dart';
+import '../repo/cartRepo.dart' as cartRepo;
 
 class CartProvider with ChangeNotifier {
   List<CartModel> _data = [];
@@ -50,6 +51,9 @@ class CartProvider with ChangeNotifier {
     try {
       _data = await cartRepo.getCartItems(auth);
       log(_data.toString());
+      if (kDebugMode) {
+        print("Cart : ${data.toString()}");
+      }
       for (var i in data) {
         _serviceIds.add(i.service.id);
       }

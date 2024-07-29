@@ -11,7 +11,7 @@ import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/cartProvider.dart';
 import 'package:customerapp/core/providers/orderProvider.dart';
 import 'package:customerapp/core/providers/serviceProvider.dart';
-import 'package:customerapp/core/routes/cart.dart';
+import 'package:customerapp/core/routes/cartPage.dart';
 import 'package:customerapp/core/routes/eventsPage.dart';
 import 'package:customerapp/core/routes/product.dart';
 import 'package:customerapp/core/routes/singlePackage.dart';

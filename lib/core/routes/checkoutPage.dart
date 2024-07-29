@@ -22,7 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-import '../models/cart.dart';
+import '../models/cartModel.dart';
 import '../models/countries.dart';
 
 class CheckoutPage extends StatefulWidget {

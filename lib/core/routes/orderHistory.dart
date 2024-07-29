@@ -3,7 +3,7 @@ import 'package:customerapp/core/Constant/themData.dart';
 import 'package:customerapp/core/components/Rating_view.dart';
 import 'package:customerapp/core/components/divider.dart';
 import 'package:customerapp/core/routes/OrderSummry.dart';
-import 'package:customerapp/core/routes/cart.dart';
+import 'package:customerapp/core/routes/cartPage.dart';
 import 'package:customerapp/core/routes/singleService.dart';
 import 'package:flutter/material.dart';
 

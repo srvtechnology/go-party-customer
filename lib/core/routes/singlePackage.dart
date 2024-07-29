@@ -7,11 +7,11 @@ import 'package:customerapp/core/components/commonHeader.dart';
 import 'package:customerapp/core/components/htmlTextView.dart';
 import 'package:customerapp/core/components/quantity_Manager.dart';
 import 'package:customerapp/core/components/share_rapper.dart';
-import 'package:customerapp/core/models/cart.dart';
+import 'package:customerapp/core/models/cartModel.dart';
 import 'package:customerapp/core/models/single_package.dart';
 import 'package:customerapp/core/providers/cartProvider.dart';
 import 'package:customerapp/core/repo/services.dart';
-import 'package:customerapp/core/routes/cart.dart';
+import 'package:customerapp/core/routes/cartPage.dart';
 import 'package:customerapp/core/routes/checkoutPage.dart';
 import 'package:customerapp/core/routes/product.dart';
 import 'package:customerapp/core/routes/signin.dart';
@@ -28,7 +28,7 @@ import '../components/divider.dart';
 import '../models/package.dart';
 import '../providers/AuthProvider.dart';
 import '../providers/categoryProvider.dart';
-import '../repo/cart.dart';
+import '../repo/cartRepo.dart';
 
 class SinglePackageRoute extends StatefulWidget {
   final PackageModel package;
@@ -91,6 +91,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
   @override
   void initState() {
     super.initState();
+
     getSinglePackage();
     _startDate.addListener(_calculateDays);
     _endDate.addListener(_calculateDays);
@@ -329,8 +330,8 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                         }
                                         if (kDebugMode) {
                                           print(
-                                          _startDate.text,
-                                        );
+                                            _startDate.text,
+                                          );
                                         }
                                         // check end date is greater than start date
                                         if (DateTime.parse(_startDate.text)
@@ -664,7 +665,8 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                               ),
                         ),
                       ),
-                      AnimatedContainer(
+                      /* --- commented for the fix below on : 29-07-24 --*/
+                      /* AnimatedContainer(
                           constraints: BoxConstraints(
                               minHeight: 1.h,
                               maxHeight: _isShowMore ? double.infinity : 10.h,
@@ -677,7 +679,9 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                           duration: const Duration(milliseconds: 600),
                           child: LayoutBuilder(
                             builder: (context, constraints) {
-                              print(constraints.maxHeight.toString());
+                              if (kDebugMode) {
+                                print(constraints.maxHeight.toString());
+                              }
                               return HtmlTextView(
                                   htmlText: widget.package.description);
                             },
@@ -701,7 +705,58 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                   .copyWith(fontSize: 14, color: primaryColor),
                             ),
                           ),
+                        ), */
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 600),
+                        child: Column(
+                          key: ValueKey<bool>(_isShowMore),
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 600),
+                              constraints: BoxConstraints(
+                                minHeight: 1.h,
+                                maxHeight: _isShowMore ? double.infinity : 10.h,
+                                minWidth: double.infinity,
+                                maxWidth: double.infinity,
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 4.w,
+                              ),
+                              alignment: Alignment.centerLeft,
+                              child: SingleChildScrollView(
+                                physics: _isShowMore
+                                    ? const NeverScrollableScrollPhysics()
+                                    : null,
+                                child: HtmlTextView(
+                                    htmlText: widget.package.description),
+                              ),
+                            ),
+                            if (widget.package.description.length > 100)
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _isShowMore = !_isShowMore;
+                                  });
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 4.w,
+                                  ),
+                                  child: Text(
+                                    _isShowMore ? "Show Less" : "Show More",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelLarge!
+                                        .copyWith(
+                                            fontSize: 14, color: primaryColor),
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
+                      ),
+
                       const Divider(
                         thickness: 1,
                       ),
@@ -1002,7 +1057,8 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                           )
                         ]),
                       ),
-                      Container(
+                      /* ---commented About since it shows the same as above Show More/Less on : 29-07-24 --*/
+                      /*  Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: 4.w,
                           ),
@@ -1024,7 +1080,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                 ))
                           ],
                         ),
-                      ),
+                      ), 
                       SizedBox(
                         height: 1.h,
                       ),
@@ -1040,7 +1096,8 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                         alignment: Alignment.centerLeft,
                         child:
                             HtmlTextView(htmlText: widget.package.description),
-                      ),
+                      ), 
+                      */
                       const Divider(
                         thickness: 1,
                       ),

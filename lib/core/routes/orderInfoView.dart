@@ -9,7 +9,7 @@ import 'package:customerapp/core/features/ccavenues/patmentWebview.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/orderProvider.dart';
 import 'package:customerapp/core/repo/order.dart';
-import 'package:customerapp/core/routes/cart.dart';
+import 'package:customerapp/core/routes/cartPage.dart';
 import 'package:customerapp/core/routes/mainpage.dart';
 import 'package:flutter/material.dart';
 

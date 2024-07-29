@@ -2,7 +2,7 @@ import 'package:customerapp/core/Constant/themData.dart';
 import 'package:customerapp/core/routes/addressPage.dart';
 import 'package:customerapp/core/routes/agent_sign_in.dart';
 import 'package:customerapp/core/routes/agent_signup.dart';
-import 'package:customerapp/core/routes/cart.dart';
+import 'package:customerapp/core/routes/cartPage.dart';
 import 'package:customerapp/core/routes/settingsPage.dart';
 import 'package:customerapp/core/routes/signin.dart';
 import 'package:customerapp/core/routes/signup.dart';

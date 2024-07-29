@@ -8,7 +8,7 @@ import 'package:customerapp/core/components/htmlTextView.dart';
 import 'package:customerapp/core/features/ccavenues/models/enc_val_res.dart';
 import 'package:customerapp/core/features/ccavenues/patmentWebview.dart';
 import 'package:customerapp/core/models/address.dart';
-import 'package:customerapp/core/models/cart.dart';
+import 'package:customerapp/core/models/cartModel.dart';
 import 'package:customerapp/core/repo/order.dart';
 import 'package:customerapp/core/routes/mainpage.dart';
 import 'package:customerapp/core/routes/profile.dart';

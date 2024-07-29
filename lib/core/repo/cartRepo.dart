@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:customerapp/config.dart';
-import 'package:customerapp/core/models/cart.dart';
+import 'package:customerapp/core/models/cartModel.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/utils/logger.dart';
 import 'package:dio/dio.dart';

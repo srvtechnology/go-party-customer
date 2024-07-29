@@ -7,7 +7,7 @@ import 'package:customerapp/core/components/loading.dart';
 import 'package:customerapp/core/models/orders.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/orderProvider.dart';
-import 'package:customerapp/core/routes/cart.dart';
+import 'package:customerapp/core/routes/cartPage.dart';
 import 'package:customerapp/core/routes/mainpage.dart';
 import 'package:customerapp/core/routes/orderInfoView.dart';
 import 'package:customerapp/core/routes/product.dart';
