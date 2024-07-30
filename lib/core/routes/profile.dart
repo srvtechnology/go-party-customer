@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:customerapp/core/Constant/themData.dart';
 import 'package:customerapp/core/routes/addressPage.dart';
 import 'package:customerapp/core/routes/agent_sign_in.dart';
@@ -6,9 +8,11 @@ import 'package:customerapp/core/routes/cartPage.dart';
 import 'package:customerapp/core/routes/settingsPage.dart';
 import 'package:customerapp/core/routes/signin.dart';
 import 'package:customerapp/core/routes/signup.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:image_picker/image_picker.dart' as image_picker;
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -19,6 +23,7 @@ import 'package:customerapp/core/routes/product.dart';
 
 class Profile extends StatefulWidget {
   final Function(int) onTabChange;
+
   const Profile({
     Key? key,
     required this.onTabChange,
@@ -342,6 +347,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
+  Uint8List? imageFile;
+  image_picker.ImagePicker imagePicker = image_picker.ImagePicker();
+  String? profileImageUrl;
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -365,84 +374,181 @@ class _EditProfilePageState extends State<EditProfilePage> {
         appBar: AppBar(
           title: const Text('Edit Profile'),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                TextFormField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter your email';
-                    }
-                    if (!isValidEmail(value)) {
-                      return 'Please enter a valid email';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(
-                          10.0), // Rounded rectangle border
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 16.0),
+                  Center(child: imageProfile()),
+                  const SizedBox(height: 16.0),
+                  TextFormField(
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please enter your email';
+                      }
+                      if (!isValidEmail(value)) {
+                        return 'Please enter a valid email';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(
+                            10.0), // Rounded rectangle border
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 16.0),
-                TextFormField(
-                  controller: _nameController,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter your name';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'Name',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(
-                          10.0), // Rounded rectangle border
+                  const SizedBox(height: 16.0),
+                  TextFormField(
+                    controller: _nameController,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please enter your name';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Name',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(
+                            10.0), // Rounded rectangle border
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 16.0),
-                TextFormField(
-                  controller: _phoneController,
-                  keyboardType: TextInputType.phone,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter your phone number';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'Phone Number',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(
-                          10.0), // Rounded rectangle border
+                  const SizedBox(height: 16.0),
+                  TextFormField(
+                    controller: _phoneController,
+                    keyboardType: TextInputType.phone,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please enter your phone number';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Phone Number',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(
+                            10.0), // Rounded rectangle border
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 16.0),
-                ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      // Form is valid, proceed with saving the data
-                      _saveProfile();
-                    }
-                  },
-                  child: const Text('Save'),
-                ),
-              ],
+                  const SizedBox(height: 16.0),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        // Form is valid, proceed with saving the data
+                        _saveProfile();
+                      }
+                    },
+                    child: const Text('Save'),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       );
     });
+  }
+
+  Widget imageProfile() {
+    return Stack(
+      children: [
+        CircleAvatar(
+          radius: 80.0,
+          backgroundImage: (imageFile != null
+                  ? MemoryImage(imageFile!)
+                  : profileImageUrl != null
+                      ? NetworkImage(profileImageUrl!)
+                      : const AssetImage("assets/icons/avatar_default.png"))
+              as ImageProvider<Object>,
+        ),
+        Positioned(
+            bottom: 20.0,
+            right: 20.0,
+            child: InkWell(
+              onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (builder) => bottomSheet(),
+                );
+              },
+              child: Icon(
+                Icons.camera_alt,
+                color: Theme.of(context).primaryColor,
+                size: 40.0,
+              ),
+            ))
+      ],
+    );
+  }
+
+  Widget bottomSheet() {
+    return Container(
+      height: 120.0,
+      width: MediaQuery.of(context).size.width,
+      margin: const EdgeInsets.symmetric(
+        horizontal: 20.0,
+        vertical: 20.0,
+      ),
+      child: Column(
+        children: [
+          const Text(
+            "Choose Profile Photo",
+            style: TextStyle(fontSize: 20.0),
+          ),
+          const SizedBox(
+            height: 20.0,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  takePhoto(image_picker.ImageSource.camera);
+                },
+                child: Column(
+                  children: const [Icon(Icons.camera), Text("Camera")],
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  takePhoto(image_picker.ImageSource.gallery);
+                },
+                child: Column(
+                  children: const [Icon(Icons.image), Text("Gallery")],
+                ),
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Future<void> takePhoto(image_picker.ImageSource source) async {
+    final image_picker.XFile? pickedFile =
+        await imagePicker.pickImage(source: source);
+    if (pickedFile != null) {
+      final Uint8List imgBytes = await pickedFile.readAsBytes();
+      setState(() {
+        imageFile = imgBytes;
+      });
+    } else {
+      if (kDebugMode) {
+        print('No image selected');
+      }
+    }
   }
 
   void _saveProfile() async {

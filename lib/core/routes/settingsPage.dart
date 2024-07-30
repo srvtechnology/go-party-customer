@@ -34,31 +34,30 @@ class _SettingsPageState extends State<SettingsPage> {
           child: Column(
             children: [
               if (state.user?.name != null)
-                Container(
-                    child: Row(
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    CircleAvatar(
-                      radius: 15,
-                      backgroundColor: Theme.of(context).primaryColorLight,
-                      child: const Icon(
-                        Icons.person,
-                        color: Colors.white,
-                        size: 16,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 2.w,
-                    ),
-                    Text(
-                      "Hello, ${state.user?.name ?? " "}",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 20,
-                          color: Theme.of(context).primaryColor),
-                    ),
+                CircleAvatar(
+                  radius: 15,
+                  backgroundColor: Theme.of(context).primaryColorLight,
+                  child: const Icon(
+                    Icons.person,
+                    color: Colors.white,
+                    size: 16,
+                  ),
+                ),
+                SizedBox(
+                  width: 2.w,
+                ),
+                Text(
+                  "Hello, ${state.user?.name ?? " "}",
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 20,
+                      color: Theme.of(context).primaryColor),
+                ),
                   ],
-                )),
+                ),
               if (state.user?.name != null)
                 const Divider(
                   thickness: 1,
