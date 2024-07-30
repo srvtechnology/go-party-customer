@@ -339,11 +339,28 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                 _endDate.text))) {
                                           return "End date should be greater than start date";
                                         }
+                                        
+                                        /*--- commented on 31-07-24 : to validate if
+                                      * start date and end end is same but before 4:00 P.M --*/
                                         // if start date and end date is same then show error
-                                        if (DateTime.parse(_startDate.text)
+                                        /*if (DateTime.parse(_startDate.text)
                                             .isAtSameMomentAs(DateTime.parse(
                                                 _endDate.text))) {
                                           return "End date should be greater than start date";
+                                        }*/
+
+                                        // Check if the start and end dates are the same
+                                        if (DateTime.parse(_startDate.text)
+                                            .isAtSameMomentAs(DateTime.parse(
+                                                _endDate.text))) {
+                                          // Check if the end time is before 4:00 PM
+                                          if (DateTime.parse(_endDate.text).hour < 16) {
+                                            // Allow the end date if before 4:00 PM
+                                            return null; // No error message
+                                          } else {
+                                            // End time is 4:00 PM or later
+                                            return "End date should be greater than start date or before 4:00 P.M";
+                                          }
                                         }
                                         return null;
                                       }),
@@ -792,9 +809,10 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                               // ),
                                               TextSpan(
                                                 text:
-                                                "for ${selectedCategory?.category?.categoryName?.trim() ?? ""}",
+                                                    "for ${selectedCategory?.category?.categoryName?.trim() ?? ""}",
                                                 style: TextStyle(
-                                                    color: Theme.of(context).primaryColorDark,
+                                                    color: Theme.of(context)
+                                                        .primaryColorDark,
                                                     fontSize: 16.sp),
                                               ),
                                             ]),

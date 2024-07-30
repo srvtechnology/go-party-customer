@@ -334,20 +334,32 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                       if (v == null || v.isEmpty) {
                                         return "End Date Required";
                                       }
-                                      print(
-                                        _startDate.text,
-                                      );
+                                      print(_startDate.text,);
                                       // check end date is greater than start date
                                       if (DateTime.parse(_startDate.text)
                                           .isAfter(
                                               DateTime.parse(_endDate.text))) {
                                         return "End date should be greater than start date";
                                       }
+                                      /*--- commented on 31-07-24 : to validate if
+                                      * start date and end end is same but before 4:00 P.M --*/
                                       // if start date and end date is same then show error
-                                      if (DateTime.parse(_startDate.text)
+                                      /*if (DateTime.parse(_startDate.text)
                                           .isAtSameMomentAs(
                                               DateTime.parse(_endDate.text))) {
                                         return "End date should be greater than start date";
+                                      }*/
+                                      if (DateTime.parse(_startDate.text)
+                                          .isAtSameMomentAs(DateTime.parse(
+                                          _endDate.text))) {
+                                        // Check if the end time is before 4:00 PM
+                                        if (DateTime.parse(_endDate.text).hour < 16) {
+                                          // Allow the end date if before 4:00 PM
+                                          return null; // No error message
+                                        } else {
+                                          // End time is 4:00 PM or later
+                                          return "End date should be greater than start date or before 4:00 P.M";
+                                        }
                                       }
 
                                       return null;

@@ -566,9 +566,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
-                'The verification mail has been sent to you registered email , please verify the mail to reflect the changes you have made.'),
+                'The verification mail has been sent to you registered email , '
+                'please verify the mail to reflect the changes you have made.'),
           ),
         );
+        Navigator.pop(context);
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
