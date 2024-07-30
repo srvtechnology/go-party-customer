@@ -32,6 +32,7 @@ import '../repo/cartRepo.dart';
 
 class SinglePackageRoute extends StatefulWidget {
   final PackageModel package;
+
   const SinglePackageRoute({Key? key, required this.package}) : super(key: key);
 
   @override
@@ -39,7 +40,6 @@ class SinglePackageRoute extends StatefulWidget {
 }
 
 class _SinglePackageRouteState extends State<SinglePackageRoute> {
-
   bool isLoading = false;
   final TextEditingController _categoryName = TextEditingController();
   final TextEditingController _startDate = TextEditingController();
@@ -783,7 +783,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                 fontWeight: FontWeight.w600,
                                                 color: Theme.of(context)
                                                     .primaryColorDark),
-                                            children: const [
+                                            children: [
                                               // TextSpan(
                                               //   text: "/ ${widget.package.}",
                                               //   style: TextStyle(
@@ -791,18 +791,23 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                               //       color: Colors.black),
                                               // ),
                                               TextSpan(
-                                                  text: " inc. all taxes",
-                                                  style: TextStyle(
-                                                    fontSize: 12,
-                                                    color: Colors.grey,
-                                                  ))
+                                                text:
+                                                "for ${selectedCategory?.category?.categoryName?.trim() ?? ""}",
+                                                style: TextStyle(
+                                                    color: Theme.of(context).primaryColorDark,
+                                                    fontSize: 16.sp),
+                                              ),
                                             ]),
                                       ],
                                     ),
                                   ),
                                   const Text(
-                                    'Check price for other event ',
+                                    'Exc. all taxes',
                                     style: TextStyle(fontSize: 12),
+                                  ),
+                                  const Text(
+                                    'Check price for other event ',
+                                    style: TextStyle(fontSize: 16),
                                   ),
                                   const Text(
                                     '',
@@ -815,6 +820,9 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
+                                  const SizedBox(
+                                    height: 25,
+                                  ),
                                   DropdownButton<PopupCategory?>(
                                       style: TextStyle(
                                           color:
@@ -830,9 +838,12 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                           .map((e) =>
                                               DropdownMenuItem<PopupCategory>(
                                                   value: e,
-                                                  child: Text(e.category
-                                                          ?.categoryName ??
-                                                      "")))
+                                                  child: Text(
+                                                    e.category?.categoryName ??
+                                                        "",
+                                                    style: const TextStyle(
+                                                        fontSize: 16),
+                                                  )))
                                           .toList(),
                                       onChanged: (v) {
                                         setState(() {
@@ -1079,7 +1090,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                 ))
                           ],
                         ),
-                      ), 
+                      ),
                       SizedBox(
                         height: 1.h,
                       ),
@@ -1095,7 +1106,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                         alignment: Alignment.centerLeft,
                         child:
                             HtmlTextView(htmlText: widget.package.description),
-                      ), 
+                      ),
                       */
                       const Divider(
                         thickness: 1,

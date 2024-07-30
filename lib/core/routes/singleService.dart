@@ -41,7 +41,6 @@ class SingleServiceRoute extends StatefulWidget {
 }
 
 class _SingleServiceRouteState extends State<SingleServiceRoute> {
-
   final TextEditingController _categoryName = TextEditingController();
   final TextEditingController _startDate = TextEditingController();
   final TextEditingController _endDate = TextEditingController();
@@ -99,7 +98,6 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
       selectedCategory = popupCategories.first;
       _categoryName.text = selectedCategory!.category?.categoryName ?? "";
     }
-
   }
 
   Future<void> getAvailableCities() async {
@@ -251,9 +249,9 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                         setState(() {
                                           selectedCategory = popupCategories
                                               .firstWhere((element) =>
-                                          element.category
-                                              ?.categoryName ==
-                                              p0);
+                                                  element
+                                                      .category?.categoryName ==
+                                                  p0);
                                           _categoryName.text = p0;
                                         });
                                       },
@@ -266,7 +264,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                       controller: _categoryName,
                                       items: popupCategories
                                           .map((e) =>
-                                      e.category?.categoryName ?? "")
+                                              e.category?.categoryName ?? "")
                                           .toList(),
                                       /*categories.data
                                           .map((e) => e.name)
@@ -305,7 +303,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                         return "Start Date Required";
                                       }
 
-                                    // if date is today and current time is greater than 3:59 pm then show error
+                                      // if date is today and current time is greater than 3:59 pm then show error
                                       DateTime now = DateTime.now();
                                       DateTime date =
                                           DateTime.parse(_startDate.text);
@@ -796,23 +794,29 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                                         .primaryColorDark),
                                                 children: [
                                                   TextSpan(
-                                                    text: widget
-                                                        .service.priceBasis,
+                                                    text: "/ ${widget.service.priceBasis}",
                                                     style: TextStyle(
                                                         fontSize: 15.sp,
                                                         color: Colors.black),
                                                   ),
                                                 ]),
+                                            TextSpan(
+                                              text:
+                                              " for ${selectedCategory?.category?.categoryName?.trim() ?? ""}",
+                                              style: TextStyle(
+                                                  color: Theme.of(context).primaryColorDark,
+                                                  fontSize: 16.sp),
+                                            ),
                                           ],
                                         ),
                                       ),
                                       const Text(
-                                        'inc. all taxes',
+                                        'Exc. all taxes',
                                         style: TextStyle(fontSize: 12),
                                       ),
                                       const Text(
                                         'Check price for other event ',
-                                        style: TextStyle(fontSize: 12),
+                                        style: TextStyle(fontSize: 16),
                                       ),
                                       const Text(
                                         '',
@@ -826,31 +830,37 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
+                                      const SizedBox(
+                                        height: 25,
+                                      ),
                                       DropdownButton<ServicePopUpCategory?>(
                                           style: TextStyle(
-                                              color:
-                                              Theme.of(context).primaryColor),
+                                              color: Theme.of(context)
+                                                  .primaryColor),
                                           underline: Container(),
                                           iconSize: 16,
                                           icon: const Icon(
-                                            Icons.arrow_drop_down_circle_outlined,
+                                            Icons
+                                                .arrow_drop_down_circle_outlined,
                                             color: primaryColor,
                                           ),
                                           value: selectedCategory,
                                           items: popupCategories
-                                              .map((e) =>
-                                              DropdownMenuItem<ServicePopUpCategory>(
+                                              .map((e) => DropdownMenuItem<
+                                                      ServicePopUpCategory>(
                                                   value: e,
-                                                  child: Text(e.category
-                                                      ?.categoryName ??
-                                                      "")))
+                                                  child: Text(
+                                                    e.category?.categoryName ?? "",
+                                                    style: const TextStyle(fontSize: 16),
+                                                  )))
                                               .toList(),
                                           onChanged: (v) {
                                             setState(() {
                                               selectedCategory = v;
-                                              _categoryName.text = selectedCategory
-                                                  ?.category?.categoryName ??
-                                                  "";
+                                              _categoryName.text =
+                                                  selectedCategory?.category
+                                                          ?.categoryName ??
+                                                      "";
                                             });
                                           })
                                     ],
