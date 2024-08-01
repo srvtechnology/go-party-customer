@@ -51,7 +51,8 @@ Future<void> updateProfileData(
       );
     }
 
-    CustomLogger.debug("UserData : $data + ImageFile : ${imageFile != null ? "Yes" : "No"}");
+    CustomLogger.debug(
+        "UserData : $data + ImageFile : ${imageFile != null ? "Yes" : "No"}");
 
     // Send the request with the FormData
     Response response = await customDioClient.client.post(
@@ -70,7 +71,7 @@ Future<void> updateProfileData(
   }
 }
 
-Future<void> editProfile(AuthProvider auth, Map<String, dynamic> data) async {
+/* Future<void> editProfile(AuthProvider auth, Map<String, dynamic> data) async {
   try {
     CustomLogger.debug(data);
     Response response = await customDioClient.client.post(
@@ -83,4 +84,4 @@ Future<void> editProfile(AuthProvider auth, Map<String, dynamic> data) async {
     }
     return Future.error(e);
   }
-}
+} */
