@@ -21,6 +21,8 @@ import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/repo/customer.dart';
 import 'package:customerapp/core/routes/product.dart';
 
+import '../../config.dart';
+
 class Profile extends StatefulWidget {
   final Function(int) onTabChange;
 
@@ -351,6 +353,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   image_picker.ImagePicker imagePicker = image_picker.ImagePicker();
   String? profileImageUrl;
 
+  bool isLoading = false;
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -362,9 +366,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   void initState() {
     super.initState();
-    _emailController.text = context.read<AuthProvider>().user?.email ?? "";
+
+    _emailController.text = '';
+    _nameController.text = '';
+    _phoneController.text = '';
+
+    _getProfileData();
+    /*_emailController.text = context.read<AuthProvider>().user?.email ?? "";
     _nameController.text = context.read<AuthProvider>().user?.name ?? "";
-    _phoneController.text = context.read<AuthProvider>().user?.mobile ?? "";
+    _phoneController.text = context.read<AuthProvider>().user?.mobile ?? "";*/
   }
 
   @override
@@ -374,18 +384,41 @@ class _EditProfilePageState extends State<EditProfilePage> {
         appBar: AppBar(
           title: const Text('Edit Profile'),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(height: 16.0),
-                  Center(child: imageProfile()),
-                  const SizedBox(height: 16.0),
-                  TextFormField(
+        body: isLoading
+            ? const Center(
+                child: SizedBox(
+                  height: 40,
+                  width: 40,
+                  child: CircularProgressIndicator(
+                    color: Colors.blue,
+                  ),
+                ),
+              )
+            : SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const SizedBox(height: 16.0),
+                        Center(child: imageProfile()),
+                        const SizedBox(height: 16.0),
+                        TextFormField(
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          readOnly: true,
+                          decoration: InputDecoration(
+                            labelText: 'Email',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(
+                                  10.0), // Rounded rectangle border
+                            ),
+                          ),
+                        ),
+
+                        /*TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
@@ -404,76 +437,122 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             10.0), // Rounded rectangle border
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 16.0),
-                  TextFormField(
-                    controller: _nameController,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter your name';
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Name',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(
-                            10.0), // Rounded rectangle border
-                      ),
+                  ),*/
+                        const SizedBox(height: 16.0),
+                        TextFormField(
+                          controller: _nameController,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your name';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'Name',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(
+                                  10.0), // Rounded rectangle border
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16.0),
+                        TextFormField(
+                          controller: _phoneController,
+                          keyboardType: TextInputType.phone,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your phone number';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'Phone Number',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(
+                                  10.0), // Rounded rectangle border
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16.0),
+                        ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              // Form is valid, proceed with saving the data
+                              _updateProfileData();
+                            }
+                          },
+                          child: const Text('Save'),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 16.0),
-                  TextFormField(
-                    controller: _phoneController,
-                    keyboardType: TextInputType.phone,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter your phone number';
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Phone Number',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(
-                            10.0), // Rounded rectangle border
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16.0),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        // Form is valid, proceed with saving the data
-                        _saveProfile();
-                      }
-                    },
-                    child: const Text('Save'),
-                  ),
-                ],
+                ),
               ),
-            ),
-          ),
-        ),
       );
     });
+  }
+
+  void _getProfileData() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final auth = context.read<AuthProvider>();
+      final profileData = await getProfileData(auth);
+      if (kDebugMode) {
+        print("userProfileData : ${profileData.data}");
+      }
+
+      final baseUrl = APIConfig.baseUrl;
+      const imagePath = 'storage/app/public/packages/';
+      final imageUrl = profileData.data?.avatar ?? '';
+
+      setState(() {
+        _emailController.text = profileData.data?.email ?? '';
+        _nameController.text = profileData.data?.name ?? '';
+        _phoneController.text = profileData.data?.tempMobile ?? '';
+
+        /*profileImageUrl = imageUrl.isEmpty ? '' : '$baseUrl/$imagePath$imageUrl';*/
+
+        isLoading = false;
+      });
+    } catch (e) {
+      // Handle error
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to load profile data: ${e.toString()}'),
+        ),
+      );
+    }
   }
 
   Widget imageProfile() {
     return Stack(
       children: [
-        CircleAvatar(
-          radius: 80.0,
-          backgroundImage: (imageFile != null
-                  ? MemoryImage(imageFile!)
-                  : profileImageUrl != null
-                      ? NetworkImage(profileImageUrl!)
-                      : const AssetImage("assets/icons/avatar_default.png"))
-              as ImageProvider<Object>,
+        InkWell(
+          onTap: () {
+            showModalBottomSheet(
+              context: context,
+              builder: (builder) => bottomSheet(),
+            );
+          },
+          child: CircleAvatar(
+            radius: 80.0,
+            backgroundImage: (imageFile != null
+                    ? MemoryImage(imageFile!)
+                    : profileImageUrl != null
+                        ? NetworkImage(profileImageUrl!)
+                        : const AssetImage("assets/icons/avatar_default.png"))
+                as ImageProvider<Object>,
+          ),
         ),
-        Positioned(
-            bottom: 20.0,
-            right: 20.0,
+        /* Positioned(
+            bottom: 10.0,
+            right: 10.0,
             child: InkWell(
               onTap: () {
                 showModalBottomSheet(
@@ -486,7 +565,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 color: Theme.of(context).primaryColor,
                 size: 40.0,
               ),
-            ))
+            ))*/
       ],
     );
   }
@@ -551,33 +630,46 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
-  void _saveProfile() async {
-    final String email = _emailController.text;
+  void _updateProfileData() async {
+    setState(() {
+      isLoading = true;
+    });
+
     final String name = _nameController.text;
     final String phoneNumber = _phoneController.text;
     final auth = context.read<AuthProvider>();
+
     try {
-      await editProfile(auth, {
+      final Map<String, dynamic> userData = {
         "user_id": auth.user?.id,
         "mobile": phoneNumber,
         "name": name,
-      });
+      };
+
+      await updateProfileData(auth, userData, imageFile);
       if (context.mounted) {
+        setState(() {
+          isLoading = false;
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text(
-                'The verification mail has been sent to you registered email , '
-                'please verify the mail to reflect the changes you have made.'),
+            content: Text('Your profile is updated successfully.'),
           ),
         );
-        Navigator.pop(context);
+        profileImageUrl = null;
+        _getProfileData();
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString()),
-        ),
-      );
+      if (context.mounted) {
+        setState(() {
+          isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+          ),
+        );
+      }
     }
   }
 
