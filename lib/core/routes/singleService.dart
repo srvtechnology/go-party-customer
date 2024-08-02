@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-import 'package:customerapp/core/Constant/themData.dart';
+import '../constant/themData.dart';
 import 'package:customerapp/core/components/bottomNav.dart';
 import 'package:customerapp/core/components/card.dart';
 import 'package:customerapp/core/components/commonHeader.dart';
@@ -334,7 +334,9 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                       if (v == null || v.isEmpty) {
                                         return "End Date Required";
                                       }
-                                      print(_startDate.text,);
+                                      print(
+                                        _startDate.text,
+                                      );
                                       // check end date is greater than start date
                                       if (DateTime.parse(_startDate.text)
                                           .isAfter(
@@ -350,10 +352,11 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                         return "End date should be greater than start date";
                                       }*/
                                       if (DateTime.parse(_startDate.text)
-                                          .isAtSameMomentAs(DateTime.parse(
-                                          _endDate.text))) {
+                                          .isAtSameMomentAs(
+                                              DateTime.parse(_endDate.text))) {
                                         // Check if the end time is before 4:00 PM
-                                        if (DateTime.parse(_endDate.text).hour < 16) {
+                                        if (DateTime.parse(_endDate.text).hour <
+                                            16) {
                                           // Allow the end date if before 4:00 PM
                                           return null; // No error message
                                         } else {
@@ -806,7 +809,8 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                                         .primaryColorDark),
                                                 children: [
                                                   TextSpan(
-                                                    text: "/ ${widget.service.priceBasis}",
+                                                    text:
+                                                        "/ ${widget.service.priceBasis}",
                                                     style: TextStyle(
                                                         fontSize: 15.sp,
                                                         color: Colors.black),
@@ -814,9 +818,10 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                                 ]),
                                             TextSpan(
                                               text:
-                                              " for ${selectedCategory?.category?.categoryName?.trim() ?? ""}",
+                                                  " for ${selectedCategory?.category?.categoryName?.trim() ?? ""}",
                                               style: TextStyle(
-                                                  color: Theme.of(context).primaryColorDark,
+                                                  color: Theme.of(context)
+                                                      .primaryColorDark,
                                                   fontSize: 16.sp),
                                             ),
                                           ],
@@ -862,8 +867,10 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                                       ServicePopUpCategory>(
                                                   value: e,
                                                   child: Text(
-                                                    e.category?.categoryName ?? "",
-                                                    style: const TextStyle(fontSize: 16),
+                                                    e.category?.categoryName ??
+                                                        "",
+                                                    style: const TextStyle(
+                                                        fontSize: 16),
                                                   )))
                                               .toList(),
                                           onChanged: (v) {

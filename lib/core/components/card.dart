@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:customerapp/core/Constant/themData.dart';
+import '../constant/themData.dart';
 import 'package:customerapp/core/components/cutom_card.dart';
 import 'package:customerapp/core/components/divider.dart';
 import 'package:customerapp/core/components/htmlTextView.dart';
@@ -269,31 +269,31 @@ class PackageTile extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                  Text(
-                    "Discounted Price : ₹ ${package.discountedPrice}",
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  Text(
-                    "Price : ₹ ${package.price}",
-                    style: TextStyle(
-                        fontSize: 15.sp,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.w600,
-                        decoration: TextDecoration.lineThrough),
-                  ),
-                  // unit == "per hour"
-                  // Text(
-                  //   " / ${package.priceBasis}",
-                  //   style: TextStyle(
-                  //     fontSize: 14.sp,
-                  //     color: Colors.grey,
-                  //     fontWeight: FontWeight.w600,
-                  //   ),
-                  // ),
+                      Text(
+                        "Discounted Price : ₹ ${package.discountedPrice}",
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      Text(
+                        "Price : ₹ ${package.price}",
+                        style: TextStyle(
+                            fontSize: 15.sp,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w600,
+                            decoration: TextDecoration.lineThrough),
+                      ),
+                      // unit == "per hour"
+                      // Text(
+                      //   " / ${package.priceBasis}",
+                      //   style: TextStyle(
+                      //     fontSize: 14.sp,
+                      //     color: Colors.grey,
+                      //     fontWeight: FontWeight.w600,
+                      //   ),
+                      // ),
                     ],
                   ),
                   // add to cart button

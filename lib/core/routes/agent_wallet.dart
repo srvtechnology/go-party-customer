@@ -3,7 +3,6 @@ import 'dart:developer';
 
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:customerapp/config.dart';
-import 'package:customerapp/core/Constant/themData.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/utils/dio.dart';
 import 'package:dio/dio.dart';
@@ -12,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import '../constant/themData.dart';
 
 class AgentWallet extends StatefulWidget {
   static const routeName = "/agent-wallet";

@@ -3,7 +3,7 @@
 import 'dart:developer';
 
 import 'package:customerapp/config.dart';
-import 'package:customerapp/core/Constant/themData.dart';
+import '../constant/themData.dart';
 import 'package:customerapp/core/routes/signin.dart';
 import 'package:customerapp/core/utils/dio.dart';
 import 'package:dio/dio.dart';

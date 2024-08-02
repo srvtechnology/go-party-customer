@@ -1,4 +1,3 @@
-import 'package:customerapp/core/Constant/themData.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/categoryProvider.dart';
 import 'package:customerapp/core/providers/networkProvider.dart';
@@ -8,6 +7,7 @@ import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import '../../../views/view.dart';
+import './core/constant/themData.dart';
 
 GetIt getIt = GetIt.asNewInstance();
 

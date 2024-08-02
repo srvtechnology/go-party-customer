@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../../views/view.dart';
-import '../Constant/themData.dart';
+import '../constant/themData.dart';
 
 class AgentSignIn extends StatefulWidget {
   static String routeName = "/agent_signIn";
@@ -172,7 +172,9 @@ class _AgentSignInState extends State<AgentSignIn> {
                             ),
                           ),
                   ),
-                  const SizedBox(height: 10,),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   InkWell(
                     onTap: () {
                       Navigator.pushNamed(context, SignInPageRoute.routeName);

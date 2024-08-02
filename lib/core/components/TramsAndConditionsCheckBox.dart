@@ -1,4 +1,4 @@
-import 'package:customerapp/core/Constant/themData.dart';
+import '../constant/themData.dart';
 import 'package:customerapp/core/routes/profile.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
