@@ -1,10 +1,10 @@
-import 'dart:io';
 
 import 'package:customerapp/core/Constant/themData.dart';
 import 'package:customerapp/core/routes/addressPage.dart';
 import 'package:customerapp/core/routes/agent_sign_in.dart';
 import 'package:customerapp/core/routes/agent_signup.dart';
 import 'package:customerapp/core/routes/cartPage.dart';
+import 'package:customerapp/core/routes/faqPage.dart';
 import 'package:customerapp/core/routes/settingsPage.dart';
 import 'package:customerapp/core/routes/signin.dart';
 import 'package:customerapp/core/routes/signup.dart';
@@ -483,6 +483,123 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           },
                           child: const Text('Save'),
                         ),
+                        const SizedBox(height: 16.0),
+                        Center(
+                            child: Text(
+                          "FAQs",
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        )),
+                        const SizedBox(height: 8.0),
+                        const FAQPage()
+                        /*Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Container(
+                                margin: EdgeInsets.symmetric(vertical: 0.h),
+                                child: const DashedDivider()),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: const [
+                                Flexible(
+                                  child: Text(
+                                    "What happens if I update my email address (or mobile number) ?",
+                                    style: TextStyle(fontSize: 18.0),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const DashedDivider(),
+                            const Text(
+                                "Your login email ID or mobile number changes, likewise. "
+                                "You will receive all your account related communication on your updated email address "
+                                "(or mobile number).",
+                                style: TextStyle(
+                                    fontSize: 16.0
+                                )),
+
+                            Container(
+                                margin: EdgeInsets.symmetric(vertical: 1.h),
+                                child: const DashedDivider()),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: const [
+                                Flexible(
+                                  child: Text(
+                                    "When will my UtsavLife account be updated with the new email address (or mobile number) ?",
+                                    style: TextStyle(fontSize: 18.0),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const DashedDivider(),
+                            const Text(
+                                "This is the second item's accordion body. It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance,"
+                                    " as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. "
+                                    "It's also worth noting that just about any HTML can go within the .accordion-body, though the transition does limit overflow.",
+                                style: TextStyle(
+                                    fontSize: 16.0
+                                )),
+
+                            Container(
+                                margin: EdgeInsets.symmetric(vertical: 1.h),
+                                child: const DashedDivider()),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: const [
+                                Flexible(
+                                  child: Text(
+                                    "What happens to my existing Flipkart account when I update my email address (or phone number) ?",
+                                    style: TextStyle(fontSize: 18.0),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const DashedDivider(),
+                            const Text(
+                                "Updating your email address (or mobile number) doesn't invalidate your account."
+                                    " Your account remains fully functional. You'll continue seeing your Order history, "
+                                    "saved information, and personal details.",
+                                style: TextStyle(
+                                    fontSize: 16.0
+                                )),
+
+                            Container(
+                                margin: EdgeInsets.symmetric(vertical: 1.h),
+                                child: const DashedDivider()),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: const [
+                                Flexible(
+                                  child: Text(
+                                    "Does my Agent account gets updated when  I update my email address  ?",
+                                    style: TextStyle(fontSize: 18.0),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const DashedDivider(),
+                            const Text(
+                                "Utsavlife has a 'single sign-on' policy. Any changes will reflect in your Agent account also.",
+                            style: TextStyle(
+                              fontSize: 18.0
+                            ),),
+
+
+
+                          ],
+                        )*/
                       ],
                     ),
                   ),
@@ -504,16 +621,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
         print("userProfileData : ${profileData.data}");
       }
 
+      /*https://utsavlife.com/public/storage/customer/1722594356-5306.jpg*/
       final baseUrl = APIConfig.baseUrl;
-      const imagePath = 'storage/app/public/packages/';
+      const imagePath = '/public/storage/customer/';
       final imageUrl = profileData.data?.avatar ?? '';
 
       setState(() {
         _emailController.text = profileData.data?.email ?? '';
         _nameController.text = profileData.data?.name ?? '';
-        _phoneController.text = profileData.data?.tempMobile ?? '';
-
-        /*profileImageUrl = imageUrl.isEmpty ? '' : '$baseUrl/$imagePath$imageUrl';*/
+        _phoneController.text = profileData.data?.mobile ?? '';
+        profileImageUrl =
+            imageUrl.isEmpty ? '' : '$baseUrl/$imagePath$imageUrl';
 
         isLoading = false;
       });
