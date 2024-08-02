@@ -1,5 +1,5 @@
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
-import 'package:customerapp/core/Constant/themData.dart';
+import '../constant/themData.dart';
 import 'package:customerapp/core/components/bottomNav.dart';
 import 'package:customerapp/core/providers/serviceProvider.dart';
 import 'package:customerapp/core/routes/filter.dart';

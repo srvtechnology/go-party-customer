@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
-import 'package:customerapp/core/Constant/themData.dart';
+import '../constant/themData.dart';
 import 'package:customerapp/core/components/banner.dart';
 import 'package:customerapp/core/components/bottomNav.dart';
 import 'package:customerapp/core/components/card.dart';
@@ -509,9 +509,9 @@ class _HomeState extends State<Home> {
                               scrollDirection: Axis.horizontal,
                               child: Row(
                                   children: state.packageData!
-                                    /*-- Previously commented */
-                                     /*.getRange(0, min(4, state.packageData!.length))*/
-                                        .map((e) => PackageCard(
+                                      /*-- Previously commented */
+                                      /*.getRange(0, min(4, state.packageData!.length))*/
+                                      .map((e) => PackageCard(
                                             package: e,
                                             onTap: () {
                                               Navigator.push(
@@ -569,8 +569,8 @@ class _HomeState extends State<Home> {
                               scrollDirection: Axis.horizontal,
                               child: Row(
                                   children: state.data!
-                                    /*.getRange(4, min(7, state.data!.length))*/
-                                     /* .getRange(0, min(7, state.data!.length))*/
+                                      /*.getRange(4, min(7, state.data!.length))*/
+                                      /* .getRange(0, min(7, state.data!.length))*/
                                       .map((e) => OrderCard(
                                             service: e,
                                             onTap: () {
@@ -627,8 +627,8 @@ class _HomeState extends State<Home> {
                               scrollDirection: Axis.horizontal,
                               child: Row(
                                   children: state.data!
-                                    /*.getRange(7, min(10, state.data!.length))*/
-                                     /* .getRange(0, min(10, state.data!.length))*/
+                                      /*.getRange(7, min(10, state.data!.length))*/
+                                      /* .getRange(0, min(10, state.data!.length))*/
                                       .map((e) => OrderCard(
                                           onTap: () {
                                             Navigator.push(

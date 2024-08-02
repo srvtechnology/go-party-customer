@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
-import 'package:customerapp/core/Constant/themData.dart';
+import '../constant/themData.dart';
 import 'package:customerapp/core/components/bottomNav.dart';
 import 'package:customerapp/core/components/commonHeader.dart';
 import 'package:customerapp/core/components/htmlTextView.dart';
@@ -339,7 +339,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                 _endDate.text))) {
                                           return "End date should be greater than start date";
                                         }
-                                        
+
                                         /*--- commented on 31-07-24 : to validate if
                                       * start date and end end is same but before 4:00 P.M --*/
                                         // if start date and end date is same then show error
@@ -354,7 +354,9 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                             .isAtSameMomentAs(DateTime.parse(
                                                 _endDate.text))) {
                                           // Check if the end time is before 4:00 PM
-                                          if (DateTime.parse(_endDate.text).hour < 16) {
+                                          if (DateTime.parse(_endDate.text)
+                                                  .hour <
+                                              16) {
                                             // Allow the end date if before 4:00 PM
                                             return null; // No error message
                                           } else {

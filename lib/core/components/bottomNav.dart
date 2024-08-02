@@ -3,7 +3,7 @@ import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/cartProvider.dart';
 import 'package:flutter/material.dart';
 
-import 'package:customerapp/core/Constant/themData.dart';
+import '../constant/themData.dart';
 import 'package:customerapp/core/routes/cartPage.dart';
 import 'package:customerapp/core/routes/homepage.dart';
 import 'package:customerapp/core/routes/profile.dart';

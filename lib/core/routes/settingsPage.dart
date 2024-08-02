@@ -1,4 +1,4 @@
-import 'package:customerapp/core/Constant/themData.dart';
+import '../constant/themData.dart';
 import 'package:customerapp/core/components/commonHeader.dart';
 import 'package:customerapp/core/components/divider.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
@@ -37,25 +37,25 @@ class _SettingsPageState extends State<SettingsPage> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                CircleAvatar(
-                  radius: 15,
-                  backgroundColor: Theme.of(context).primaryColorLight,
-                  child: const Icon(
-                    Icons.person,
-                    color: Colors.white,
-                    size: 16,
-                  ),
-                ),
-                SizedBox(
-                  width: 2.w,
-                ),
-                Text(
-                  "Hello, ${state.user?.name ?? " "}",
-                  style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 20,
-                      color: Theme.of(context).primaryColor),
-                ),
+                    CircleAvatar(
+                      radius: 15,
+                      backgroundColor: Theme.of(context).primaryColorLight,
+                      child: const Icon(
+                        Icons.person,
+                        color: Colors.white,
+                        size: 16,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 2.w,
+                    ),
+                    Text(
+                      "Hello, ${state.user?.name ?? " "}",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 20,
+                          color: Theme.of(context).primaryColor),
+                    ),
                   ],
                 ),
               if (state.user?.name != null)
