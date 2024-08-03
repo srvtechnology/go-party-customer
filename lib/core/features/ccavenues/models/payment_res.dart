@@ -2,8 +2,62 @@
 //
 //     final paymentRes = paymentResFromJson(jsonString);
 
+
 import 'dart:convert';
 
+PaymentRes paymentResFromJson(String str) {
+  final Map<String, dynamic> jsonData = json.decode(str);
+  return PaymentRes.fromJson(jsonData);
+}
+
+String paymentResToJson(PaymentRes data) {
+  final Map<String, dynamic> jsonData = data.toJson();
+  return json.encode(jsonData);
+}
+
+class PaymentRes {
+  bool? success;
+  int? code;
+  String? type; // Changed from Type? to String?
+  String? message;
+
+  PaymentRes({
+    this.success,
+    this.code,
+    this.type,
+    this.message,
+  });
+
+  PaymentRes copyWith({
+    bool? success,
+    int? code,
+    String? type,
+    String? message,
+  }) =>
+      PaymentRes(
+        success: success ?? this.success,
+        code: code ?? this.code,
+        type: type ?? this.type,
+        message: message ?? this.message,
+      );
+
+  factory PaymentRes.fromJson(Map<String, dynamic> json) => PaymentRes(
+    success: json["success"],
+    code: json["code"],
+    type: json["type"], // Directly assign as String
+    message: json["message"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "success": success,
+    "code": code,
+    "type": type, // No need for type?.toJson() since it's a String
+    "message": message,
+  };
+}
+
+
+/*
 PaymentRes paymentResFromJson(String str) =>
     PaymentRes.fromJson(json.decode(str));
 
@@ -318,3 +372,4 @@ class Type {
         "bin_country": binCountry,
       };
 }
+*/

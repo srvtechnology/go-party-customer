@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 class PaymentStatusView extends StatefulWidget {
   final PaymentRes? paymentRes;
+
   const PaymentStatusView({
     Key? key,
     required this.paymentRes,
@@ -99,7 +100,8 @@ class _PaymentStatusViewState extends State<PaymentStatusView> {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           width: MediaQuery.of(context).size.width,
           child: Text(
-            widget.paymentRes?.type?.statusMessage ?? "",
+            widget.paymentRes?.message ?? "",
+            /*paymentRes?.type?.statusMessage ?? ""*/
             style: const TextStyle(
                 fontSize: 12, color: Colors.grey, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
@@ -112,7 +114,8 @@ class _PaymentStatusViewState extends State<PaymentStatusView> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "Order ID: ${widget.paymentRes?.type?.orderId ?? ""}",
+              "Order ID: "" ",
+              /*"Order ID: ${widget.paymentRes?.type?.orderId ?? ""}"*/
               style: TextStyle(
                 fontSize: 12,
                 color: Theme.of(context).primaryColor,
@@ -121,7 +124,8 @@ class _PaymentStatusViewState extends State<PaymentStatusView> {
             ),
             const SizedBox(width: 10),
             Text(
-              "Tracking ID: ${widget.paymentRes?.type?.trackingId ?? ""}",
+              "Tracking ID: "" ",
+              /*"Tracking ID: ${widget.paymentRes?.type?.trackingId ?? ""}",*/
               style: TextStyle(
                 fontSize: 12,
                 color: Theme.of(context).primaryColor,
@@ -132,7 +136,8 @@ class _PaymentStatusViewState extends State<PaymentStatusView> {
         ),
         const SizedBox(height: 10),
         Text(
-          "Payment Mode: ${widget.paymentRes?.type?.paymentMode ?? ""}",
+          "Payment Mode: "" ",
+          /*"Payment Mode: ${widget.paymentRes?.type?.paymentMode ?? ""}",*/
           style: TextStyle(
             fontSize: 12,
             color: Theme.of(context).primaryColor,
