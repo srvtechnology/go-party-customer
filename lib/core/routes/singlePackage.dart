@@ -101,15 +101,15 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
         : widget.package.minQnty.toString();
     _duration.text = "Full Day";
     log(widget.package.minQnty.toString(), name: "Package");
-    // _categoryName.addListener(() {
-    //   if (popupCategories.isNotEmpty) {
-    //     selectedCategory = popupCategories.firstWhere(
-    //         (element) => element.category?.categoryName == _categoryName.text);
-    //     setState(() {});
-    //     log(selectedCategory!.category!.categoryName.toString(),
-    //         name: "Selected Category");
-    //   }
-    // });
+    /*_categoryName.addListener(() {
+      if (popupCategories.isNotEmpty) {
+        selectedCategory = popupCategories.firstWhere(
+            (element) => element.category?.categoryName == _categoryName.text);
+        setState(() {});
+        log(selectedCategory!.category!.categoryName.toString(),
+            name: "Selected Category");
+      }
+    });*/
   }
 
   Future<void> getSinglePackage() async {
