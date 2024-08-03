@@ -113,7 +113,7 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                     ),
                   ),
                   const SizedBox(height: 16.0),
-                  Row(
+                  /*Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       // radio
@@ -127,8 +127,8 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                       ),
                       const Text("Create an account. New to Utsavlife?"),
                     ],
-                  ),
-                  Row(
+                  ),*/
+                  /*Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       // radio
@@ -139,7 +139,58 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                       ),
                       const Text("Sign in. Already a customer?"),
                     ],
+                  ),*/
+                  InkWell(
+                    onTap: () {
+                      Navigator.pushNamed(context, SignUpPageRoute.routeName);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: const [
+                          // Icon or leading element (can be a radio button icon)
+                          Icon(Icons.radio_button_unchecked,
+                              color: Colors.white),
+                          SizedBox(width: 10),
+                          Text(
+                            "Create an account. New to Utsavlife?",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 10),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: const [
+                        // Icon or leading element (can be a radio button icon)
+                        Icon(Icons.radio_button_checked, color: Colors.white),
+                        SizedBox(width: 10),
+                        Text(
+                          "Sign in. Already a customer?",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+
+
                   if (state.authState == AuthState.Error)
                     const Text(
                       "Incorrect username or password",
@@ -236,7 +287,7 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
                     ),
                     child: _isLoading
                         ? const CircularProgressIndicator(
@@ -252,8 +303,64 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                             ),
                           ),
                   ),
-                 const  SizedBox(height: 8),
-                  Row(
+                  const SizedBox(height: 8),
+                  InkWell(
+                    onTap: () {
+                      Navigator.pushNamed(
+                          context, AgentSignIn.routeName);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor, // Background color for the button
+                        borderRadius: BorderRadius.circular(8), // Rounded corners
+                      ),
+                      child: Center(
+                        child: RichText(
+                          text: TextSpan(
+                            text: 'Are you an agent? ',
+                            style: const TextStyle(
+                              color: Colors.white, // Text color
+                              fontSize: 16,
+                            ),
+                            children: <TextSpan>[
+                              TextSpan(
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.pushNamed(context, AgentSignIn.routeName);
+                                  },
+                                text: 'Sign in',
+                                style: const TextStyle(
+                                  color: Colors.yellow, // Link color
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const TextSpan(
+                                text: ' or ',
+                                style: TextStyle(
+                                  color: Colors.white, // Text color
+                                  fontSize: 16,
+                                ),
+                              ),
+                              TextSpan(
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.pushNamed(context, AgentSignUp.routeName);
+                                  },
+                                text: 'Sign up',
+                                style: const TextStyle(
+                                  color: Colors.yellow, // Link color
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                 /* Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       RichText(
@@ -301,7 +408,7 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                         ),
                       ),
                     ],
-                  ),
+                  ),*/
                   TramsAndConditionsCheckBox(
                     value: false,
                     onChanged: (value) {},

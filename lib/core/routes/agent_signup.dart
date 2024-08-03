@@ -1,10 +1,14 @@
 import 'package:customerapp/core/components/TramsAndConditionsCheckBox.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
+import 'package:customerapp/core/routes/agent_sign_in.dart';
 import 'package:customerapp/core/routes/mainpage.dart';
 import 'package:customerapp/core/routes/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
+
+import '../constant/themData.dart';
 
 class AgentSignUp extends StatefulWidget {
   static String routeName = "/agent_signup";
@@ -62,15 +66,32 @@ class _AgentSignUpState extends State<AgentSignUp> {
                       ),
                       const SizedBox(height: 32.0),
                       Container(
-                        // alignment: Alignment.center,
-                        child: Text(
-                          "Sign Up as Agent ",
-                          style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 10),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: const [
+                            // Icon or leading element (can be a radio button icon)
+                            Icon(Icons.radio_button_checked, color: Colors.white),
+                            SizedBox(width: 10),
+                            Text(
+                              "Sign Up as Agent",
+                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                            ),
+                          ],
                         ),
                       ),
+                      /*Text(
+                        "Sign Up as Agent ",
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),*/
                       const SizedBox(height: 16.0),
 
                       // SizedBox(
@@ -267,7 +288,7 @@ class _AgentSignUpState extends State<AgentSignUp> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
                         ),
                         child: state.isLoading
                             ? const CircularProgressIndicator(
@@ -282,6 +303,29 @@ class _AgentSignUpState extends State<AgentSignUp> {
                                   color: Colors.white,
                                 ),
                               ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, AgentSignIn.routeName);
+                        },
+                        child: Container(
+                          height: 5.h,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: primaryColor/*tertiaryColor*/,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Text('Already an Agent ? SignIn',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white,
+                              )),
+                        ),
                       ),
                       const SizedBox(height: 16.0),
                       TramsAndConditionsCheckBox(

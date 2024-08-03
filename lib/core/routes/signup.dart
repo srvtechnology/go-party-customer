@@ -127,7 +127,28 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                     ),
                   ),
                   const SizedBox(height: 16.0),
-                  Row(
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 10),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: const [
+                        // Icon or leading element (can be a radio button icon)
+                        Icon(Icons.radio_button_checked, color: Colors.white),
+                        SizedBox(width: 10),
+                        Text(
+                          "Create an account. New to Utsavlife?",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                 /* Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       // radio
@@ -138,7 +159,7 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                       ),
                       const Text("Create an account. New to Utsavlife?"),
                     ],
-                  ),
+                  ),*/
                   SizedBox(
                     height: 32.0,
                     child: state.authState == AuthState.Error
@@ -320,7 +341,7 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
                     ),
                     child: _isLoading
                         ? const CircularProgressIndicator(
@@ -341,7 +362,7 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                     value: false,
                     onChanged: (value) {},
                   ),
-                  Row(
+                  /*Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       // radio
@@ -355,6 +376,32 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                       ),
                       const Text("Sign in. Already a customer?"),
                     ],
+                  ),*/
+                  InkWell(
+                    onTap: () {
+                      Navigator.pushNamed(context, SignInPageRoute.routeName);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: const [
+                          // Icon or leading element (can be a radio button icon)
+                          Icon(Icons.radio_button_unchecked,
+                              color: Colors.white),
+                          SizedBox(width: 10),
+                          Text(
+                            "Sign in. Already a customer?",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

@@ -1,7 +1,5 @@
 import 'package:customerapp/core/components/TramsAndConditionsCheckBox.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
-import 'package:customerapp/core/routes/mainpage.dart';
-import 'package:customerapp/core/routes/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -50,14 +48,63 @@ class _AgentSignInState extends State<AgentSignIn> {
                     ),
                   ),
                   const SizedBox(height: 32.0),
-                  Container(
-                    // alignment: Alignment.center,
+                   /*Center(
                     child: Text(
-                      "Sign In as Agent ",
+                      "Sign In as Agent",
                       style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
+                        color: Theme.of(context).primaryColor, // Text color
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),*/
+                  InkWell(
+                    onTap: () {
+                      Navigator.pushNamed(context, AgentSignUp.routeName);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: const [
+                          // Icon or leading element (can be a radio button icon)
+                          Icon(Icons.radio_button_unchecked,
+                              color: Colors.white),
+                          SizedBox(width: 10),
+                          Text(
+                            "Sign Up as Agent",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 10),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: const [
+                        // Icon or leading element (can be a radio button icon)
+                        Icon(Icons.radio_button_checked, color: Colors.white),
+                        SizedBox(width: 10),
+                        Text(
+                          "Already an Agent ? Sign in.",
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 16.0),
@@ -156,7 +203,7 @@ class _AgentSignInState extends State<AgentSignIn> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
                     ),
                     child: state.isLoading
                         ? const CircularProgressIndicator(
@@ -180,10 +227,10 @@ class _AgentSignInState extends State<AgentSignIn> {
                       Navigator.pushNamed(context, SignInPageRoute.routeName);
                     },
                     child: Container(
-                      height: 6.h,
+                      height: 5.h,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color: tertiaryColor,
+                        color: primaryColor/*tertiaryColor*/,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: const Text('Already a customer ? Sign in',
@@ -191,7 +238,7 @@ class _AgentSignInState extends State<AgentSignIn> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
-                            color: primaryColor,
+                            color: Colors.white,
                           )),
                     ),
                   ),
