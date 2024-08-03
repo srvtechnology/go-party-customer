@@ -546,8 +546,10 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                                                         .text)
                                                             .id
                                                             .toString();
-                                                        print(
+                                                        if (kDebugMode) {
+                                                          print(
                                                             _selectedCity.text);
+                                                        }
                                                         Map data = {
                                                           "service_id":
                                                               widget.service.id,

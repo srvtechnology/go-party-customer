@@ -588,10 +588,6 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                             Navigator.pop(
                                                                 context);
                                                           }
-                                                          if (context.mounted) {
-                                                            Navigator.pop(
-                                                                context);
-                                                          }
                                                           await cart
                                                               .getCart(auth)
                                                               .whenComplete(() {
