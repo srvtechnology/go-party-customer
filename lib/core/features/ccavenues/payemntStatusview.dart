@@ -96,12 +96,10 @@ class _PaymentStatusViewState extends State<PaymentStatusView> {
           ),
         ),
         const SizedBox(height: 10),
-        /*Container(
+        Container(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           width: MediaQuery.of(context).size.width,
-          child: Text(
-            widget.paymentRes?.message ?? "",
-            *//*paymentRes?.type?.statusMessage ?? ""*//*
+          child: Text(widget.paymentRes?.type ?? "",
             style: const TextStyle(
                 fontSize: 12, color: Colors.grey, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
@@ -109,13 +107,13 @@ class _PaymentStatusViewState extends State<PaymentStatusView> {
         ),
         const SizedBox(height: 10),
         const Divider(),
+        /*-- commented on : 04-08-24 : since there is no OrderId, TrackingId & Payment Mode ---*/
+        /*
         const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              "Order ID: "" ",
-              *//*"Order ID: ${widget.paymentRes?.type?.orderId ?? ""}"*//*
+            Text("Order ID: ${widget.paymentRes?.type?.orderId ?? ""}",
               style: TextStyle(
                 fontSize: 12,
                 color: Theme.of(context).primaryColor,
@@ -123,9 +121,7 @@ class _PaymentStatusViewState extends State<PaymentStatusView> {
               ),
             ),
             const SizedBox(width: 10),
-            Text(
-              "Tracking ID: "" ",
-              *//*"Tracking ID: ${widget.paymentRes?.type?.trackingId ?? ""}",*//*
+            Text("Tracking ID: ${widget.paymentRes?.type?.trackingId ?? ""}",
               style: TextStyle(
                 fontSize: 12,
                 color: Theme.of(context).primaryColor,
@@ -135,15 +131,14 @@ class _PaymentStatusViewState extends State<PaymentStatusView> {
           ],
         ),
         const SizedBox(height: 10),
-        Text(
-          "Payment Mode: "" ",
-          *//*"Payment Mode: ${widget.paymentRes?.type?.paymentMode ?? ""}",*//*
+        Text("Payment Mode: ${widget.paymentRes?.type?.paymentMode ?? ""}",
           style: TextStyle(
             fontSize: 12,
             color: Theme.of(context).primaryColor,
             fontWeight: FontWeight.w500,
           ),
-        ),*/
+        ),
+        */
       ],
     );
   }
