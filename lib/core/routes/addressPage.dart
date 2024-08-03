@@ -19,6 +19,7 @@ import '../utils/logger.dart';
 
 class AddressAddPage extends StatefulWidget {
   static const routeName = "/addAddress";
+
   const AddressAddPage({Key? key}) : super(key: key);
 
   @override
@@ -476,6 +477,7 @@ class _AddressAddPageState extends State<AddressAddPage> {
 
 class AddressPage extends StatefulWidget {
   static const routeName = "/address";
+
   const AddressPage({Key? key}) : super(key: key);
 
   @override
@@ -484,6 +486,7 @@ class AddressPage extends StatefulWidget {
 
 class _AddressPageState extends State<AddressPage> {
   String searchText = "";
+
   @override
   Widget build(BuildContext context) {
     return ListenableProvider(
@@ -704,6 +707,7 @@ class _AddressPageState extends State<AddressPage> {
 
 class AddressEditPage extends StatefulWidget {
   final AddressModel address;
+
   const AddressEditPage({Key? key, required this.address}) : super(key: key);
 
   @override
@@ -744,8 +748,10 @@ class _AddressEditPageState extends State<AddressEditPage> {
     city = widget.address.city;
     state = widget.address.state;
     focusNode.addListener(() {
-      if (focusNode.hasFocus == false) {
-        getLocationByPin();
+      if (!focusNode.hasFocus) {
+        if (_pinCodeController.text.isNotEmpty && _pinCodeController.text.length == 6) {
+          getLocationByPin();
+        }
       }
     });
   }
@@ -823,7 +829,7 @@ class _AddressEditPageState extends State<AddressEditPage> {
                         height: 20,
                       ),
                       SizedBox(
-                        height: 6.h,
+                        width: double.infinity,
                         child: TextFormField(
                           controller: _billingNameController,
                           validator: (text) {
@@ -837,10 +843,10 @@ class _AddressEditPageState extends State<AddressEditPage> {
                         ),
                       ),
                       const SizedBox(
-                        height: 10,
+                        height: 20,
                       ),
                       SizedBox(
-                        height: 6.h,
+                        width: double.infinity,
                         child: TextFormField(
                           controller: _billingMobileController,
                           validator: (text) {
@@ -878,7 +884,7 @@ class _AddressEditPageState extends State<AddressEditPage> {
                         height: 20,
                       ),
                       SizedBox(
-                        height: 6.h,
+                        width: double.infinity,
                         child: TextFormField(
                           controller: _houseNumberController,
                           validator: (text) {
@@ -891,42 +897,47 @@ class _AddressEditPageState extends State<AddressEditPage> {
                               labelText: "House / Flat / Building Number"),
                         ),
                       ),
+
                       const SizedBox(
                         height: 20,
                       ),
-                      // Pin Code edit
                       SizedBox(
-                        height: 6.h,
+                        width: double.infinity,
                         child: TextFormField(
                           focusNode: focusNode,
                           controller: _pinCodeController,
                           onChanged: (text) {
-                            if (text.length == 6) {
+                            if (text.length == 6 && text.isNotEmpty) {
                               setState(() {
                                 getLocationByPin();
                               });
                             }
                           },
                           validator: (text) {
-                            if (text == null || text.isEmpty) return "Required";
+                            if (text == null || text.isEmpty) return "PinCode cannot be empty!";
                             if (text.length != 6) {
-                              return "Please enter a valid pincode";
+                              return "Please enter a valid pin code";
                             }
                             return null;
                           },
                           decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                      width: 0.2, color: Colors.grey[200]!)),
-                              labelText: "Pin Code"),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                width: 0.2,
+                                color: Colors.grey[200]!,
+                              ),
+                            ),
+                            labelText: "Pin Code",
+                          ),
                         ),
                       ),
+
                       const SizedBox(
                         height: 20,
                       ),
                       SizedBox(
-                        height: 6.h,
+                        width: double.infinity,
                         child: TextFormField(
                           controller: _areaController,
                           validator: (text) {
@@ -940,10 +951,10 @@ class _AddressEditPageState extends State<AddressEditPage> {
                         ),
                       ),
                       const SizedBox(
-                        height: 10,
+                        height: 20,
                       ),
                       SizedBox(
-                        height: 6.h,
+                        width: double.infinity,
                         child: TextFormField(
                           controller: _landmarkController,
                           validator: (text) {
@@ -961,6 +972,8 @@ class _AddressEditPageState extends State<AddressEditPage> {
                       const SizedBox(
                         height: 20,
                       ),
+                      // Pin Code edit
+
                       isAddressLoading
                           ? const Center(
                               child: CircularProgressIndicator(),
