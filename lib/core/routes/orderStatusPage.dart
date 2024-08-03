@@ -254,7 +254,7 @@ class _OrderStatusPageState extends State<OrderStatusPage> {
                       horizontal: 20,
                     ),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
                           'Shipping Address',

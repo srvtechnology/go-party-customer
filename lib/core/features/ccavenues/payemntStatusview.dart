@@ -96,12 +96,12 @@ class _PaymentStatusViewState extends State<PaymentStatusView> {
           ),
         ),
         const SizedBox(height: 10),
-        Container(
+        /*Container(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           width: MediaQuery.of(context).size.width,
           child: Text(
             widget.paymentRes?.message ?? "",
-            /*paymentRes?.type?.statusMessage ?? ""*/
+            *//*paymentRes?.type?.statusMessage ?? ""*//*
             style: const TextStyle(
                 fontSize: 12, color: Colors.grey, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
@@ -115,7 +115,7 @@ class _PaymentStatusViewState extends State<PaymentStatusView> {
           children: [
             Text(
               "Order ID: "" ",
-              /*"Order ID: ${widget.paymentRes?.type?.orderId ?? ""}"*/
+              *//*"Order ID: ${widget.paymentRes?.type?.orderId ?? ""}"*//*
               style: TextStyle(
                 fontSize: 12,
                 color: Theme.of(context).primaryColor,
@@ -125,7 +125,7 @@ class _PaymentStatusViewState extends State<PaymentStatusView> {
             const SizedBox(width: 10),
             Text(
               "Tracking ID: "" ",
-              /*"Tracking ID: ${widget.paymentRes?.type?.trackingId ?? ""}",*/
+              *//*"Tracking ID: ${widget.paymentRes?.type?.trackingId ?? ""}",*//*
               style: TextStyle(
                 fontSize: 12,
                 color: Theme.of(context).primaryColor,
@@ -137,13 +137,13 @@ class _PaymentStatusViewState extends State<PaymentStatusView> {
         const SizedBox(height: 10),
         Text(
           "Payment Mode: "" ",
-          /*"Payment Mode: ${widget.paymentRes?.type?.paymentMode ?? ""}",*/
+          *//*"Payment Mode: ${widget.paymentRes?.type?.paymentMode ?? ""}",*//*
           style: TextStyle(
             fontSize: 12,
             color: Theme.of(context).primaryColor,
             fontWeight: FontWeight.w500,
           ),
-        ),
+        ),*/
       ],
     );
   }
