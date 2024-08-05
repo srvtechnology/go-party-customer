@@ -27,6 +27,7 @@ class OrderProvider with ChangeNotifier {
     getUpcomingOrders(auth);
     getDeliveredOrders(auth);
   }
+
   void startLoading() {
     _isLoading = true;
     notifyListeners();

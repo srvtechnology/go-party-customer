@@ -1,4 +1,4 @@
-import 'package:customerapp/core/models/address.dart';
+import 'package:customerapp/core/models/addressModel.dart';
 import 'package:customerapp/core/models/orders.dart';
 
 String getAddressFormat(AddressModel address) {

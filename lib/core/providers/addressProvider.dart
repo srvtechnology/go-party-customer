@@ -1,8 +1,8 @@
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/utils/logger.dart';
 import 'package:flutter/material.dart';
-import '../models/address.dart';
-import '../repo/address.dart' as AddressRepo;
+import '../models/addressModel.dart';
+import '../repo/addressRepo.dart' as AddressRepo;
 
 class AddressProvider with ChangeNotifier {
   List<AddressModel> _data = [];

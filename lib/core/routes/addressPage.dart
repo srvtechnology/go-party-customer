@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:csc_picker/csc_picker.dart';
-import 'package:customerapp/core/models/address.dart';
+import 'package:customerapp/core/models/addressModel.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/addressProvider.dart';
 import 'package:customerapp/core/utils/addressFormater.dart';
@@ -13,7 +13,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../components/errors.dart';
 import '../models/countries.dart';
-import '../repo/address.dart';
+import '../repo/addressRepo.dart';
 import '../repo/countries.dart';
 import '../utils/logger.dart';
 

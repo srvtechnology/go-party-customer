@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
+import '../../views/view.dart';
 import '../constant/themData.dart';
 import 'package:customerapp/core/components/banner.dart';
 import 'package:customerapp/core/components/bottomNav.dart';
@@ -26,6 +27,7 @@ import '../models/orders.dart';
 class HomePageScreen extends StatefulWidget {
   static const routeName = "/home";
   final int? index;
+
   const HomePageScreen({Key? key, this.index}) : super(key: key);
 
   @override
@@ -80,7 +82,36 @@ class _OrdersState extends State<Orders> {
   Widget build(BuildContext context) {
     return ListenableProvider(
       create: (_) => OrderProvider(context.read<AuthProvider>()),
-      child: Consumer<OrderProvider>(builder: (context, state, child) {
+      child: Consumer2<OrderProvider, AuthProvider>(
+          builder: (context, state, auth, child) {
+        if (auth.authState != AuthState.LoggedIn) {
+          return Scaffold(
+              appBar: CommonHeader.headerMain(context, isShowLogo: false,
+                  onSearch: () {
+                Navigator.pushNamed(context, ProductPageRoute.routeName);
+              }),
+              body: Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(50),
+                  child: Column(
+                    children: [
+                      const Icon(
+                        Icons.add_business_sharp,
+                        size: 100,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      const Text("Please log in to view your orders."),
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                                context, SignInPageRoute.routeName);
+                          },
+                          child: const Text("Sign in"))
+                    ],
+                  )));
+        }
         if (state.isLoading) {
           return const ShimmerWidget();
         }

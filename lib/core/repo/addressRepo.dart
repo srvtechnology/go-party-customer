@@ -5,7 +5,7 @@ import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:dio/dio.dart';
 
 import '../../config.dart';
-import '../models/address.dart';
+import '../models/addressModel.dart';
 import '../utils/dio.dart';
 import '../utils/logger.dart';
 
