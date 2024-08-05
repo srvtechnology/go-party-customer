@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
-import 'package:customerapp/core/components/currentLocatton.dart';
+import 'package:customerapp/core/components/currentLocation.dart';
 import 'package:customerapp/core/components/cutom_card.dart';
 import 'package:customerapp/core/models/package.dart';
 import 'package:customerapp/core/models/service.dart';

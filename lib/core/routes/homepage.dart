@@ -5,7 +5,7 @@ import 'package:customerapp/core/components/banner.dart';
 import 'package:customerapp/core/components/bottomNav.dart';
 import 'package:customerapp/core/components/card.dart';
 import 'package:customerapp/core/components/commonHeader.dart';
-import 'package:customerapp/core/components/currentLocatton.dart';
+import 'package:customerapp/core/components/currentLocation.dart';
 import 'package:customerapp/core/components/loading.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/cartProvider.dart';

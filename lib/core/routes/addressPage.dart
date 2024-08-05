@@ -749,7 +749,8 @@ class _AddressEditPageState extends State<AddressEditPage> {
     state = widget.address.state;
     focusNode.addListener(() {
       if (!focusNode.hasFocus) {
-        if (_pinCodeController.text.isNotEmpty && _pinCodeController.text.length == 6) {
+        if (_pinCodeController.text.isNotEmpty &&
+            _pinCodeController.text.length == 6) {
           getLocationByPin();
         }
       }
@@ -914,7 +915,8 @@ class _AddressEditPageState extends State<AddressEditPage> {
                             }
                           },
                           validator: (text) {
-                            if (text == null || text.isEmpty) return "PinCode cannot be empty!";
+                            if (text == null || text.isEmpty)
+                              return "PinCode cannot be empty!";
                             if (text.length != 6) {
                               return "Please enter a valid pin code";
                             }
@@ -1177,7 +1179,12 @@ class _AddressEditPageState extends State<AddressEditPage> {
         "address_id": widget.address.id,
         "billing_name": _billingNameController.text,
         "billing_mobile": _billingMobileController.text,
-        "address": "0",
+        /*"address": "0",*/
+        "address": "${_houseNumberController.text}, "
+            "${_pinCodeController.text}, "
+            "${_areaController.text}, "
+            "${_landmarkController.text}, "
+            "$city, $state, $country",
         "address_latitude": "0.000001",
         "address_longitude": "0.000001",
         "pin_code": _pinCodeController.text,
