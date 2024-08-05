@@ -346,6 +346,29 @@ class _CartPageState extends State<CartPage> {
                   ),
                 ),
                 Container(
+                  padding: EdgeInsets.symmetric(vertical: 1.w),
+                  margin: EdgeInsets.only(right: 4.w, top: 1.h),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Package",
+                        style: TextStyle(fontSize: 15),
+                      ),
+                      FittedBox(
+                        child: Text(
+                          item.category.name,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
                   margin: EdgeInsets.only(right: 4.w, top: 1.h),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
