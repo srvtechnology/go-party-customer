@@ -1,3 +1,18 @@
 {
-  "cSpell.words": ["Debouncer", "isloading", "qnty"]
+  "cSpell.words": ["Debouncer", "isloading", "qnty"],
+  "explicitFolding.rules": {
+    "javascript": [
+      {
+        "begin": "{",
+        "end": "}"
+      },
+      {
+        "begin": "`",
+        "end": "`"
+      },
+      {
+        "foldLastLine": true
+      }
+    ]
+  }
 }

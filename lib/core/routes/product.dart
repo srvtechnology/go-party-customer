@@ -117,44 +117,44 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                     floatHeaderSlivers: true,
                     headerSliverBuilder: (context, isChange) {
                       return [
-                        // SliverAppBar(
-                        //     title: _searchBar(
-                        //       controller: _searchController,
-                        //       filterState: filters,
-                        //       serviceState: state,
-                        //     ),
-                        //     floating: true,
-                        //     snap: true,
-                        //     pinned: true,
-                        //     actions: [
-                        //       // filter button
-                        //       IconButton(
-                        //         icon: const Icon(Icons.tune),
-                        //         onPressed: () {
-                        //           Navigator.push(
-                        //               context,
-                        //               MaterialPageRoute(
-                        //                   builder: (context) => FilterPage(
-                        //                         filterState: filters,
-                        //                       )));
-                        //           if (_searchController.text.isNotEmpty) {
-                        //             state.getFilteredServices(filters,
-                        //                 searchString: _searchController.text);
-                        //           }
-                        //         },
-                        //       )
-                        //     ],
-                        //     elevation: 0,
-                        //     backgroundColor: primaryColor,
-                        //     bottom: PreferredSize(
-                        //       preferredSize: const Size.fromHeight(80),
-                        //       child: Container(
-                        //         child: _searchBar(
-                        //             controller: _searchController,
-                        //             filterState: filters,
-                        //             serviceState: state),
-                        //       ),
-                        //     ))
+                        /* SliverAppBar(
+                            title: _searchBar(
+                              controller: _searchController,
+                              filterState: filters,
+                              serviceState: state,
+                            ),
+                            floating: true,
+                            snap: true,
+                            pinned: true,
+                            actions: [
+                              // filter button
+                              IconButton(
+                                icon: const Icon(Icons.tune),
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => FilterPage(
+                                                filterState: filters,
+                                              )));
+                                  if (_searchController.text.isNotEmpty) {
+                                    state.getFilteredServices(filters,
+                                        searchString: _searchController.text);
+                                  }
+                                },
+                              )
+                            ],
+                            elevation: 0,
+                            backgroundColor: primaryColor,
+                            bottom: PreferredSize(
+                              preferredSize: const Size.fromHeight(80),
+                              child: Container(
+                                child: _searchBar(
+                                    controller: _searchController,
+                                    filterState: filters,
+                                    serviceState: state),
+                              ),
+                            )) */
                       ];
                     },
                     body: SizedBox(
