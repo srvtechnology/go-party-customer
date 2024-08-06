@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../constant/themData.dart';
 import 'package:customerapp/core/components/bottomNav.dart';
 import 'package:customerapp/core/components/commonHeader.dart';
@@ -5,7 +7,6 @@ import 'package:customerapp/core/providers/serviceProvider.dart';
 import 'package:customerapp/core/routes/filter.dart';
 import 'package:customerapp/core/routes/singlePackage.dart';
 import 'package:customerapp/core/routes/singleService.dart';
-import 'package:customerapp/core/utils/debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -23,6 +24,15 @@ class ProductPageRoute extends StatefulWidget {
 class _ProductPageRouteState extends State<ProductPageRoute> {
   final TextEditingController _searchController = TextEditingController();
   // Timer? _timer;
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BottomNav(
@@ -103,6 +113,7 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                     ),
                   ),
                   body: NestedScrollView(
+                    controller: _scrollController,
                     floatHeaderSlivers: true,
                     headerSliverBuilder: (context, isChange) {
                       return [
@@ -151,6 +162,7 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                       width: double.infinity,
                       // color: Colors.white,
                       child: SingleChildScrollView(
+                        controller: _scrollController,
                         // padding: EdgeInsets.only(bottom: 5.h, top: 2.h),
                         child: state.isLoading
                             ? Container(
@@ -236,6 +248,48 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
     );
   }
 
+  Widget _searchBar({
+    required TextEditingController controller,
+    required FilterProvider filterState,
+    required ServiceProvider serviceState,
+  }) {
+    return Container(
+      height: 10.49.h,
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+      child: TextFormField(
+        controller: controller,
+        onFieldSubmitted: (value) {
+          serviceState.getFilteredServices(filterState,
+              searchString: controller.text);
+        },
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.only(top: 10, left: 20),
+          hintText: "Search ...",
+          filled: true,
+          fillColor: Colors.white,
+          prefixIcon: IconButton(
+            onPressed: () {
+              serviceState.getFilteredServices(filterState,
+                  searchString: controller.text);
+            },
+            icon: const Icon(Icons.search),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(width: 0.5, color: Colors.white),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /*--- commented on 06-8-24 : to fix the scrolling
+  issue on click of Done button in keypad
+  ----*/
+  /*
   Widget _searchBar(
       {required TextEditingController controller,
       required FilterProvider filterState,
@@ -294,6 +348,7 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
       // ),
     );
   }
+  */
 }
 
 class PackageListPageRoute extends StatefulWidget {
@@ -314,7 +369,9 @@ class _PackageListPageRouteState extends State<PackageListPageRoute> {
       appBar: CommonHeader.header(context, onBack: () {
         Navigator.pop(context);
       }, onSearch: () {
-        print("search");
+        if (kDebugMode) {
+          print("search");
+        }
         Navigator.pushNamed(context, ProductPageRoute.routeName);
       }),
       body: ListView.builder(

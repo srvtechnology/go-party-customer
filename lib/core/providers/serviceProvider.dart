@@ -11,6 +11,7 @@ import '../models/service.dart';
 
 class ServiceProvider with ChangeNotifier {
   List<ServiceModel>? _data;
+
   List<ServiceModel>? get data => _data;
 
   List<ServiceModel>? searchData = [];
@@ -19,12 +20,15 @@ class ServiceProvider with ChangeNotifier {
   List<String> mobileBannerImages = [];
 
   List<EventModel>? _eventData = [];
+
   List<EventModel>? get eventData => _eventData;
 
   List<PackageModel>? _packageData = [];
+
   List<PackageModel>? get packageData => _packageData;
 
   bool _isLoading = false;
+
   bool get isLoading => _isLoading;
 
   ServiceProvider({required FilterProvider filters}) {
@@ -64,8 +68,7 @@ class ServiceProvider with ChangeNotifier {
     }
   }
 
-  Future<void> getFilteredServices(FilterProvider filters,
-      {String? searchString, bool isUpdateMainData = false}) async {
+  Future<void> getFilteredServices(FilterProvider filters, {String? searchString, bool isUpdateMainData = false}) async {
     try {
       log("Getting filtered Services");
       log(filters.categories.toString());
@@ -84,6 +87,7 @@ class ServiceProvider with ChangeNotifier {
       } else {
         data["search"] = "";
       }
+      debugPrint("SearchString : $searchString");
 
       if (filters.startPrice != null && filters.endPrice != null) {
         data["start_price"] = filters.startPrice;
@@ -136,7 +140,7 @@ class ServiceProvider with ChangeNotifier {
       data["high_to_low"] = highToLow;
       data["low_to_high"] = lowToHigh;
 
-      /*  
+      /*
       if (filters.startPrice != null && filters.endPrice != null) {
         data["start_price"] = filters.startPrice;
         data["end_price"] = filters.endPrice;
@@ -153,7 +157,7 @@ class ServiceProvider with ChangeNotifier {
       filters.cities.forEachIndexed((index, value) {
         data["city_ids[$index]"] = value;
       });
-      
+
        filters.sortOptions.forEachIndexed((index, element) {
         if (element.contains("High to Low")) {
           data["high_to_low"] = "high";
@@ -166,19 +170,31 @@ class ServiceProvider with ChangeNotifier {
           data["low_to_high"] = "";
         }
       });
-      
+
        */
 
       log(jsonEncode(data), name: "Filter Data");
+      List<ServiceModel> searchResult = await searchServices(data);
       if (isUpdateMainData) {
-        _data = await searchServices(data);
-        return;
+        _data = searchResult;
+      } else {
+        searchData = searchResult;
       }
 
-      log(searchData.toString(), name: "Search Data");
+      /*if (isUpdateMainData) {
+        _data = await searchServices(data);
+        return;
+      }*/
+
+      log(searchData.toString(), name: "SearchData");
       searchData = await searchServices(data);
     } catch (e) {
       CustomLogger.error(e);
+      if (isUpdateMainData) {
+        _data = [];
+      } else {
+        searchData = [];
+      }
     } finally {
       stopLoading();
     }
@@ -211,8 +227,11 @@ class FilterProvider with ChangeNotifier {
   String? _startPrice, _endPrice;
 
   List<String> get categories => _events;
+
   List<String> get services => _services;
+
   List<String> get cities => _cities;
+
   List<String> get sortOptions => _sortOptions;
   bool _hasFilters = false;
 
