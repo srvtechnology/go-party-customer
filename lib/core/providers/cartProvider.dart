@@ -60,6 +60,7 @@ class CartProvider with ChangeNotifier {
       calculateTotal();
     } catch (e) {
       log(e.toString());
+      _data = [];
     }
     stopLoading();
     notifyListeners();
