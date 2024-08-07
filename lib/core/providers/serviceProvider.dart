@@ -142,39 +142,6 @@ class ServiceProvider with ChangeNotifier {
       data["high_to_low"] = highToLow;
       data["low_to_high"] = lowToHigh;
 
-      /*  
-      if (filters.startPrice != null && filters.endPrice != null) {
-        data["start_price"] = filters.startPrice;
-        data["end_price"] = filters.endPrice;
-      }
-
-      filters.categories.forEachIndexed((index, value) {
-        data["category[$index]"] = value;
-      });
-
-      filters.services.forEachIndexed((index, value) {
-        data["service[$index]"] = value;
-      });
-
-      filters.cities.forEachIndexed((index, value) {
-        data["city_ids[$index]"] = value;
-      });
-      
-       filters.sortOptions.forEachIndexed((index, element) {
-        if (element.contains("High to Low")) {
-          data["high_to_low"] = "high";
-        } else {
-          data["high_to_low"] = "";
-        }
-        if (element.contains("Low to high")) {
-          data["low_to_high"] = "low";
-        } else {
-          data["low_to_high"] = "";
-        }
-      });
-      
-       */
-
       log(jsonEncode(data), name: "Filter Data");
       if (isUpdateMainData) {
         _data = await searchServices(data);

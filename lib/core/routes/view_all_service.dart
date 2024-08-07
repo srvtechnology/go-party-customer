@@ -23,6 +23,13 @@ class _ViewAllServiceRouteState extends State<ViewAllServiceRoute> {
   final TextEditingController _searchController = TextEditingController();
 
   @override
+  void dispose() {
+    _searchController.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BottomNav(
       child: ListenableProvider(
@@ -185,7 +192,7 @@ class _ViewAllServiceRouteState extends State<ViewAllServiceRoute> {
       child: TextFormField(
         // autofocus: true,
         controller: controller,
-        onChanged: (v) {
+        onFieldSubmitted: (v) {
           // if (_timer != null) _timer?.cancel();
           Debouncer(milliseconds: 800).run(() {
             serviceState.getFilteredServices(filterState,
