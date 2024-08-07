@@ -22,7 +22,6 @@ class _FilterPageState extends State<FilterPage> {
   List<String> _selectedCities = [];
   final List<String> _selectedSortOptions = [];
   bool _rangeSelected = false;
-  String? _discount;
 
   @override
   void initState() {

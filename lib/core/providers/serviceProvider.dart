@@ -68,7 +68,8 @@ class ServiceProvider with ChangeNotifier {
     }
   }
 
-  Future<void> getFilteredServices(FilterProvider filters, {String? searchString, bool isUpdateMainData = false}) async {
+  Future<void> getFilteredServices(FilterProvider filters,
+      {String? searchString, bool isUpdateMainData = false}) async {
     try {
       log("Getting filtered Services");
       log(filters.categories.toString());
@@ -87,7 +88,8 @@ class ServiceProvider with ChangeNotifier {
       } else {
         data["search"] = "";
       }
-      debugPrint("SearchString : $searchString");
+
+      log(searchString!, name: "SearchKeyword");
 
       if (filters.startPrice != null && filters.endPrice != null) {
         data["start_price"] = filters.startPrice;
@@ -140,7 +142,7 @@ class ServiceProvider with ChangeNotifier {
       data["high_to_low"] = highToLow;
       data["low_to_high"] = lowToHigh;
 
-      /*
+      /*  
       if (filters.startPrice != null && filters.endPrice != null) {
         data["start_price"] = filters.startPrice;
         data["end_price"] = filters.endPrice;
@@ -157,7 +159,7 @@ class ServiceProvider with ChangeNotifier {
       filters.cities.forEachIndexed((index, value) {
         data["city_ids[$index]"] = value;
       });
-
+      
        filters.sortOptions.forEachIndexed((index, element) {
         if (element.contains("High to Low")) {
           data["high_to_low"] = "high";
@@ -170,31 +172,19 @@ class ServiceProvider with ChangeNotifier {
           data["low_to_high"] = "";
         }
       });
-
+      
        */
 
       log(jsonEncode(data), name: "Filter Data");
-      List<ServiceModel> searchResult = await searchServices(data);
       if (isUpdateMainData) {
-        _data = searchResult;
-      } else {
-        searchData = searchResult;
-      }
-
-      /*if (isUpdateMainData) {
         _data = await searchServices(data);
         return;
-      }*/
+      }
 
-      log(searchData.toString(), name: "SearchData");
       searchData = await searchServices(data);
+      log(searchData.toString(), name: "SearchData");
     } catch (e) {
       CustomLogger.error(e);
-      if (isUpdateMainData) {
-        _data = [];
-      } else {
-        searchData = [];
-      }
     } finally {
       stopLoading();
     }

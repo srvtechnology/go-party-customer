@@ -2,10 +2,12 @@ import 'package:customerapp/core/components/TramsAndConditionsCheckBox.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/routes/profile.dart';
 import 'package:customerapp/core/routes/signin.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
+import '../../views/view.dart';
 import 'mainpage.dart';
 
 class SignUpPageRoute extends StatefulWidget {
@@ -148,7 +150,7 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                     ),
                   ),
 
-                 /* Row(
+                  /* Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       // radio
@@ -400,6 +402,62 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                             style: TextStyle(color: Colors.white),
                           ),
                         ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 10),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context)
+                          .primaryColor, // Background color for the button
+                      borderRadius: BorderRadius.circular(8), // Rounded corners
+                    ),
+                    child: Center(
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Are you an agent? ',
+                          style: const TextStyle(
+                            color: Colors.white, // Text color
+                            fontSize: 16,
+                          ),
+                          children: <TextSpan>[
+                            TextSpan(
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.pushNamed(
+                                      context, AgentSignIn.routeName);
+                                },
+                              text: 'Sign in',
+                              style: const TextStyle(
+                                color: Colors.yellow, // Link color
+                                fontSize: 16,
+                              ),
+                            ),
+                            const TextSpan(
+                              text: ' or ',
+                              style: TextStyle(
+                                color: Colors.white, // Text color
+                                fontSize: 16,
+                              ),
+                            ),
+                            TextSpan(
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.pushNamed(
+                                      context, AgentSignUp.routeName);
+                                },
+                              text: 'Sign up',
+                              style: const TextStyle(
+                                color: Colors.yellow, // Link color
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

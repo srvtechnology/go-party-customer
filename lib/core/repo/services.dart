@@ -126,7 +126,7 @@ Future<List<ServiceModel>> searchServices(Map<String, dynamic> data) async {
     );
     log(jsonEncode(response.data), name: "Search Services");
     List<ServiceModel> services = [];
-    for (var serviceJson in response.data["data"]) {
+    for (var serviceJson in response.data["services"]) {
       try {
         services.add(ServiceModel.fromJson(serviceJson));
       } catch (e) {

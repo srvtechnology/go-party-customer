@@ -189,8 +189,6 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                       ],
                     ),
                   ),
-
-
                   if (state.authState == AuthState.Error)
                     const Text(
                       "Incorrect username or password",
@@ -304,63 +302,61 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                           ),
                   ),
                   const SizedBox(height: 8),
-                  InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(
-                          context, AgentSignIn.routeName);
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor, // Background color for the button
-                        borderRadius: BorderRadius.circular(8), // Rounded corners
-                      ),
-                      child: Center(
-                        child: RichText(
-                          text: TextSpan(
-                            text: 'Are you an agent? ',
-                            style: const TextStyle(
-                              color: Colors.white, // Text color
-                              fontSize: 16,
-                            ),
-                            children: <TextSpan>[
-                              TextSpan(
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    Navigator.pushNamed(context, AgentSignIn.routeName);
-                                  },
-                                text: 'Sign in',
-                                style: const TextStyle(
-                                  color: Colors.yellow, // Link color
-                                  fontSize: 16,
-                                ),
-                              ),
-                              const TextSpan(
-                                text: ' or ',
-                                style: TextStyle(
-                                  color: Colors.white, // Text color
-                                  fontSize: 16,
-                                ),
-                              ),
-                              TextSpan(
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    Navigator.pushNamed(context, AgentSignUp.routeName);
-                                  },
-                                text: 'Sign up',
-                                style: const TextStyle(
-                                  color: Colors.yellow, // Link color
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ],
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 10),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context)
+                          .primaryColor, // Background color for the button
+                      borderRadius: BorderRadius.circular(8), // Rounded corners
+                    ),
+                    child: Center(
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Are you an agent? ',
+                          style: const TextStyle(
+                            color: Colors.white, // Text color
+                            fontSize: 16,
                           ),
+                          children: <TextSpan>[
+                            TextSpan(
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.pushNamed(
+                                      context, AgentSignIn.routeName);
+                                },
+                              text: 'Sign in',
+                              style: const TextStyle(
+                                color: Colors.yellow, // Link color
+                                fontSize: 16,
+                              ),
+                            ),
+                            const TextSpan(
+                              text: ' or ',
+                              style: TextStyle(
+                                color: Colors.white, // Text color
+                                fontSize: 16,
+                              ),
+                            ),
+                            TextSpan(
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.pushNamed(
+                                      context, AgentSignUp.routeName);
+                                },
+                              text: 'Sign up',
+                              style: const TextStyle(
+                                color: Colors.yellow, // Link color
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ),
 
-                 /* Row(
+                  /* Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       RichText(

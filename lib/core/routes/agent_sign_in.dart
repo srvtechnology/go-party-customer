@@ -1,5 +1,6 @@
 import 'package:customerapp/core/components/TramsAndConditionsCheckBox.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -22,11 +23,8 @@ class _AgentSignInState extends State<AgentSignIn> {
       TextEditingController(text: "newagent@demo.com");
   final TextEditingController _passwordController =
       TextEditingController(text: "123456");
-  final bool _obscureTextConfirm = true;
-  final bool _obscureText = true;
   @override
   Widget build(BuildContext context) {
-    bool obscureTextConfirm = true;
     bool obscureText = true;
     return Scaffold(
       key: scaffoldKey,
@@ -48,7 +46,7 @@ class _AgentSignInState extends State<AgentSignIn> {
                     ),
                   ),
                   const SizedBox(height: 32.0),
-                   /*Center(
+                  /*Center(
                     child: Text(
                       "Sign In as Agent",
                       style: TextStyle(
@@ -102,7 +100,8 @@ class _AgentSignInState extends State<AgentSignIn> {
                         SizedBox(width: 10),
                         Text(
                           "Already an Agent ? Sign in.",
-                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.w600),
                         ),
                       ],
                     ),
@@ -222,24 +221,57 @@ class _AgentSignInState extends State<AgentSignIn> {
                   const SizedBox(
                     height: 10,
                   ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, SignInPageRoute.routeName);
-                    },
-                    child: Container(
-                      height: 5.h,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: primaryColor/*tertiaryColor*/,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Text('Already a customer ? Sign in',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 10),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context)
+                          .primaryColor, // Background color for the button
+                      borderRadius: BorderRadius.circular(8), // Rounded corners
+                    ),
+                    child: Center(
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Are you a Customer ? ',
+                          style: const TextStyle(
+                            color: Colors.white, // Text color
                             fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
-                          )),
+                          ),
+                          children: <TextSpan>[
+                            TextSpan(
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.pushNamed(
+                                      context, SignInPageRoute.routeName);
+                                },
+                              text: 'Sign in',
+                              style: const TextStyle(
+                                color: Colors.yellow, // Link color
+                                fontSize: 16,
+                              ),
+                            ),
+                            const TextSpan(
+                              text: ' or ',
+                              style: TextStyle(
+                                color: Colors.white, // Text color
+                                fontSize: 16,
+                              ),
+                            ),
+                            TextSpan(
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.pushNamed(
+                                      context, SignUpPageRoute.routeName);
+                                },
+                              text: 'Sign up',
+                              style: const TextStyle(
+                                color: Colors.yellow, // Link color
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 16.0),

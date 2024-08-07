@@ -3,11 +3,13 @@ import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/routes/agent_sign_in.dart';
 import 'package:customerapp/core/routes/mainpage.dart';
 import 'package:customerapp/core/routes/profile.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
+import '../../views/view.dart';
 import '../constant/themData.dart';
 
 class AgentSignUp extends StatefulWidget {
@@ -76,11 +78,14 @@ class _AgentSignUpState extends State<AgentSignUp> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: const [
                             // Icon or leading element (can be a radio button icon)
-                            Icon(Icons.radio_button_checked, color: Colors.white),
+                            Icon(Icons.radio_button_checked,
+                                color: Colors.white),
                             SizedBox(width: 10),
                             Text(
                               "Sign Up as Agent",
-                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
@@ -315,7 +320,7 @@ class _AgentSignUpState extends State<AgentSignUp> {
                           height: 5.h,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                            color: primaryColor/*tertiaryColor*/,
+                            color: primaryColor /*tertiaryColor*/,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: const Text('Already an Agent ? SignIn',
@@ -325,6 +330,63 @@ class _AgentSignUpState extends State<AgentSignUp> {
                                 fontWeight: FontWeight.w500,
                                 color: Colors.white,
                               )),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 10),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context)
+                              .primaryColor, // Background color for the button
+                          borderRadius:
+                              BorderRadius.circular(8), // Rounded corners
+                        ),
+                        child: Center(
+                          child: RichText(
+                            text: TextSpan(
+                              text: 'Are you a Customer ? ',
+                              style: const TextStyle(
+                                color: Colors.white, // Text color
+                                fontSize: 16,
+                              ),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      Navigator.pushNamed(
+                                          context, SignInPageRoute.routeName);
+                                    },
+                                  text: 'Sign in',
+                                  style: const TextStyle(
+                                    color: Colors.yellow, // Link color
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const TextSpan(
+                                  text: ' or ',
+                                  style: TextStyle(
+                                    color: Colors.white, // Text color
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                TextSpan(
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      Navigator.pushNamed(
+                                          context, SignUpPageRoute.routeName);
+                                    },
+                                  text: 'Sign up',
+                                  style: const TextStyle(
+                                    color: Colors.yellow, // Link color
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 16.0),
