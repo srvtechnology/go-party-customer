@@ -511,7 +511,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                             padding: const EdgeInsets.only(
                                                 right: 8.0),
                                             child: Text(
-                                              "\u20B9 ${double.parse(widget.service.discountedPrice ?? '0') * int.parse(_quantity.text)}",
+                                              "\u20B9 ${double.parse(selectedCategory?.discountPrice?.toString() ?? "0.00") * int.parse(_quantity.text)}",
                                               style: const TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w600),
@@ -801,7 +801,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                             ),
                             Container(
                               padding: EdgeInsets.symmetric(
-                                  horizontal: 4.w, vertical: 1.h),
+                                  horizontal: 4.w, vertical: 2.h),
                               child: Row(
                                 children: [
                                   Column(
@@ -809,34 +809,32 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       RichText(
-                                        textAlign: TextAlign.center,
                                         text: TextSpan(
                                           children: [
                                             TextSpan(
                                                 text:
-                                                    "\u20B9 ${widget.service.discountedPrice} ",
+                                                    "\u20B9 ${selectedCategory?.discountPrice?.toString().trim() ?? "0.00"} ",
                                                 style: TextStyle(
-                                                    fontSize: 20.sp,
+                                                    fontSize: 16.sp,
                                                     fontWeight: FontWeight.w600,
                                                     color: Theme.of(context)
                                                         .primaryColorDark),
                                                 children: [
+                                                  // TextSpan(
+                                                  //   text: "/ ${widget.package.}",
+                                                  //   style: TextStyle(
+                                                  //       fontSize: 15.sp,
+                                                  //       color: Colors.black),
+                                                  // ),
                                                   TextSpan(
                                                     text:
-                                                        "/ ${widget.service.priceBasis}",
+                                                        "for ${selectedCategory?.category?.categoryName?.trim() ?? ""}",
                                                     style: TextStyle(
-                                                        fontSize: 15.sp,
-                                                        color: Colors.black),
+                                                        color: Theme.of(context)
+                                                            .primaryColorDark,
+                                                        fontSize: 14.sp),
                                                   ),
                                                 ]),
-                                            TextSpan(
-                                              text:
-                                                  " for ${selectedCategory?.category?.categoryName?.trim() ?? ""}",
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .primaryColorDark,
-                                                  fontSize: 16.sp),
-                                            ),
                                           ],
                                         ),
                                       ),
@@ -846,7 +844,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                       ),
                                       const Text(
                                         'Check price for other event ',
-                                        style: TextStyle(fontSize: 16),
+                                        style: TextStyle(fontSize: 14),
                                       ),
                                       const Text(
                                         '',
@@ -855,13 +853,12 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                     ],
                                   ),
                                   const Spacer(),
-                                  /*-- 26-07-24 : for popup categories ----*/
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       const SizedBox(
-                                        height: 25,
+                                        height: 20,
                                       ),
                                       DropdownButton<PopupCategory?>(
                                           style: TextStyle(
@@ -883,7 +880,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                                     e.category?.categoryName ??
                                                         "",
                                                     style: const TextStyle(
-                                                        fontSize: 16),
+                                                        fontSize: 14),
                                                   )))
                                               .toList(),
                                           onChanged: (v) {

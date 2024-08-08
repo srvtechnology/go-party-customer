@@ -51,7 +51,7 @@ class ServiceModel {
     }
 
     List<String> tempAvailableCities = [];
-    var cities = json["available_cities"];
+    var cities = json["services"]?["available_cities"];
     debugPrint("Cities : ${cities.runtimeType}");
     if (cities != null && cities is List<dynamic>) {
       tempAvailableCities = cities.map((e) => e.toString()).toList();
@@ -61,10 +61,10 @@ class ServiceModel {
     }
 
     List<PopupCategory> tempPopupCategories = [];
-    var serviceCategory = json["popup_categories"];
+    var serviceCategory = json["services"]?["popup_categories"];
     debugPrint("ServiceCategories: ${serviceCategory.runtimeType}");
     if (serviceCategory != null) {
-      for (var popupCategoryJson in json["popup_categories"]) {
+      for (var popupCategoryJson in serviceCategory) {
         tempPopupCategories.add(PopupCategory.fromJson(popupCategoryJson));
         debugPrint("ServiceCategories : $tempPopupCategories");
       }
