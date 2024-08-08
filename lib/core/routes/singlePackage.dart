@@ -794,7 +794,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                             text:
                                                 "\u20B9 ${selectedCategory?.discountPrice ?? widget.package.discountedPrice} ",
                                             style: TextStyle(
-                                                fontSize: 20.sp,
+                                                fontSize: 16.sp,
                                                 fontWeight: FontWeight.w600,
                                                 color: Theme.of(context)
                                                     .primaryColorDark),
@@ -811,7 +811,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                 style: TextStyle(
                                                     color: Theme.of(context)
                                                         .primaryColorDark,
-                                                    fontSize: 16.sp),
+                                                    fontSize: 14.sp),
                                               ),
                                             ]),
                                       ],
@@ -823,7 +823,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                   ),
                                   const Text(
                                     'Check price for other event ',
-                                    style: TextStyle(fontSize: 16),
+                                    style: TextStyle(fontSize: 14),
                                   ),
                                   const Text(
                                     '',
@@ -837,7 +837,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   const SizedBox(
-                                    height: 25,
+                                    height: 20,
                                   ),
                                   DropdownButton<PopupCategory?>(
                                       style: TextStyle(
@@ -858,7 +858,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                     e.category?.categoryName ??
                                                         "",
                                                     style: const TextStyle(
-                                                        fontSize: 16),
+                                                        fontSize: 14),
                                                   )))
                                           .toList(),
                                       onChanged: (v) {

@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:customerapp/core/components/Rating_view.dart';
 import 'package:customerapp/core/models/orders.dart';
+import 'package:customerapp/core/models/single_package.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,6 +33,7 @@ import 'package:customerapp/core/routes/product.dart';
 import 'package:customerapp/core/routes/signin.dart';
 
 import '../components/banner.dart';
+import '../utils/logger.dart';
 
 class SingleServiceRoute extends StatefulWidget {
   final ServiceModel service;
@@ -53,13 +57,14 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
   final _formKey = GlobalKey<FormState>();
   bool _isShowMore = false;
   bool isProcessing = false;
+
   List<String> _cities = [];
   String? selectedCity = " Select a City";
   String defaultCityMessage = "Open for every city";
   bool isLoading = false;
 
-  List<ServicePopUpCategory> popupCategories = [];
-  ServicePopUpCategory? selectedCategory;
+  List<PopupCategory> popupCategories = [];
+  PopupCategory? selectedCategory;
 
   void _calculateDays() {
     try {
@@ -77,7 +82,9 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
           .inDays
           .toString());
     } catch (e) {
-      print('${e.toString()} getDay error');
+      if (kDebugMode) {
+        print('${e.toString()} getDay error');
+      }
     }
   }
 
@@ -91,30 +98,34 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
         ? "1"
         : widget.service.minQnty.toString();
     _duration.text = "Full Day";
-    getAvailableCities();
-
-    popupCategories = widget.service.popupCategories ?? [];
-    if (popupCategories.isNotEmpty) {
-      selectedCategory = popupCategories.first;
-      _categoryName.text = selectedCategory!.category?.categoryName ?? "";
-    }
+    getSinglePackage();
   }
 
-  Future<void> getAvailableCities() async {
-    setState(() => isLoading = true);
-    List cities = await getSingleService(widget.service.id!);
-
-    setState(() {
-      _cities = cities.map((e) => e.toString()).toList();
+  Future<void> getSinglePackage() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      ServiceModel data =
+          await getSingleServiceData(widget.service.id.toString());
+      log(data.toString(), name: "Single Package Data");
+      popupCategories = data.popupCategories ?? [];
+      if (popupCategories.isNotEmpty) {
+        selectedCategory = popupCategories.first;
+        _categoryName.text = selectedCategory!.category?.categoryName ?? "";
+      }
+      _cities = data.availableCities ?? [];
       if (_cities.isNotEmpty) {
         selectedCity = _cities.first;
       } else {
         selectedCity = defaultCityMessage;
       }
-      isLoading = false;
-    });
-    if (kDebugMode) {
-      print(_cities.toString());
+    } catch (e) {
+      CustomLogger.error(e);
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -852,7 +863,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                       const SizedBox(
                                         height: 25,
                                       ),
-                                      DropdownButton<ServicePopUpCategory?>(
+                                      DropdownButton<PopupCategory?>(
                                           style: TextStyle(
                                               color: Theme.of(context)
                                                   .primaryColor),
@@ -866,7 +877,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                           value: selectedCategory,
                                           items: popupCategories
                                               .map((e) => DropdownMenuItem<
-                                                      ServicePopUpCategory>(
+                                                      PopupCategory>(
                                                   value: e,
                                                   child: Text(
                                                     e.category?.categoryName ??

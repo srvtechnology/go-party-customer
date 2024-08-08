@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../../config.dart';
 import 'single_package.dart';
 
@@ -8,7 +10,8 @@ class ServiceModel {
   String? rating, categoryId;
   final String? imageUrl = "storage/app/public/service/";
   List<ReviewModel>? reviews = [];
-  List<ServicePopUpCategory>? popupCategories;
+  List<PopupCategory>? popupCategories;
+  List<String>? availableCities;
 
   ServiceModel({
     required this.id,
@@ -20,6 +23,7 @@ class ServiceModel {
     required this.images,
     required this.reviews,
     this.popupCategories,
+    this.availableCities,
     this.rating,
     this.categoryId,
     required this.minQnty,
@@ -46,18 +50,33 @@ class ServiceModel {
       }
     }
 
-    List<ServicePopUpCategory> tempPopupCategories = [];
-    if (json["service_pop_categories"] != null) {
-      for (var popupCategoryJson in json["service_pop_categories"]) {
-        tempPopupCategories
-            .add(ServicePopUpCategory.fromJson(popupCategoryJson));
+    List<String> tempAvailableCities = [];
+    var cities = json["available_cities"];
+    debugPrint("Cities : ${cities.runtimeType}");
+    if (cities != null && cities is List<dynamic>) {
+      tempAvailableCities = cities.map((e) => e.toString()).toList();
+      debugPrint("Cities : $tempAvailableCities");
+    } else {
+      debugPrint("No available cities found or invalid data type.");
+    }
+
+    List<PopupCategory> tempPopupCategories = [];
+    var serviceCategory = json["popup_categories"];
+    debugPrint("ServiceCategories: ${serviceCategory.runtimeType}");
+    if (serviceCategory != null) {
+      for (var popupCategoryJson in json["popup_categories"]) {
+        tempPopupCategories.add(PopupCategory.fromJson(popupCategoryJson));
+        debugPrint("ServiceCategories : $tempPopupCategories");
       }
+    } else {
+      debugPrint("No popup categories found or invalid data type.");
     }
 
     return ServiceModel(
       reviews: tempReviews,
       rating: tempavgReview,
       popupCategories: tempPopupCategories,
+      availableCities: tempAvailableCities,
       id: json["id"].toString(),
       name: json["service"],
       description: json["description"],
@@ -104,7 +123,7 @@ class ReviewModel {
   }
 }
 
-class ServicePopUpCategory {
+/* class ServicePopUpCategory {
   int? id;
   String? categoryId;
   dynamic serviceId;
@@ -173,4 +192,4 @@ class ServicePopUpCategory {
         "updated_at": updatedAt?.toIso8601String(),
         "category": category?.toJson(),
       };
-}
+} */

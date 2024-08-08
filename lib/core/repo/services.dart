@@ -31,17 +31,6 @@ Future<List<ServiceModel>> getServices() async {
   }
 }
 
-Future<SinglePackageData> getSinglePackageData(String id) async {
-  try {
-    Response response = await customDioClient.client
-        .get("${APIConfig.baseUrl}/api/customer-single-package/$id");
-    log(jsonEncode(response.data), name: "Single Package Response");
-    return SinglePackageData.fromJson(response.data);
-  } catch (e) {
-    return Future.error(e);
-  }
-}
-
 Future<List<PackageModel>> getPackages() async {
   try {
     Response response = await customDioClient.client
@@ -62,16 +51,27 @@ Future<List<PackageModel>> getPackages() async {
   }
 }
 
-Future<List> getSingleService(String id) async {
+Future<ServiceModel> getSingleServiceData(String id) async {
   try {
     Response response = await customDioClient.client
         .get("${APIConfig.baseUrl}/api/customer-single-service/$id");
 
-    log(jsonEncode(response.data), name: "ServiceAreaResponse");
+    log(jsonEncode(response.data), name: "SingleServiceResponse");
 
-    List availableCities = response.data["services"]?["available_cities"] ?? [];
-    log(availableCities.toString(), name: "Service area Response");
-    return availableCities;
+    /* List availableCities = response.data["services"]?["available_cities"] ?? []; */
+
+    return ServiceModel.fromJson(response.data);
+  } catch (e) {
+    return Future.error(e);
+  }
+}
+
+Future<SinglePackageData> getSinglePackageData(String id) async {
+  try {
+    Response response = await customDioClient.client
+        .get("${APIConfig.baseUrl}/api/customer-single-package/$id");
+    log(jsonEncode(response.data), name: "Single Package Response");
+    return SinglePackageData.fromJson(response.data);
   } catch (e) {
     return Future.error(e);
   }
