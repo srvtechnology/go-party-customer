@@ -155,7 +155,7 @@ class PackageCard extends StatelessWidget {
             Text(
               capitalize(package.name),
               overflow: TextOverflow.ellipsis,
-              maxLines: 2,
+              maxLines: 1,
               style: headerTextStyle(context),
             ),
             SizedBox(

@@ -62,11 +62,13 @@ Future<List<PackageModel>> getPackages() async {
   }
 }
 
-Future<List> getServicesCities(String id) async {
+Future<List> getSingleService(String id) async {
   try {
     Response response = await customDioClient.client
         .get("${APIConfig.baseUrl}/api/customer-single-service/$id");
-    // log(jsonEncode(response.data), name: "Service area Response");
+
+    log(jsonEncode(response.data), name: "ServiceAreaResponse");
+
     List availableCities = response.data["services"]?["available_cities"] ?? [];
     log(availableCities.toString(), name: "Service area Response");
     return availableCities;

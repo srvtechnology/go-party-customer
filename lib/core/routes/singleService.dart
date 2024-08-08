@@ -102,7 +102,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
 
   Future<void> getAvailableCities() async {
     setState(() => isLoading = true);
-    List cities = await getServicesCities(widget.service.id!);
+    List cities = await getSingleService(widget.service.id!);
 
     setState(() {
       _cities = cities.map((e) => e.toString()).toList();
@@ -547,8 +547,8 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                                             .id
                                                             .toString();
                                                         if (kDebugMode) {
-                                                          print(
-                                                            _selectedCity.text);
+                                                          print(_selectedCity
+                                                              .text);
                                                         }
                                                         Map data = {
                                                           "service_id":
