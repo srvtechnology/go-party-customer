@@ -225,7 +225,7 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                                       ]
                                     : state.searchData!.map((e) {
                                         if (e.package is PackageModel) {
-                                          // Handle the case where e is a PackageModel
+                                          /* -- Handle the case where e is a PackageModel -- */
                                           return PackageTile(
                                             package: e.package,
                                             onTap: () {
@@ -240,7 +240,7 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                                             },
                                           );
                                         } else {
-                                          // Handle the case where e is a ServiceModel
+                                          /* --- Handle the case where e is a ServiceModel -- */
                                           return ProductTile(
                                             service: e,
                                             onTap: () {
