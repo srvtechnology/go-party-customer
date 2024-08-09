@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../constant/themData.dart';
 import 'package:customerapp/core/components/bottomNav.dart';
@@ -42,25 +43,36 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
           return ListenableProvider(
             create: (_) => ServiceProvider(filters: filters),
             child: Consumer<ServiceProvider>(builder: (context, state, child) {
-              // if (state.isLoading) {
-              //   return Scaffold(
-              //       body: Container(
-              //           alignment: Alignment.center,
-              //           child: const ShimmerWidget()));
-              // }
-              // if (state.data == null) {
-              //   return Scaffold(
-              //     appBar: AppBar(
-              //       title: const Text("Services"),
-              //       centerTitle: true,
-              //       elevation: 0,
-              //     ),
-              //     body: Container(
-              //       alignment: Alignment.center,
-              //       child: const Text("No services available"),
-              //     ),
-              //   );
-              // }
+              /* if (state.isLoading) {
+                return Scaffold(
+                    body: Container(
+                        alignment: Alignment.center,
+                        child: const ShimmerWidget()));
+              }
+              if (state.data == null) {
+                return Scaffold(
+                  appBar: AppBar(
+                    title: const Text("Services"),
+                    centerTitle: true,
+                    elevation: 0,
+                  ),
+                  body: Container(
+                    alignment: Alignment.center,
+                    child: const Text("No services available"),
+                  ),
+                );
+              } */
+
+              if (kDebugMode) {
+                print('StateData: ${state.data}');
+                print('SearchData: ${state.searchData}');
+                print('SearchString: ${_searchController.text}');
+              }
+
+              bool showFilterIcon = state.data != null &&
+                  state.searchData != null &&
+                  state.searchData!.isNotEmpty;
+
               return GestureDetector(
                 onTap: () {
                   FocusManager.instance.primaryFocus!.unfocus();
@@ -91,22 +103,40 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                               filterState: filters,
                               serviceState: state,
                             )),
-                            IconButton(
-                              icon: const Icon(Icons.tune),
-                              color: Colors.white,
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
+                            if (showFilterIcon)
+                              IconButton(
+                                icon: const Icon(Icons.tune),
+                                color: Colors.white,
+                                onPressed: () {
+                                  if (_searchController.text.isEmpty) {
+                                    Fluttertoast.showToast(
+                                      msg:
+                                          "Search field cannot be empty to apply filter",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.BOTTOM,
+                                      backgroundColor: Colors.red,
+                                      textColor: Colors.white,
+                                      fontSize: 16.0,
+                                    );
+                                  } else {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
                                         builder: (context) => FilterPage(
-                                              filterState: filters,
-                                            )));
-                                if (_searchController.text.isNotEmpty) {
-                                  state.getFilteredServices(filters,
-                                      searchString: _searchController.text);
-                                }
-                              },
-                            )
+                                          filterState: filters,
+                                        ),
+                                      ),
+                                    ).then((_) {
+                                      /* -- Reload filtered services when returning from the filter page -- */
+                                      if (_searchController.text.isNotEmpty) {
+                                        state.getFilteredServices(filters,
+                                            searchString:
+                                                _searchController.text);
+                                      }
+                                    });
+                                  }
+                                },
+                              )
                           ],
                         ),
                       ),
@@ -279,8 +309,19 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
       child: TextFormField(
         controller: controller,
         onFieldSubmitted: (value) {
-          serviceState.getFilteredServices(filterState,
-              searchString: controller.text);
+          if (controller.text.isNotEmpty) {
+            serviceState.getFilteredServices(filterState,
+                searchString: controller.text);
+          } else {
+            Fluttertoast.showToast(
+              msg: "Search field cannot be empty",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0,
+            );
+          }
         },
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.only(top: 10, left: 20),
@@ -289,8 +330,19 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
           fillColor: Colors.white,
           prefixIcon: IconButton(
             onPressed: () {
-              serviceState.getFilteredServices(filterState,
-                  searchString: controller.text);
+              if (controller.text.isNotEmpty) {
+                serviceState.getFilteredServices(filterState,
+                    searchString: controller.text);
+              } else {
+                Fluttertoast.showToast(
+                  msg: "Search field cannot be empty",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  backgroundColor: Colors.red,
+                  textColor: Colors.white,
+                  fontSize: 16.0,
+                );
+              }
             },
             icon: const Icon(Icons.search),
           ),
