@@ -462,10 +462,10 @@ class _CartPageState extends State<CartPage> {
                                     int.tryParse(item.quantity) ?? 1;
                                 if (currentQuantity > 1) {
                                   currentQuantity -= 1;
-                                  item.quantity =
-                                      currentQuantity.toString();
+                                  item.quantity = currentQuantity.toString();
                                   item.totalPrice = (currentQuantity *
-                                      double.parse(item.days) * double.parse(item.price))
+                                          double.parse(item.days) *
+                                          double.parse(item.price))
                                       .toString();
                                   changedQuantity[item.id] = item.quantity;
                                   state.calculateTotal();
@@ -502,7 +502,8 @@ class _CartPageState extends State<CartPage> {
                                 currentQuantity += 1;
                                 item.quantity = currentQuantity.toString();
                                 item.totalPrice = (currentQuantity *
-                                        double.parse(item.days) * double.parse(item.price))
+                                        double.parse(item.days) *
+                                        double.parse(item.price))
                                     .toString();
                                 changedQuantity[item.id] = item.quantity;
                                 state.calculateTotal();
@@ -578,16 +579,15 @@ class _CartPageState extends State<CartPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => SingleServiceRoute(
-                                    service: item.service),
+                                builder: (context) =>
+                                    SingleServiceRoute(service: item.service),
                               ),
                             );
                           } else {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        SinglePackageRoute(
+                                    builder: (context) => SinglePackageRoute(
                                           package: item.service,
                                         )));
                           }
@@ -981,7 +981,10 @@ class ExtraDetails extends StatelessWidget {
                               TextButton(
                                   onPressed: () {
                                     Navigator.pushNamed(
-                                        context, ViewAllServiceRoute.routeName);
+                                        context, ProductPageRoute.routeName);
+                                    /* --commented on : 09-04-24 -- */
+                                    /* Navigator.pushNamed(
+                                        context, ViewAllServiceRoute.routeName); */
                                   },
                                   child: Text(
                                     "View All",

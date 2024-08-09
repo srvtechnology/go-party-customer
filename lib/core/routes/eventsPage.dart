@@ -59,7 +59,9 @@ class _EventsPageState extends State<EventsPage> {
           itemBuilder: (context, index) {
             return GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, ViewAllServiceRoute.routeName);
+                  Navigator.pushNamed(context, ProductPageRoute.routeName);
+                  /* --commented on : 09-04-24 -- */
+                  /* Navigator.pushNamed( context, ViewAllServiceRoute.routeName); */
                 },
                 child: CircularEventCard(event: widget.events[index]));
           },

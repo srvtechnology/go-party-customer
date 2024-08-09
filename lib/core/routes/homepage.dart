@@ -427,10 +427,11 @@ class _HomeState extends State<Home> {
                                       /*.getRange(0, min(4, state.data!.length))*/
                                       .map((e) => GestureDetector(
                                             onTap: () {
-                                              Navigator.pushNamed(
-                                                context,
-                                                ViewAllServiceRoute.routeName,
-                                              );
+                                              Navigator.pushNamed(context,
+                                                  ProductPageRoute.routeName);
+                                              /* --commented on : 09-04-24 -- */
+                                              /* Navigator.pushNamed(
+                                        context, ViewAllServiceRoute.routeName); */
                                             },
                                             child: CircularEventCard(
                                               event: e,
@@ -468,7 +469,10 @@ class _HomeState extends State<Home> {
                                   child: TextButton(
                                       onPressed: () {
                                         Navigator.pushNamed(context,
-                                            ViewAllServiceRoute.routeName);
+                                            ProductPageRoute.routeName);
+                                        /* --commented on : 09-04-24 -- */
+                                        /* Navigator.pushNamed(
+                                        context, ViewAllServiceRoute.routeName); */
                                       },
                                       child: Text(
                                         "View All",
@@ -587,7 +591,10 @@ class _HomeState extends State<Home> {
                                   child: TextButton(
                                       onPressed: () {
                                         Navigator.pushNamed(context,
-                                            ViewAllServiceRoute.routeName);
+                                            ProductPageRoute.routeName);
+                                        /* --commented on : 09-04-24 -- */
+                                        /* Navigator.pushNamed(
+                                        context, ViewAllServiceRoute.routeName); */
                                       },
                                       child: Text(
                                         "View All",
@@ -645,7 +652,10 @@ class _HomeState extends State<Home> {
                                   child: TextButton(
                                       onPressed: () {
                                         Navigator.pushNamed(context,
-                                            ViewAllServiceRoute.routeName);
+                                            ProductPageRoute.routeName);
+                                        /* --commented on : 09-04-24 -- */
+                                        /* Navigator.pushNamed(
+                                        context, ViewAllServiceRoute.routeName); */
                                       },
                                       child: Text(
                                         "View All",
