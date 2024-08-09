@@ -86,12 +86,12 @@ class ServiceModel {
       description: json["description"],
       price: json["price"].toString(),
       priceBasis: json["price_basis"],
-      discountedPrice: json["discount_price"],
+      discountedPrice: json["discount_price"].toString(),
       images: temp,
       minQnty: json["min_qty"],
       /* serviceCategoryDetails: json["service_category_details"], */
       package: json["package_category"] != null
-          ? PackageModel.fromJson(json["package_details"])
+          ? PackageModel.fromJson(json)
           : json["service_category_details"],
     );
   }

@@ -223,19 +223,39 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                                           ),
                                         )
                                       ]
-                                    : state.searchData!
-                                        .map((e) => ProductTile(
-                                              service: e,
-                                              onTap: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            SingleServiceRoute(
-                                                                service: e)));
-                                              },
-                                            ))
-                                        .toList()),
+                                    : state.searchData!.map((e) {
+                                        if (e.package is PackageModel) {
+                                          // Handle the case where e is a PackageModel
+                                          return PackageTile(
+                                            package: e.package,
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SinglePackageRoute(
+                                                          package: e.package),
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        } else {
+                                          // Handle the case where e is a ServiceModel
+                                          return ProductTile(
+                                            service: e,
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SingleServiceRoute(
+                                                          service: e),
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        }
+                                      }).toList()),
                       ),
                     ),
                   ),
