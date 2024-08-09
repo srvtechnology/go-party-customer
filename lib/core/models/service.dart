@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../config.dart';
+import 'package.dart';
 import 'single_package.dart';
 
 class ServiceModel {
@@ -12,6 +13,7 @@ class ServiceModel {
   List<ReviewModel>? reviews = [];
   List<PopupCategory>? popupCategories;
   List<String>? availableCities;
+  dynamic package, serviceCategoryDetails;
 
   ServiceModel({
     required this.id,
@@ -22,11 +24,13 @@ class ServiceModel {
     required this.price,
     required this.images,
     required this.reviews,
+    required this.minQnty,
     this.popupCategories,
     this.availableCities,
     this.rating,
     this.categoryId,
-    required this.minQnty,
+    this.package,
+    /* this.serviceCategoryDetails, */
   });
 
   factory ServiceModel.fromJson(Map json) {
@@ -85,6 +89,10 @@ class ServiceModel {
       discountedPrice: json["discount_price"],
       images: temp,
       minQnty: json["min_qty"],
+      /* serviceCategoryDetails: json["service_category_details"], */
+      package: json["package_category"] != null
+          ? PackageModel.fromJson(json["package_details"])
+          : json["service_category_details"],
     );
   }
 }
