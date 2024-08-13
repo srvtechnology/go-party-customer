@@ -12,6 +12,7 @@ import './core/constant/themData.dart';
 GetIt getIt = GetIt.asNewInstance();
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   serviceLocator();
   runApp(const MyApp());
 }

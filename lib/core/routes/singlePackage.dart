@@ -53,6 +53,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
   final _formKey = GlobalKey<FormState>();
   List<PopupCategory> popupCategories = [];
   PopupCategory? selectedCategory;
+  List<String> videoUrls = [];
 
   void _calculateDays() {
     if (_startDate.text.isNotEmpty && _endDate.text.isNotEmpty) {
@@ -75,7 +76,9 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
         return "1";
       }
       if (day < 0) {
-        print('0'.toString() + "getDay");
+        if (kDebugMode) {
+          print('0'.toString() + "getDay");
+        }
         return "0";
       }
 
@@ -125,6 +128,9 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
         selectedCategory = popupCategories.first;
         _categoryName.text = selectedCategory!.category?.categoryName ?? "";
       }
+      setState(() {
+        videoUrls = data.packages?.videoUrl ?? [];
+      });
     } catch (e) {
       CustomLogger.error(e);
     } finally {
@@ -662,7 +668,9 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                           url:
                               'https://utsavlife.com/customer/package/details/${widget.package.id}',
                           child: PackageImageSlider(
-                              imageUrls: widget.package.images)),
+                            imageUrls: widget.package.images,
+                            videoUrls: videoUrls,
+                          )),
                       Container(
                         margin: EdgeInsets.only(top: 2.h),
                         padding: EdgeInsets.symmetric(

@@ -65,6 +65,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
 
   List<PopupCategory> popupCategories = [];
   PopupCategory? selectedCategory;
+  List<String> videoUrls = [];
 
   void _calculateDays() {
     try {
@@ -98,22 +99,24 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
         ? "1"
         : widget.service.minQnty.toString();
     _duration.text = "Full Day";
-    getSinglePackage();
+    getSingleService();
   }
 
-  Future<void> getSinglePackage() async {
+  Future<void> getSingleService() async {
     try {
       setState(() {
         isLoading = true;
       });
       ServiceModel data =
           await getSingleServiceData(widget.service.id.toString());
-      log(data.toString(), name: "Single Package Data");
+      log(data.toString(), name: "Single Service Data");
       popupCategories = data.popupCategories ?? [];
       if (popupCategories.isNotEmpty) {
         selectedCategory = popupCategories.first;
         _categoryName.text = selectedCategory!.category?.categoryName ?? "";
       }
+      videoUrls = data.videoUrl ?? [];
+      log(videoUrls.toString(), name: "Single Service VideoUrl");
       _cities = data.availableCities ?? [];
       if (_cities.isNotEmpty) {
         selectedCity = _cities.first;
@@ -284,19 +287,19 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                     const SizedBox(
                                       height: 10,
                                     ),
-                                    // CustomDropdown.search(
-                                    //   borderSide: BorderSide(
-                                    //       width: 0.5,
-                                    //       color:
-                                    //           Theme.of(context).primaryColor),
-                                    //   borderRadius: BorderRadius.circular(10),
-                                    //   hintText: "Select Service City",
-                                    //   controller: _selectedCity,
-                                    //   items: _cities.map((e) => e).toList(),
-                                    // ),
-                                    // const SizedBox(
-                                    //   height: 20,
-                                    // ),
+                                    /* CustomDropdown.search(
+                                      borderSide: BorderSide(
+                                          width: 0.5,
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                      borderRadius: BorderRadius.circular(10),
+                                      hintText: "Select Service City",
+                                      controller: _selectedCity,
+                                      items: _cities.map((e) => e).toList(),
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ), */
                                     Container(
                                       padding: const EdgeInsets.only(bottom: 5),
                                       child: Text(
@@ -378,37 +381,37 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
 
                                       return null;
                                     }),
-                                    // const SizedBox(
-                                    //   height: 20,
-                                    // ),
-                                    // TextFormField(
-                                    //   keyboardType: TextInputType.number,
-                                    //   controller: _quantity,
-                                    //   validator: (text) {
-                                    //     if (text == null || text.isEmpty) {
-                                    //       return "Required";
-                                    //     }
-                                    //     return null;
-                                    //   },
-                                    //   decoration: InputDecoration(
-                                    //       border: OutlineInputBorder(
-                                    //         borderSide: BorderSide(
-                                    //             width: 0.5,
-                                    //             color: Theme.of(context)
-                                    //                 .primaryColor),
-                                    //         borderRadius:
-                                    //             BorderRadius.circular(10),
-                                    //       ),
-                                    //       enabledBorder: OutlineInputBorder(
-                                    //         borderSide: BorderSide(
-                                    //             width: 0.5,
-                                    //             color: Theme.of(context)
-                                    //                 .primaryColor),
-                                    //         borderRadius:
-                                    //             BorderRadius.circular(10),
-                                    //       ),
-                                    //       hintText: "Select Quantity"),
-                                    // ),
+                                    /* const SizedBox(
+                                      height: 20,
+                                    ),
+                                    TextFormField(
+                                      keyboardType: TextInputType.number,
+                                      controller: _quantity,
+                                      validator: (text) {
+                                        if (text == null || text.isEmpty) {
+                                          return "Required";
+                                        }
+                                        return null;
+                                      },
+                                      decoration: InputDecoration(
+                                          border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                width: 0.5,
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                width: 0.5,
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          hintText: "Select Quantity"),
+                                    ), */
                                     const SizedBox(
                                       height: 10,
                                     ),
@@ -477,18 +480,18 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                     const SizedBox(
                                       height: 20,
                                     ),
-                                    // CustomDropdown(
-                                    //     borderSide: BorderSide(
-                                    //         width: 0.5,
-                                    //         color:
-                                    //             Theme.of(context).primaryColor),
-                                    //     borderRadius: BorderRadius.circular(10),
-                                    //     items: const [
-                                    //       "Full Day",
-                                    //       "Morning",
-                                    //       "Night"
-                                    //     ],
-                                    //     controller: _duration),
+                                    /* CustomDropdown(
+                                        borderSide: BorderSide(
+                                            width: 0.5,
+                                            color:
+                                                Theme.of(context).primaryColor),
+                                        borderRadius: BorderRadius.circular(10),
+                                        items: const [
+                                          "Full Day",
+                                          "Morning",
+                                          "Night"
+                                        ],
+                                        controller: _duration), */
                                     Container(
                                       padding: EdgeInsets.symmetric(
                                           vertical: 2.h, horizontal: 2.w),
@@ -695,7 +698,9 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                 url:
                                     'https://utsavlife.com/customer/service/details/${widget.service.id}',
                                 child: PackageImageSlider(
-                                    imageUrls: widget.service.images!)),
+                                  imageUrls: widget.service.images!,
+                                  videoUrls: videoUrls,
+                                )),
                             Container(
                               margin: EdgeInsets.only(top: 2.h),
                               padding: EdgeInsets.symmetric(
@@ -713,18 +718,18 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                     ),
                               ),
                             ),
-                            // Container(
-                            //     constraints: BoxConstraints(
-                            //         minHeight: 1.h,
-                            //         maxHeight: double.infinity,
-                            //         minWidth: double.infinity,
-                            //         maxWidth: double.infinity),
-                            //     padding: EdgeInsets.symmetric(
-                            //       horizontal: 4.w,
-                            //     ),
-                            //     alignment: Alignment.centerLeft,
-                            //     child:
-                            //         HtmlTextView(htmlText: widget.service.description)),
+                            /* Container(
+                                constraints: BoxConstraints(
+                                    minHeight: 1.h,
+                                    maxHeight: double.infinity,
+                                    minWidth: double.infinity,
+                                    maxWidth: double.infinity),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 4.w,
+                                ),
+                                alignment: Alignment.centerLeft,
+                                child:
+                                    HtmlTextView(htmlText: widget.service.description)), */
                             AnimatedContainer(
                                 constraints: BoxConstraints(
                                     minHeight: 1.h,
@@ -766,36 +771,36 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                   ),
                                 ),
                               ),
-                            // Container(
-                            //   padding: EdgeInsets.symmetric(
-                            //     horizontal: 4.w,
-                            //   ),
-                            //   height: 5.h,
-                            //   child: Row(
-                            //     crossAxisAlignment: CrossAxisAlignment.center,
-                            //     mainAxisAlignment: MainAxisAlignment.start,
-                            //     children: [
-                            //       const Icon(
-                            //         Icons.star,
-                            //         color: Color.fromARGB(255, 212, 119, 61),
-                            //       ),
-                            //       SizedBox(
-                            //         width: 2.w,
-                            //       ),
-                            //       Text(
-                            //         widget.service.rating ?? "Not Rated",
-                            //         style: const TextStyle(
-                            //             fontSize: 16,
-                            //             fontWeight: FontWeight.w600),
-                            //       ),
-                            //       SizedBox(
-                            //         width: 2.w,
-                            //       ),
-                            //       Text(
-                            //           "( ${widget.service.reviews!.length} rating${widget.service.reviews!.length > 1 ? "s" : ""} )")
-                            //     ],
-                            //   ),
-                            // ),
+                            /* Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 4.w,
+                              ),
+                              height: 5.h,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const Icon(
+                                    Icons.star,
+                                    color: Color.fromARGB(255, 212, 119, 61),
+                                  ),
+                                  SizedBox(
+                                    width: 2.w,
+                                  ),
+                                  Text(
+                                    widget.service.rating ?? "Not Rated",
+                                    style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                  SizedBox(
+                                    width: 2.w,
+                                  ),
+                                  Text(
+                                      "( ${widget.service.reviews!.length} rating${widget.service.reviews!.length > 1 ? "s" : ""} )")
+                                ],
+                              ),
+                            ), */
                             const Divider(
                               thickness: 1,
                             ),
@@ -820,12 +825,12 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                                     color: Theme.of(context)
                                                         .primaryColorDark),
                                                 children: [
-                                                  // TextSpan(
-                                                  //   text: "/ ${widget.package.}",
-                                                  //   style: TextStyle(
-                                                  //       fontSize: 15.sp,
-                                                  //       color: Colors.black),
-                                                  // ),
+                                                  /* TextSpan(
+                                                    text: "/ ${widget.package.}",
+                                                    style: TextStyle(
+                                                        fontSize: 15.sp,
+                                                        color: Colors.black),
+                                                  ), */
                                                   TextSpan(
                                                     text:
                                                         "for ${selectedCategory?.category?.categoryName?.trim() ?? ""}",
@@ -1008,19 +1013,19 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                       )
                                     ],
                                   ),
-                                  // const DashedDivider(),
-                                  // Row(
-                                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  //   children: [
-                                  //     const Text(
-                                  //       "Unit:",
-                                  //       style: TextStyle(fontSize: 16),
-                                  //     ),
-                                  //     Text(
-                                  //       widget.service.priceBasis,
-                                  //     )
-                                  //   ],
-                                  // ),
+                                  /* const DashedDivider(),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text(
+                                        "Unit:",
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                      Text(
+                                        widget.service.priceBasis,
+                                      )
+                                    ],
+                                  ), */
                                 ],
                               ),
                             ),
@@ -1028,37 +1033,37 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                               padding: EdgeInsets.symmetric(
                                   horizontal: 4.w, vertical: 2.h),
                               child: Column(children: [
-                                // Container(
-                                //   height: 6.h,
-                                //   decoration: BoxDecoration(
-                                //     border: Border.all(
-                                //         width: 0.5,
-                                //         color: Theme.of(context).primaryColor),
-                                //     borderRadius: BorderRadius.circular(10),
-                                //   ),
-                                //   child: Row(
-                                //     mainAxisAlignment: MainAxisAlignment.center,
-                                //     crossAxisAlignment: CrossAxisAlignment.center,
-                                //     children: [
-                                //       const Text(
-                                //         'View More Details',
-                                //         style: TextStyle(
-                                //           fontSize: 16,
-                                //           fontWeight: FontWeight.w600,
-                                //           color: primaryColor,
-                                //         ),
-                                //       ),
-                                //       SizedBox(
-                                //         width: 2.w,
-                                //       ),
-                                //       const Icon(
-                                //         Icons.arrow_forward_ios_rounded,
-                                //         color: primaryColor,
-                                //         size: 16,
-                                //       )
-                                //     ],
-                                //   ),
-                                // ),
+                                /* Container(
+                                  height: 6.h,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        width: 0.5,
+                                        color: Theme.of(context).primaryColor),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      const Text(
+                                        'View More Details',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: primaryColor,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 2.w,
+                                      ),
+                                      const Icon(
+                                        Icons.arrow_forward_ios_rounded,
+                                        color: primaryColor,
+                                        size: 16,
+                                      )
+                                    ],
+                                  ),
+                                ), */
                                 SizedBox(
                                   height: 2.h,
                                 ),

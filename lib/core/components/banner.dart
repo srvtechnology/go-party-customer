@@ -2,9 +2,11 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:collection/collection.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../constant/themData.dart';
 
@@ -184,6 +186,202 @@ class _ImageSliderState extends State<ImageSlider> {
 
 class PackageImageSlider extends StatefulWidget {
   final List<String> imageUrls;
+  final List<String>? videoUrls;
+
+  const PackageImageSlider({
+    Key? key,
+    required this.imageUrls,
+    this.videoUrls,
+  }) : super(key: key);
+
+  @override
+  State<PackageImageSlider> createState() => _PackageImageSlideState();
+}
+
+class _PackageImageSlideState extends State<PackageImageSlider> {
+  int _currentCarouselIndex = 0;
+  final CarouselController _carouselController = CarouselController();
+  YoutubePlayerController? _youtubeController;
+  bool _isVideoInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.videoUrls != null && widget.videoUrls!.isNotEmpty) {
+      _initializeYouTubePlayer(widget.videoUrls!.first);
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant PackageImageSlider oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.videoUrls != oldWidget.videoUrls &&
+        widget.videoUrls != null &&
+        widget.videoUrls!.isNotEmpty) {
+      final newVideoUrl = widget.videoUrls!.first;
+      if (_youtubeController == null ||
+          YoutubePlayer.convertUrlToId(newVideoUrl) !=
+              _youtubeController!.initialVideoId) {
+        _initializeYouTubePlayer(newVideoUrl);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _youtubeController?.dispose();
+    super.dispose();
+  }
+
+  void _initializeYouTubePlayer(String videoUrl) {
+    if (!mounted) return;
+
+    if (kDebugMode) {
+      print('==> Initializing YouTube player with URL: $videoUrl');
+    }
+    final videoId = YoutubePlayer.convertUrlToId(videoUrl);
+    if (videoId != null) {
+      if (kDebugMode) {
+        print('==> Extracted Video ID: $videoId');
+      }
+      _youtubeController = YoutubePlayerController(
+        initialVideoId: videoId,
+        flags: const YoutubePlayerFlags(
+          autoPlay: false,
+          mute: false,
+        ),
+      );
+      _youtubeController!.addListener(() {
+        if (_youtubeController!.value.hasError) {
+          if (kDebugMode) {
+            print('==> Error message: ${_youtubeController!.value.errorCode}');
+          }
+        } else if (_youtubeController!.value.isReady) {
+          if (kDebugMode) {
+            print('==> YouTube player initialized successfully.');
+          }
+          if (mounted) {
+            setState(() {
+              _isVideoInitialized = true;
+            });
+          }
+        }
+      });
+    } else {
+      if (kDebugMode) {
+        print('==> Invalid YouTube URL: $videoUrl');
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final hasVideo = widget.videoUrls != null && widget.videoUrls!.isNotEmpty;
+    final totalItems = widget.imageUrls.length + (hasVideo ? 1 : 0);
+
+    return Container(
+      color: Colors.amberAccent,
+      height: 26.h,
+      child: Stack(
+        children: [
+          SizedBox(
+            height: 26.h,
+            width: MediaQuery.of(context).size.width,
+            child: CarouselSlider(
+              carouselController: _carouselController,
+              options: CarouselOptions(
+                onPageChanged: (index, reason) {
+                  setState(() {
+                    _currentCarouselIndex = index;
+                    if (index == widget.imageUrls.length &&
+                        _isVideoInitialized) {
+                      _youtubeController!.play();
+                      if (kDebugMode) {
+                        print('==> Playing video at index: $index');
+                      }
+                    } else if (_isVideoInitialized) {
+                      _youtubeController!.pause();
+                      if (kDebugMode) {
+                        print('==> Pausing video at index: $index');
+                      }
+                    }
+                  });
+                },
+                enableInfiniteScroll: totalItems > 1,
+                autoPlay: false,
+                enlargeFactor: 0,
+                viewportFraction: 0.9999,
+                scrollPhysics: const BouncingScrollPhysics(), // Enable swiping
+              ),
+              items: [
+                ...widget.imageUrls.map((e) => Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(e),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    )),
+                if (hasVideo)
+                  SizedBox(
+                    height: 26.h,
+                    child: _isVideoInitialized
+                        ? YoutubePlayer(
+                            controller: _youtubeController!,
+                            showVideoProgressIndicator: true,
+                          )
+                        : const Center(child: CircularProgressIndicator()),
+                  ),
+              ],
+            ),
+          ),
+          Container(
+            height: 26.h,
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.transparent,
+                  Colors.black.withOpacity(0.1),
+                  Colors.black.withOpacity(0.2),
+                  Colors.black.withOpacity(0.5),
+                  Colors.black.withOpacity(0.8),
+                ],
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              padding: EdgeInsets.only(bottom: 2.h),
+              child: AnimatedSmoothIndicator(
+                count: totalItems,
+                effect: const ExpandingDotsEffect(
+                  dotHeight: 8,
+                  dotWidth: 8,
+                  dotColor: Colors.white,
+                  activeDotColor: Colors.white,
+                  expansionFactor: 2,
+                  spacing: 4,
+                ),
+                onDotClicked: (index) {
+                  _carouselController.animateToPage(index);
+                },
+                activeIndex: _currentCarouselIndex,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+/* class PackageImageSlider extends StatefulWidget {
+  final List<String> imageUrls;
   const PackageImageSlider({Key? key, required this.imageUrls})
       : super(key: key);
 
@@ -279,3 +477,4 @@ class _PackageImageSlideState extends State<PackageImageSlider> {
     );
   }
 }
+ */
