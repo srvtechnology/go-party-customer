@@ -234,39 +234,30 @@ class _PackageImageSlideState extends State<PackageImageSlider> {
   }
 
   void _initializeYouTubePlayer(String videoUrl) {
-    if (!mounted) return;
-
-    if (kDebugMode) {
-      print('==> Initializing YouTube player with URL: $videoUrl');
-    }
     final videoId = YoutubePlayer.convertUrlToId(videoUrl);
     if (videoId != null) {
-      if (kDebugMode) {
-        print('==> Extracted Video ID: $videoId');
-      }
       _youtubeController = YoutubePlayerController(
         initialVideoId: videoId,
         flags: const YoutubePlayerFlags(
           autoPlay: false,
           mute: false,
         ),
-      );
-      _youtubeController!.addListener(() {
-        if (_youtubeController!.value.hasError) {
-          if (kDebugMode) {
-            print('==> Error message: ${_youtubeController!.value.errorCode}');
-          }
-        } else if (_youtubeController!.value.isReady) {
-          if (kDebugMode) {
-            print('==> YouTube player initialized successfully.');
-          }
-          if (mounted) {
+      )..addListener(() {
+          if (_youtubeController!.value.isReady && !_isVideoInitialized) {
             setState(() {
               _isVideoInitialized = true;
+              if (kDebugMode) {
+                print('==> YouTube player error initialized');
+              }
             });
           }
-        }
-      });
+          if (_youtubeController!.value.hasError) {
+            if (kDebugMode) {
+              print(
+                  '==> YouTube player error: ${_youtubeController!.value.errorCode}');
+            }
+          }
+        });
     } else {
       if (kDebugMode) {
         print('==> Invalid YouTube URL: $videoUrl');
@@ -329,6 +320,16 @@ class _PackageImageSlideState extends State<PackageImageSlider> {
                         ? YoutubePlayer(
                             controller: _youtubeController!,
                             showVideoProgressIndicator: true,
+                            onReady: () {
+                              _youtubeController!.addListener(() {
+                                if (_youtubeController!.value.isReady &&
+                                    !_isVideoInitialized) {
+                                  setState(() {
+                                    _isVideoInitialized = true;
+                                  });
+                                }
+                              });
+                            },
                           )
                         : const Center(child: CircularProgressIndicator()),
                   ),
