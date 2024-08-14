@@ -201,8 +201,8 @@ class PackageImageSlider extends StatefulWidget {
 class _PackageImageSlideState extends State<PackageImageSlider> {
   int _currentCarouselIndex = 0;
   final CarouselController _carouselController = CarouselController();
-  YoutubePlayerController? _youtubeController;
-  bool _isVideoInitialized = false;
+  late YoutubePlayerController _youtubeController;
+  bool _isPlayerReady = false;
 
   @override
   void initState() {
@@ -212,24 +212,9 @@ class _PackageImageSlideState extends State<PackageImageSlider> {
     }
   }
 
-  /* @override
-  void didUpdateWidget(covariant PackageImageSlider oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.videoUrls != oldWidget.videoUrls &&
-        widget.videoUrls != null &&
-        widget.videoUrls!.isNotEmpty) {
-      final newVideoUrl = widget.videoUrls!.first;
-      if (_youtubeController == null ||
-          YoutubePlayer.convertUrlToId(newVideoUrl) !=
-              _youtubeController!.initialVideoId) {
-        _initializeYouTubePlayer(newVideoUrl);
-      }
-    }
-  } */
-
   @override
   void dispose() {
-    _youtubeController?.dispose();
+    _youtubeController.dispose();
     super.dispose();
   }
 
@@ -242,25 +227,24 @@ class _PackageImageSlideState extends State<PackageImageSlider> {
           autoPlay: false,
           mute: false,
         ),
-      )..addListener(() {
-          if (_youtubeController!.value.isReady && !_isVideoInitialized) {
-            setState(() {
-              _isVideoInitialized = true;
-              if (kDebugMode) {
-                print('==> YouTube player error initialized');
-              }
-            });
-          }
-          if (_youtubeController!.value.hasError) {
-            if (kDebugMode) {
-              print(
-                  '==> YouTube player error: ${_youtubeController!.value.errorCode}');
-            }
-          }
-        });
+      )..addListener(_listener);
     } else {
       if (kDebugMode) {
         print('==> Invalid YouTube URL: $videoUrl');
+      }
+    }
+  }
+
+  void _listener() {
+    if (_youtubeController.value.isReady && mounted && !_isPlayerReady) {
+      setState(() {
+        _isPlayerReady = true;
+      });
+    }
+    if (_youtubeController.value.hasError) {
+      if (kDebugMode) {
+        print(
+            '==> YouTube player error: ${_youtubeController.value.errorCode}');
       }
     }
   }
@@ -284,14 +268,13 @@ class _PackageImageSlideState extends State<PackageImageSlider> {
                 onPageChanged: (index, reason) {
                   setState(() {
                     _currentCarouselIndex = index;
-                    if (index == widget.imageUrls.length &&
-                        _isVideoInitialized) {
-                      _youtubeController!.play();
+                    if (index == widget.imageUrls.length && _isPlayerReady) {
+                      _youtubeController.play();
                       if (kDebugMode) {
                         print('==> Playing video at index: $index');
                       }
-                    } else if (_isVideoInitialized) {
-                      _youtubeController!.pause();
+                    } else if (_isPlayerReady) {
+                      _youtubeController.pause();
                       if (kDebugMode) {
                         print('==> Pausing video at index: $index');
                       }
@@ -316,20 +299,10 @@ class _PackageImageSlideState extends State<PackageImageSlider> {
                 if (hasVideo)
                   SizedBox(
                     height: 26.h,
-                    child: _isVideoInitialized
+                    child: _isPlayerReady
                         ? YoutubePlayer(
-                            controller: _youtubeController!,
+                            controller: _youtubeController,
                             showVideoProgressIndicator: true,
-                            onReady: () {
-                              _youtubeController!.addListener(() {
-                                if (_youtubeController!.value.isReady &&
-                                    !_isVideoInitialized) {
-                                  setState(() {
-                                    _isVideoInitialized = true;
-                                  });
-                                }
-                              });
-                            },
                           )
                         : const Center(child: CircularProgressIndicator()),
                   ),
@@ -479,3 +452,18 @@ class _PackageImageSlideState extends State<PackageImageSlider> {
   }
 }
  */
+
+ /* @override
+  void didUpdateWidget(covariant PackageImageSlider oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.videoUrls != oldWidget.videoUrls &&
+        widget.videoUrls != null &&
+        widget.videoUrls!.isNotEmpty) {
+      final newVideoUrl = widget.videoUrls!.first;
+      if (_youtubeController == null ||
+          YoutubePlayer.convertUrlToId(newVideoUrl) !=
+              _youtubeController!.initialVideoId) {
+        _initializeYouTubePlayer(newVideoUrl);
+      }
+    }
+  } */
