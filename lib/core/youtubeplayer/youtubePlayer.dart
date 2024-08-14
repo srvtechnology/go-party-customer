@@ -7,14 +7,14 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import 'videoList.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+class YouTubePlayerPage extends StatefulWidget {
+  const YouTubePlayerPage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<YouTubePlayerPage> createState() => _YouTubePlayerPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _YouTubePlayerPageState extends State<YouTubePlayerPage> {
   late YoutubePlayerController _controller;
   late TextEditingController _idController;
   late TextEditingController _seekToController;
