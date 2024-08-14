@@ -65,7 +65,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
 
   List<PopupCategory> popupCategories = [];
   PopupCategory? selectedCategory;
-  List<String> videoUrls = [];
+  /* List<String> videoUrls = []; */
 
   void _calculateDays() {
     try {
@@ -115,8 +115,8 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
         selectedCategory = popupCategories.first;
         _categoryName.text = selectedCategory!.category?.categoryName ?? "";
       }
-      videoUrls = data.videoUrl ?? [];
-      log(videoUrls.toString(), name: "Single Service VideoUrl");
+      /* videoUrls = data.videoUrl ?? [];
+      log(videoUrls.toString(), name: "Single Service VideoUrl"); */
       _cities = data.availableCities ?? [];
       if (_cities.isNotEmpty) {
         selectedCity = _cities.first;
@@ -699,7 +699,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                     'https://utsavlife.com/customer/service/details/${widget.service.id}',
                                 child: PackageImageSlider(
                                   imageUrls: widget.service.images!,
-                                  videoUrls: videoUrls,
+                                  videoUrls: widget.service.videos!,
                                 )),
                             Container(
                               margin: EdgeInsets.only(top: 2.h),

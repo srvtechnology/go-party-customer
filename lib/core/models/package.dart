@@ -1,10 +1,12 @@
 import 'package:customerapp/core/models/service.dart';
+import 'package:flutter/material.dart';
 
 import '../../config.dart';
 
 class PackageModel {
   String id, name, description, price, discountedPrice, category, unit;
   List<String> images;
+  List<String> videos;
   List<ServiceModel> services;
   int minQnty;
 
@@ -18,6 +20,7 @@ class PackageModel {
       required this.category,
       required this.discountedPrice,
       required this.images,
+      required this.videos,
       required this.services});
   factory PackageModel.fromJson(Map json) {
     List<String> temp = [
@@ -29,6 +32,15 @@ class PackageModel {
       for (String i in json["additional_images"]) {
         temp.add("${APIConfig.baseUrl}/storage/app/public/packages/$i");
       }
+    }
+
+    List<String> tempVideos = [];
+    var videoUrl = json["video_url"];
+    if (videoUrl != null && videoUrl is List<dynamic>) {
+      tempVideos = videoUrl.map((e) => e.toString()).toList();
+      debugPrint("VideoUrl : $tempVideos");
+    } else {
+      debugPrint("No video found or invalid data type.");
     }
 
     List<ServiceModel> servicesList = [];
@@ -45,6 +57,7 @@ class PackageModel {
         price: json["price"].toString(),
         discountedPrice: json["discount_price"].toString(),
         images: temp,
+        videos: tempVideos,
         services: servicesList,
         category: json["category"],
         unit: json["unit"],

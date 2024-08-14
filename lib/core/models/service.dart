@@ -14,7 +14,7 @@ class ServiceModel {
   List<PopupCategory>? popupCategories;
   List<String>? availableCities;
   dynamic package, serviceCategoryDetails;
-  List<String>? videoUrl;
+  List<String>? videos;
 
   ServiceModel({
     required this.id,
@@ -31,7 +31,7 @@ class ServiceModel {
     this.rating,
     this.categoryId,
     this.package,
-    this.videoUrl,
+    this.videos,
   });
 
   factory ServiceModel.fromJson(Map json) {
@@ -77,11 +77,11 @@ class ServiceModel {
       debugPrint("No popup categories found or invalid data type.");
     }
 
-    List<String> tempVideoUrl = [];
-    var videoUrl = json["services"]?["video_url"];
+    List<String> tempVideos = [];
+    var videoUrl = json["video_url"];
     if (videoUrl != null && videoUrl is List<dynamic>) {
-      tempVideoUrl = videoUrl.map((e) => e.toString()).toList();
-      debugPrint("VideoUrl : $tempVideoUrl");
+      tempVideos = videoUrl.map((e) => e.toString()).toList();
+      debugPrint("VideoUrl : $tempVideos");
     } else {
       debugPrint("No video found or invalid data type.");
     }
@@ -91,7 +91,7 @@ class ServiceModel {
       rating: tempavgReview,
       popupCategories: tempPopupCategories,
       availableCities: tempAvailableCities,
-      videoUrl: tempVideoUrl,
+      videos: tempVideos,
       id: json["id"].toString(),
       name: json["service"],
       description: json["description"],

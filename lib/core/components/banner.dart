@@ -212,7 +212,7 @@ class _PackageImageSlideState extends State<PackageImageSlider> {
     }
   }
 
-  @override
+  /* @override
   void didUpdateWidget(covariant PackageImageSlider oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.videoUrls != oldWidget.videoUrls &&
@@ -225,7 +225,7 @@ class _PackageImageSlideState extends State<PackageImageSlider> {
         _initializeYouTubePlayer(newVideoUrl);
       }
     }
-  }
+  } */
 
   @override
   void dispose() {
