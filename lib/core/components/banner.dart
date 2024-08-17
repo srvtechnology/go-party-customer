@@ -185,8 +185,172 @@ class _ImageSliderState extends State<ImageSlider> {
   }
 }
 
-/* --- Youtube iFrame Player & Carousel Image Slider  : Working --- */
 class PackageImageSlider extends StatefulWidget {
+  final List<String> imageUrls;
+  final List<String> videoUrls;
+
+  const PackageImageSlider({
+    Key? key,
+    required this.imageUrls,
+    required this.videoUrls,
+  }) : super(key: key);
+
+  @override
+  State<PackageImageSlider> createState() => _PackageImageSliderState();
+}
+
+class _PackageImageSliderState extends State<PackageImageSlider> {
+  final CarouselController _carouselController = CarouselController();
+  YoutubePlayerController? _currentVideoController;
+  int _currentIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> carouselItems = [];
+
+    // Add image items
+    carouselItems.addAll(widget.imageUrls.map((url) => Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: NetworkImage(url),
+              fit: BoxFit.cover,
+            ),
+          ),
+        )));
+
+    // Add valid video items
+    final validVideoUrls = widget.videoUrls.where((url) {
+      try {
+        final videoId = extractVideoId(url);
+        return videoId.isNotEmpty; // Ensure the videoId is not empty
+      } catch (e) {
+        return false; // Invalid URL
+      }
+    }).toList();
+
+    carouselItems.addAll(validVideoUrls.map((url) {
+      final videoId = extractVideoId(url);
+
+      final controller = YoutubePlayerController.fromVideoId(
+        videoId: videoId,
+        autoPlay: false,
+        params: const YoutubePlayerParams(
+          showControls: true, // Show default controls including play/pause
+          showFullscreenButton: true,
+        ),
+      );
+
+      return ClipRect(
+        child: SizedBox(
+          width: double.infinity, // Ensure it covers the full width
+          child: FittedBox(
+            fit: BoxFit.cover, // Make the video cover the entire slider
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.width * 9 / 16,
+              child: YoutubePlayer(
+                controller: controller,
+                aspectRatio:
+                    16 / 9, // Aspect ratio to keep the video proportional
+              ),
+            ),
+          ),
+        ),
+      );
+    }).toList());
+
+    return Column(
+      children: [
+        Container(
+          color: Colors.amberAccent,
+          height: 26.h,
+          width: MediaQuery.of(context).size.width,
+          child: CarouselSlider(
+            carouselController: _carouselController,
+            options: CarouselOptions(
+              onPageChanged: (index, _) {
+                setState(() {
+                  _currentIndex = index;
+                });
+                _handleVideoFocus(index);
+              },
+              enableInfiniteScroll:
+                  widget.imageUrls.length + validVideoUrls.length < 2
+                      ? false
+                      : true,
+              autoPlay: false,
+              enlargeFactor: 0,
+              viewportFraction:
+                  1.0, // Make sure the slider covers the entire width
+            ),
+            items: carouselItems,
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(
+            carouselItems.length,
+            (index) => Container(
+              width: 8.0,
+              height: 8.0,
+              margin:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: _currentIndex == index ? Colors.black : Colors.grey,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _handleVideoFocus(int index) {
+    // Pause the current video if the slide changes
+    if (_currentVideoController != null) {
+      _currentVideoController!.pauseVideo();
+    }
+
+    if (index >= widget.imageUrls.length) {
+      // This is a video slide
+      int videoIndex = index - widget.imageUrls.length;
+      final videoId = extractVideoId(widget.videoUrls[videoIndex]);
+
+      setState(() {
+        _currentVideoController = YoutubePlayerController.fromVideoId(
+          videoId: videoId,
+          autoPlay: false,
+          params: const YoutubePlayerParams(
+            showControls: true, // Use default controls
+            showFullscreenButton: true,
+          ),
+        );
+      });
+    }
+  }
+}
+
+String extractVideoId(String url) {
+  final Uri uri = Uri.parse(url);
+  final String? videoId = uri.queryParameters['v'];
+  if (videoId != null) {
+    return videoId;
+  } else {
+    // Handle other URL formats or invalid URLs
+    final RegExp regExp = RegExp(r'v=([^&]+)');
+    final Match? match = regExp.firstMatch(url);
+    if (match != null && match.groupCount > 0) {
+      return match.group(1) ?? '';
+    } else {
+      throw ArgumentError('Invalid YouTube URL');
+    }
+  }
+}
+
+
+/* --- Youtube iFrame Player & Carousel Image Slider without dots : Working --- */
+/* class PackageImageSlider extends StatefulWidget {
   final List<String> imageUrls;
   final List<String> videoUrls;
 
@@ -323,7 +487,7 @@ String extractVideoId(String url) {
       throw ArgumentError('Invalid YouTube URL');
     }
   }
-}
+} */
 
 /* --- Only Image Slider --- */
 /* 
@@ -1172,168 +1336,5 @@ class _PackageImageSlideState extends State<PackageImageSlider> {
   }
    */
 
-/* 
-class PackageImageSlider extends StatefulWidget {
-  final List<String> imageUrls;
-  final List<String> videoUrls;
 
-  const PackageImageSlider({
-    Key? key,
-    required this.imageUrls,
-    required this.videoUrls,
-  }) : super(key: key);
-
-  @override
-  State<PackageImageSlider> createState() => _PackageImageSliderState();
-}
-
-class _PackageImageSliderState extends State<PackageImageSlider> {
-  final CarouselController _carouselController = CarouselController();
-  YoutubePlayerController? _currentVideoController;
-
-  @override
-  Widget build(BuildContext context) {
-    List<Widget> carouselItems = [];
-
-    // Add image items
-    carouselItems.addAll(widget.imageUrls.map((url) => Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: NetworkImage(url),
-              fit: BoxFit.cover,
-            ),
-          ),
-        )));
-
-    // Add valid video items
-    final validVideoUrls = widget.videoUrls.where((url) {
-      try {
-        final videoId = extractVideoId(url);
-        return videoId.isNotEmpty; // Ensure the videoId is not empty
-      } catch (e) {
-        return false; // Invalid URL
-      }
-    }).toList();
-
-    carouselItems.addAll(validVideoUrls.map((url) {
-      final videoId = extractVideoId(url);
-
-      final controller = YoutubePlayerController.fromVideoId(
-        videoId: videoId,
-        autoPlay: false,
-        params: const YoutubePlayerParams(
-          showControls: true,
-          showFullscreenButton: true,
-        ),
-      );
-
-      return Stack(
-        children: [
-          Center(
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 4.0),
-              child: YoutubePlayer(
-                controller: controller,
-                aspectRatio: 16 / 9,
-              ),
-            ),
-          ),
-          Center(
-            child: YoutubeValueBuilder(
-              controller: controller,
-              builder: (context, value) {
-                return Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5),
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    iconSize: 48.0,
-                    icon: Icon(
-                      value.playerState == PlayerState.playing
-                          ? Icons.pause
-                          : Icons.play_arrow,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      if (value.playerState == PlayerState.playing) {
-                        controller.pauseVideo();
-                      } else {
-                        controller.playVideo();
-                      }
-                    },
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      );
-    }).toList());
-
-    return Container(
-      color: Colors.amberAccent,
-      height: 26.h,
-      child: CarouselSlider(
-        carouselController: _carouselController,
-        options: CarouselOptions(
-          onPageChanged: (index, _) {
-            setState(() {});
-            _handleVideoFocus(index);
-          },
-          enableInfiniteScroll:
-              widget.imageUrls.length + validVideoUrls.length < 2
-                  ? false
-                  : true,
-          autoPlay: false,
-          enlargeFactor: 0,
-          viewportFraction: 0.9999,
-        ),
-        items: carouselItems,
-      ),
-    );
-  }
-
-  void _handleVideoFocus(int index) {
-    // Pause the current video if the slide changes
-    if (_currentVideoController != null) {
-      _currentVideoController!.pauseVideo();
-    }
-
-    if (index >= widget.imageUrls.length) {
-      // This is a video slide
-      int videoIndex = index - widget.imageUrls.length;
-      final videoId = extractVideoId(widget.videoUrls[videoIndex]);
-
-      setState(() {
-        _currentVideoController = YoutubePlayerController.fromVideoId(
-          videoId: videoId,
-          autoPlay: false,
-          params: const YoutubePlayerParams(
-            showControls: false,
-            showFullscreenButton: true,
-          ),
-        );
-      });
-    }
-  }
-}
-
-String extractVideoId(String url) {
-  final Uri uri = Uri.parse(url);
-  final String? videoId = uri.queryParameters['v'];
-  if (videoId != null) {
-    return videoId;
-  } else {
-    // Handle other URL formats or invalid URLs
-    final RegExp regExp = RegExp(r'v=([^&]+)');
-    final Match? match = regExp.firstMatch(url);
-    if (match != null && match.groupCount > 0) {
-      return match.group(1) ?? '';
-    } else {
-      throw ArgumentError('Invalid YouTube URL');
-    }
-  }
-} 
-*/
 
