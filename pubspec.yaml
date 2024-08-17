@@ -28,7 +28,7 @@ dependencies:
   geocoding: ^2.1.0
   convex_bottom_bar: ^3.2.0
   carousel_slider: ^4.2.1
-  webview_flutter: ^4.2.4
+  webview_flutter: ^4.4.2
   flutter_pannable_rating_bar: ^2.7.2+1
   intl: ^0.18.1
   responsive_sizer: 3.1.0
@@ -59,9 +59,17 @@ dependencies:
   image_picker: ^1.0.4
   mime: ^1.0.4
   collection: ^1.17.0
-  video_player: ^2.7.2
-  youtube_player_flutter: ^8.1.2
-  # youtube_player_iframe: ^4.0.4
+  # video_player: ^2.7.2
+  # youtube_player_flutter: ^8.1.2
+  youtube_player_iframe: ^4.0.4
+
+  
+
+
+  # flutter_carousel_media_slider: ^0.0.4
+  # url_launcher: ^6.1.11
+  
+ 
 
 
 dev_dependencies:

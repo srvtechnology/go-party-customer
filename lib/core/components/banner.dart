@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 import '../constant/themData.dart';
 
@@ -186,6 +186,162 @@ class _ImageSliderState extends State<ImageSlider> {
 
 class PackageImageSlider extends StatefulWidget {
   final List<String> imageUrls;
+  final List<String> videoUrls;
+
+  const PackageImageSlider({
+    Key? key,
+    required this.imageUrls,
+    required this.videoUrls,
+  }) : super(key: key);
+
+  @override
+  State<PackageImageSlider> createState() => _PackageImageSliderState();
+}
+
+class _PackageImageSliderState extends State<PackageImageSlider> {
+  int _currentCarouselIndex = 0;
+  final CarouselController _carouselController = CarouselController();
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> carouselItems = [];
+
+    // Add image items
+    carouselItems.addAll(widget.imageUrls.map((url) => Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: NetworkImage(url),
+              fit: BoxFit.cover,
+            ),
+          ),
+        )));
+
+    // Add video items
+    carouselItems.addAll(widget.videoUrls.map((url) {
+      final videoId = extractVideoId(url);
+
+      final controller = YoutubePlayerController.fromVideoId(
+        videoId: videoId,
+        autoPlay: false,
+        params: const YoutubePlayerParams(
+          showControls: true,
+          showFullscreenButton: true,
+        ),
+      );
+
+      return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+        child: YoutubePlayer(
+          controller: controller,
+          aspectRatio: 16 / 9,
+        ),
+      );
+    }).toList());
+
+    return Container(
+      color: Colors.amberAccent,
+      height: 26.h,
+      child: Stack(
+        children: [
+          SizedBox(
+            height: 26.h,
+            width: MediaQuery.of(context).size.width,
+            child: CarouselSlider(
+              carouselController: _carouselController,
+              options: CarouselOptions(
+                onPageChanged: (index, _) {
+                  setState(() {
+                    _currentCarouselIndex = index;
+                  });
+                },
+                enableInfiniteScroll:
+                    widget.imageUrls.length + widget.videoUrls.length < 2
+                        ? false
+                        : true,
+                autoPlay: false,
+                /* widget.imageUrls.length + widget.videoUrls.length < 2
+                    ? false
+                    : true, */
+
+                /* autoPlayInterval: const Duration(seconds: 3),
+                autoPlayAnimationDuration: const Duration(milliseconds: 800), */
+                enlargeFactor: 0,
+                viewportFraction: 0.9999,
+              ),
+              items: carouselItems,
+            ),
+          ),
+          Container(
+            height: 26.h,
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.transparent,
+                  Colors.black.withOpacity(0.1),
+                  Colors.black.withOpacity(0.2),
+                  Colors.black.withOpacity(0.5),
+                  Colors.black.withOpacity(0.8),
+                ],
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              padding: EdgeInsets.only(bottom: 2.h),
+              child: AnimatedSmoothIndicator(
+                count: widget.imageUrls.length + widget.videoUrls.length,
+                effect: const ExpandingDotsEffect(
+                  dotHeight: 8,
+                  dotWidth: 8,
+                  dotColor: Colors.white,
+                  activeDotColor: Colors.white,
+                  expansionFactor: 2,
+                  spacing: 4,
+                ),
+                activeIndex: _currentCarouselIndex,
+                onDotClicked: (index) {
+                  setState(() {
+                    _currentCarouselIndex = index;
+                  });
+                  _carouselController.animateToPage(index);
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+String extractVideoId(String url) {
+  final Uri uri = Uri.parse(url);
+  final String? videoId = uri.queryParameters['v'];
+  if (videoId != null) {
+    return videoId;
+  } else {
+    // Handle other URL formats or invalid URLs
+    final RegExp regExp = RegExp(r'v=([^&]+)');
+    final Match? match = regExp.firstMatch(url);
+    if (match != null && match.groupCount > 0) {
+      return match.group(1) ?? '';
+    } else {
+      throw ArgumentError('Invalid YouTube URL');
+    }
+  }
+}
+
+
+
+
+
+
+/* class PackageImageSlider extends StatefulWidget {
+  final List<String> imageUrls;
   final List<String>? videoUrls;
 
   const PackageImageSlider({
@@ -352,7 +508,7 @@ class _PackageImageSlideState extends State<PackageImageSlider> {
     );
   }
 }
-
+ */
 
 /* class PackageImageSlider extends StatefulWidget {
   final List<String> imageUrls;
