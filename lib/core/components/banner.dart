@@ -201,6 +201,7 @@ class PackageImageSlider extends StatefulWidget {
 class _PackageImageSliderState extends State<PackageImageSlider> {
   int _currentCarouselIndex = 0;
   final CarouselController _carouselController = CarouselController();
+  YoutubePlayerController? _currentVideoController;
 
   @override
   Widget build(BuildContext context) {
@@ -216,8 +217,17 @@ class _PackageImageSliderState extends State<PackageImageSlider> {
           ),
         )));
 
-    // Add video items
-    carouselItems.addAll(widget.videoUrls.map((url) {
+    // Add valid video items
+    final validVideoUrls = widget.videoUrls.where((url) {
+      try {
+        final videoId = extractVideoId(url);
+        return videoId.isNotEmpty; // Ensure the videoId is not empty
+      } catch (e) {
+        return false; // Invalid URL
+      }
+    }).toList();
+
+    carouselItems.addAll(validVideoUrls.map((url) {
       final videoId = extractVideoId(url);
 
       final controller = YoutubePlayerController.fromVideoId(
@@ -229,12 +239,47 @@ class _PackageImageSliderState extends State<PackageImageSlider> {
         ),
       );
 
-      return Container(
-        margin: const EdgeInsets.symmetric(horizontal: 4.0),
-        child: YoutubePlayer(
-          controller: controller,
-          aspectRatio: 16 / 9,
-        ),
+      return Stack(
+        children: [
+          Center(
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 4.0),
+              child: YoutubePlayer(
+                controller: controller,
+                aspectRatio: 16 / 9,
+              ),
+            ),
+          ),
+          Center(
+            child: YoutubeValueBuilder(
+              controller: controller,
+              builder: (context, value) {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.5),
+                    shape: BoxShape.circle,
+                  ),
+                  child: IconButton(
+                    iconSize: 48.0,
+                    icon: Icon(
+                      value.playerState == PlayerState.playing
+                          ? Icons.pause
+                          : Icons.play_arrow,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      if (value.playerState == PlayerState.playing) {
+                        controller.pauseVideo();
+                      } else {
+                        controller.playVideo();
+                      }
+                    },
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       );
     }).toList());
 
@@ -253,18 +298,13 @@ class _PackageImageSliderState extends State<PackageImageSlider> {
                   setState(() {
                     _currentCarouselIndex = index;
                   });
+                  _handleVideoFocus(index);
                 },
                 enableInfiniteScroll:
-                    widget.imageUrls.length + widget.videoUrls.length < 2
+                    widget.imageUrls.length + validVideoUrls.length < 2
                         ? false
                         : true,
                 autoPlay: false,
-                /* widget.imageUrls.length + widget.videoUrls.length < 2
-                    ? false
-                    : true, */
-
-                /* autoPlayInterval: const Duration(seconds: 3),
-                autoPlayAnimationDuration: const Duration(milliseconds: 800), */
                 enlargeFactor: 0,
                 viewportFraction: 0.9999,
               ),
@@ -293,7 +333,7 @@ class _PackageImageSliderState extends State<PackageImageSlider> {
             child: Container(
               padding: EdgeInsets.only(bottom: 2.h),
               child: AnimatedSmoothIndicator(
-                count: widget.imageUrls.length + widget.videoUrls.length,
+                count: widget.imageUrls.length + validVideoUrls.length,
                 effect: const ExpandingDotsEffect(
                   dotHeight: 8,
                   dotWidth: 8,
@@ -316,6 +356,30 @@ class _PackageImageSliderState extends State<PackageImageSlider> {
       ),
     );
   }
+
+  void _handleVideoFocus(int index) {
+    // Pause the current video if the slide changes
+    if (_currentVideoController != null) {
+      _currentVideoController!.pauseVideo();
+    }
+
+    if (index >= widget.imageUrls.length) {
+      // This is a video slide
+      int videoIndex = index - widget.imageUrls.length;
+      final videoId = extractVideoId(widget.videoUrls[videoIndex]);
+
+      setState(() {
+        _currentVideoController = YoutubePlayerController.fromVideoId(
+          videoId: videoId,
+          autoPlay: false,
+          params: const YoutubePlayerParams(
+            showControls: false,
+            showFullscreenButton: true,
+          ),
+        );
+      });
+    }
+  }
 }
 
 String extractVideoId(String url) {
@@ -334,6 +398,9 @@ String extractVideoId(String url) {
     }
   }
 }
+
+
+
 
 
 

@@ -936,160 +936,163 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                             ],
                           ),
                         ),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 4.w, vertical: 2.h),
-                        child: Column(children: [
-                          // Container(
-                          //   height: 6.h,
-                          //   decoration: BoxDecoration(
-                          //     border: Border.all(
-                          //         width: 0.5,
-                          //         color: Theme.of(context).primaryColor),
-                          //     borderRadius: BorderRadius.circular(10),
-                          //   ),
-                          //   child: Row(
-                          //     mainAxisAlignment: MainAxisAlignment.center,
-                          //     crossAxisAlignment: CrossAxisAlignment.center,
-                          //     children: [
-                          //       const Text(
-                          //         'View More Details',
-                          //         style: TextStyle(
-                          //           fontSize: 16,
-                          //           fontWeight: FontWeight.w600,
-                          //           color: primaryColor,
-                          //         ),
-                          //       ),
-                          //       SizedBox(
-                          //         width: 2.w,
-                          //       ),
-                          //       const Icon(
-                          //         Icons.arrow_forward_ios_rounded,
-                          //         color: primaryColor,
-                          //         size: 16,
-                          //       )
-                          //     ],
-                          //   ),
-                          // ),
-                          // SizedBox(
-                          //   height: 2.h,
-                          // ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  if (auth.authState == AuthState.LoggedIn) {
-                                    addToCartDialog(context, categories);
-                                  } else {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const SignInPageRoute(
-                                                  comeBack: true,
-                                                ))).then((value) {
-                                      if (auth.authState ==
-                                          AuthState.LoggedIn) {
-                                        addToCartDialog(context, categories);
-                                      } else {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(const SnackBar(
-                                                content: Text(
-                                                    "Please login to continue")));
-                                      }
-                                    });
-                                  }
-                                },
-                                child: Container(
-                                  height: 6.h,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    color: tertiaryColor,
-                                    borderRadius: BorderRadius.circular(10),
+                      Visibility(
+                        visible: !isLoading,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 4.w, vertical: 2.h),
+                          child: Column(children: [
+                            /* Container(
+                              height: 6.h,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 0.5,
+                                    color: Theme.of(context).primaryColor),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    'View More Details',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: primaryColor,
+                                    ),
                                   ),
-                                  child: const Text('Add to Cart',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        color: primaryColor,
-                                      )),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 1.h,
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  if (auth.authState == AuthState.LoggedIn) {
-                                    addToCartDialog(context, categories,
-                                        isFromBookNow:
-                                            (serviceIds, data, totalPrice) {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => CheckoutPage(
-                                            serviceIds: serviceIds,
-                                            cartItems: data,
-                                            cartSubTotal: totalPrice,
-                                          ),
-                                        ),
-                                      );
-                                    });
-                                  } else {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const SignInPageRoute(
-                                                  comeBack: true,
-                                                ))).then((value) {
-                                      if (auth.authState ==
-                                          AuthState.LoggedIn) {
-                                        addToCartDialog(context, categories,
-                                            isFromBookNow:
-                                                (serviceIds, data, totalPrice) {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  CheckoutPage(
-                                                serviceIds: serviceIds,
-                                                cartItems: data,
-                                                cartSubTotal: totalPrice,
-                                              ),
-                                            ),
-                                          );
-                                        });
-                                      } else {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(const SnackBar(
-                                                content: Text(
-                                                    "Please login to continue")));
-                                      }
-                                    });
-                                  }
-                                },
-                                child: Container(
-                                  height: 6.h,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
+                                  SizedBox(
+                                    width: 2.w,
+                                  ),
+                                  const Icon(
+                                    Icons.arrow_forward_ios_rounded,
                                     color: primaryColor,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: const Text('Book Now',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
-                                      )),
-                                ),
+                                    size: 16,
+                                  )
+                                ],
                               ),
-                            ],
-                          )
-                        ]),
+                            ),
+                            SizedBox(
+                              height: 2.h,
+                            ), */
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    if (auth.authState == AuthState.LoggedIn) {
+                                      addToCartDialog(context, categories);
+                                    } else {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const SignInPageRoute(
+                                                    comeBack: true,
+                                                  ))).then((value) {
+                                        if (auth.authState ==
+                                            AuthState.LoggedIn) {
+                                          addToCartDialog(context, categories);
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(
+                                                  content: Text(
+                                                      "Please login to continue")));
+                                        }
+                                      });
+                                    }
+                                  },
+                                  child: Container(
+                                    height: 6.h,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: tertiaryColor,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: const Text('Add to Cart',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: primaryColor,
+                                        )),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 1.h,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    if (auth.authState == AuthState.LoggedIn) {
+                                      addToCartDialog(context, categories,
+                                          isFromBookNow:
+                                              (serviceIds, data, totalPrice) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => CheckoutPage(
+                                              serviceIds: serviceIds,
+                                              cartItems: data,
+                                              cartSubTotal: totalPrice,
+                                            ),
+                                          ),
+                                        );
+                                      });
+                                    } else {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const SignInPageRoute(
+                                                    comeBack: true,
+                                                  ))).then((value) {
+                                        if (auth.authState ==
+                                            AuthState.LoggedIn) {
+                                          addToCartDialog(context, categories,
+                                              isFromBookNow: (serviceIds, data,
+                                                  totalPrice) {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    CheckoutPage(
+                                                  serviceIds: serviceIds,
+                                                  cartItems: data,
+                                                  cartSubTotal: totalPrice,
+                                                ),
+                                              ),
+                                            );
+                                          });
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(
+                                                  content: Text(
+                                                      "Please login to continue")));
+                                        }
+                                      });
+                                    }
+                                  },
+                                  child: Container(
+                                    height: 6.h,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: primaryColor,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: const Text('Book Now',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white,
+                                        )),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ]),
+                        ),
                       ),
                       /* ---commented About since it shows the same as above Show More/Less on : 29-07-24 --*/
                       /*  Container(
