@@ -59,10 +59,10 @@ dependencies:
   image_picker: ^1.0.4
   mime: ^1.0.4
   collection: ^1.17.0
-  # video_player: ^2.7.2
-  # youtube_player_flutter: ^8.1.2
+  video_player: ^2.7.2
+  youtube_player_flutter: ^8.1.2
   youtube_player_iframe: ^4.0.4
-
+  url_launcher: ^6.1.11
   
 
 
@@ -94,5 +94,6 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    # - assets/videos/ElephantsDream.mp4
     - assets/icons/
     - assets/images/logo/
