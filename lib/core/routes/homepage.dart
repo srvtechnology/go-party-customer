@@ -300,8 +300,10 @@ class _HomeState extends State<Home> {
       create: (_) => FilterProvider(),
       child: Consumer<FilterProvider>(builder: (context, filter, child) {
         return ListenableProvider(
-          create: (_) => ServiceProvider(filters: filter),
-          child: Consumer<ServiceProvider>(builder: (context, state, child) {
+          create: (_) => ServiceProvider(
+              authProvider: context.read<AuthProvider>(), filters: filter),
+          child: Consumer2<ServiceProvider, AuthProvider>(
+              builder: (context, state, auth, child) {
             if (state.isLoading) {
               return Scaffold(
                   body: Container(

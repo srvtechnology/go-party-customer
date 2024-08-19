@@ -10,6 +10,7 @@ import 'package:customerapp/core/utils/logger.dart';
 import 'package:dio/dio.dart';
 
 import '../models/package.dart';
+import '../models/saveSearchTextModel.dart';
 import '../utils/dio.dart';
 
 Future<List<ServiceModel>> getServices() async {
@@ -139,6 +140,25 @@ Future<List<ServiceModel>> searchServices(Map<String, dynamic> data) async {
   } catch (e) {
     if (e is DioException) {
       CustomLogger.error(e.response!.data);
+    }
+    return Future.error(e);
+  }
+}
+
+Future<void> saveSearchTextApi(
+  AuthProvider auth,
+  Map data,
+) async {
+  /*  log(jsonEncode(data), name: "addtoCart"); */
+  try {
+    Response response = await customDioClient.client.post(
+        "${APIConfig.baseUrl}/api/latest-search",
+        data: data,
+        options: Options(headers: {"Authorization": "Bearer ${auth.token}"}));
+    log(jsonEncode(response.data), name: "searchDataResponse");
+  } catch (e) {
+    if (e is DioException) {
+      CustomLogger.error(e.response?.data ?? e.toString());
     }
     return Future.error(e);
   }

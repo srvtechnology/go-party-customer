@@ -8,8 +8,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:collection/collection.dart';
 import '../models/package.dart';
 import '../models/service.dart';
+import 'AuthProvider.dart';
 
 class ServiceProvider with ChangeNotifier {
+  AuthProvider? authProvider;
+
   List<ServiceModel>? _data;
 
   List<ServiceModel>? get data => _data;
@@ -31,10 +34,11 @@ class ServiceProvider with ChangeNotifier {
 
   bool get isLoading => _isLoading;
 
-  ServiceProvider({required FilterProvider filters}) {
+  ServiceProvider(
+      {AuthProvider? authProvider, required FilterProvider filters}) {
     if (filters.hasFilters == true) {
       CustomLogger.debug("Getting filtered Services");
-      getFilteredServices(filters);
+      getFilteredServices(authProvider, filters);
     } else {
       getAllServices();
     }
@@ -68,7 +72,7 @@ class ServiceProvider with ChangeNotifier {
     }
   }
 
-  Future<void> getFilteredServices(FilterProvider filters,
+  Future<void> getFilteredServices(AuthProvider? auth, FilterProvider filters,
       {String? searchString, bool isUpdateMainData = false}) async {
     try {
       log("Getting filtered Services");
@@ -149,6 +153,7 @@ class ServiceProvider with ChangeNotifier {
       }
 
       searchData = await searchServices(data);
+      callSaveSearchStringAPi(auth, searchString);
       log(searchData.toString(), name: "SearchData");
     } catch (e) {
       CustomLogger.error(e);
@@ -172,6 +177,20 @@ class ServiceProvider with ChangeNotifier {
       CustomLogger.error(e);
     } finally {
       stopLoading();
+    }
+  }
+
+  void callSaveSearchStringAPi(AuthProvider? auth, String searchString) async {
+    if (auth == null &&
+        auth!.authState != AuthState.LoggedIn &&
+        auth.user == null &&
+        searchString.isNotEmpty) {
+      log("CallSearchSaveString");
+      return;
+    } else {
+      Map<String, dynamic> searchStringSaveData = {};
+      searchStringSaveData["search_title"] = searchString;
+      await saveSearchTextApi(auth, searchStringSaveData);
     }
   }
 }

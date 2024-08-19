@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
@@ -48,7 +49,6 @@ class AuthProvider with ChangeNotifier {
   AuthProvider() {
     init();
   }
-
 
 /*  Future<void> register(
       String name, String email, String phone, String password) async {
@@ -148,7 +148,9 @@ class AuthProvider with ChangeNotifier {
     } else {
       try {
         _token = tempToken;
-        print("Logged in");
+        if (kDebugMode) {
+          print("Logged in");
+        }
         final userType = pref.getString("userType");
         await getUser(userType: userType);
         _authState = AuthState.LoggedIn;

@@ -13,8 +13,7 @@ Future<void> addtoCart(
   AuthProvider auth,
   Map data,
 ) async {
-  log(jsonEncode(data), name: "addtoCart");
-  // i
+  /*  log(jsonEncode(data), name: "addtoCart"); */
   try {
     Response response = await customDioClient.client.post(
         auth.isAgent

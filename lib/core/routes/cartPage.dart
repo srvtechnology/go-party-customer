@@ -3,10 +3,8 @@ import 'dart:math';
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:customerapp/core/components/currentLocation.dart';
 import 'package:customerapp/core/components/cutom_card.dart';
-import 'package:customerapp/core/models/package.dart';
 import 'package:customerapp/core/models/service.dart';
 import 'package:customerapp/core/routes/checkoutPage.dart';
-import 'package:customerapp/core/routes/view_all_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -863,9 +861,10 @@ class ExtraDetails extends StatelessWidget {
       create: (_) => FilterProvider(),
       child: Consumer<FilterProvider>(builder: (context, filter, child) {
         return ListenableProvider(
-          create: (_) => ServiceProvider(filters: filter),
-          child: Consumer<ServiceProvider>(
-            builder: (context, state, child) {
+          create: (_) => ServiceProvider(
+              authProvider: context.read<AuthProvider>(), filters: filter),
+          child: Consumer2<ServiceProvider, AuthProvider>(
+            builder: (context, state, auth, child) {
               if (state.isLoading) {
                 // progress indicator
                 return Container(

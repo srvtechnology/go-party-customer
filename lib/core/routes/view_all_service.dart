@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import '../components/card.dart';
 import '../components/loading.dart';
+import '../providers/AuthProvider.dart';
 
 class ViewAllServiceRoute extends StatefulWidget {
   static const routeName = "/viewallservice";
@@ -36,8 +37,10 @@ class _ViewAllServiceRouteState extends State<ViewAllServiceRoute> {
         create: (_) => FilterProvider(),
         child: Consumer<FilterProvider>(builder: (context, filters, child) {
           return ListenableProvider(
-            create: (_) => ServiceProvider(filters: filters),
-            child: Consumer<ServiceProvider>(builder: (context, state, child) {
+            create: (_) => ServiceProvider(
+                authProvider: context.read<AuthProvider>(), filters: filters),
+            child: Consumer2<ServiceProvider, AuthProvider>(
+                builder: (context, state, auth, child) {
               if (state.isLoading) {
                 return Scaffold(
                     body: Container(
@@ -111,6 +114,7 @@ class _ViewAllServiceRouteState extends State<ViewAllServiceRoute> {
                             ),
                             Expanded(
                                 child: _searchBar(
+                              auth: auth,
                               controller: _searchController,
                               filterState: filters,
                               serviceState: state,
@@ -124,7 +128,8 @@ class _ViewAllServiceRouteState extends State<ViewAllServiceRoute> {
                                     MaterialPageRoute(
                                         builder: (context) =>
                                             FilterPage(filterState: filters)));
-                                state.getFilteredServices(filters,
+                                state.getFilteredServices(
+                                    state.authProvider, filters,
                                     isUpdateMainData: true);
                               },
                             )
@@ -182,7 +187,8 @@ class _ViewAllServiceRouteState extends State<ViewAllServiceRoute> {
   }
 
   Widget _searchBar(
-      {required TextEditingController controller,
+      {AuthProvider? auth,
+      required TextEditingController controller,
       required FilterProvider filterState,
       required ServiceProvider serviceState}) {
     return Container(
@@ -195,7 +201,7 @@ class _ViewAllServiceRouteState extends State<ViewAllServiceRoute> {
         onFieldSubmitted: (v) {
           // if (_timer != null) _timer?.cancel();
           Debouncer(milliseconds: 800).run(() {
-            serviceState.getFilteredServices(filterState,
+            serviceState.getFilteredServices(auth, filterState,
                 searchString: _searchController.text, isUpdateMainData: true);
           });
           // _timer = Timer(const Duration(milliseconds: 500), () async {
@@ -210,7 +216,7 @@ class _ViewAllServiceRouteState extends State<ViewAllServiceRoute> {
             fillColor: Colors.white,
             prefixIcon: IconButton(
                 onPressed: () {
-                  serviceState.getFilteredServices(filterState,
+                  serviceState.getFilteredServices(auth, filterState,
                       searchString: _searchController.text);
                 },
                 icon: const Icon(Icons.search)),

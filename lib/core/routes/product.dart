@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import '../components/card.dart';
 import '../models/package.dart';
+import '../providers/AuthProvider.dart';
 
 class ProductPageRoute extends StatefulWidget {
   static const routeName = "/product";
@@ -41,8 +42,14 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
         create: (_) => FilterProvider(),
         child: Consumer<FilterProvider>(builder: (context, filters, child) {
           return ListenableProvider(
-            create: (_) => ServiceProvider(filters: filters),
-            child: Consumer<ServiceProvider>(builder: (context, state, child) {
+            create: (_) => ServiceProvider(
+                authProvider: context.read<AuthProvider>(), filters: filters),
+            child: Consumer2<ServiceProvider, AuthProvider>(builder: (
+              context,
+              state,
+              auth,
+              child,
+            ) {
               /* if (state.isLoading) {
                 return Scaffold(
                     body: Container(
@@ -99,6 +106,7 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                             ),
                             Expanded(
                                 child: _searchBar(
+                              auth: auth,
                               controller: _searchController,
                               filterState: filters,
                               serviceState: state,
@@ -129,7 +137,8 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                                     ).then((_) {
                                       /* -- Reload filtered services when returning from the filter page -- */
                                       if (_searchController.text.isNotEmpty) {
-                                        state.getFilteredServices(filters,
+                                        state.getFilteredServices(
+                                            state.authProvider, filters,
                                             searchString:
                                                 _searchController.text);
                                       }
@@ -299,6 +308,7 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
   }
 
   Widget _searchBar({
+    AuthProvider? auth,
     required TextEditingController controller,
     required FilterProvider filterState,
     required ServiceProvider serviceState,
@@ -310,7 +320,7 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
         controller: controller,
         onFieldSubmitted: (value) {
           if (controller.text.isNotEmpty) {
-            serviceState.getFilteredServices(filterState,
+            serviceState.getFilteredServices(auth, filterState,
                 searchString: controller.text);
           } else {
             Fluttertoast.showToast(
@@ -331,7 +341,7 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
           prefixIcon: IconButton(
             onPressed: () {
               if (controller.text.isNotEmpty) {
-                serviceState.getFilteredServices(filterState,
+                serviceState.getFilteredServices(auth, filterState,
                     searchString: controller.text);
               } else {
                 Fluttertoast.showToast(
