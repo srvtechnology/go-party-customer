@@ -418,23 +418,47 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                     child: savedSearchList != null && savedSearchList.isNotEmpty
                         ? Column(
                             mainAxisSize: MainAxisSize.min,
-                            children: savedSearchList.expand((item) {
-                              final dataItems = item.data;
-                              return dataItems.expand((datum) {
-                                return [
-                                  ListTile(
-                                    title: Text(datum.value ?? ''),
+                            children: [
+                              // "Clear" text button
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
                                     onTap: () {
-                                      _searchController.text =
-                                          datum.value ?? '';
-                                      _removeOverlay();
+                                      _searchController
+                                          .clear(); // Clear the search field
+                                      _removeOverlay(); // Remove the overlay
                                     },
+                                    child: const Text(
+                                      'Clear',
+                                      style: TextStyle(
+                                        color: Colors
+                                            .blue, // You can change the color to match your theme
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                   ),
-                                  const Divider(), // Divider between items
-                                ];
-                              }).toList();
-                            }).toList()
-                              ..removeLast(), // Remove the last divider
+                                ),
+                              ),
+                              ...savedSearchList.expand((item) {
+                                final dataItems = item.data;
+                                return dataItems.expand((datum) {
+                                  return [
+                                    ListTile(
+                                      title: Text(datum.value ?? ''),
+                                      onTap: () {
+                                        _searchController.text =
+                                            datum.value ?? '';
+                                        _removeOverlay();
+                                      },
+                                    ),
+                                    const Divider(), // Divider between items
+                                  ];
+                                }).toList();
+                              }).toList()
+                                ..removeLast(), // Remove the last divider
+                            ],
                           )
                         : Container(),
                   ),
