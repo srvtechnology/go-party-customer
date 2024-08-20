@@ -431,7 +431,6 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                                   child: GestureDetector(
                                     onTap: () {
                                       serviceState.clearSavedSearchData(auth);
-
                                       /* _searchController
                                           .clear(); // Clear the search field */
                                       _removeOverlay(); // Remove the overlay
