@@ -30,12 +30,14 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
   final GlobalKey _searchBarKey = GlobalKey();
   final ScrollController _scrollController = ScrollController();
   late OverlayEntry? _overlayEntry;
+  final ValueNotifier<List<dynamic>?> _searchDataNotifier = ValueNotifier(null);
 
   @override
   void dispose() {
     _searchController.dispose();
     _scrollController.dispose();
     _removeOverlay();
+    _searchDataNotifier.dispose();
     super.dispose();
   }
 
@@ -61,257 +63,213 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                         child: const ShimmerWidget()));
               }
 
+              // Update search data notifier
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (state.savedSearchData != null &&
                     state.savedSearchData!.isNotEmpty) {
                   _showOverlay(context, state.savedSearchData!);
+                } else if (state.searchData != null &&
+                    state.searchData!.isNotEmpty) {
+                  _removeOverlay();
                 }
+
+                _searchDataNotifier.value = state.searchData;
               });
 
-              /* if (state.data == null) {
-                return Scaffold(
-                  appBar: AppBar(
-                    title: const Text("Services"),
-                    centerTitle: true,
-                    elevation: 0,
-                  ),
-                  body: Container(
-                    alignment: Alignment.center,
-                    child: const Text("No services available"),
-                  ),
-                );
-              } */
+              // Use ValueListenableBuilder to respond to changes in searchData
+              return ValueListenableBuilder<List<dynamic>?>(
+                valueListenable: _searchDataNotifier,
+                builder: (context, searchData, child) {
+                  if (searchData != null && searchData.isNotEmpty) {
+                    _removeOverlay();
+                  }
 
-              if (kDebugMode) {
-                print('StateData: ${state.data}');
-                print('SearchData: ${state.searchData}');
-                print('SearchString: ${_searchController.text}');
-              }
+                  bool showFilterIcon = state.data != null &&
+                      state.searchData != null &&
+                      state.searchData!.isNotEmpty;
 
-              bool showFilterIcon = state.data != null &&
-                  state.searchData != null &&
-                  state.searchData!.isNotEmpty;
-
-              return GestureDetector(
-                onTap: () {
-                  FocusManager.instance.primaryFocus!.unfocus();
-                },
-                child: Scaffold(
-                  appBar: PreferredSize(
-                    preferredSize: Size(MediaQuery.of(context).size.width, 60),
-                    child: Material(
-                      elevation: 0.1,
-                      child: Container(
-                        margin: EdgeInsets.only(
-                            top: MediaQuery.of(context).padding.top),
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        color: primaryColor,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              icon: const Icon(Icons.arrow_back_ios),
-                              color: Colors.white,
-                            ),
-                            Expanded(
-                                child: _searchBar(
-                              key: _searchBarKey,
-                              auth: auth,
-                              controller: _searchController,
-                              filterState: filters,
-                              serviceState: state,
-                            )),
-                            if (showFilterIcon)
-                              IconButton(
-                                icon: const Icon(Icons.tune),
-                                color: Colors.white,
-                                onPressed: () {
-                                  if (_searchController.text.isEmpty) {
-                                    Fluttertoast.showToast(
-                                      msg:
-                                          "Search field cannot be empty to apply filter",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.BOTTOM,
-                                      backgroundColor: Colors.red,
-                                      textColor: Colors.white,
-                                      fontSize: 16.0,
-                                    );
-                                  } else {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => FilterPage(
-                                          filterState: filters,
-                                        ),
-                                      ),
-                                    ).then((_) {
-                                      /* -- Reload filtered services when returning from the filter page -- */
-                                      if (_searchController.text.isNotEmpty) {
-                                        state.getFilteredServices(
-                                            state.authProvider, filters,
-                                            searchString:
-                                                _searchController.text);
+                  return GestureDetector(
+                    onTap: () {
+                      FocusManager.instance.primaryFocus!.unfocus();
+                    },
+                    child: Scaffold(
+                      appBar: PreferredSize(
+                        preferredSize:
+                            Size(MediaQuery.of(context).size.width, 60),
+                        child: Material(
+                          elevation: 0.1,
+                          child: Container(
+                            margin: EdgeInsets.only(
+                                top: MediaQuery.of(context).padding.top),
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            color: primaryColor,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  icon: const Icon(Icons.arrow_back_ios),
+                                  color: Colors.white,
+                                ),
+                                Expanded(
+                                    child: _searchBar(
+                                  key: _searchBarKey,
+                                  auth: auth,
+                                  controller: _searchController,
+                                  filterState: filters,
+                                  serviceState: state,
+                                )),
+                                if (showFilterIcon)
+                                  IconButton(
+                                    icon: const Icon(Icons.tune),
+                                    color: Colors.white,
+                                    onPressed: () {
+                                      if (_searchController.text.isEmpty) {
+                                        Fluttertoast.showToast(
+                                          msg:
+                                              "Search field cannot be empty to apply filter",
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.BOTTOM,
+                                          backgroundColor: Colors.red,
+                                          textColor: Colors.white,
+                                          fontSize: 16.0,
+                                        );
+                                      } else {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => FilterPage(
+                                              filterState: filters,
+                                            ),
+                                          ),
+                                        ).then((_) {
+                                          /* -- Reload filtered services when returning from the filter page -- */
+                                          if (_searchController
+                                              .text.isNotEmpty) {
+                                            state.getFilteredServices(
+                                                state.authProvider, filters,
+                                                searchString:
+                                                    _searchController.text);
+                                          }
+                                        });
                                       }
-                                    });
-                                  }
-                                },
-                              )
-                          ],
+                                    },
+                                  )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      body: NestedScrollView(
+                        controller: _scrollController,
+                        floatHeaderSlivers: true,
+                        headerSliverBuilder: (context, isChange) {
+                          return [];
+                        },
+                        body: SizedBox(
+                          height: double.infinity,
+                          width: double.infinity,
+                          child: SingleChildScrollView(
+                            controller: _scrollController,
+                            child: state.isLoading
+                                ? Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.6,
+                                    width: MediaQuery.of(context).size.width,
+                                    alignment: Alignment.center,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: const [
+                                        CircularProgressIndicator(),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                          "Searching for services",
+                                          style: TextStyle(
+                                              fontSize: 14, color: Colors.grey),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                : Column(
+                                    children: state.data == null ||
+                                            state.searchData!.isEmpty
+                                        ? [
+                                            Container(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.6,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              alignment: Alignment.center,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: const [
+                                                  Icon(
+                                                    Icons.search,
+                                                    size: 100,
+                                                    color: Colors.grey,
+                                                  ),
+                                                  SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  Text(
+                                                    "Search for services",
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.grey),
+                                                  )
+                                                ],
+                                              ),
+                                            )
+                                          ]
+                                        : state.searchData!.map((e) {
+                                            if (e.package is PackageModel) {
+                                              return PackageTile(
+                                                package: e.package,
+                                                onTap: () {
+                                                  _removeOverlay();
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          SinglePackageRoute(
+                                                              package:
+                                                                  e.package),
+                                                    ),
+                                                  );
+                                                },
+                                              );
+                                            } else {
+                                              return ProductTile(
+                                                service: e,
+                                                onTap: () {
+                                                  _removeOverlay();
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          SingleServiceRoute(
+                                                              service: e),
+                                                    ),
+                                                  );
+                                                },
+                                              );
+                                            }
+                                          }).toList()),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  body: NestedScrollView(
-                    controller: _scrollController,
-                    floatHeaderSlivers: true,
-                    headerSliverBuilder: (context, isChange) {
-                      return [
-                        /* SliverAppBar(
-                            title: _searchBar(
-                              controller: _searchController,
-                              filterState: filters,
-                              serviceState: state,
-                            ),
-                            floating: true,
-                            snap: true,
-                            pinned: true,
-                            actions: [
-                              // filter button
-                              IconButton(
-                                icon: const Icon(Icons.tune),
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => FilterPage(
-                                                filterState: filters,
-                                              )));
-                                  if (_searchController.text.isNotEmpty) {
-                                    state.getFilteredServices(filters,
-                                        searchString: _searchController.text);
-                                  }
-                                },
-                              )
-                            ],
-                            elevation: 0,
-                            backgroundColor: primaryColor,
-                            bottom: PreferredSize(
-                              preferredSize: const Size.fromHeight(80),
-                              child: Container(
-                                child: _searchBar(
-                                    controller: _searchController,
-                                    filterState: filters,
-                                    serviceState: state),
-                              ),
-                            )) */
-                      ];
-                    },
-                    body: SizedBox(
-                      height: double.infinity,
-                      width: double.infinity,
-                      // color: Colors.white,
-                      child: SingleChildScrollView(
-                        controller: _scrollController,
-                        // padding: EdgeInsets.only(bottom: 5.h, top: 2.h),
-                        child: state.isLoading
-                            ? Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.6,
-                                width: MediaQuery.of(context).size.width,
-                                alignment: Alignment.center,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    // search icon
-                                    CircularProgressIndicator(),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    // search text
-                                    Text(
-                                      "Searching for services",
-                                      style: TextStyle(
-                                          fontSize: 14, color: Colors.grey),
-                                    )
-                                  ],
-                                ),
-                              )
-                            : Column(
-                                children: state.data == null ||
-                                        state.searchData!.isEmpty
-                                    ? [
-                                        Container(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.6,
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          alignment: Alignment.center,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: const [
-                                              // search icon
-                                              Icon(
-                                                Icons.search,
-                                                size: 100,
-                                                color: Colors.grey,
-                                              ),
-                                              SizedBox(
-                                                height: 5,
-                                              ),
-                                              // search text
-                                              Text(
-                                                "Search for services",
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: Colors.grey),
-                                              )
-                                            ],
-                                          ),
-                                        )
-                                      ]
-                                    : state.searchData!.map((e) {
-                                        if (e.package is PackageModel) {
-                                          /* -- Handle the case where e is a PackageModel -- */
-                                          return PackageTile(
-                                            package: e.package,
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      SinglePackageRoute(
-                                                          package: e.package),
-                                                ),
-                                              );
-                                            },
-                                          );
-                                        } else {
-                                          /* --- Handle the case where e is a ServiceModel -- */
-                                          return ProductTile(
-                                            service: e,
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      SingleServiceRoute(
-                                                          service: e),
-                                                ),
-                                              );
-                                            },
-                                          );
-                                        }
-                                      }).toList()),
-                      ),
-                    ),
-                  ),
-                ),
+                  );
+                },
               );
             }),
           );
@@ -387,17 +345,36 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                   fontSize: 16.0,
                 );
               }
-              // Remove the overlay when search icon is clicked
+              // Remove the overlay when search is initiated
               _removeOverlay();
             },
             icon: const Icon(Icons.search),
+            color: Colors.black,
+          ),
+          suffixIcon: Visibility(
+            visible: controller.text.isNotEmpty ? true : false,
+            child: IconButton(
+              onPressed: () {
+                controller.clear();
+                FocusScope.of(context).unfocus();
+                // Remove the overlay when clearing the search field
+                _removeOverlay();
+              },
+              icon: const Icon(Icons.clear),
+              color: Colors.black,
+            ),
           ),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(5),
+            borderSide: const BorderSide(color: Colors.white),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5),
+            borderSide: const BorderSide(color: Colors.white),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(width: 0.5, color: Colors.white),
+            borderRadius: BorderRadius.circular(5),
+            borderSide: const BorderSide(color: Colors.white),
           ),
         ),
       ),
@@ -429,7 +406,7 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                   ? Column(
                       mainAxisSize: MainAxisSize.min,
                       children: savedSearchList.expand((item) {
-                        final dataItems = item.data ?? [];
+                        final dataItems = item.data;
                         return dataItems.expand((datum) {
                           return [
                             ListTile(
