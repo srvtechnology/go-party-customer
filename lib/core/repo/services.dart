@@ -164,6 +164,49 @@ Future<void> saveSearchTextApi(
   }
 }
 
+Future<List<SaveSearchTextModel>> getSavedSearchTextApi(
+  AuthProvider auth,
+) async {
+  try {
+    Response response = await customDioClient.client.get(
+        "${APIConfig.baseUrl}/api/get-search",
+        options: Options(headers: {"Authorization": "Bearer ${auth.token}"}));
+
+    log(jsonEncode(response.data), name: "getSearchDataResponse");
+
+    // Wrap the parsed model in a list
+    List<SaveSearchTextModel> savedSearchTextList = [
+      SaveSearchTextModel.fromJson(response.data)
+    ];
+
+    // Return the list
+    return savedSearchTextList;
+  } catch (e) {
+    if (e is DioException) {
+      CustomLogger.error(e.response?.data ?? e.toString());
+    }
+    return Future.error(e);
+  }
+}
+
+Future<void> clearSavedSearchApi(
+  AuthProvider auth,
+) async {
+  /*  log(jsonEncode(data), name: "addtoCart"); */
+  try {
+    Response response = await customDioClient.client.get(
+        "${APIConfig.baseUrl}/api/delete-search",
+        options: Options(headers: {"Authorization": "Bearer ${auth.token}"}));
+
+    log(jsonEncode(response.data), name: "getDeleteSearchResponse");
+  } catch (e) {
+    if (e is DioException) {
+      CustomLogger.error(e.response?.data ?? e.toString());
+    }
+    return Future.error(e);
+  }
+}
+
 Future<List<String>> getBannerImages() async {
   try {
     Response response =

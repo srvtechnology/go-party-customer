@@ -5,19 +5,37 @@ class SaveSearchTextModel {
   });
 
   final bool? status;
-  final List<String> data;
+  final List<Datum> data;
 
   factory SaveSearchTextModel.fromJson(Map<String, dynamic> json) {
     return SaveSearchTextModel(
       status: json["status"],
       data: json["data"] == null
           ? []
-          : List<String>.from(json["data"]!.map((x) => x)),
+          : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
     );
   }
 
   Map<String, dynamic> toJson() => {
         "status": status,
-        "data": data.map((x) => x).toList(),
+        "data": data.map((x) => x.toJson()).toList(),
+      };
+}
+
+class Datum {
+  Datum({
+    required this.value,
+  });
+
+  final String? value;
+
+  factory Datum.fromJson(Map<String, dynamic> json) {
+    return Datum(
+      value: json["value"],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        "value": value,
       };
 }

@@ -607,6 +607,192 @@ class _CartPageState extends State<CartPage> {
   }
 }
 
+class ExtraDetails extends StatelessWidget {
+  final Color? color;
+
+  const ExtraDetails({
+    Key? key,
+    this.color,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableProvider(
+      create: (_) => FilterProvider(),
+      child: Consumer<FilterProvider>(builder: (context, filter, child) {
+        return ListenableProvider(
+          create: (_) => ServiceProvider(
+              authProvider: context.read<AuthProvider>(), filters: filter),
+          child: Consumer2<ServiceProvider, AuthProvider>(
+            builder: (context, state, auth, child) {
+              if (state.isLoading) {
+                // progress indicator
+                return Container(
+                  height: 10.h,
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                      height: 3.h,
+                      width: 3.h,
+                      child: const CircularProgressIndicator(
+                        color: primaryColor,
+                        strokeWidth: 2,
+                      )),
+                );
+              }
+              if (state.data == null) {
+                return Container();
+              }
+              return Column(
+                children: [
+                  CustomCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10, right: 5),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Browse Similar Packages",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelLarge!
+                                          .copyWith(
+                                              fontSize: 14, color: textColor),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const Spacer(),
+                              TextButton(
+                                  onPressed: () {
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            PackageListPageRoute(
+                                                packages: state.packageData!));
+                                  },
+                                  child: Text(
+                                    "View All",
+                                    style: TextStyle(
+                                        color:
+                                            Theme.of(context).primaryColorDark,
+                                        fontSize: 12),
+                                  ))
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 2.h,
+                        ),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                              children: state.packageData!
+                                  .getRange(
+                                      0, min(4, state.packageData!.length))
+                                  .map((e) => PackageCard(
+                                        package: e,
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SinglePackageRoute(
+                                                        package: e,
+                                                      )));
+                                        },
+                                      ))
+                                  .toList()),
+                        ),
+                      ],
+                    ),
+                  ),
+                  CustomCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10, right: 5),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Browse Similar Services",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelLarge!
+                                          .copyWith(
+                                              fontSize: 14, color: textColor),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const Spacer(),
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                        context, ProductPageRoute.routeName);
+                                    /* --commented on : 09-04-24 -- */
+                                    /* Navigator.pushNamed(
+                                        context, ViewAllServiceRoute.routeName); */
+                                  },
+                                  child: Text(
+                                    "View All",
+                                    style: TextStyle(
+                                        color:
+                                            Theme.of(context).primaryColorDark,
+                                        fontSize: 12),
+                                  ))
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 2.h,
+                        ),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                              children: state.data!
+                                  .getRange(4, min(7, state.data!.length))
+                                  .map((e) => OrderCard(
+                                        service: e,
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SingleServiceRoute(
+                                                          service: e)));
+                                        },
+                                      ))
+                                  .toList()),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5.h,
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      }),
+    );
+  }
+}
+
+
 /*--- commented on : 29-07-24 to fix the design of the cart CardTile ----*/
 /*Widget _cartTile(CartProvider state, CartModel item, AuthProvider auth) {
     return InkWell(
@@ -847,187 +1033,4 @@ class _CartPageState extends State<CartPage> {
     );
   }*/
 
-class ExtraDetails extends StatelessWidget {
-  final Color? color;
 
-  const ExtraDetails({
-    Key? key,
-    this.color,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListenableProvider(
-      create: (_) => FilterProvider(),
-      child: Consumer<FilterProvider>(builder: (context, filter, child) {
-        return ListenableProvider(
-          create: (_) => ServiceProvider(
-              authProvider: context.read<AuthProvider>(), filters: filter),
-          child: Consumer2<ServiceProvider, AuthProvider>(
-            builder: (context, state, auth, child) {
-              if (state.isLoading) {
-                // progress indicator
-                return Container(
-                  height: 10.h,
-                  alignment: Alignment.center,
-                  child: SizedBox(
-                      height: 3.h,
-                      width: 3.h,
-                      child: const CircularProgressIndicator(
-                        color: primaryColor,
-                        strokeWidth: 2,
-                      )),
-                );
-              }
-              if (state.data == null) {
-                return Container();
-              }
-              return Column(
-                children: [
-                  CustomCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10, right: 5),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Browse Similar Packages",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelLarge!
-                                          .copyWith(
-                                              fontSize: 14, color: textColor),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const Spacer(),
-                              TextButton(
-                                  onPressed: () {
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            PackageListPageRoute(
-                                                packages: state.packageData!));
-                                  },
-                                  child: Text(
-                                    "View All",
-                                    style: TextStyle(
-                                        color:
-                                            Theme.of(context).primaryColorDark,
-                                        fontSize: 12),
-                                  ))
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 2.h,
-                        ),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                              children: state.packageData!
-                                  .getRange(
-                                      0, min(4, state.packageData!.length))
-                                  .map((e) => PackageCard(
-                                        package: e,
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      SinglePackageRoute(
-                                                        package: e,
-                                                      )));
-                                        },
-                                      ))
-                                  .toList()),
-                        ),
-                      ],
-                    ),
-                  ),
-                  CustomCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10, right: 5),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Browse Similar Services",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelLarge!
-                                          .copyWith(
-                                              fontSize: 14, color: textColor),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const Spacer(),
-                              TextButton(
-                                  onPressed: () {
-                                    Navigator.pushNamed(
-                                        context, ProductPageRoute.routeName);
-                                    /* --commented on : 09-04-24 -- */
-                                    /* Navigator.pushNamed(
-                                        context, ViewAllServiceRoute.routeName); */
-                                  },
-                                  child: Text(
-                                    "View All",
-                                    style: TextStyle(
-                                        color:
-                                            Theme.of(context).primaryColorDark,
-                                        fontSize: 12),
-                                  ))
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 2.h,
-                        ),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                              children: state.data!
-                                  .getRange(4, min(7, state.data!.length))
-                                  .map((e) => OrderCard(
-                                        service: e,
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      SingleServiceRoute(
-                                                          service: e)));
-                                        },
-                                      ))
-                                  .toList()),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5.h,
-                  ),
-                ],
-              );
-            },
-          ),
-        );
-      }),
-    );
-  }
-}

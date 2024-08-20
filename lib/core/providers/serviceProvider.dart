@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:customerapp/core/models/saveSearchTextModel.dart';
 import 'package:customerapp/core/repo/services.dart';
 import 'package:customerapp/core/utils/logger.dart';
 import 'package:dio/dio.dart';
@@ -18,6 +19,7 @@ class ServiceProvider with ChangeNotifier {
   List<ServiceModel>? get data => _data;
 
   List<ServiceModel>? searchData = [];
+  List<SaveSearchTextModel>? savedSearchData = [];
 
   List<String> banner1Images = [];
   List<String> mobileBannerImages = [];
@@ -42,6 +44,7 @@ class ServiceProvider with ChangeNotifier {
     } else {
       getAllServices();
     }
+    getSavedSearchText(authProvider);
   }
 
   void startLoading() {
@@ -69,6 +72,29 @@ class ServiceProvider with ChangeNotifier {
       CustomLogger.error(e);
     } finally {
       stopLoading();
+    }
+  }
+
+  Future<void> getSavedSearchText(AuthProvider? auth) async {
+    if (auth == null &&
+        auth!.authState != AuthState.LoggedIn &&
+        auth.user == null) {
+      log("==> GetSearchSaveString Failed");
+      return;
+    } else {
+      savedSearchData = await getSavedSearchTextApi(auth);
+      log("savedSearchData : $savedSearchData");
+    }
+  }
+
+  Future<void> clearSavedSearchData(AuthProvider? auth) async {
+    if (auth == null &&
+        auth!.authState != AuthState.LoggedIn &&
+        auth.user == null) {
+      log("==> GetSearchSaveString Failed");
+      return;
+    } else {
+      await clearSavedSearchTextApi(auth);
     }
   }
 
@@ -180,17 +206,29 @@ class ServiceProvider with ChangeNotifier {
     }
   }
 
-  void callSaveSearchStringAPi(AuthProvider? auth, String searchString) async {
+  Future<void> callSaveSearchStringAPi(
+      AuthProvider? auth, String searchString) async {
     if (auth == null &&
         auth!.authState != AuthState.LoggedIn &&
         auth.user == null &&
         searchString.isNotEmpty) {
-      log("CallSearchSaveString");
+      log("==> CallSearchSaveString Failed");
       return;
     } else {
       Map<String, dynamic> searchStringSaveData = {};
       searchStringSaveData["search_title"] = searchString;
       await saveSearchTextApi(auth, searchStringSaveData);
+    }
+  }
+
+  Future<void> clearSavedSearchTextApi(AuthProvider? auth) async {
+    if (auth == null &&
+        auth!.authState != AuthState.LoggedIn &&
+        auth.user == null) {
+      log("==> GetSearchSaveString Failed");
+      return;
+    } else {
+      await clearSavedSearchApi(auth);
     }
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
+import '../components/loading.dart';
 import '../constant/themData.dart';
 import 'package:customerapp/core/components/bottomNav.dart';
 import 'package:customerapp/core/components/commonHeader.dart';
@@ -10,9 +12,9 @@ import 'package:customerapp/core/routes/singlePackage.dart';
 import 'package:customerapp/core/routes/singleService.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:responsive_sizer/responsive_sizer.dart';
 import '../components/card.dart';
 import '../models/package.dart';
+import '../models/saveSearchTextModel.dart';
 import '../providers/AuthProvider.dart';
 
 class ProductPageRoute extends StatefulWidget {
@@ -25,8 +27,9 @@ class ProductPageRoute extends StatefulWidget {
 
 class _ProductPageRouteState extends State<ProductPageRoute> {
   final TextEditingController _searchController = TextEditingController();
-  // Timer? _timer;
+  final GlobalKey _searchBarKey = GlobalKey();
   final ScrollController _scrollController = ScrollController();
+  late OverlayEntry? _overlayEntry;
 
   @override
   void dispose() {
@@ -50,13 +53,21 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
               auth,
               child,
             ) {
-              /* if (state.isLoading) {
+              if (state.isLoading) {
                 return Scaffold(
                     body: Container(
                         alignment: Alignment.center,
                         child: const ShimmerWidget()));
               }
-              if (state.data == null) {
+
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (state.savedSearchData != null &&
+                    state.savedSearchData!.isNotEmpty) {
+                  _showOverlay(context, state.savedSearchData!);
+                }
+              });
+
+              /* if (state.data == null) {
                 return Scaffold(
                   appBar: AppBar(
                     title: const Text("Services"),
@@ -106,6 +117,7 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                             ),
                             Expanded(
                                 child: _searchBar(
+                              key: _searchBarKey,
                               auth: auth,
                               controller: _searchController,
                               filterState: filters,
@@ -308,6 +320,165 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
   }
 
   Widget _searchBar({
+    required GlobalKey<State<StatefulWidget>> key,
+    AuthProvider? auth,
+    List<SaveSearchTextModel>? savedSearchList,
+    required TextEditingController controller,
+    required FilterProvider filterState,
+    required ServiceProvider serviceState,
+  }) {
+    return Container(
+      height: 10.49.h,
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+      child: TextFormField(
+        key: key, // Use the passed key instead of _searchBarKey
+        controller: controller,
+        onTap: () {
+          if (kDebugMode) {
+            print('onTap - savedSearchList: $savedSearchList');
+          }
+          if (savedSearchList != null && savedSearchList.isNotEmpty) {
+            _showOverlay(context, savedSearchList);
+          }
+        },
+        onChanged: (value) {
+          if (value.isEmpty) {
+            if (savedSearchList != null && savedSearchList.isNotEmpty) {
+              _showOverlay(context, savedSearchList);
+            }
+          } else {
+            _removeOverlay();
+          }
+        },
+        onFieldSubmitted: (value) {
+          FocusScope.of(context).unfocus();
+          if (controller.text.isNotEmpty) {
+            serviceState.getFilteredServices(auth, filterState,
+                searchString: controller.text);
+          } else {
+            Fluttertoast.showToast(
+              msg: "Search field cannot be empty",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0,
+            );
+          }
+        },
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.only(top: 10, left: 20),
+          hintText: "Search ...",
+          filled: true,
+          fillColor: Colors.white,
+          prefixIcon: IconButton(
+            onPressed: () {
+              if (controller.text.isNotEmpty) {
+                serviceState.getFilteredServices(auth, filterState,
+                    searchString: controller.text);
+              } else {
+                Fluttertoast.showToast(
+                  msg: "Search field cannot be empty",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  backgroundColor: Colors.red,
+                  textColor: Colors.white,
+                  fontSize: 16.0,
+                );
+              }
+              // Remove the overlay when search icon is clicked
+              _removeOverlay();
+            },
+            icon: const Icon(Icons.search),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(width: 0.5, color: Colors.white),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showOverlay(
+      BuildContext context, List<SaveSearchTextModel>? savedSearchList) {
+    // Get the RenderBox of the TextFormField
+    final RenderBox renderBox =
+        _searchBarKey.currentContext!.findRenderObject() as RenderBox;
+    final size = renderBox.size;
+    final offset = renderBox.localToGlobal(Offset.zero);
+
+    _overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        left: offset.dx, // Position horizontally aligned with the TextFormField
+        top: offset.dy +
+            size.height +
+            10.0, // Add padding between the TextFormField and the overlay
+        width: size.width, // Match the width of the TextFormField
+        child: Material(
+          elevation: 4.0,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10), // Rounded edges
+            child: Container(
+              color: Colors.white,
+              child: savedSearchList != null && savedSearchList.isNotEmpty
+                  ? Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: savedSearchList.expand((item) {
+                        final dataItems = item.data ?? [];
+                        return dataItems.expand((datum) {
+                          return [
+                            ListTile(
+                              title: Text(datum.value ?? ''),
+                              onTap: () {
+                                _searchController.text = datum.value ?? '';
+                                _removeOverlay();
+                                if (_searchController.text.isNotEmpty) {
+                                  context
+                                      .read<ServiceProvider>()
+                                      .getFilteredServices(
+                                        context.read<AuthProvider>(),
+                                        context.read<FilterProvider>(),
+                                        searchString: _searchController.text,
+                                      );
+                                } else {
+                                  Fluttertoast.showToast(
+                                    msg: "Search field cannot be empty",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    backgroundColor: Colors.red,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0,
+                                  );
+                                }
+                              },
+                            ),
+                            const Divider(), // Divider between items
+                          ];
+                        }).toList();
+                      }).toList()
+                        ..removeLast(), // Remove the last divider
+                    )
+                  : Container(),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    Overlay.of(context).insert(_overlayEntry!);
+  }
+
+  void _removeOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+}
+
+/* Widget _searchBar({
     AuthProvider? auth,
     required TextEditingController controller,
     required FilterProvider filterState,
@@ -366,12 +537,12 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
         ),
       ),
     );
-  }
+  } */
 
-  /*--- commented on 06-8-24 : to fix the scrolling
+/*--- commented on 06-8-24 : to fix the scrolling
   issue on click of Done button in keypad
   ----*/
-  /*
+/*
   Widget _searchBar(
       {required TextEditingController controller,
       required FilterProvider filterState,
@@ -431,7 +602,6 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
     );
   }
   */
-}
 
 class PackageListPageRoute extends StatefulWidget {
   final List<PackageModel> packages;
