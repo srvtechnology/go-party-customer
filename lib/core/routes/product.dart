@@ -436,24 +436,6 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                               onTap: () {
                                 _searchController.text = datum.value ?? '';
                                 _removeOverlay();
-                                if (_searchController.text.isNotEmpty) {
-                                  context
-                                      .read<ServiceProvider>()
-                                      .getFilteredServices(
-                                        context.read<AuthProvider>(),
-                                        context.read<FilterProvider>(),
-                                        searchString: _searchController.text,
-                                      );
-                                } else {
-                                  Fluttertoast.showToast(
-                                    msg: "Search field cannot be empty",
-                                    toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.BOTTOM,
-                                    backgroundColor: Colors.red,
-                                    textColor: Colors.white,
-                                    fontSize: 16.0,
-                                  );
-                                }
                               },
                             ),
                             const Divider(), // Divider between items
