@@ -64,15 +64,19 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
               }
 
               // Update search data notifier
+              // Update search data notifier
               WidgetsBinding.instance.addPostFrameCallback((_) {
+                // Check if saved search data is available and not empty
                 if (state.savedSearchData != null &&
-                    state.savedSearchData!.isNotEmpty) {
+                    state.savedSearchData!
+                        .any((model) => model.data.isNotEmpty)) {
                   _showOverlay(context, state.savedSearchData!, auth, state);
                 } else if (state.searchData != null &&
                     state.searchData!.isNotEmpty) {
                   _removeOverlay();
                 }
 
+                // Update the search data notifier
                 _searchDataNotifier.value = state.searchData;
               });
 
@@ -426,8 +430,10 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: GestureDetector(
                                     onTap: () {
-                                      _searchController
-                                          .clear(); // Clear the search field
+                                      serviceState.clearSavedSearchData(auth);
+
+                                      /* _searchController
+                                          .clear(); // Clear the search field */
                                       _removeOverlay(); // Remove the overlay
                                     },
                                     child: const Text(

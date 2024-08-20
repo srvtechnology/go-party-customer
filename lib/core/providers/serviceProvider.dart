@@ -218,6 +218,7 @@ class ServiceProvider with ChangeNotifier {
       Map<String, dynamic> searchStringSaveData = {};
       searchStringSaveData["search_title"] = searchString;
       await saveSearchTextApi(auth, searchStringSaveData);
+      notifyListeners();
     }
   }
 
@@ -229,6 +230,7 @@ class ServiceProvider with ChangeNotifier {
       return;
     } else {
       await clearSavedSearchApi(auth);
+      notifyListeners();
     }
   }
 }
