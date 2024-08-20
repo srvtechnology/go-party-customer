@@ -67,7 +67,7 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (state.savedSearchData != null &&
                     state.savedSearchData!.isNotEmpty) {
-                  _showOverlay(context, state.savedSearchData!);
+                  _showOverlay(context, state.savedSearchData!, auth, state);
                 } else if (state.searchData != null &&
                     state.searchData!.isNotEmpty) {
                   _removeOverlay();
@@ -297,13 +297,13 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
             print('onTap - savedSearchList: $savedSearchList');
           }
           if (savedSearchList != null && savedSearchList.isNotEmpty) {
-            _showOverlay(context, savedSearchList);
+            _showOverlay(context, savedSearchList, auth, serviceState);
           }
         },
         onChanged: (value) {
           if (value.isEmpty) {
             if (savedSearchList != null && savedSearchList.isNotEmpty) {
-              _showOverlay(context, savedSearchList);
+              _showOverlay(context, savedSearchList, auth, serviceState);
             }
           } else {
             _removeOverlay();
@@ -382,7 +382,11 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
   }
 
   void _showOverlay(
-      BuildContext context, List<SaveSearchTextModel>? savedSearchList) {
+    BuildContext context,
+    List<SaveSearchTextModel>? savedSearchList,
+    AuthProvider? auth,
+    ServiceProvider serviceState,
+  ) {
     // Get the RenderBox of the TextFormField
     final RenderBox renderBox =
         _searchBarKey.currentContext!.findRenderObject() as RenderBox;
