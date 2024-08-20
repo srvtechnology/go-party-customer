@@ -35,6 +35,7 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
   void dispose() {
     _searchController.dispose();
     _scrollController.dispose();
+    _removeOverlay();
     super.dispose();
   }
 
