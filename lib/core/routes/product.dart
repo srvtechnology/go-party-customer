@@ -394,41 +394,54 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
     final offset = renderBox.localToGlobal(Offset.zero);
 
     _overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        left: offset.dx, // Position horizontally aligned with the TextFormField
-        top: offset.dy +
-            size.height +
-            10.0, // Add padding between the TextFormField and the overlay
-        width: size.width, // Match the width of the TextFormField
-        child: Material(
-          elevation: 4.0,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10), // Rounded edges
-            child: Container(
-              color: Colors.white,
-              child: savedSearchList != null && savedSearchList.isNotEmpty
-                  ? Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: savedSearchList.expand((item) {
-                        final dataItems = item.data;
-                        return dataItems.expand((datum) {
-                          return [
-                            ListTile(
-                              title: Text(datum.value ?? ''),
-                              onTap: () {
-                                _searchController.text = datum.value ?? '';
-                                _removeOverlay();
-                              },
-                            ),
-                            const Divider(), // Divider between items
-                          ];
-                        }).toList();
-                      }).toList()
-                        ..removeLast(), // Remove the last divider
-                    )
-                  : Container(),
+      builder: (context) => GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          // Remove the overlay when the screen is tapped outside the overlay
+          _removeOverlay();
+        },
+        child: Stack(
+          children: [
+            Positioned(
+              left: offset
+                  .dx, // Position horizontally aligned with the TextFormField
+              top: offset.dy +
+                  size.height +
+                  10.0, // Add padding between the TextFormField and the overlay
+              width: size.width, // Match the width of the TextFormField
+              child: Material(
+                elevation: 4.0,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10), // Rounded edges
+                  child: Container(
+                    color: Colors.white,
+                    child: savedSearchList != null && savedSearchList.isNotEmpty
+                        ? Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: savedSearchList.expand((item) {
+                              final dataItems = item.data;
+                              return dataItems.expand((datum) {
+                                return [
+                                  ListTile(
+                                    title: Text(datum.value ?? ''),
+                                    onTap: () {
+                                      _searchController.text =
+                                          datum.value ?? '';
+                                      _removeOverlay();
+                                    },
+                                  ),
+                                  const Divider(), // Divider between items
+                                ];
+                              }).toList();
+                            }).toList()
+                              ..removeLast(), // Remove the last divider
+                          )
+                        : Container(),
+                  ),
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
