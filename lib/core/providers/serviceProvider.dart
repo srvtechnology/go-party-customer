@@ -75,29 +75,6 @@ class ServiceProvider with ChangeNotifier {
     }
   }
 
-  Future<void> getSavedSearchText(AuthProvider? auth) async {
-    if (auth == null &&
-        auth!.authState != AuthState.LoggedIn &&
-        auth.user == null) {
-      log("==> GetSearchSaveString Failed");
-      return;
-    } else {
-      savedSearchData = await getSavedSearchTextApi(auth);
-      log("savedSearchData : $savedSearchData");
-    }
-  }
-
-  Future<void> clearSavedSearchData(AuthProvider? auth) async {
-    if (auth == null &&
-        auth!.authState != AuthState.LoggedIn &&
-        auth.user == null) {
-      log("==> GetSearchSaveString Failed");
-      return;
-    } else {
-      await clearSavedSearchTextApi(auth);
-    }
-  }
-
   Future<void> getFilteredServices(AuthProvider? auth, FilterProvider filters,
       {String? searchString, bool isUpdateMainData = false}) async {
     try {
@@ -218,7 +195,22 @@ class ServiceProvider with ChangeNotifier {
       Map<String, dynamic> searchStringSaveData = {};
       searchStringSaveData["search_title"] = searchString;
       await saveSearchTextApi(auth, searchStringSaveData);
+      /* await getSavedSearchText(auth); */
       notifyListeners();
+    }
+  }
+
+  Future<void> getSavedSearchText(AuthProvider? auth) async {
+    if (auth == null &&
+        auth!.authState != AuthState.LoggedIn &&
+        auth.user == null) {
+      log("==> GetSearchSaveString Failed");
+      return;
+    } else {
+      savedSearchData = await getSavedSearchTextApi(auth);
+      /* await getSavedSearchText(auth); 
+      notifyListeners();*/
+      log("savedSearchData : $savedSearchData");
     }
   }
 
@@ -230,6 +222,7 @@ class ServiceProvider with ChangeNotifier {
       return;
     } else {
       await clearSavedSearchApi(auth);
+      /*  await getSavedSearchText(auth); */
       notifyListeners();
     }
   }

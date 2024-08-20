@@ -430,7 +430,9 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: GestureDetector(
                                     onTap: () {
-                                      serviceState.clearSavedSearchData(auth);
+                                      serviceState
+                                          .clearSavedSearchTextApi(auth);
+                                      serviceState.getSavedSearchText(auth);
                                       /* _searchController
                                           .clear(); // Clear the search field */
                                       _removeOverlay(); // Remove the overlay
