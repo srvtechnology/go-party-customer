@@ -156,7 +156,7 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                                   SizedBox(height: 1.h),
                                   Text(
                                     /* "₹ ${widget.order.totalPrice}", */
-                                    "₹ ${(double.parse(widget.order.totalPrice) * 1.18).toStringAsFixed(2)}",
+                                    "₹ ${widget.order.totalPrice}",
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.bold,

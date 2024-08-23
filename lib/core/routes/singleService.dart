@@ -348,9 +348,14 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                       if (v == null || v.isEmpty) {
                                         return "End Date Required";
                                       }
-                                      print(
-                                        _startDate.text,
-                                      );
+                                      if (_startDate.text.isEmpty) {
+                                        return "Please select a start date first.";
+                                      }
+                                      if (kDebugMode) {
+                                        print(
+                                          _startDate.text,
+                                        );
+                                      }
                                       // check end date is greater than start date
                                       if (DateTime.parse(_startDate.text)
                                           .isAfter(

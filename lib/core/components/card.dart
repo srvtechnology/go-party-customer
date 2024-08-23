@@ -754,7 +754,7 @@ class _OrderTileState extends State<OrderTile> {
                                 Text(
                                   /* widget.total + widget.total * 0.18 */
                                   /* "₹ ${widget.order.totalPrice}", */
-                                  "₹ ${(double.parse(widget.order.totalPrice) * 1.18).toStringAsFixed(2)}",
+                                  "₹ ${widget.order.totalPrice}",
                                   style: TextStyle(
                                       fontSize: 18.sp,
                                       color: Theme.of(context).primaryColor,
@@ -775,8 +775,8 @@ class _OrderTileState extends State<OrderTile> {
                             )
                           : Text(
                               (widget.isDelivered
-                                      ? 'Delivered ${DateFormat('dd MMM yy').format(DateTime.parse(widget.order.eventEndDate))}'
-                                      : 'Arriving ${DateFormat('dd MMM yy').format(DateTime.parse(widget.order.eventDate))}')
+                                      ? 'Delivered ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventEndDate))}'
+                                      : 'Arriving ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventDate))}')
                                   .toUpperCase(),
                               style: TextStyle(
                                   fontSize: 16.sp,

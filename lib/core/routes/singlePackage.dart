@@ -334,6 +334,10 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                         if (v == null || v.isEmpty) {
                                           return "End Date Required";
                                         }
+
+                                        if (_startDate.text.isEmpty) {
+                                          return "Please select a start date first.";
+                                        }
                                         if (kDebugMode) {
                                           print(
                                             _startDate.text,

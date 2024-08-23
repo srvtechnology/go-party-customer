@@ -276,7 +276,7 @@ class OrderHistory extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
-                              "Delivered on ${DateFormat('dd MMMM yyyy').format(DateTime.parse(order.eventDate))} ",
+                              "Delivered on ${DateFormat('dd.MM.yyyy').format(DateTime.parse(order.eventDate))} ",
                               style: TextStyle(
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w700,

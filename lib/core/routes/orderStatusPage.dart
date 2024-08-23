@@ -75,7 +75,7 @@ class _OrderStatusPageState extends State<OrderStatusPage> {
                         children: [
                           Expanded(
                             child: Text(
-                              'Arriving ${DateFormat('dd MMM yy').format(DateTime.parse(widget.order.eventDate))}',
+                              'Arriving ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventDate))}',
                               style: const TextStyle(
                                 fontSize: 20,
                                 color: primaryColor,
@@ -130,7 +130,7 @@ class _OrderStatusPageState extends State<OrderStatusPage> {
                               padding: const EdgeInsets.only(left: 20),
                               child: Text(
                                 // order date here
-                                'Order ${DateFormat('dd MMM yy').format(DateTime.parse(widget.order.eventDate))}',
+                                'Order ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventDate))}',
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.grey.shade700,
@@ -160,7 +160,7 @@ class _OrderStatusPageState extends State<OrderStatusPage> {
                             contents: Padding(
                               padding: const EdgeInsets.only(left: 20),
                               child: Text(
-                                'Arriving ${DateFormat('dd MMM yy').format(DateTime.parse(widget.order.eventEndDate))}',
+                                'Arriving ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventEndDate))}',
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.grey.shade700,

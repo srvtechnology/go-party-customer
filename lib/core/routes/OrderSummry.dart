@@ -155,7 +155,8 @@ class _OrderSummaryState extends State<OrderSummary> {
                                   ),
                                   SizedBox(height: 1.h),
                                   Text(
-                                    "₹ ${widget.order.totalPrice}",
+                                    /*  "₹ ${widget.order.totalPrice}", */
+                                    '₹ ${widget.order.totalPrice}',
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.bold,
@@ -235,7 +236,7 @@ class _OrderSummaryState extends State<OrderSummary> {
                               fontSize: 16.sp, fontWeight: FontWeight.w400),
                         ),
                         Text(
-                          DateFormat('dd MMMM yyyy').format(
+                          DateFormat('dd.MM.yyyy').format(
                               DateTime.parse(widget.order.eventEndDate)),
                           style: TextStyle(
                             fontSize: 16.sp,
@@ -491,7 +492,7 @@ class _OrderSummaryState extends State<OrderSummary> {
                                   ),
                                   const Spacer(),
                                   Text(
-                                    "₹ ${widget.order.totalPrice}",
+                                    '₹ ${widget.order.totalPrice}',
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.w500,
