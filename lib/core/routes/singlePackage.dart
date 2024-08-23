@@ -688,45 +688,6 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                   color: Colors.black),
                         ),
                       ),
-                      Container(
-                        margin: EdgeInsets.only(top: 1.h),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 4.w,
-                        ),
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Company Name',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall!
-                              .copyWith(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16.sp,
-                              ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 0.h),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 4.w,
-                        ),
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          widget.package.services[0].companyName != null &&
-                                  widget.package.services[0].companyName!
-                                      .trim()
-                                      .isNotEmpty
-                              ? widget.package.services[0].companyName!
-                              : "NA",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall!
-                              .copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16.sp,
-                                  color: Theme.of(context).primaryColor),
-                        ),
-                      ),
                       const SizedBox(
                         height: 8,
                       ),
