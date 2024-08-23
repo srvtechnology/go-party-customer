@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import '../../views/view.dart';
 import '../constant/themData.dart';
@@ -12,12 +11,9 @@ import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/cartProvider.dart';
 import 'package:customerapp/core/providers/orderProvider.dart';
 import 'package:customerapp/core/providers/serviceProvider.dart';
-import 'package:customerapp/core/routes/cartPage.dart';
 import 'package:customerapp/core/routes/eventsPage.dart';
-import 'package:customerapp/core/routes/product.dart';
 import 'package:customerapp/core/routes/singlePackage.dart';
 import 'package:customerapp/core/routes/singleService.dart';
-import 'package:customerapp/core/routes/view_all_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -429,11 +425,13 @@ class _HomeState extends State<Home> {
                                       /*.getRange(0, min(4, state.data!.length))*/
                                       .map((e) => GestureDetector(
                                             onTap: () {
-                                              Navigator.pushNamed(context,
-                                                  ProductPageRoute.routeName);
+                                              /* Navigator.pushNamed(context,
+                                                  ProductPageRoute.routeName); */
                                               /* --commented on : 09-04-24 -- */
-                                              /* Navigator.pushNamed(
-                                        context, ViewAllServiceRoute.routeName); */
+                                              Navigator.pushNamed(
+                                                  context,
+                                                  ViewAllServiceRoute
+                                                      .routeName);
                                             },
                                             child: CircularEventCard(
                                               event: e,
@@ -470,11 +468,11 @@ class _HomeState extends State<Home> {
                                   padding: const EdgeInsets.only(right: 8.0),
                                   child: TextButton(
                                       onPressed: () {
-                                        Navigator.pushNamed(context,
-                                            ProductPageRoute.routeName);
+                                        /*  Navigator.pushNamed(context,
+                                            ProductPageRoute.routeName); */
                                         /* --commented on : 09-04-24 -- */
-                                        /* Navigator.pushNamed(
-                                        context, ViewAllServiceRoute.routeName); */
+                                        Navigator.pushNamed(context,
+                                            ViewAllServiceRoute.routeName);
                                       },
                                       child: Text(
                                         "View All",
@@ -592,11 +590,11 @@ class _HomeState extends State<Home> {
                                   padding: const EdgeInsets.only(right: 8.0),
                                   child: TextButton(
                                       onPressed: () {
-                                        Navigator.pushNamed(context,
-                                            ProductPageRoute.routeName);
+                                        /*  Navigator.pushNamed(context,
+                                            ProductPageRoute.routeName); */
                                         /* --commented on : 09-04-24 -- */
-                                        /* Navigator.pushNamed(
-                                        context, ViewAllServiceRoute.routeName); */
+                                        Navigator.pushNamed(context,
+                                            ViewAllServiceRoute.routeName);
                                       },
                                       child: Text(
                                         "View All",
@@ -653,11 +651,11 @@ class _HomeState extends State<Home> {
                                   padding: const EdgeInsets.only(right: 8.0),
                                   child: TextButton(
                                       onPressed: () {
-                                        Navigator.pushNamed(context,
-                                            ProductPageRoute.routeName);
+                                        /* Navigator.pushNamed(context,
+                                            ProductPageRoute.routeName); */
                                         /* --commented on : 09-04-24 -- */
-                                        /* Navigator.pushNamed(
-                                        context, ViewAllServiceRoute.routeName); */
+                                        Navigator.pushNamed(context,
+                                            ViewAllServiceRoute.routeName);
                                       },
                                       child: Text(
                                         "View All",

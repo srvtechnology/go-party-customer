@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
+import '../../views/view.dart';
 import '../constant/themData.dart';
 import 'package:customerapp/core/components/card.dart';
 import 'package:customerapp/core/components/commonHeader.dart';
@@ -739,11 +740,11 @@ class ExtraDetails extends StatelessWidget {
                               const Spacer(),
                               TextButton(
                                   onPressed: () {
-                                    Navigator.pushNamed(
-                                        context, ProductPageRoute.routeName);
-                                    /* --commented on : 09-04-24 -- */
                                     /* Navigator.pushNamed(
-                                        context, ViewAllServiceRoute.routeName); */
+                                        context, ProductPageRoute.routeName); */
+                                    /* --commented on : 09-04-24 -- */
+                                    Navigator.pushNamed(
+                                        context, ViewAllServiceRoute.routeName);
                                   },
                                   child: Text(
                                     "View All",

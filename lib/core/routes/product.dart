@@ -29,7 +29,8 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
   final TextEditingController _searchController = TextEditingController();
   final GlobalKey _searchBarKey = GlobalKey();
   final ScrollController _scrollController = ScrollController();
-  late OverlayEntry? _overlayEntry;
+  OverlayEntry? _overlayEntry;
+
   final ValueNotifier<List<dynamic>?> _searchDataNotifier = ValueNotifier(null);
 
   @override
@@ -63,7 +64,6 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                         child: const ShimmerWidget()));
               }
 
-              // Update search data notifier
               // Update search data notifier
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 // Check if saved search data is available and not empty
@@ -481,9 +481,16 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
   }
 
   void _removeOverlay() {
+    if (_overlayEntry != null) {
+      _overlayEntry?.remove();
+      _overlayEntry = null;
+    }
+  }
+
+  /*  void _removeOverlay() {
     _overlayEntry?.remove();
     _overlayEntry = null;
-  }
+  } */
 }
 
 /* Widget _searchBar({

@@ -443,7 +443,12 @@ class _AddressAddPageState extends State<AddressAddPage> {
       Map data = {
         "billing_name": _billingNameController.text,
         "billing_mobile": _billingMobileController.text,
-        "address": "0",
+        /* "address": "0", */
+        "address": "${_houseNumberController.text}, "
+            "${_pinCodeController.text}, "
+            "${_areaController.text}, "
+            "${_landmarkController.text}, "
+            "$city, $state, $country",
         "address_latitude": "0.000001",
         "address_longitude": "0.000001",
         "pin_code": _pinCodeController.text,
@@ -915,8 +920,9 @@ class _AddressEditPageState extends State<AddressEditPage> {
                             }
                           },
                           validator: (text) {
-                            if (text == null || text.isEmpty)
+                            if (text == null || text.isEmpty) {
                               return "PinCode cannot be empty!";
+                            }
                             if (text.length != 6) {
                               return "Please enter a valid pin code";
                             }
