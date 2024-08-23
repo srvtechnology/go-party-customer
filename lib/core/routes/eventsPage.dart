@@ -1,8 +1,10 @@
 import 'package:customerapp/core/components/card.dart';
 import 'package:customerapp/core/routes/product.dart';
 import 'package:customerapp/core/routes/view_all_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../components/commonHeader.dart';
 import '../models/service.dart';
 
 class EventsPage extends StatefulWidget {
@@ -17,7 +19,16 @@ class _EventsPageState extends State<EventsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: CommonHeader.header(context, onBack: () {
+        Navigator.pop(context);
+      }, onSearch: () {
+        if (kDebugMode) {
+          print("search");
+        }
+        Navigator.pushNamed(context, ProductPageRoute.routeName);
+      }),
+      /* --- commented on : 24-08-24 to show back button */
+      /* AppBar(
         elevation: 1,
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
@@ -49,7 +60,7 @@ class _EventsPageState extends State<EventsPage> {
             ),
           )
         ],
-      ),
+      ), */
       body: Container(
         padding: const EdgeInsets.all(20),
         child: GridView.builder(

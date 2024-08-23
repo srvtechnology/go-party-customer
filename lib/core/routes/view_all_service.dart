@@ -1,4 +1,5 @@
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
+import 'package:flutter/foundation.dart';
 import '../../views/view.dart';
 import '../components/commonHeader.dart';
 import '../constant/themData.dart';
@@ -98,10 +99,20 @@ class _ViewAllServiceRouteState extends State<ViewAllServiceRoute> {
                         child: const ShimmerWidget()));
               }
               return Scaffold(
-                appBar: CommonHeader.headerMain(context, isShowLogo: false,
-                    onSearch: () {
+                appBar: CommonHeader.header(context, onBack: () {
+                  Navigator.pop(context);
+                }, onSearch: () {
+                  if (kDebugMode) {
+                    print("search");
+                  }
                   Navigator.pushNamed(context, ProductPageRoute.routeName);
                 }),
+                /* --- commented on : 24-08-24 to show back button */
+                /* appBar: CommonHeader.headerMain(context, isShowLogo: false,
+                    onSearch: () {
+                  Navigator.pushNamed(context, ProductPageRoute.routeName);
+                }), */
+                /* --- commented on : 23-08-24 to redirect to Products page  */
                 /* appBar: PreferredSize(
                   preferredSize: Size(MediaQuery.of(context).size.width, 60),
                   child: Material(

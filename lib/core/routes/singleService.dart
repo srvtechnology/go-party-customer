@@ -1038,7 +1038,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                         style: TextStyle(fontSize: 16),
                                       ),
                                       Text(
-                                        "\u20B9 ${widget.service.price}",
+                                        "\u20B9 ${selectedCategory?.servicePrice ?? widget.service.price}",
                                         style: const TextStyle(
                                             decoration:
                                                 TextDecoration.lineThrough),
