@@ -25,7 +25,7 @@ class ServiceModel {
   ServiceModel({
     required this.id,
     required this.name,
-    required this.companyName,
+    this.companyName,
     required this.description,
     required this.priceBasis,
     required this.discountedPrice,

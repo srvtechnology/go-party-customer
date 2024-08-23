@@ -742,7 +742,12 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                               ),
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                widget.service.companyName!,
+                                widget.service.companyName != null &&
+                                        widget.service.companyName!
+                                            .trim()
+                                            .isNotEmpty
+                                    ? widget.service.companyName!
+                                    : "NA",
                                 style: Theme.of(context)
                                     .textTheme
                                     .headlineSmall!

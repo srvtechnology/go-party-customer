@@ -712,7 +712,12 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                         ),
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          widget.package.services[0].companyName!,
+                          widget.package.services[0].companyName != null &&
+                                  widget.package.services[0].companyName!
+                                      .trim()
+                                      .isNotEmpty
+                              ? widget.package.services[0].companyName!
+                              : "NA",
                           style: Theme.of(context)
                               .textTheme
                               .headlineSmall!

@@ -249,7 +249,7 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                               fontSize: 16.sp, fontWeight: FontWeight.w400),
                         ),
                         Text(
-                          "Event Start Date: ${DateFormat('dd MMMM yyyy').format(DateTime.parse(widget.order.eventDate))} \nEvent End Date:   ${DateFormat('dd MMMM yyyy').format(DateTime.parse(widget.order.eventEndDate))}",
+                          "Event Start Date: ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventDate))} \nEvent End Date:   ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventEndDate))}",
                           style: TextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w600,
