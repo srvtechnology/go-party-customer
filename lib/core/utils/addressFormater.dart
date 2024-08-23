@@ -2,11 +2,14 @@ import 'package:customerapp/core/models/addressModel.dart';
 import 'package:customerapp/core/models/orders.dart';
 
 String getAddressFormat(AddressModel address) {
-  return "${address.houseNumber} \n${address.area} \n${address.address.toString() == "0" ? "" : "${address.address}\n"}${address.landmark}, \n${address.city}, ${address.state} ${address.pinCode}  \n${address.countryName} \n${address.billingMobile}";
+  return "${address.houseNumber} \n${address.area} ${address.landmark}, \n${address.city}, ${address.state} ${address.pinCode}  \n${address.countryName} \n${address.billingMobile}";
   // "${address.houseNumber}, ${address.landmark}, \n${address.area} , ${address.city}, \n${address.state} ${address.pinCode}  ${address.countryName}";
 }
 
 String getAddressFormatOrder(OrderModel address) {
-  return "${address.houseNumber} \n${address.area} \n${address.address.toString() == "0" ? "" : "${address.address}\n"}${address.landmark}, \n${address.eventCity}, ${address.state} ${address.pinCode} \n${address.billingMobile}";
+  return "${address.houseNumber} \n${address.area} ${address.landmark}, \n${address.eventCity}, ${address.state} ${address.pinCode} \n${address.billingMobile}";
   // "${address.houseNumber}, ${address.landmark}, \n${address.area} , ${address.city}, \n${address.state} ${address.pinCode}  ${address.countryName}";
 }
+
+/* --- removed on 24-08-24 : since address is manual input. */
+/* \n${address.address.toString() == "0" ? "" : "${address.address}\n"} */

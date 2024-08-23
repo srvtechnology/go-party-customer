@@ -799,29 +799,26 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                     text: TextSpan(
                                       children: [
                                         TextSpan(
-                                            text:
-                                                "\u20B9 ${selectedCategory?.discountPrice ?? widget.package.discountedPrice} ",
-                                            style: TextStyle(
-                                                fontSize: 16.sp,
-                                                fontWeight: FontWeight.w600,
+                                          text:
+                                              "\u20B9 ${selectedCategory?.discountPrice ?? widget.package.discountedPrice} ",
+                                          style: TextStyle(
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w600,
+                                            color: Theme.of(context)
+                                                .primaryColorDark,
+                                          ),
+                                          children: [
+                                            TextSpan(
+                                              text:
+                                                  "for ${selectedCategory?.category?.categoryName?.trim() ?? ""}",
+                                              style: TextStyle(
                                                 color: Theme.of(context)
-                                                    .primaryColorDark),
-                                            children: [
-                                              // TextSpan(
-                                              //   text: "/ ${widget.package.}",
-                                              //   style: TextStyle(
-                                              //       fontSize: 15.sp,
-                                              //       color: Colors.black),
-                                              // ),
-                                              TextSpan(
-                                                text:
-                                                    "for ${selectedCategory?.category?.categoryName?.trim() ?? ""}",
-                                                style: TextStyle(
-                                                    color: Theme.of(context)
-                                                        .primaryColorDark,
-                                                    fontSize: 14.sp),
+                                                    .primaryColorDark,
+                                                fontSize: 14.sp,
                                               ),
-                                            ]),
+                                            ),
+                                          ],
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -829,56 +826,44 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                     'Exc. all taxes',
                                     style: TextStyle(fontSize: 12),
                                   ),
+                                  const SizedBox(height: 8),
                                   const Text(
-                                    'Check price for other event ',
+                                    'Check price for other event',
                                     style: TextStyle(fontSize: 14),
                                   ),
-                                  const Text(
-                                    '',
-                                    style: TextStyle(fontSize: 12),
+                                  DropdownButton<PopupCategory?>(
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor),
+                                    underline: Container(),
+                                    iconSize: 16,
+                                    icon: const Icon(
+                                      Icons.arrow_drop_down_circle_outlined,
+                                      color: primaryColor,
+                                    ),
+                                    value: selectedCategory,
+                                    items: popupCategories
+                                        .map((e) =>
+                                            DropdownMenuItem<PopupCategory>(
+                                              value: e,
+                                              child: Text(
+                                                e.category?.categoryName ?? "",
+                                                style: const TextStyle(
+                                                    fontSize: 14),
+                                              ),
+                                            ))
+                                        .toList(),
+                                    onChanged: (v) {
+                                      setState(() {
+                                        selectedCategory = v;
+                                        _categoryName.text = selectedCategory
+                                                ?.category?.categoryName ??
+                                            "";
+                                      });
+                                    },
                                   ),
                                 ],
                               ),
                               const Spacer(),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  DropdownButton<PopupCategory?>(
-                                      style: TextStyle(
-                                          color:
-                                              Theme.of(context).primaryColor),
-                                      underline: Container(),
-                                      iconSize: 16,
-                                      icon: const Icon(
-                                        Icons.arrow_drop_down_circle_outlined,
-                                        color: primaryColor,
-                                      ),
-                                      value: selectedCategory,
-                                      items: popupCategories
-                                          .map((e) =>
-                                              DropdownMenuItem<PopupCategory>(
-                                                  value: e,
-                                                  child: Text(
-                                                    e.category?.categoryName ??
-                                                        "",
-                                                    style: const TextStyle(
-                                                        fontSize: 14),
-                                                  )))
-                                          .toList(),
-                                      onChanged: (v) {
-                                        setState(() {
-                                          selectedCategory = v;
-                                          _categoryName.text = selectedCategory
-                                                  ?.category?.categoryName ??
-                                              "";
-                                        });
-                                      })
-                                ],
-                              )
                             ],
                           ),
                         ),

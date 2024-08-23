@@ -744,7 +744,9 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                 duration: const Duration(milliseconds: 600),
                                 child: LayoutBuilder(
                                   builder: (context, constraints) {
-                                    print(constraints.maxHeight.toString());
+                                    if (kDebugMode) {
+                                      print(constraints.maxHeight.toString());
+                                    }
                                     return HtmlTextView(
                                         htmlText:
                                             widget.service.description ?? "");
@@ -825,12 +827,6 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                                     color: Theme.of(context)
                                                         .primaryColorDark),
                                                 children: [
-                                                  /* TextSpan(
-                                                    text: "/ ${widget.package.}",
-                                                    style: TextStyle(
-                                                        fontSize: 15.sp,
-                                                        color: Colors.black),
-                                                  ), */
                                                   TextSpan(
                                                     text:
                                                         "for ${selectedCategory?.category?.categoryName?.trim() ?? ""}",
@@ -847,58 +843,47 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                         'Exc. all taxes',
                                         style: TextStyle(fontSize: 12),
                                       ),
+                                      const SizedBox(height: 8),
                                       const Text(
-                                        'Check price for other event ',
+                                        'Check price for other event',
                                         style: TextStyle(fontSize: 14),
                                       ),
-                                      const Text(
-                                        '',
-                                        style: TextStyle(fontSize: 12),
-                                      ),
-                                    ],
-                                  ),
-                                  const Spacer(),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
                                       DropdownButton<PopupCategory?>(
-                                          style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .primaryColor),
-                                          underline: Container(),
-                                          iconSize: 16,
-                                          icon: const Icon(
-                                            Icons
-                                                .arrow_drop_down_circle_outlined,
-                                            color: primaryColor,
-                                          ),
-                                          value: selectedCategory,
-                                          items: popupCategories
-                                              .map((e) => DropdownMenuItem<
-                                                      PopupCategory>(
+                                        style: TextStyle(
+                                            color:
+                                                Theme.of(context).primaryColor),
+                                        underline: Container(),
+                                        iconSize: 16,
+                                        icon: const Icon(
+                                          Icons.arrow_drop_down_circle_outlined,
+                                          color: primaryColor,
+                                        ),
+                                        value: selectedCategory,
+                                        items: popupCategories
+                                            .map((e) =>
+                                                DropdownMenuItem<PopupCategory>(
                                                   value: e,
                                                   child: Text(
                                                     e.category?.categoryName ??
                                                         "",
                                                     style: const TextStyle(
                                                         fontSize: 14),
-                                                  )))
-                                              .toList(),
-                                          onChanged: (v) {
-                                            setState(() {
-                                              selectedCategory = v;
-                                              _categoryName.text =
-                                                  selectedCategory?.category
-                                                          ?.categoryName ??
-                                                      "";
-                                            });
-                                          })
+                                                  ),
+                                                ))
+                                            .toList(),
+                                        onChanged: (v) {
+                                          setState(() {
+                                            selectedCategory = v;
+                                            _categoryName.text =
+                                                selectedCategory?.category
+                                                        ?.categoryName ??
+                                                    "";
+                                          });
+                                        },
+                                      ),
                                     ],
-                                  )
+                                  ),
+                                  const Spacer(),
                                 ],
                               ),
                             ),
@@ -1208,19 +1193,19 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                       fontSize: 20,
                                       fontWeight: FontWeight.w600),
                                 )),
-                            // Container(
-                            //   padding: EdgeInsets.symmetric(
-                            //     horizontal: 4.w,
-                            //   ),
-                            //   child: Row(
-                            //     children: [
-                            //       ...widget.service.s.map((e) => Container(
-                            //             alignment: Alignment.centerLeft,
-                            //             child: Text(e.name),
-                            //           ))
-                            //     ],
-                            //   ),
-                            // ),
+                            /* Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 4.w,
+                              ),
+                              child: Row(
+                                children: [
+                                  ...widget.service.s.map((e) => Container(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(e.name),
+                                      ))
+                                ],
+                              ),
+                            ), */
                             SizedBox(
                               height: 1.h,
                             ),
@@ -1265,116 +1250,116 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                             SizedBox(
                               height: 2.h,
                             ),
-                            // Container(
-                            //     padding: EdgeInsets.symmetric(
-                            //       horizontal: 4.w,
-                            //     ),
-                            //     child: Row(
-                            //       mainAxisAlignment:
-                            //           MainAxisAlignment.spaceBetween,
-                            //       crossAxisAlignment: CrossAxisAlignment.center,
-                            //       children: [
-                            //         const Text(
-                            //           "Reviews",
-                            //           style: TextStyle(
-                            //               fontSize: 20,
-                            //               fontWeight: FontWeight.w600),
-                            //         ),
-                            //         // write review button
-                            //         WriteReview(
-                            //           serviceId: widget.service.id.toString(),
-                            //         ),
-                            //       ],
-                            //     )),
-                            // Container(
-                            //   padding: EdgeInsets.symmetric(
-                            //     horizontal: 4.w,
-                            //   ),
-                            //   height: 5.h,
-                            //   child: Row(
-                            //     crossAxisAlignment: CrossAxisAlignment.center,
-                            //     mainAxisAlignment: MainAxisAlignment.start,
-                            //     children: [
-                            //       const Icon(
-                            //         Icons.star,
-                            //         color: Color.fromARGB(255, 212, 119, 61),
-                            //       ),
-                            //       SizedBox(
-                            //         width: 2.w,
-                            //       ),
-                            //       Text(
-                            //         widget.service.rating ?? "Not Rated",
-                            //         style: const TextStyle(
-                            //             fontSize: 16,
-                            //             fontWeight: FontWeight.w600),
-                            //       ),
-                            //       SizedBox(
-                            //         width: 2.w,
-                            //       ),
-                            //       Text(
-                            //           "( ${widget.service.reviews?.length} rating${widget.service.reviews!.length > 1 ? "s" : ""} )")
-                            //     ],
-                            //   ),
-                            // ),
-                            // const Divider(
-                            //   thickness: 1,
-                            // ),
-                            // Container(
-                            //   padding: EdgeInsets.symmetric(
-                            //     horizontal: 4.w,
-                            //   ),
-                            //   child: Column(
-                            //       children: widget.service.reviews!
-                            //           .getRange(
-                            //               0,
-                            //               min(4,
-                            //                   widget.service.reviews!.length))
-                            //           .map((e) => ReviewTile(e: e))
-                            //           .toList()),
-                            // ),
-                            // GestureDetector(
-                            //   onTap: () {
-                            //     Navigator.push(
-                            //         context,
-                            //         MaterialPageRoute(
-                            //             builder: (context) => ReviewPage(
-                            //                 reviews: widget.service.reviews!)));
-                            //   },
-                            //   child: Container(
-                            //     height: 6.h,
-                            //     margin: EdgeInsets.symmetric(
-                            //       horizontal: 4.w,
-                            //     ),
-                            //     decoration: BoxDecoration(
-                            //       border: Border.all(
-                            //           width: 0.5,
-                            //           color: Theme.of(context).primaryColor),
-                            //       borderRadius: BorderRadius.circular(10),
-                            //     ),
-                            //     child: Row(
-                            //       mainAxisAlignment: MainAxisAlignment.center,
-                            //       crossAxisAlignment: CrossAxisAlignment.center,
-                            //       children: [
-                            //         const Text(
-                            //           'View All Reviews',
-                            //           style: TextStyle(
-                            //             fontSize: 16,
-                            //             fontWeight: FontWeight.w600,
-                            //             color: primaryColor,
-                            //           ),
-                            //         ),
-                            //         SizedBox(
-                            //           width: 2.w,
-                            //         ),
-                            //         const Icon(
-                            //           Icons.arrow_forward_ios_rounded,
-                            //           color: primaryColor,
-                            //           size: 16,
-                            //         )
-                            //       ],
-                            //     ),
-                            //   ),
-                            // ),
+                            /*  Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 4.w,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                      "Reviews",
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                    // write review button
+                                    WriteReview(
+                                      serviceId: widget.service.id.toString(),
+                                    ),
+                                  ],
+                                )),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 4.w,
+                              ),
+                              height: 5.h,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const Icon(
+                                    Icons.star,
+                                    color: Color.fromARGB(255, 212, 119, 61),
+                                  ),
+                                  SizedBox(
+                                    width: 2.w,
+                                  ),
+                                  Text(
+                                    widget.service.rating ?? "Not Rated",
+                                    style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                  SizedBox(
+                                    width: 2.w,
+                                  ),
+                                  Text(
+                                      "( ${widget.service.reviews?.length} rating${widget.service.reviews!.length > 1 ? "s" : ""} )")
+                                ],
+                              ),
+                            ),
+                            const Divider(
+                              thickness: 1,
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 4.w,
+                              ),
+                              child: Column(
+                                  children: widget.service.reviews!
+                                      .getRange(
+                                          0,
+                                          min(4,
+                                              widget.service.reviews!.length))
+                                      .map((e) => ReviewTile(e: e))
+                                      .toList()),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ReviewPage(
+                                            reviews: widget.service.reviews!)));
+                              },
+                              child: Container(
+                                height: 6.h,
+                                margin: EdgeInsets.symmetric(
+                                  horizontal: 4.w,
+                                ),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      width: 0.5,
+                                      color: Theme.of(context).primaryColor),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                      'View All Reviews',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: primaryColor,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 2.w,
+                                    ),
+                                    const Icon(
+                                      Icons.arrow_forward_ios_rounded,
+                                      color: primaryColor,
+                                      size: 16,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ), */
                             Divider(
                               thickness: 1,
                               height: 6.h,

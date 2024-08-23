@@ -86,6 +86,19 @@ class _AddressAddPageState extends State<AddressAddPage> {
   }
 
   @override
+  void dispose() {
+    _billingNameController.dispose();
+    _billingMobileController.dispose();
+    _houseNumberController.dispose();
+    _pinCodeController.dispose();
+    _areaController.dispose();
+    _landmarkController.dispose();
+    _addressForController.dispose();
+    _addressTypeController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder(
         future: Future.wait([_countryFuture, _geolocationFuture]),
@@ -134,41 +147,39 @@ class _AddressAddPageState extends State<AddressAddPage> {
                       const SizedBox(
                         height: 20,
                       ),
-                      SizedBox(
-                        height: 6.h,
-                        child: TextFormField(
-                          controller: _billingNameController,
-                          validator: (text) {
-                            if (text == null || text.isEmpty) return "Required";
-                            return null;
-                          },
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                              labelText: "Name"),
+                      TextFormField(
+                        controller: _billingNameController,
+                        validator: (text) {
+                          if (text == null || text.isEmpty) {
+                            return "Required";
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          labelText: "Name",
                         ),
                       ),
                       const SizedBox(
                         height: 10,
                       ),
-                      SizedBox(
-                        height: 6.h,
-                        child: TextFormField(
-                          controller: _billingMobileController,
-                          validator: (text) {
-                            if (text == null || text.isEmpty) return "Required";
-                            if (text.length != 10) {
-                              return "Please enter a valid number";
-                            }
-                            return null;
-                          },
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                            labelText: "Phone",
-                          ),
-                          keyboardType: TextInputType.number,
+                      TextFormField(
+                        controller: _billingMobileController,
+                        validator: (text) {
+                          if (text == null || text.isEmpty) return "Required";
+                          if (text.length != 10) {
+                            return "Please enter a valid number";
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          labelText: "Phone",
                         ),
+                        keyboardType: TextInputType.number,
                       ),
                       const SizedBox(
                         height: 20,
@@ -189,85 +200,73 @@ class _AddressAddPageState extends State<AddressAddPage> {
                       const SizedBox(
                         height: 20,
                       ),
-                      SizedBox(
-                        height: 6.h,
-                        child: TextFormField(
-                          controller: _houseNumberController,
-                          validator: (text) {
-                            if (text == null || text.isEmpty) return "Required";
-                            return null;
-                          },
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                              labelText: "House / Flat / Building Number"),
-                        ),
+                      TextFormField(
+                        controller: _houseNumberController,
+                        validator: (text) {
+                          if (text == null || text.isEmpty) return "Required";
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            labelText: "House / Flat / Building Number"),
                       ),
                       const SizedBox(
                         height: 20,
                       ),
 
                       // Pin Code add
-                      SizedBox(
-                        height: 6.h,
-                        child: TextFormField(
-                          focusNode: focusNode,
-                          controller: _pinCodeController,
-                          onChanged: (text) {
-                            if (text.length == 6) {
-                              getLocationByPin();
-                            }
-                          },
-                          validator: (text) {
-                            if (text == null || text.isEmpty) return "Required";
-                            if (text.length != 6) {
-                              return "Please enter a valid pincode";
-                            }
-                            return null;
-                          },
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                      width: 0.2, color: Colors.grey[200]!)),
-                              labelText: "Pin Code"),
-                        ),
+                      TextFormField(
+                        focusNode: focusNode,
+                        controller: _pinCodeController,
+                        onChanged: (text) {
+                          if (text.length == 6) {
+                            getLocationByPin();
+                          }
+                        },
+                        validator: (text) {
+                          if (text == null || text.isEmpty) return "Required";
+                          if (text.length != 6) {
+                            return "Please enter a valid pincode";
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                    width: 0.2, color: Colors.grey[200]!)),
+                            labelText: "Pin Code"),
                       ),
                       const SizedBox(
                         height: 10,
                       ),
-                      SizedBox(
-                        height: 6.h,
-                        child: TextFormField(
-                          controller: _areaController,
-                          validator: (text) {
-                            if (text == null || text.isEmpty) return "Required";
-                            return null;
-                          },
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                              labelText: "Area"),
-                        ),
+                      TextFormField(
+                        controller: _areaController,
+                        validator: (text) {
+                          if (text == null || text.isEmpty) return "Required";
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            labelText: "Area"),
                       ),
                       const SizedBox(
                         height: 10,
                       ),
-                      SizedBox(
-                        height: 6.h,
-                        child: TextFormField(
-                          controller: _landmarkController,
-                          validator: (text) {
-                            if (text == null || text.isEmpty) return "Required";
-                            return null;
-                          },
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                      width: 0.2, color: Colors.grey[200]!)),
-                              labelText: "Landmark"),
-                        ),
+                      TextFormField(
+                        controller: _landmarkController,
+                        validator: (text) {
+                          if (text == null || text.isEmpty) return "Required";
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                    width: 0.2, color: Colors.grey[200]!)),
+                            labelText: "Landmark"),
                       ),
                       const SizedBox(
                         height: 20,

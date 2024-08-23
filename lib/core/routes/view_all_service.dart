@@ -1,4 +1,6 @@
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
+import '../../views/view.dart';
+import '../components/commonHeader.dart';
 import '../constant/themData.dart';
 import 'package:customerapp/core/components/bottomNav.dart';
 import 'package:customerapp/core/providers/serviceProvider.dart';
@@ -47,7 +49,7 @@ class _ViewAllServiceRouteState extends State<ViewAllServiceRoute> {
                         alignment: Alignment.center,
                         child: const ShimmerWidget()));
               }
-              if (state.data == null) {
+              /* if (state.data == null) {
                 return Scaffold(
                   appBar: AppBar(
                     title: const Text("Services"),
@@ -87,94 +89,100 @@ class _ViewAllServiceRouteState extends State<ViewAllServiceRoute> {
                     ),
                   ),
                 );
+              } */
+
+              if (state.isLoading) {
+                return Scaffold(
+                    body: Container(
+                        alignment: Alignment.center,
+                        child: const ShimmerWidget()));
               }
-              return GestureDetector(
-                onTap: () {
-                  FocusManager.instance.primaryFocus!.unfocus();
-                },
-                child: Scaffold(
-                  appBar: PreferredSize(
-                    preferredSize: Size(MediaQuery.of(context).size.width, 60),
-                    child: Material(
-                      elevation: 0.1,
-                      child: Container(
-                        margin: EdgeInsets.only(
-                            top: MediaQuery.of(context).padding.top),
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        color: primaryColor,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              icon: const Icon(Icons.arrow_back_ios),
-                              color: Colors.white,
-                            ),
-                            Expanded(
-                                child: _searchBar(
-                              auth: auth,
-                              controller: _searchController,
-                              filterState: filters,
-                              serviceState: state,
-                            )),
-                            IconButton(
-                              color: Colors.white,
-                              icon: const Icon(Icons.tune),
-                              onPressed: () async {
-                                await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            FilterPage(filterState: filters)));
-                                state.getFilteredServices(
-                                    state.authProvider, filters,
-                                    isUpdateMainData: true);
-                              },
-                            )
-                          ],
-                        ),
+              return Scaffold(
+                appBar: CommonHeader.headerMain(context, isShowLogo: false,
+                    onSearch: () {
+                  Navigator.pushNamed(context, ProductPageRoute.routeName);
+                }),
+                /* appBar: PreferredSize(
+                  preferredSize: Size(MediaQuery.of(context).size.width, 60),
+                  child: Material(
+                    elevation: 0.1,
+                    child: Container(
+                      margin: EdgeInsets.only(
+                          top: MediaQuery.of(context).padding.top),
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      color: primaryColor,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: const Icon(Icons.arrow_back_ios),
+                            color: Colors.white,
+                          ),
+                          Expanded(
+                              child: _searchBar(
+                            auth: auth,
+                            controller: _searchController,
+                            filterState: filters,
+                            serviceState: state,
+                          )),
+                          IconButton(
+                            color: Colors.white,
+                            icon: const Icon(Icons.tune),
+                            onPressed: () async {
+                              await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          FilterPage(filterState: filters)));
+                              state.getFilteredServices(
+                                  state.authProvider, filters,
+                                  isUpdateMainData: true);
+                            },
+                          )
+                        ],
                       ),
                     ),
                   ),
-                  body: SizedBox(
-                    height: double.infinity,
-                    width: double.infinity,
-                    // color: Colors.white,
-                    child: CustomMaterialIndicator(
-                      indicatorBuilder: (BuildContext context,
-                          IndicatorController controller) {
-                        return Container(
-                            padding: EdgeInsets.all(2.w),
-                            alignment: Alignment.center,
-                            child: const CircularProgressIndicator(
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.white),
-                            ));
-                      },
-                      backgroundColor: primaryColor,
-                      onRefresh: () async {
-                        await filters.refresh();
-                        return state.refresh();
-                      },
-                      child: SingleChildScrollView(
-                        // padding: EdgeInsets.only(bottom: 5.h, top: 2.h),
-                        child: Column(
-                            children: state.data!
-                                .map((e) => ProductTile(
-                                      service: e,
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    SingleServiceRoute(
-                                                        service: e)));
-                                      },
-                                    ))
-                                .toList()),
-                      ),
+                ), */
+                body: SizedBox(
+                  height: double.infinity,
+                  width: double.infinity,
+                  // color: Colors.white,
+                  child: CustomMaterialIndicator(
+                    indicatorBuilder:
+                        (BuildContext context, IndicatorController controller) {
+                      return Container(
+                          padding: EdgeInsets.all(2.w),
+                          alignment: Alignment.center,
+                          child: const CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          ));
+                    },
+                    backgroundColor: primaryColor,
+                    onRefresh: () async {
+                      await filters.refresh();
+                      return state.refresh();
+                    },
+                    child: SingleChildScrollView(
+                      // padding: EdgeInsets.only(bottom: 5.h, top: 2.h),
+                      child: Column(
+                          children: state.data!
+                              .map((e) => ProductTile(
+                                    service: e,
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  SingleServiceRoute(
+                                                      service: e)));
+                                    },
+                                  ))
+                              .toList()),
                     ),
                   ),
                 ),

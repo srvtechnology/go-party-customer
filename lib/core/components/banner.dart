@@ -121,7 +121,7 @@ class _ImageSliderState extends State<ImageSlider> {
                   enlargeFactor: 0,
                   viewportFraction: 1.0),
               items: widget.imageUrls
-                  .getRange(0, min(3, widget.imageUrls.length))
+                  /* .getRange(0, min(3, widget.imageUrls.length)) */
                   .map((e) => Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
