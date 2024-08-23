@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:csc_picker/csc_picker.dart';
+import 'package:flutter/services.dart';
 import '../constant/themData.dart';
 import 'package:customerapp/core/components/errors.dart';
 import 'package:customerapp/core/components/loading.dart';
@@ -61,6 +62,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   bool otherAddress = true;
   late Future<List<Country>> _countryFuture;
   bool isAddressLoading = false;
+  bool showAddressContainer = false;
 
   @override
   void initState() {
@@ -100,6 +102,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
       child: Consumer<AddressProvider>(builder: (context, addressState, child) {
         if (addressState.isLoading) {
           return const Scaffold(body: ShimmerWidget());
+        }
+        if (addressState.data.isEmpty) {
+          showAddressContainer = true;
         }
         return FutureBuilder(
             future: _countryFuture,
@@ -226,7 +231,346 @@ class _CheckoutPageState extends State<CheckoutPage> {
                               ],
                             ),
                           ), */
-                        Container(
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              showAddressContainer = !showAddressContainer;
+                            });
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 16),
+                            decoration: BoxDecoration(
+                              color: Colors
+                                  .transparent, // Background color of the button
+                              borderRadius:
+                                  BorderRadius.circular(8), // Rounded corners
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: const [
+                                Text(
+                                  'Add New Address',
+                                  style: TextStyle(
+                                    // Text color
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        Visibility(
+                          visible: showAddressContainer,
+                          child: Container(
+                            // color: Colors.white,
+                            padding: EdgeInsets.only(
+                                top: 10,
+                                left: 10,
+                                right: 10,
+                                bottom:
+                                    MediaQuery.of(context).viewInsets.bottom),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      "Billing Details",
+                                      style: TextStyle(
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.w600),
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                TextFormField(
+                                  controller: _billingNameController,
+                                  validator: (text) {
+                                    if (text == null || text.isEmpty) {
+                                      return "Required";
+                                    }
+                                    return null;
+                                  },
+                                  decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      labelText: "Name"),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                TextFormField(
+                                  controller: _billingMobileController,
+                                  validator: (text) {
+                                    if (text == null || text.isEmpty) {
+                                      return "Required";
+                                    }
+                                    if (text.length != 10) {
+                                      return "Please enter a valid number";
+                                    }
+                                    return null;
+                                  },
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    labelText: "Phone",
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                TextFormField(
+                                  controller: _houseNumberController,
+                                  validator: (text) {
+                                    if (text == null || text.isEmpty) {
+                                      return "Required";
+                                    }
+                                    return null;
+                                  },
+                                  decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      labelText:
+                                          "House / Flat / Building Number"),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                TextFormField(
+                                  controller: _pinCodeController,
+                                  onChanged: (text) {
+                                    if (text.length == 6) {
+                                      getLocationByPin();
+                                    }
+                                  },
+                                  validator: (text) {
+                                    if (text == null || text.isEmpty) {
+                                      return "Required";
+                                    }
+                                    if (text.length != 6) {
+                                      return "Please enter a valid pincode";
+                                    }
+                                    return null;
+                                  },
+                                  keyboardType: TextInputType
+                                      .number, // Restrict input to numbers only
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter
+                                        .digitsOnly, // Ensure only digits are allowed
+                                  ],
+                                  decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          borderSide: BorderSide(
+                                              width: 0.2,
+                                              color: Colors.grey[200]!)),
+                                      labelText: "Pin Code"),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                TextFormField(
+                                  controller: _areaController,
+                                  validator: (text) {
+                                    if (text == null || text.isEmpty) {
+                                      return "Required";
+                                    }
+                                    return null;
+                                  },
+                                  decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      labelText: "Area"),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                TextFormField(
+                                  controller: _landmarkController,
+                                  validator: (text) {
+                                    if (text == null || text.isEmpty) {
+                                      return "Required";
+                                    }
+                                    return null;
+                                  },
+                                  decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          borderSide: BorderSide(
+                                              width: 0.2,
+                                              color: Colors.grey[200]!)),
+                                      labelText: "Landmark"),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                isAddressLoading
+                                    ? const Center(
+                                        child: CircularProgressIndicator(),
+                                      )
+                                    : CSCPicker(
+                                        currentCountry: country,
+                                        currentState: state,
+                                        currentCity: city,
+                                        flagState: CountryFlag.DISABLE,
+                                        onCountryChanged: (value) {
+                                          setState(() {
+                                            country = value;
+                                            //   _countryController.text=value;
+                                          });
+                                        },
+                                        onStateChanged: (value) {
+                                          setState(() {
+                                            state = value;
+                                            // _stateController.text=value!;
+                                          });
+                                        },
+                                        onCityChanged: (value) {
+                                          setState(() {
+                                            city = value;
+                                            // _cityController.text = value!;
+                                          });
+                                        },
+                                      ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      "Who is it for ?",
+                                      style: TextStyle(
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.w600),
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                CustomDropdown(items: const [
+                                  "Self",
+                                  "Family",
+                                  "Friend",
+                                  "Other"
+                                ], controller: _addressForController),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      "Select Type of Address",
+                                      style: TextStyle(
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.w600),
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                CustomDropdown(
+                                    items: const ["Home", "Office", "Other"],
+                                    controller: _addressTypeController),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      "Do you want to make this address default ?",
+                                      style: TextStyle(
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.w600),
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    const Text("Yes"),
+                                    Radio(
+                                        value: "Yes",
+                                        groupValue: defaultAddress,
+                                        onChanged: (text) {
+                                          setState(() {
+                                            defaultAddress = text!;
+                                          });
+                                        }),
+                                    const Text("No"),
+                                    Radio(
+                                        value: "No",
+                                        groupValue: defaultAddress,
+                                        onChanged: (text) {
+                                          setState(() {
+                                            defaultAddress = text!;
+                                          });
+                                        }),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(
+                                      left: 0,
+                                      right: 0,
+                                      bottom: MediaQuery.of(context)
+                                          .viewInsets
+                                          .bottom),
+                                  height: 50,
+                                  width: MediaQuery.of(context).size.width,
+                                  child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          backgroundColor: primaryColor),
+                                      onPressed: () {
+                                        if (_formKey.currentState!.validate()) {
+                                          submit(context.read<AuthProvider>(),
+                                              data, addressState);
+                                        }
+                                      },
+                                      child: const Text(
+                                          "Deliver to this Address")),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        /* Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
                             border: Border.all(color: Colors.grey[300]!),
@@ -560,7 +904,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                               ),
                             ),
                           ),
-                        ),
+                        ), */
                         const SizedBox(
                           height: 5,
                         ),

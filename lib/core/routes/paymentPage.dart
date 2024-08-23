@@ -689,89 +689,89 @@ class _PaymentPageState extends State<PaymentPage> {
                     const SizedBox(
                       height: 20,
                     ),
-                    // if (showCard)
-                    //   Form(
-                    //     key: _formKey,
-                    //     child: Column(
-                    //       children: [
-                    //         Row(
-                    //           mainAxisAlignment: MainAxisAlignment.start,
-                    //           children: [
-                    //             const SizedBox(
-                    //               width: 5,
-                    //             ),
-                    //             Text(
-                    //               "Card Details",
-                    //               style: TextStyle(
-                    //                   fontSize: 15.sp,
-                    //                   fontWeight: FontWeight.w600),
-                    //             )
-                    //           ],
-                    //         ),
-                    //         const SizedBox(
-                    //           height: 10,
-                    //         ),
-                    //         Row(
-                    //           children: [
-                    //             Expanded(
-                    //               flex: 3,
-                    //               child: TextFormField(
-                    //                 validator: (text) {
-                    //                   if (text == null || text.isEmpty) {
-                    //                     return "Required";
-                    //                   }
-                    //                   if (text.length != 16) {
-                    //                     return "Please enter valid Card Number";
-                    //                   }
-                    //                   return null;
-                    //                 },
-                    //                 controller: _cardNumberController,
-                    //                 decoration: InputDecoration(
-                    //                     border: OutlineInputBorder(
-                    //                       borderSide:
-                    //                           const BorderSide(width: 0),
-                    //                       borderRadius:
-                    //                           BorderRadius.circular(15),
-                    //                     ),
-                    //                     labelText: "Enter Card Number"),
-                    //               ),
-                    //             ),
-                    //             const SizedBox(
-                    //               width: 20,
-                    //             ),
-                    //             Expanded(
-                    //               child: TextFormField(
-                    //                 validator: (text) {
-                    //                   if (text == null || text.isEmpty) {
-                    //                     return "Required";
-                    //                   }
-                    //                   if (text.length != 3) {
-                    //                     return "Please enter valid cvv";
-                    //                   }
-                    //                   return null;
-                    //                 },
-                    //                 controller: _cardNumberController,
-                    //                 decoration: InputDecoration(
-                    //                     border: OutlineInputBorder(
-                    //                       borderSide:
-                    //                           const BorderSide(width: 0),
-                    //                       borderRadius:
-                    //                           BorderRadius.circular(15),
-                    //                     ),
-                    //                     labelText: "CVV"),
-                    //               ),
-                    //             ),
-                    //             const SizedBox(
-                    //               width: 20,
-                    //             ),
-                    //           ],
-                    //         ),
-                    //         const SizedBox(
-                    //           height: 30,
-                    //         ),
-                    //       ],
-                    //     ),
-                    //   ),
+                    /* if (showCard)
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  "Card Details",
+                                  style: TextStyle(
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.w600),
+                                )
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 3,
+                                  child: TextFormField(
+                                    validator: (text) {
+                                      if (text == null || text.isEmpty) {
+                                        return "Required";
+                                      }
+                                      if (text.length != 16) {
+                                        return "Please enter valid Card Number";
+                                      }
+                                      return null;
+                                    },
+                                    controller: _cardNumberController,
+                                    decoration: InputDecoration(
+                                        border: OutlineInputBorder(
+                                          borderSide:
+                                              const BorderSide(width: 0),
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                        ),
+                                        labelText: "Enter Card Number"),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                Expanded(
+                                  child: TextFormField(
+                                    validator: (text) {
+                                      if (text == null || text.isEmpty) {
+                                        return "Required";
+                                      }
+                                      if (text.length != 3) {
+                                        return "Please enter valid cvv";
+                                      }
+                                      return null;
+                                    },
+                                    controller: _cardNumberController,
+                                    decoration: InputDecoration(
+                                        border: OutlineInputBorder(
+                                          borderSide:
+                                              const BorderSide(width: 0),
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                        ),
+                                        labelText: "CVV"),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                          ],
+                        ),
+                      ), */
                   ],
                 ),
               )

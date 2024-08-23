@@ -89,7 +89,6 @@ Future<Map?> payRemainingOrder(AuthProvider auth,
     }
     rethrow;
   }
-  return null;
 }
 
 Future<GenerateOrderValue?> generateOrderVal(AuthProvider auth, int orderId,
