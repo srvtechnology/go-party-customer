@@ -155,7 +155,8 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                                   ),
                                   SizedBox(height: 1.h),
                                   Text(
-                                    "₹ ${widget.order.totalPrice}",
+                                    /* "₹ ${widget.order.totalPrice}", */
+                                    "₹ ${(double.parse(widget.order.totalPrice) * 1.18).toStringAsFixed(2)}",
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.bold,
@@ -237,17 +238,22 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                           ),
                         ),
                         SizedBox(height: 1.h),
-                        Text(
+                        /* Text(
                           'Delivery Estimate',
+                          style: TextStyle(
+                              fontSize: 16.sp, fontWeight: FontWeight.w400),
+                        ), */
+                        Text(
+                          'Event Dates',
                           style: TextStyle(
                               fontSize: 16.sp, fontWeight: FontWeight.w400),
                         ),
                         Text(
-                          "${DateFormat('dd MMMM yyyy').format(DateTime.parse(widget.order.eventDate))} - ${DateFormat('dd MMMM yyyy').format(DateTime.parse(widget.order.eventEndDate))}",
+                          "Event Start Date: ${DateFormat('dd MMMM yyyy').format(DateTime.parse(widget.order.eventDate))} \nEvent End Date:   ${DateFormat('dd MMMM yyyy').format(DateTime.parse(widget.order.eventEndDate))}",
                           style: TextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w600,
-                            color: Colors.green,
+                            color: Theme.of(context).primaryColor,
                           ),
                         ),
                         SizedBox(height: 2.h),

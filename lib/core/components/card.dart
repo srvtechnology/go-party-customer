@@ -738,9 +738,12 @@ class _OrderTileState extends State<OrderTile> {
                         style: TextStyle(
                             fontSize: 15.sp, fontWeight: FontWeight.w600),
                       ),
-                      Text(
-                        "${widget.order.houseNumber}, ${widget.order.landmark}, ${widget.order.area}, ${widget.order.state}",
-                        overflow: TextOverflow.ellipsis,
+                      Visibility(
+                        visible: false,
+                        child: Text(
+                          "${widget.order.houseNumber}, ${widget.order.landmark}, ${widget.order.area}, ${widget.order.state}",
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                       SizedBox(
                         height: 1.h,
@@ -749,7 +752,9 @@ class _OrderTileState extends State<OrderTile> {
                           ? Row(
                               children: [
                                 Text(
-                                  "₹ ${widget.order.totalPrice}",
+                                  /* widget.total + widget.total * 0.18 */
+                                  /* "₹ ${widget.order.totalPrice}", */
+                                  "₹ ${(double.parse(widget.order.totalPrice) * 1.18).toStringAsFixed(2)}",
                                   style: TextStyle(
                                       fontSize: 18.sp,
                                       color: Theme.of(context).primaryColor,
@@ -759,7 +764,7 @@ class _OrderTileState extends State<OrderTile> {
                                   width: 2,
                                 ),
                                 Text(
-                                  "  ${widget.order.service.priceBasis}",
+                                  "  / ${widget.order.service.priceBasis}",
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     color: Colors.grey,

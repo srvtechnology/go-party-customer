@@ -5,7 +5,13 @@ import 'package.dart';
 import 'single_package.dart';
 
 class ServiceModel {
-  String? id, name, description, price, discountedPrice, priceBasis;
+  String? id,
+      name,
+      companyName,
+      description,
+      price,
+      discountedPrice,
+      priceBasis;
   List<String>? images;
   int? minQnty;
   String? rating, categoryId;
@@ -19,6 +25,7 @@ class ServiceModel {
   ServiceModel({
     required this.id,
     required this.name,
+    required this.companyName,
     required this.description,
     required this.priceBasis,
     required this.discountedPrice,
@@ -94,6 +101,7 @@ class ServiceModel {
       videos: tempVideos,
       id: json["id"].toString(),
       name: json["service"],
+      companyName: json["company_name"],
       description: json["description"],
       price: json["price"].toString(),
       priceBasis: json["price_basis"],

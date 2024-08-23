@@ -86,9 +86,12 @@ class OrderHistory extends StatelessWidget {
                           style: TextStyle(
                               fontSize: 15.sp, fontWeight: FontWeight.w600),
                         ),
-                        Text(
-                          "${order.houseNumber}, ${order.landmark}, ${order.area}, ${order.state}",
-                          overflow: TextOverflow.visible,
+                        Visibility(
+                          visible: false,
+                          child: Text(
+                            "${order.houseNumber}, ${order.landmark}, ${order.area}, ${order.state}",
+                            overflow: TextOverflow.visible,
+                          ),
                         ),
                         SizedBox(
                           height: 1.h,

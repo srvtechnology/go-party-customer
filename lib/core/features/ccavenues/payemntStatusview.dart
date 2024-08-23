@@ -19,7 +19,7 @@ class _PaymentStatusViewState extends State<PaymentStatusView> {
   void initState() {
     super.initState();
     // 2 seconds delay and automatically navigate to main page
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 5), () {
       if (context.mounted) {
         Navigator.pushAndRemoveUntil(
             context,
@@ -99,7 +99,8 @@ class _PaymentStatusViewState extends State<PaymentStatusView> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           width: MediaQuery.of(context).size.width,
-          child: Text(widget.paymentRes?.type ?? "",
+          child: Text(
+            widget.paymentRes?.type ?? "",
             style: const TextStyle(
                 fontSize: 12, color: Colors.grey, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,

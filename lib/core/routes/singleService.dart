@@ -713,10 +713,47 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                     .textTheme
                                     .headlineSmall!
                                     .copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 20.sp,
+                                        color: Colors.black),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(top: 1.h),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 4.w,
+                              ),
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Company Name',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall!
+                                    .copyWith(
                                       fontWeight: FontWeight.w600,
-                                      fontSize: 20.sp,
+                                      fontSize: 16.sp,
                                     ),
                               ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(top: 0.h),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 4.w,
+                              ),
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                widget.service.companyName!,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall!
+                                    .copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16.sp,
+                                        color: Theme.of(context).primaryColor),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 8,
                             ),
                             /* Container(
                                 constraints: BoxConstraints(

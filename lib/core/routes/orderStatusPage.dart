@@ -1,4 +1,3 @@
-import 'package:another_flushbar/flushbar_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../constant/themData.dart';
 import 'package:customerapp/core/components/commonHeader.dart';
