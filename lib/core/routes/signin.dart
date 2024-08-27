@@ -2,10 +2,6 @@
 
 import 'package:customerapp/core/components/TramsAndConditionsCheckBox.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
-import 'package:customerapp/core/routes/forgotPassword.dart';
-import 'package:customerapp/core/routes/mainpage.dart';
-import 'package:customerapp/core/routes/profile.dart';
-import 'package:customerapp/core/routes/signup.dart';
 import 'package:customerapp/core/utils/logger.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +9,6 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../../views/view.dart';
-import '../constant/themData.dart';
 
 class SignInPageRoute extends StatefulWidget {
   static const String routeName = '/signin';

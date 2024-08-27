@@ -1,14 +1,11 @@
 import 'package:customerapp/core/components/TramsAndConditionsCheckBox.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
-import 'package:customerapp/core/routes/profile.dart';
-import 'package:customerapp/core/routes/signin.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../../views/view.dart';
-import 'mainpage.dart';
 
 class SignUpPageRoute extends StatefulWidget {
   final bool comeback;
