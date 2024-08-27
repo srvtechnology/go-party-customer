@@ -751,6 +751,8 @@ class _AddressEditPageState extends State<AddressEditPage> {
     _landmarkController.text = widget.address.landmark;
     city = widget.address.city;
     state = widget.address.state;
+    defaultAddress = widget.address.defaultAddress == 'Y' ? 'Yes' : 'No';
+
     focusNode.addListener(() {
       if (!focusNode.hasFocus) {
         if (_pinCodeController.text.isNotEmpty &&
@@ -1008,34 +1010,34 @@ class _AddressEditPageState extends State<AddressEditPage> {
                               },
                             ),
 
-                      // const SizedBox(
-                      //   height: 20,
-                      // ),
-                      // SizedBox(
-                      //   height: 6.h,
-                      //   child: TextFormField(
-                      //     controller: _pinCodeController,
-                      //     focusNode: focusNode,
-                      //     onChanged: (text) {
-                      //       if (text.length == 6) {
-                      //         getLocationByPin();
-                      //       }
-                      //     },
-                      //     validator: (text) {
-                      //       if (text == null || text.isEmpty) return "Required";
-                      //       if (text.length != 6) {
-                      //         return "Please enter a valid pincode";
-                      //       }
-                      //       return null;
-                      //     },
-                      //     decoration: InputDecoration(
-                      //         border: OutlineInputBorder(
-                      //             borderRadius: BorderRadius.circular(10),
-                      //             borderSide: BorderSide(
-                      //                 width: 0.2, color: Colors.grey[200]!)),
-                      //         labelText: "Pin Code"),
-                      //   ),
-                      // ),
+                      /* const SizedBox(
+                        height: 20,
+                      ),
+                      SizedBox(
+                        height: 6.h,
+                        child: TextFormField(
+                          controller: _pinCodeController,
+                          focusNode: focusNode,
+                          onChanged: (text) {
+                            if (text.length == 6) {
+                              getLocationByPin();
+                            }
+                          },
+                          validator: (text) {
+                            if (text == null || text.isEmpty) return "Required";
+                            if (text.length != 6) {
+                              return "Please enter a valid pincode";
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                      width: 0.2, color: Colors.grey[200]!)),
+                              labelText: "Pin Code"),
+                        ),
+                      ), */
                       const SizedBox(
                         height: 20,
                       ),

@@ -20,8 +20,6 @@ import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/cartProvider.dart';
 import 'package:customerapp/core/providers/serviceProvider.dart';
 import 'package:customerapp/core/repo/cartRepo.dart';
-import 'package:customerapp/core/routes/product.dart';
-import 'package:customerapp/core/routes/signin.dart';
 import 'package:customerapp/core/routes/singlePackage.dart';
 import 'package:customerapp/core/routes/singleService.dart';
 

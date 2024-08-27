@@ -8,19 +8,22 @@ import 'package:customerapp/core/models/paymentPostData.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/utils/logger.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 import '../models/orders.dart';
 import '../utils/dio.dart';
 
 Future<OrderRes?> placeOrder(AuthProvider auth, PaymentPostData payload) async {
   try {
-    print({
-      "payment_method": payload.paymentMethod,
-      "address_id": payload.addressId,
-      "current_city": payload.currentCity,
-      "full_amount": payload.fullAmount,
-      "partial_amount": payload.partialAmount,
-    });
+    if (kDebugMode) {
+      print({
+        "payment_method": payload.paymentMethod,
+        "address_id": payload.addressId,
+        "current_city": payload.currentCity,
+        "full_amount": payload.fullAmount,
+        "partial_amount": payload.partialAmount,
+      });
+    }
     Response response = await customDioClient.client.post(
         "${APIConfig.baseUrl}/api/customer/address-submit",
         data: {

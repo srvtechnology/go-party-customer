@@ -460,15 +460,19 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                   hintText: "Days"),
                                             ),
                                           ),
-                                          QuantityManager(
-                                            qnty: quantity.text,
-                                            minQnty: selectedCategory?.minQty ??
-                                                widget.package.minQnty,
-                                            onChanged: (v) {
-                                              setState(() {
-                                                quantity.text = v;
-                                              });
-                                            },
+                                          Visibility(
+                                            visible: false,
+                                            child: QuantityManager(
+                                              qnty: quantity.text,
+                                              minQnty:
+                                                  selectedCategory?.minQty ??
+                                                      widget.package.minQnty,
+                                              onChanged: (v) {
+                                                setState(() {
+                                                  quantity.text = v;
+                                                });
+                                              },
+                                            ),
                                           )
                                         ],
                                       ),

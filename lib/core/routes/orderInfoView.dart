@@ -64,6 +64,9 @@ class _OrderInfoViewState extends State<OrderInfoView> {
 
   @override
   Widget build(BuildContext context) {
+    DateTime eventDate = DateTime.parse(widget.order.eventDate);
+    String formattedDate = DateFormat('dd.MM.yyyy').format(eventDate);
+
     return Scaffold(
         appBar: CommonHeader.header(
           context,
@@ -139,7 +142,7 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    widget.order.eventDate,
+                                    formattedDate,
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.bold,

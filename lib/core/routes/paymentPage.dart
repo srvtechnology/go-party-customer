@@ -3,6 +3,8 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
+
 import '../constant/themData.dart';
 import 'package:customerapp/core/components/htmlTextView.dart';
 import 'package:customerapp/core/features/ccavenues/models/enc_val_res.dart';
@@ -59,6 +61,9 @@ class _PaymentPageState extends State<PaymentPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (kDebugMode) {
+      print('CartItems : ${widget.cartItems}');
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text("Payment"),
@@ -148,9 +153,9 @@ class _PaymentPageState extends State<PaymentPage> {
                   ],
                 ),
               ),
-              const SizedBox(
+              /* const SizedBox(
                 height: 10,
-              ),
+              ), */
               Container(
                 width: double.infinity,
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
@@ -174,163 +179,193 @@ class _PaymentPageState extends State<PaymentPage> {
                           ),
                         ),
                       ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Image of service
-                          Container(
-                            height: 100,
-                            width: 100,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                image: DecorationImage(
-                                    image: NetworkImage(widget.cartItems[index]
-                                            .service?.images?.first ??
-                                        ''),
-                                    fit: BoxFit.cover)),
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(
-                                  height: 0,
-                                ),
-                                Text(
-                                  widget.cartItems[index].service.name ?? "",
-                                  style: TextStyle(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 600),
-                                  child: Column(
-                                    key: ValueKey<bool>(_isShowMore),
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      AnimatedContainer(
-                                        duration:
-                                            const Duration(milliseconds: 600),
-                                        constraints: BoxConstraints(
-                                          minHeight: 1.h,
-                                          maxHeight: _isShowMore
-                                              ? double.infinity
-                                              : 10.h,
-                                          minWidth: double.infinity,
-                                          maxWidth: double.infinity,
-                                        ),
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 0.w,
-                                        ),
-                                        alignment: Alignment.centerLeft,
-                                        child: SingleChildScrollView(
-                                          physics: _isShowMore
-                                              ? const NeverScrollableScrollPhysics()
-                                              : null,
-                                          child: HtmlTextView(
-                                              htmlText: widget.cartItems[index]
-                                                  .service.description),
-                                        ),
-                                      ),
-                                      if (widget.cartItems[index].service
-                                              .description.length >
-                                          100)
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              _isShowMore = !_isShowMore;
-                                            });
-                                          },
-                                          child: Container(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 4.w,
-                                            ),
-                                            child: Text(
-                                              _isShowMore
-                                                  ? "Show Less"
-                                                  : "Show More",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .labelLarge!
-                                                  .copyWith(
-                                                      fontSize: 14,
-                                                      color: primaryColor),
-                                            ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Image of service
+                            Container(
+                              height: 100,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  image: DecorationImage(
+                                      image: NetworkImage(widget
+                                              .cartItems[index]
+                                              .service
+                                              ?.images
+                                              ?.first ??
+                                          ''),
+                                      fit: BoxFit.cover)),
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(
+                                    height: 0,
+                                  ),
+                                  Text(
+                                    widget.cartItems[index].service.name ?? "",
+                                    style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                  Text.rich(
+                                    TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: "Days : ",
+                                          style: TextStyle(
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w600,
                                           ),
                                         ),
-                                    ],
-                                  ),
-                                ),
-                                /* --- commented for the fix below on : 29-07-24 --*/
-                                /*AnimatedContainer(
-                                    constraints: BoxConstraints(
-                                        minHeight: 1.h,
-                                        maxHeight:
-                                            _isShowMore ? double.infinity : 6.h,
-                                        minWidth: double.infinity,
-                                        maxWidth: double.infinity),
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 0.w,
+                                        TextSpan(
+                                          text: widget.cartItems[index].days,
+                                          style: TextStyle(
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    alignment: Alignment.centerLeft,
+                                  ),
+                                  AnimatedSwitcher(
                                     duration: const Duration(milliseconds: 600),
-                                    child: LayoutBuilder(
-                                      builder: (context, constraints) {
-                                        print(constraints.maxHeight.toString());
-                                        return HtmlTextView(
-                                            htmlText: widget.cartItems[index]
-                                                .service.description);
-                                      },
-                                    )),
-                                if (widget.cartItems[index].service.description.length > 100)
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        _isShowMore = !_isShowMore;
-                                      });
-                                    },
-                                    child: Container(
+                                    child: Column(
+                                      key: ValueKey<bool>(_isShowMore),
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        AnimatedContainer(
+                                          duration:
+                                              const Duration(milliseconds: 600),
+                                          constraints: BoxConstraints(
+                                            minHeight: 1.h,
+                                            maxHeight: _isShowMore
+                                                ? double.infinity
+                                                : 10.h,
+                                            minWidth: double.infinity,
+                                            maxWidth: double.infinity,
+                                          ),
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 0.w,
+                                          ),
+                                          alignment: Alignment.centerLeft,
+                                          child: SingleChildScrollView(
+                                            physics: _isShowMore
+                                                ? const NeverScrollableScrollPhysics()
+                                                : null,
+                                            child: HtmlTextView(
+                                                htmlText: widget
+                                                    .cartItems[index]
+                                                    .service
+                                                    .description),
+                                          ),
+                                        ),
+                                        if (widget.cartItems[index].service
+                                                .description.length >
+                                            100)
+                                          GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                _isShowMore = !_isShowMore;
+                                              });
+                                            },
+                                            child: Container(
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 4.w,
+                                              ),
+                                              child: Text(
+                                                _isShowMore
+                                                    ? "Show Less"
+                                                    : "Show More",
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .labelLarge!
+                                                    .copyWith(
+                                                        fontSize: 14,
+                                                        color: primaryColor),
+                                              ),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                  /* --- commented for the fix below on : 29-07-24 --*/
+                                  /*AnimatedContainer(
+                                      constraints: BoxConstraints(
+                                          minHeight: 1.h,
+                                          maxHeight:
+                                              _isShowMore ? double.infinity : 6.h,
+                                          minWidth: double.infinity,
+                                          maxWidth: double.infinity),
                                       padding: EdgeInsets.symmetric(
                                         horizontal: 0.w,
                                       ),
-                                      child: Text(
-                                        _isShowMore ? "Show Less" : "Show More",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .labelLarge!
-                                            .copyWith(
-                                                fontSize: 14,
-                                                color: primaryColor),
+                                      alignment: Alignment.centerLeft,
+                                      duration: const Duration(milliseconds: 600),
+                                      child: LayoutBuilder(
+                                        builder: (context, constraints) {
+                                          print(constraints.maxHeight.toString());
+                                          return HtmlTextView(
+                                              htmlText: widget.cartItems[index]
+                                                  .service.description);
+                                        },
+                                      )),
+                                  if (widget.cartItems[index].service.description.length > 100)
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          _isShowMore = !_isShowMore;
+                                        });
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 0.w,
+                                        ),
+                                        child: Text(
+                                          _isShowMore ? "Show Less" : "Show More",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .labelLarge!
+                                              .copyWith(
+                                                  fontSize: 14,
+                                                  color: primaryColor),
+                                        ),
                                       ),
-                                    ),
-                                  ),*/
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "₹ ${widget.cartItems[index].price}",
-                                      style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
-                                          color: primaryColor),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                              ],
+                                    ),*/
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "₹ ${widget.cartItems[index].price}",
+                                        style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            color: primaryColor),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   },
@@ -350,6 +385,37 @@ class _PaymentPageState extends State<PaymentPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
+                      children: [
+                        Text(
+                          "Choose Delivery Address",
+                          style: TextStyle(
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const Spacer(), // This takes up all available space between the text and the button
+                        ElevatedButton(
+                          onPressed: () {
+                            if (context.mounted) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CheckoutPage(
+                                    serviceIds: widget.serviceIds,
+                                    cartItems: widget.cartItems,
+                                    cartSubTotal: widget.total,
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          child: const Text(
+                              "Change"), // You can customize this text
+                        ),
+                      ],
+                    ),
+
+                    /*    Row(
                       children: [
                         GestureDetector(
                           onTap: () {
@@ -371,7 +437,7 @@ class _PaymentPageState extends State<PaymentPage> {
                           ),
                         ),
                       ],
-                    ),
+                    ), */
                     const Divider(),
                     const SizedBox(
                       height: 0,
@@ -816,30 +882,30 @@ class _PaymentPageState extends State<PaymentPage> {
           return;
         }
       }
-      // if (auth.isAgent) {
-      //   await placeOrderAgent(
-      //     auth,
-      //     payment_method: "online",
-      //     payment_type: _paymentTypeController.text.contains("Partial")
-      //         ? "partial"
-      //         : "completed",
-      //     txn_id: auth.user!.id.toString(),
-      //     address_id: widget.selectedAddress?.id.toString() ?? "",
-      //     current_city: locationData["city"],
-      //   ).then((res) {
-      //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      //         content: Text(res['messgae'] ?? "Order Placed Successfully")));
-      //     if (res["status"] == true) {
-      //       Navigator.pushAndRemoveUntil(
-      //           context,
-      //           MaterialPageRoute(builder: (context) => const MainPageRoute()),
-      //           (route) => route.isFirst);
-      //     }
-      //   }).whenComplete(() => setState(() {
-      //         isloading = false;
-      //       }));
-      //   return;
-      // }
+      /* if (auth.isAgent) {
+        await placeOrderAgent(
+          auth,
+          payment_method: "online",
+          payment_type: _paymentTypeController.text.contains("Partial")
+              ? "partial"
+              : "completed",
+          txn_id: auth.user!.id.toString(),
+          address_id: widget.selectedAddress?.id.toString() ?? "",
+          current_city: locationData["city"],
+        ).then((res) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(res['messgae'] ?? "Order Placed Successfully")));
+          if (res["status"] == true) {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const MainPageRoute()),
+                (route) => route.isFirst);
+          }
+        }).whenComplete(() => setState(() {
+              isloading = false;
+            }));
+        return;
+      } */
 
       await placeOrder(auth, data).then((value) {
         if (value == null) {

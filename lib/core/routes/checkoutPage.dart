@@ -18,7 +18,6 @@ import 'package:customerapp/core/routes/paymentPage.dart';
 import 'package:customerapp/core/utils/addressFormater.dart';
 import 'package:customerapp/core/utils/geolocator.dart';
 import 'package:customerapp/core/utils/logger.dart';
-import 'package:expandable/expandable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -263,7 +262,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             ),
                           ),
                         ),
-
                         Visibility(
                           visible: showAddressContainer,
                           child: Container(
@@ -940,37 +938,36 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         const SizedBox(
                           height: 10,
                         ),
-
                         const SizedBox(
                           height: 100,
                         )
-                        // if (otherAddress)
-                        //   Container(
-                        //     padding: const EdgeInsets.symmetric(horizontal: 30),
-                        //     child: Column(
-                        //       children: [
-                        //         const SizedBox(
-                        //           height: 20,
-                        //         ),
-                        //         if (addressState.data.isNotEmpty)
-                        //           Row(
-                        //             mainAxisAlignment: MainAxisAlignment.center,
-                        //             children: [
-                        //               const SizedBox(
-                        //                 width: 5,
-                        //               ),
-                        //               Text(
-                        //                 "OR",
-                        //                 style: TextStyle(
-                        //                     fontSize: 15.sp,
-                        //                     fontWeight: FontWeight.w600),
-                        //               )
-                        //             ],
-                        //           ),
-                        //         // add hare
-                        //       ],
-                        //     ),
-                        //   ),
+                        /* if (otherAddress)
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 30),
+                            child: Column(
+                              children: [
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                if (addressState.data.isNotEmpty)
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                        "OR",
+                                        style: TextStyle(
+                                            fontSize: 15.sp,
+                                            fontWeight: FontWeight.w600),
+                                      )
+                                    ],
+                                  ),
+                                // add hare
+                              ],
+                            ),
+                          ), */
                       ],
                     ),
                   ),
@@ -1023,10 +1020,14 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
   Widget _addressTile(
     int index,
-    AddressModel e,
+    AddressModel addresses,
     List<Country> data,
     AddressProvider addressState,
   ) {
+    if (_selectedAddressIndex == -1 && addresses.defaultAddress == 'Y') {
+      _selectedAddressIndex = index;
+      _selectedAddress = addresses;
+    }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       margin: const EdgeInsets.only(bottom: 10),
@@ -1043,7 +1044,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
               onChanged: (index) {
                 setState(() {
                   _selectedAddressIndex = index!;
-                  _selectedAddress = e;
+                  _selectedAddress = addresses;
                   otherAddress = false;
                 });
               }),
@@ -1051,7 +1052,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (e.defaultAddress == "Y") ...[
+                if (addresses.defaultAddress == "Y") ...[
                   const SizedBox(
                     height: 10,
                   ),
@@ -1073,7 +1074,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   const Divider(),
                 ],
                 Text(
-                  "${e.billingName} ",
+                  "${addresses.billingName} ",
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 16,
@@ -1086,7 +1087,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   constraints: BoxConstraints(
                       maxWidth: MediaQuery.of(context).size.width * 0.8),
                   child: Text(
-                    getAddressFormat(e),
+                    getAddressFormat(addresses),
                     style: const TextStyle(
                         fontWeight: FontWeight.w400, fontSize: 14),
                   ),
@@ -1105,11 +1106,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             backgroundColor: Colors.white),
                         onPressed: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      AddressEditPage(address: e))).then(
-                              (value) => addressState
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          AddressEditPage(address: addresses)))
+                              .then((value) => addressState
                                   .getAddress(context.read<AuthProvider>()));
                         },
                         child: const Text(
@@ -1133,7 +1134,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             backgroundColor: Colors.white),
                         onPressed: () async {
                           await addressState.deleteAddress(
-                              context.read<AuthProvider>(), e.id.toString());
+                              context.read<AuthProvider>(),
+                              addresses.id.toString());
                           await addressState
                               .getAddress(context.read<AuthProvider>());
                         },
@@ -1148,7 +1150,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     ),
                   ],
                 ),
-                if (_selectedAddress == e) ...[
+                if (_selectedAddress == addresses) ...[
                   const Divider(),
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -1165,65 +1167,65 @@ class _CheckoutPageState extends State<CheckoutPage> {
         ],
       ),
     );
-    // return Column(
-    //   children: [
-    //     Row(
-    //       children: [
-    //         Expanded(
-    //             child: Column(
-    //           mainAxisAlignment: MainAxisAlignment.start,
-    //           children: [
-    //             Radio(
-    //                 value: index,
-    //                 groupValue: _selectedAddressIndex,
-    //                 onChanged: (index) {
-    //                   setState(() {
-    //                     _selectedAddressIndex = index!;
-    //                     _selectedAddress = e;
-    //                     otherAddress = false;
-    //                   });
-    //                 }),
-    //           ],
-    //         )),
-    //         Expanded(
-    //             flex: 5,
-    //             child: Column(
-    //               crossAxisAlignment: CrossAxisAlignment.start,
-    //               children: [
-    //                 const SizedBox(
-    //                   height: 10,
-    //                 ),
-    //                 Text(
-    //                   e.billingName,
-    //                   style: TextStyle(
-    //                       fontSize: 16, color: Theme.of(context).primaryColor),
-    //                 ),
-    //                 Text(
-    //                   e.addressType,
-    //                   style: const TextStyle(
-    //                       fontSize: 13, fontWeight: FontWeight.bold),
-    //                 ),
-    //                 Text(
-    //                     "${e.houseNumber}, ${e.landmark}, ${e.area}, ${e.state}"),
-    //                 const SizedBox(
-    //                   height: 10,
-    //                 ),
-    //               ],
-    //             ))
-    //       ],
-    //     ),
-    //     if (_selectedAddress == e)
-    //       ElevatedButton(
-    //           style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
-    //           onPressed: () {
-    //             if (_formKey.currentState!.validate()) {
-    //               submit(context.read<AuthProvider>(), data, addressState);
-    //             }
-    //           },
-    //           child: const Text("Deliver to this Address")),
-    //     const DashedDivider(),
-    //   ],
-    // );
+    /* return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Radio(
+                    value: index,
+                    groupValue: _selectedAddressIndex,
+                    onChanged: (index) {
+                      setState(() {
+                        _selectedAddressIndex = index!;
+                        _selectedAddress = e;
+                        otherAddress = false;
+                      });
+                    }),
+              ],
+            )),
+            Expanded(
+                flex: 5,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      e.billingName,
+                      style: TextStyle(
+                          fontSize: 16, color: Theme.of(context).primaryColor),
+                    ),
+                    Text(
+                      e.addressType,
+                      style: const TextStyle(
+                          fontSize: 13, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                        "${e.houseNumber}, ${e.landmark}, ${e.area}, ${e.state}"),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                  ],
+                ))
+          ],
+        ),
+        if (_selectedAddress == e)
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  submit(context.read<AuthProvider>(), data, addressState);
+                }
+              },
+              child: const Text("Deliver to this Address")),
+        const DashedDivider(),
+      ],
+    ); */
   }
 
   Future<void> submit(AuthProvider auth, List<Country> countries,

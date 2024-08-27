@@ -467,18 +467,22 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                                 hintText: "Days"),
                                           ),
                                         ),
-                                        QuantityManager(
-                                          qnty: _quantity.text,
-                                          minQnty: widget.service.minQnty ==
-                                                  null
-                                              ? 1
-                                              : int.parse(widget.service.minQnty
-                                                  .toString()),
-                                          onChanged: (v) {
-                                            setState(() {
-                                              _quantity.text = v;
-                                            });
-                                          },
+                                        Visibility(
+                                          visible: false,
+                                          child: QuantityManager(
+                                            qnty: _quantity.text,
+                                            minQnty:
+                                                widget.service.minQnty == null
+                                                    ? 1
+                                                    : int.parse(widget
+                                                        .service.minQnty
+                                                        .toString()),
+                                            onChanged: (v) {
+                                              setState(() {
+                                                _quantity.text = v;
+                                              });
+                                            },
+                                          ),
                                         )
                                       ],
                                     ),

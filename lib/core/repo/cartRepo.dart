@@ -31,8 +31,6 @@ Future<void> addtoCart(
 }
 
 Future<List<CartModel>> getCartItems(AuthProvider auth) async {
-  // try {
-
   if (auth.authState != AuthState.LoggedIn &&
       auth.user == null &&
       auth.token == null) {
@@ -55,12 +53,12 @@ Future<List<CartModel>> getCartItems(AuthProvider auth) async {
   }
 
   return list;
-  // } catch (e) {
-  //   if (e is DioException) {
-  //     log(e.response?.data.toString() ?? '', name: "getCartItems");
-  //   }
-  //   return Future.error(e);
-  // }
+  /* } catch (e) {
+    if (e is DioException) {
+      log(e.response?.data.toString() ?? '', name: "getCartItems");
+    }
+    return Future.error(e);
+  } */
 }
 
 Future<void> changeCartItemQuantity(
