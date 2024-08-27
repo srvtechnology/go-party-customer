@@ -3,6 +3,7 @@ import 'package:customerapp/core/providers/categoryProvider.dart';
 import 'package:customerapp/core/providers/networkProvider.dart';
 import 'package:customerapp/core/providers/orderProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -13,6 +14,10 @@ GetIt getIt = GetIt.asNewInstance();
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   serviceLocator();
   runApp(const MyApp());
 }
