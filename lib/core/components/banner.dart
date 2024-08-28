@@ -1,8 +1,8 @@
-import 'dart:math';
 import 'dart:ui';
 import 'package:collection/collection.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 /* import 'package:youtube_player_flutter/youtube_player_flutter.dart'; */
@@ -202,28 +202,32 @@ class _PackageImageSliderState extends State<PackageImageSlider> {
   final CarouselController _carouselController = CarouselController();
   YoutubePlayerController? _currentVideoController;
   int _currentIndex = 0;
+  bool isFullscreen = false;
 
   @override
   Widget build(BuildContext context) {
     List<Widget> carouselItems = [];
 
     // Add image items
-    carouselItems.addAll(widget.imageUrls.map((url) => Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: NetworkImage(url),
-              fit: BoxFit.cover,
-            ),
+    carouselItems.addAll(widget.imageUrls.map(
+      (url) => Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: NetworkImage(url),
+            fit: BoxFit.cover,
           ),
-        )));
+        ),
+      ),
+    ));
 
-    // Add valid video items
+    // Add video items
     final validVideoUrls = widget.videoUrls.where((url) {
       try {
         final videoId = extractVideoId(url);
-        return videoId.isNotEmpty; // Ensure the videoId is not empty
+        return videoId.isNotEmpty;
       } catch (e) {
-        return false; // Invalid URL
+        return false;
       }
     }).toList();
 
@@ -234,85 +238,104 @@ class _PackageImageSliderState extends State<PackageImageSlider> {
         videoId: videoId,
         autoPlay: false,
         params: const YoutubePlayerParams(
-          showControls: true, // Show default controls including play/pause
-          showFullscreenButton: true,
+          showControls: true,
+          showFullscreenButton: false, // Hiding the default fullscreen button
         ),
       );
 
-      return ClipRect(
-        child: SizedBox(
-          width: double.infinity, // Ensure it covers the full width
-          child: FittedBox(
-            fit: BoxFit.cover, // Make the video cover the entire slider
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.width * 9 / 16,
+      return YoutubePlayerControllerProvider(
+        controller: controller,
+        child: Stack(
+          children: [
+            SizedBox(
+              width: double.infinity,
+              height: double.infinity,
               child: YoutubePlayer(
                 controller: controller,
-                aspectRatio:
-                    16 / 9, // Aspect ratio to keep the video proportional
+                aspectRatio: 16 / 9,
               ),
             ),
-          ),
+            Positioned(
+              right: 10,
+              bottom: 10,
+              child: IconButton(
+                icon: const Icon(Icons.fullscreen),
+                color: Colors.white,
+                onPressed: () {
+                  _enterFullScreen(context, controller);
+                },
+              ),
+            ),
+          ],
         ),
       );
     }).toList());
 
-    return Column(
-      children: [
-        Container(
-          color: Colors.amberAccent,
-          height: 26.h,
-          width: MediaQuery.of(context).size.width,
-          child: CarouselSlider(
-            carouselController: _carouselController,
-            options: CarouselOptions(
-              onPageChanged: (index, _) {
-                setState(() {
-                  _currentIndex = index;
-                });
-                _handleVideoFocus(index);
-              },
-              enableInfiniteScroll:
-                  widget.imageUrls.length + validVideoUrls.length < 2
-                      ? false
-                      : true,
-              autoPlay: false,
-              enlargeFactor: 0,
-              viewportFraction:
-                  1.0, // Make sure the slider covers the entire width
+    return WillPopScope(
+      onWillPop: _onBackPressed,
+      child: Column(
+        children: [
+          Container(
+            height: 260.0,
+            width: MediaQuery.of(context).size.width,
+            decoration: const BoxDecoration(
+              color: Colors.transparent,
             ),
-            items: carouselItems,
+            child: CarouselSlider(
+              carouselController: _carouselController,
+              options: CarouselOptions(
+                onPageChanged: (index, _) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                  _handleVideoFocus(index);
+                },
+                enableInfiniteScroll:
+                    widget.imageUrls.length + validVideoUrls.length < 2
+                        ? false
+                        : true,
+                autoPlay: false,
+                enlargeCenterPage: false,
+                viewportFraction: 1.0,
+              ),
+              items: carouselItems,
+            ),
           ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(
-            carouselItems.length,
-            (index) => Container(
-              width: 8.0,
-              height: 8.0,
-              margin:
-                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: _currentIndex == index ? Colors.black : Colors.grey,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              carouselItems.length,
+              (index) => Container(
+                width: 8.0,
+                height: 8.0,
+                margin:
+                    const EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: _currentIndex == index ? Colors.black : Colors.grey,
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
+  Future<bool> _onBackPressed() async {
+    if (isFullscreen) {
+      _exitFullScreen();
+      return Future.value(false); // Cancel back navigation
+    }
+    return Future.value(true); // Allow back navigation
+  }
+
   void _handleVideoFocus(int index) {
-    // Pause the current video if the slide changes
     if (_currentVideoController != null) {
       _currentVideoController!.pauseVideo();
     }
 
     if (index >= widget.imageUrls.length) {
-      // This is a video slide
       int videoIndex = index - widget.imageUrls.length;
       final videoId = extractVideoId(widget.videoUrls[videoIndex]);
 
@@ -321,12 +344,68 @@ class _PackageImageSliderState extends State<PackageImageSlider> {
           videoId: videoId,
           autoPlay: false,
           params: const YoutubePlayerParams(
-            showControls: true, // Use default controls
-            showFullscreenButton: true,
+            showControls: true,
+            showFullscreenButton: false,
           ),
         );
       });
     }
+  }
+
+  void _enterFullScreen(
+      BuildContext context, YoutubePlayerController controller) {
+    setState(() {
+      isFullscreen = true;
+    });
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+    ]);
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          body: Stack(
+            children: [
+              YoutubePlayer(
+                controller: controller,
+                aspectRatio: 16 / 9,
+              ),
+              Positioned(
+                top: 30,
+                right: 10,
+                child: IconButton(
+                  icon: const Icon(Icons.close),
+                  color: Colors.white,
+                  onPressed: () {
+                    Navigator.pop(context);
+                    _exitFullScreen();
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ).then((_) => _exitFullScreen());
+  }
+
+  void _exitFullScreen() {
+    setState(() {
+      isFullscreen = false;
+    });
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+  }
+
+  @override
+  void dispose() {
+    _currentVideoController?.close();
+    super.dispose();
   }
 }
 
@@ -336,7 +415,6 @@ String extractVideoId(String url) {
   if (videoId != null) {
     return videoId;
   } else {
-    // Handle other URL formats or invalid URLs
     final RegExp regExp = RegExp(r'v=([^&]+)');
     final Match? match = regExp.firstMatch(url);
     if (match != null && match.groupCount > 0) {
