@@ -199,10 +199,7 @@ class PackageImageSlider extends StatefulWidget {
 }
 
 class _PackageImageSliderState extends State<PackageImageSlider> {
-  final CarouselController _carouselController = CarouselController();
-  YoutubePlayerController? _currentVideoController;
   int _currentIndex = 0;
-  bool isFullscreen = false;
 
   @override
   Widget build(BuildContext context) {
@@ -221,157 +218,182 @@ class _PackageImageSliderState extends State<PackageImageSlider> {
       ),
     ));
 
-    // Add video items
-    final validVideoUrls = widget.videoUrls.where((url) {
-      try {
-        final videoId = extractVideoId(url);
-        return videoId.isNotEmpty;
-      } catch (e) {
-        return false;
-      }
-    }).toList();
-
-    carouselItems.addAll(validVideoUrls.map((url) {
+    // Add video thumbnails with a play button
+    carouselItems.addAll(widget.videoUrls.map((url) {
       final videoId = extractVideoId(url);
 
-      final controller = YoutubePlayerController.fromVideoId(
-        videoId: videoId,
-        autoPlay: false,
-        params: const YoutubePlayerParams(
-          showControls: true,
-          showFullscreenButton: false, // Hiding the default fullscreen button
-        ),
-      );
+      return Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(
+                  YoutubePlayerController.getThumbnail(videoId: videoId),
+                ),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.play_circle_fill),
+            iconSize: 64.0,
+            color: Colors.red, // YouTube red play button color
+            onPressed: () {
+              final controller = YoutubePlayerController.fromVideoId(
+                videoId: videoId,
+                autoPlay: true,
+                params: const YoutubePlayerParams(
+                  showControls: true,
+                  showFullscreenButton: false,
+                ),
+              );
 
-      return YoutubePlayerControllerProvider(
-        controller: controller,
-        child: Stack(
-          children: [
-            SizedBox(
-              width: double.infinity,
-              height: double.infinity,
-              child: YoutubePlayer(
-                controller: controller,
-                aspectRatio: 16 / 9,
-              ),
-            ),
-            Positioned(
-              right: 10,
-              bottom: 10,
-              child: IconButton(
-                icon: const Icon(Icons.fullscreen),
-                color: Colors.white,
-                onPressed: () {
-                  _enterFullScreen(context, controller);
-                },
-              ),
-            ),
-          ],
-        ),
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => VideoPlayerPage(controller: controller),
+                ),
+              );
+            },
+          ),
+        ],
       );
     }).toList());
 
-    return WillPopScope(
-      onWillPop: _onBackPressed,
-      child: Column(
-        children: [
-          Container(
-            height: 260.0,
-            width: MediaQuery.of(context).size.width,
-            decoration: const BoxDecoration(
-              color: Colors.transparent,
-            ),
-            child: CarouselSlider(
-              carouselController: _carouselController,
-              options: CarouselOptions(
-                onPageChanged: (index, _) {
-                  setState(() {
-                    _currentIndex = index;
-                  });
-                  _handleVideoFocus(index);
-                },
-                enableInfiniteScroll:
-                    widget.imageUrls.length + validVideoUrls.length < 2
-                        ? false
-                        : true,
-                autoPlay: false,
-                enlargeCenterPage: false,
-                viewportFraction: 1.0,
-              ),
-              items: carouselItems,
-            ),
+    return Column(
+      children: [
+        Container(
+          height: 260.0,
+          width: MediaQuery.of(context).size.width,
+          child: PageView.builder(
+            itemCount: carouselItems.length,
+            onPageChanged: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+            itemBuilder: (context, index) {
+              return carouselItems[index];
+            },
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-              carouselItems.length,
-              (index) => Container(
-                width: 8.0,
-                height: 8.0,
-                margin:
-                    const EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: _currentIndex == index ? Colors.black : Colors.grey,
-                ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(
+            carouselItems.length,
+            (index) => Container(
+              width: 8.0,
+              height: 8.0,
+              margin:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: _currentIndex == index ? Colors.black : Colors.grey,
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
-  Future<bool> _onBackPressed() async {
-    if (isFullscreen) {
-      _exitFullScreen();
-      return Future.value(false); // Cancel back navigation
-    }
-    return Future.value(true); // Allow back navigation
-  }
-
-  void _handleVideoFocus(int index) {
-    if (_currentVideoController != null) {
-      _currentVideoController!.pauseVideo();
-    }
-
-    if (index >= widget.imageUrls.length) {
-      int videoIndex = index - widget.imageUrls.length;
-      final videoId = extractVideoId(widget.videoUrls[videoIndex]);
-
-      setState(() {
-        _currentVideoController = YoutubePlayerController.fromVideoId(
-          videoId: videoId,
-          autoPlay: false,
-          params: const YoutubePlayerParams(
-            showControls: true,
-            showFullscreenButton: false,
-          ),
-        );
-      });
+  String extractVideoId(String url) {
+    final Uri uri = Uri.parse(url);
+    final String? videoId = uri.queryParameters['v'];
+    if (videoId != null) {
+      return videoId;
+    } else {
+      final RegExp regExp = RegExp(r'v=([^&]+)');
+      final Match? match = regExp.firstMatch(url);
+      if (match != null && match.groupCount > 0) {
+        return match.group(1) ?? '';
+      } else {
+        throw ArgumentError('Invalid YouTube URL');
+      }
     }
   }
+}
 
-  void _enterFullScreen(
-      BuildContext context, YoutubePlayerController controller) {
-    setState(() {
-      isFullscreen = true;
-    });
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+class VideoPlayerPage extends StatefulWidget {
+  final YoutubePlayerController controller;
+
+  const VideoPlayerPage({Key? key, required this.controller}) : super(key: key);
+
+  @override
+  State<VideoPlayerPage> createState() => _VideoPlayerPageState();
+}
+
+class _VideoPlayerPageState extends State<VideoPlayerPage> {
+  bool _isFullScreen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Ensure the video is paused when the page is initialized
+    widget.controller.pauseVideo();
     SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
     ]);
+  }
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Scaffold(
-          body: Stack(
+  @override
+  void dispose() {
+    // Dispose of the controller when the page is disposed
+    widget.controller.close();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+    super.dispose();
+  }
+
+  void _toggleFullScreen() {
+    setState(() {
+      _isFullScreen = !_isFullScreen;
+
+      if (_isFullScreen) {
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.landscapeRight,
+          DeviceOrientation.landscapeLeft,
+        ]);
+        SystemChrome.setEnabledSystemUIMode(
+            SystemUiMode.leanBack); // Hide status and navigation bar
+      } else {
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.portraitUp,
+        ]);
+        SystemChrome.setEnabledSystemUIMode(
+            SystemUiMode.edgeToEdge); // Restore status and navigation bar
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light.copyWith(
+        statusBarColor: Colors.black, // Status bar color for portrait mode
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: WillPopScope(
+          onWillPop: () async {
+            if (_isFullScreen) {
+              _toggleFullScreen();
+              return false; // Prevent default back behavior
+            }
+            return true;
+          },
+          child: Stack(
             children: [
-              YoutubePlayer(
-                controller: controller,
-                aspectRatio: 16 / 9,
+              Center(
+                child: AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: YoutubePlayer(
+                    controller: widget.controller,
+                  ),
+                ),
               ),
               Positioned(
                 top: 30,
@@ -380,50 +402,33 @@ class _PackageImageSliderState extends State<PackageImageSlider> {
                   icon: const Icon(Icons.close),
                   color: Colors.white,
                   onPressed: () {
-                    Navigator.pop(context);
-                    _exitFullScreen();
+                    if (_isFullScreen) {
+                      _toggleFullScreen(); // Exit full-screen mode
+                    } else {
+                      Navigator.pop(context); // Go back to the previous page
+                    }
                   },
+                ),
+              ),
+              Positioned(
+                bottom: 30,
+                right: 10,
+                child: IconButton(
+                  icon: const Icon(Icons.fullscreen),
+                  color: Colors.white,
+                  onPressed: _toggleFullScreen,
                 ),
               ),
             ],
           ),
         ),
       ),
-    ).then((_) => _exitFullScreen());
-  }
-
-  void _exitFullScreen() {
-    setState(() {
-      isFullscreen = false;
-    });
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
-  }
-
-  @override
-  void dispose() {
-    _currentVideoController?.close();
-    super.dispose();
+    );
   }
 }
 
-String extractVideoId(String url) {
-  final Uri uri = Uri.parse(url);
-  final String? videoId = uri.queryParameters['v'];
-  if (videoId != null) {
-    return videoId;
-  } else {
-    final RegExp regExp = RegExp(r'v=([^&]+)');
-    final Match? match = regExp.firstMatch(url);
-    if (match != null && match.groupCount > 0) {
-      return match.group(1) ?? '';
-    } else {
-      throw ArgumentError('Invalid YouTube URL');
-    }
-  }
-}
+
+
 
 
 /* --- Youtube iFrame Player & Carousel Image Slider without dots : Working --- */
