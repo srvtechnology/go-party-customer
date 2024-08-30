@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:collection/collection.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -222,6 +223,11 @@ class _PackageImageSliderState extends State<PackageImageSlider> {
     carouselItems.addAll(widget.videoUrls.map((url) {
       final videoId = extractVideoId(url);
 
+      if (videoId.isEmpty) {
+        // Skip adding this item if the video ID is invalid
+        return Container(); // Return an empty container or a placeholder widget
+      }
+
       return Stack(
         alignment: Alignment.center,
         children: [
@@ -264,7 +270,7 @@ class _PackageImageSliderState extends State<PackageImageSlider> {
 
     return Column(
       children: [
-        Container(
+        SizedBox(
           height: 260.0,
           width: MediaQuery.of(context).size.width,
           child: PageView.builder(
@@ -300,18 +306,30 @@ class _PackageImageSliderState extends State<PackageImageSlider> {
   }
 
   String extractVideoId(String url) {
-    final Uri uri = Uri.parse(url);
-    final String? videoId = uri.queryParameters['v'];
-    if (videoId != null) {
-      return videoId;
-    } else {
+    try {
+      final Uri uri = Uri.parse(url);
+
+      // Check if the URL contains a valid video ID parameter
+      final String? videoId = uri.queryParameters['v'];
+      if (videoId != null && videoId.isNotEmpty) {
+        return videoId;
+      }
+
+      // Use regular expression to extract video ID from URL path
       final RegExp regExp = RegExp(r'v=([^&]+)');
-      final Match? match = regExp.firstMatch(url);
+      final Match? match = regExp.firstMatch(uri.toString());
       if (match != null && match.groupCount > 0) {
         return match.group(1) ?? '';
-      } else {
-        throw ArgumentError('Invalid YouTube URL');
       }
+
+      // Return empty string if video ID is not found
+      return '';
+    } catch (e) {
+      // Log the error or handle it appropriately
+      if (kDebugMode) {
+        print('Error extracting video ID: $e');
+      }
+      return ''; // Return empty string if any exception occurs
     }
   }
 }

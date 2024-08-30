@@ -550,12 +550,17 @@ class _HomeState extends State<Home> {
                                             package: e,
                                             onTap: () {
                                               Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          SinglePackageRoute(
-                                                            package: e,
-                                                          )));
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SinglePackageRoute(
+                                                    package: e,
+                                                  ),
+                                                ),
+                                              ).then((_) {
+                                                setState(
+                                                    () {}); // Ensure the view is refreshed
+                                              });
                                             },
                                           ))
                                       .toList()),
@@ -606,21 +611,28 @@ class _HomeState extends State<Home> {
                             SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: Row(
-                                  children: state.data!
-                                      /*.getRange(4, min(7, state.data!.length))*/
-                                      /* .getRange(0, min(7, state.data!.length))*/
-                                      .map((e) => OrderCard(
-                                            service: e,
-                                            onTap: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          SingleServiceRoute(
-                                                              service: e)));
-                                            },
-                                          ))
-                                      .toList()),
+                                children: state.data!
+                                    /*.getRange(4, min(7, state.data!.length))*/
+                                    /* .getRange(0, min(7, state.data!.length))*/
+                                    .map((e) => OrderCard(
+                                          service: e,
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    SingleServiceRoute(
+                                                  service: e,
+                                                ),
+                                              ),
+                                            ).then((_) {
+                                              setState(
+                                                  () {}); // Ensure the view is refreshed
+                                            });
+                                          },
+                                        ))
+                                    .toList(),
+                              ),
                             ),
                           ],
                         ),
@@ -671,15 +683,22 @@ class _HomeState extends State<Home> {
                                       /*.getRange(7, min(10, state.data!.length))*/
                                       /* .getRange(0, min(10, state.data!.length))*/
                                       .map((e) => OrderCard(
-                                          onTap: () {
-                                            Navigator.push(
+                                            service: e,
+                                            onTap: () {
+                                              Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        SingleServiceRoute(
-                                                            service: e)));
-                                          },
-                                          service: e))
+                                                  builder: (context) =>
+                                                      SingleServiceRoute(
+                                                    service: e,
+                                                  ),
+                                                ),
+                                              ).then((_) {
+                                                setState(
+                                                    () {}); // Ensure the view is refreshed
+                                              });
+                                            },
+                                          ))
                                       .toList()),
                             ),
                           ],
