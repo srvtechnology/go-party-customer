@@ -249,7 +249,7 @@ class _PackageImageSliderState extends State<PackageImageSlider> {
             onPressed: () {
               final controller = YoutubePlayerController.fromVideoId(
                 videoId: videoId,
-                autoPlay: true,
+                autoPlay: false,
                 params: const YoutubePlayerParams(
                   showControls: true,
                   showFullscreenButton: false,
