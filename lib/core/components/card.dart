@@ -197,234 +197,6 @@ class PackageCard extends StatelessWidget {
   }
 }
 
-class PackageTile extends StatelessWidget {
-  final PackageModel package;
-  final OnTap? onTap;
-
-  const PackageTile({Key? key, required this.package, this.onTap})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        if (onTap != null) {
-          onTap!();
-        }
-      },
-      child: Container(
-        height: 22.h,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-                offset: const Offset(1, 1),
-                blurRadius: 1,
-                color: Colors.grey[300]!),
-            BoxShadow(
-                offset: const Offset(-1, -1),
-                blurRadius: 1,
-                color: Colors.grey[300]!)
-          ],
-          borderRadius: BorderRadius.circular(5),
-        ),
-        // margin: EdgeInsets.symmetric(vertical: 5, horizontal: 4.w),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 36.w,
-              // margin: const EdgeInsets.symmetric(horizontal: 5),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: CachedNetworkImageProvider(package.images[0]))),
-            ),
-            SizedBox(
-              width: 5.w,
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    package.name,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w500),
-                  ),
-                  Expanded(
-                    child: HtmlTextView(
-                      htmlText: package.description,
-                    ),
-                  ),
-
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Discounted Price : ₹ ${package.discountedPrice}",
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      Text(
-                        "Price : ₹ ${package.price}",
-                        style: TextStyle(
-                            fontSize: 15.sp,
-                            color: Colors.grey,
-                            fontWeight: FontWeight.w600,
-                            decoration: TextDecoration.lineThrough),
-                      ),
-                      // unit == "per hour"
-                      // Text(
-                      //   " / ${package.priceBasis}",
-                      //   style: TextStyle(
-                      //     fontSize: 14.sp,
-                      //     color: Colors.grey,
-                      //     fontWeight: FontWeight.w600,
-                      //   ),
-                      // ),
-                    ],
-                  ),
-                  // add to cart button
-                  /*--- commented on 24-07-24 ---*/
-                  /*Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20))),
-                          onPressed: () {
-                            if (onTap != null) {
-                              onTap!();
-                            }
-                          },
-                          child: const Text("Add to Cart"),
-                        ),
-                      ],
-                    ),
-                  )*/
-                ],
-              ),
-            ),
-
-            const SizedBox(
-              height: 5,
-            ),
-
-            // Expanded(
-            //     child: Row(
-            //   children: [
-            //     Expanded(
-            //       child: ElevatedButton(
-            //         style: ElevatedButton.styleFrom(
-            //             backgroundColor: Theme.of(context).primaryColorDark),
-            //         onPressed: () {
-            //           if (onTap != null) {
-            //             onTap!();
-            //           }
-            //         },
-            //         child: const Text("View Details"),
-            //       ),
-            //     ),
-            //   ],
-            // )),
-          ],
-        ),
-      ),
-    );
-    // return Container(
-    //   margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-    //   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-    //   decoration: BoxDecoration(
-    //     color: Colors.white,
-    //     borderRadius: BorderRadius.circular(15),
-    //     boxShadow: [
-    //       BoxShadow(
-    //           offset: const Offset(1, 1),
-    //           blurRadius: 1,
-    //           color: Colors.grey[300]!),
-    //       BoxShadow(
-    //           offset: const Offset(-1, -1),
-    //           blurRadius: 1,
-    //           color: Colors.grey[300]!)
-    //     ],
-    //   ),
-    //   child: Column(
-    //     crossAxisAlignment: CrossAxisAlignment.start,
-    //     children: [
-    //       Container(
-    //         height: 20.h,
-    //         decoration: BoxDecoration(
-    //             boxShadow: [
-    //               BoxShadow(
-    //                   offset: const Offset(1, 1),
-    //                   spreadRadius: 2,
-    //                   blurRadius: 2,
-    //                   color: Colors.grey[400]!),
-    //             ],
-    //             borderRadius: BorderRadius.circular(10),
-    //             image: DecorationImage(
-    //                 fit: BoxFit.fitHeight,
-    //                 image: CachedNetworkImageProvider(
-    //                   package.images[0],
-    //                 ))),
-    //       ),
-    //       const SizedBox(
-    //         height: 10,
-    //       ),
-    //       Row(
-    //         children: [
-    //           Text(
-    //             package.name,
-    //             style:
-    //                 const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-    //           ),
-    //         ],
-    //       ),
-    //       FittedBox(
-    //           child: Text(
-    //         "${package.description.substring(0, min(26, package.description.length))} ...",
-    //         overflow: TextOverflow.visible,
-    //         textAlign: TextAlign.left,
-    //       )),
-    //       const SizedBox(
-    //         height: 10,
-    //       ),
-    //       Text("₹ ${package.discountedPrice}",
-    //           style: TextStyle(
-    //               fontWeight: FontWeight.bold,
-    //               fontSize: 18,
-    //               color: Theme.of(context).primaryColorDark)),
-    //       Center(
-    //         child: SizedBox(
-    //           width: 200,
-    //           child: ElevatedButton(
-    //             onPressed: () {
-    //               onTap!();
-    //             },
-    //             child: const Text("View"),
-    //           ),
-    //         ),
-    //       )
-    //     ],
-    //   ),
-    // );
-  }
-}
-
 // SAME
 class CircularOrderCard extends StatelessWidget {
   final ServiceModel service;
@@ -824,6 +596,106 @@ class _OrderTileState extends State<OrderTile> {
   }
 }
 
+/* class PackageTile extends StatelessWidget {
+  final PackageModel package;
+  final OnTap? onTap;
+
+  const PackageTile({Key? key, required this.package, this.onTap})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        if (onTap != null) {
+          onTap!();
+        }
+      },
+      child: Container(
+        height: 22.h,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+                offset: const Offset(1, 1),
+                blurRadius: 1,
+                color: Colors.grey[300]!),
+            BoxShadow(
+                offset: const Offset(-1, -1),
+                blurRadius: 1,
+                color: Colors.grey[300]!)
+          ],
+          borderRadius: BorderRadius.circular(5),
+        ),
+        // margin: EdgeInsets.symmetric(vertical: 5, horizontal: 4.w),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 36.w,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: CachedNetworkImageProvider(package.images[0]))),
+            ),
+            SizedBox(
+              width: 5.w,
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    package.name,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  Expanded(
+                    child: HtmlTextView(
+                      htmlText: package.description,
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Discounted Price : ₹ ${package.discountedPrice}",
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      Text(
+                        "Price : ₹ ${package.price}",
+                        style: TextStyle(
+                            fontSize: 15.sp,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w600,
+                            decoration: TextDecoration.lineThrough),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class ProductTile extends StatelessWidget {
   ServiceModel service;
   Function? onTap;
@@ -853,9 +725,7 @@ class ProductTile extends StatelessWidget {
                 blurRadius: 1,
                 color: Colors.grey[300]!)
           ],
-          // borderRadius: BorderRadius.circular(5),
         ),
-        // margin: EdgeInsets.symmetric(vertical: 5, horizontal: 4.w),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -863,7 +733,6 @@ class ProductTile extends StatelessWidget {
           children: [
             Container(
               width: 36.w,
-              // margin: const EdgeInsets.symmetric(horizontal: 5),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
                   image: DecorationImage(
@@ -876,18 +745,7 @@ class ProductTile extends StatelessWidget {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  /* Expanded(
-                    child: Text(
-                      service.name ?? "",
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w600),
-                    ),
-                  ), */
                   Text(
                     service.name ?? "",
                     overflow: TextOverflow.ellipsis,
@@ -896,7 +754,6 @@ class ProductTile extends StatelessWidget {
                         fontSize: 18.sp,
                         fontWeight: FontWeight.w600),
                   ),
-
                   Text(
                     "By utsavlife",
                     overflow: TextOverflow.ellipsis,
@@ -905,7 +762,6 @@ class ProductTile extends StatelessWidget {
                         fontSize: 15.sp,
                         fontWeight: FontWeight.w600),
                   ),
-
                   Expanded(
                     child: HtmlTextView(
                       htmlText: service.description ?? "",
@@ -943,54 +799,216 @@ class ProductTile extends StatelessWidget {
                       ),
                     ],
                   ),
-                  // add to cart button
-                  /*---- commented on 24-07-24 ----*/
-                  /*Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20)),
-                            minimumSize: const Size(80, 30), // Reduced size
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 5),
-                          ),
-                          onPressed: () {
-                            if (onTap != null) {
-                              onTap!();
-                            }
-                          },
-                          child: const Text("Add to Cart"),
-                        ),
-                      ],
-                    ),
-                  )*/
                 ],
               ),
             ),
-
             const SizedBox(
               height: 10,
             ),
-            // Expanded(
-            //     child: Row(
-            //   children: [
-            //     Expanded(
-            //       child: ElevatedButton(
-            //         style: ElevatedButton.styleFrom(
-            //             backgroundColor: Theme.of(context).primaryColorDark),
-            //         onPressed: () {
-            //           if (onTap != null) {
-            //             onTap!();
-            //           }
-            //         },
-            //         child: const Text("View Details"),
-            //       ),
-            //     ),
-            //   ],
-            // )),
+          ],
+        ),
+      ),
+    );
+  }
+} */
+
+class PackageTile extends StatelessWidget {
+  final PackageModel package;
+  final OnTap? onTap;
+
+  const PackageTile({Key? key, required this.package, this.onTap})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return InkWell(
+      onTap: () {
+        if (onTap != null) {
+          onTap!();
+        }
+      },
+      child: Container(
+        height: screenHeight * 0.22, // Set height based on screen height
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+                offset: const Offset(1, 1),
+                blurRadius: 1,
+                color: Colors.grey[300]!),
+            BoxShadow(
+                offset: const Offset(-1, -1),
+                blurRadius: 1,
+                color: Colors.grey[300]!)
+          ],
+          borderRadius: BorderRadius.circular(5),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        child: Row(
+          children: [
+            Container(
+              width: screenWidth * 0.36, // Set width based on screen width
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: CachedNetworkImageProvider(package.images[0]))),
+            ),
+            SizedBox(width: screenWidth * 0.05),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    package.name,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  Expanded(
+                    child: HtmlTextView(
+                      htmlText: package.description,
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Discounted Price : ₹ ${package.discountedPrice}",
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      Text(
+                        "Price : ₹ ${package.price}",
+                        style: TextStyle(
+                            fontSize: 15.sp,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w600,
+                            decoration: TextDecoration.lineThrough),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ProductTile extends StatelessWidget {
+  ServiceModel service;
+  Function? onTap;
+
+  ProductTile({Key? key, required this.service, this.onTap}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return InkWell(
+      onTap: () {
+        if (onTap != null) {
+          onTap!();
+        }
+      },
+      child: Container(
+        height: screenHeight * 0.22, // Set height based on screen height
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+                offset: const Offset(1, 1),
+                blurRadius: 1,
+                color: Colors.grey[300]!),
+            BoxShadow(
+                offset: const Offset(-1, -1),
+                blurRadius: 1,
+                color: Colors.grey[300]!)
+          ],
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        child: Row(
+          children: [
+            Container(
+              width: screenWidth * 0.36, // Set width based on screen width
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: CachedNetworkImageProvider(service.images![0]))),
+            ),
+            SizedBox(width: screenWidth * 0.05),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    service.name ?? "",
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w600),
+                  ),
+                  Text(
+                    "By utsavlife",
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w600),
+                  ),
+                  Expanded(
+                    child: HtmlTextView(
+                      htmlText: service.description ?? "",
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Per ${service.priceBasis} unit",
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Text(
+                        "Discounted Price : ₹ ${service.discountedPrice}",
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Text(
+                        "Price : ₹ ${service.price}",
+                        style: TextStyle(
+                            fontSize: 15.sp,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.normal,
+                            decoration: TextDecoration.lineThrough),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

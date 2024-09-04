@@ -344,8 +344,6 @@ class VideoPlayerPage extends StatefulWidget {
 }
 
 class _VideoPlayerPageState extends State<VideoPlayerPage> {
-  bool _isFullScreen = false;
-
   @override
   void initState() {
     super.initState();
@@ -353,6 +351,8 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     widget.controller.pauseVideo();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
     ]);
   }
 
@@ -366,24 +366,12 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     super.dispose();
   }
 
-  void _toggleFullScreen() {
-    setState(() {
-      _isFullScreen = !_isFullScreen;
-
-      if (_isFullScreen) {
-        SystemChrome.setPreferredOrientations([
-          DeviceOrientation.landscapeRight,
-          DeviceOrientation.landscapeLeft,
-        ]);
-        SystemChrome.setEnabledSystemUIMode(
-            SystemUiMode.leanBack); // Hide status and navigation bar
-      } else {
-        SystemChrome.setPreferredOrientations([
-          DeviceOrientation.portraitUp,
-        ]);
-        SystemChrome.setEnabledSystemUIMode(
-            SystemUiMode.edgeToEdge); // Restore status and navigation bar
-      }
+  void _exitVideoPlayer() {
+    // Reset the orientation to portrait before exiting
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]).then((_) {
+      Navigator.pop(context); // Navigate back to the previous page
     });
   }
 
@@ -391,17 +379,13 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light.copyWith(
-        statusBarColor: Colors.black, // Status bar color for portrait mode
+        statusBarColor: Colors.black, // Status bar color
       ),
       child: Scaffold(
         backgroundColor: Colors.black,
         body: WillPopScope(
           onWillPop: () async {
-            if (_isFullScreen) {
-              _toggleFullScreen();
-              return false; // Prevent default back behavior
-            }
-            return true;
+            return false; // Prevent back press
           },
           child: Stack(
             children: [
@@ -419,22 +403,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                 child: IconButton(
                   icon: const Icon(Icons.close),
                   color: Colors.white,
-                  onPressed: () {
-                    if (_isFullScreen) {
-                      _toggleFullScreen(); // Exit full-screen mode
-                    } else {
-                      Navigator.pop(context); // Go back to the previous page
-                    }
-                  },
-                ),
-              ),
-              Positioned(
-                bottom: 30,
-                right: 10,
-                child: IconButton(
-                  icon: const Icon(Icons.fullscreen),
-                  color: Colors.white,
-                  onPressed: _toggleFullScreen,
+                  onPressed: _exitVideoPlayer, // Exit the video player
                 ),
               ),
             ],
@@ -444,6 +413,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     );
   }
 }
+
 
 
 

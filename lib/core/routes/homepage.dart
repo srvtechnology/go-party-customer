@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import '../../views/view.dart';
 import '../constant/themData.dart';
@@ -542,6 +544,44 @@ class _HomeState extends State<Home> {
                             ),
                             SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
+                              child: LayoutBuilder(
+                                builder: (context, constraints) {
+                                  final itemWidth = min(
+                                      200.0,
+                                      constraints.maxWidth /
+                                          2); // Adjust based on constraints
+
+                                  return Row(
+                                    children: state.packageData!
+                                        .map((e) => SizedBox(
+                                              width:
+                                                  itemWidth, // Set the width for each card
+                                              child: PackageCard(
+                                                package: e,
+                                                onTap: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          SinglePackageRoute(
+                                                        package: e,
+                                                      ),
+                                                    ),
+                                                  ).then((_) {
+                                                    setState(
+                                                        () {}); // Refresh view on return
+                                                  });
+                                                },
+                                              ),
+                                            ))
+                                        .toList(),
+                                  );
+                                },
+                              ),
+                            )
+
+                            /* SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
                               child: Row(
                                   children: state.packageData!
                                       /*-- Previously commented */
@@ -564,7 +604,7 @@ class _HomeState extends State<Home> {
                                             },
                                           ))
                                       .toList()),
-                            ),
+                            ), */
                           ],
                         ),
                       ),
@@ -610,6 +650,44 @@ class _HomeState extends State<Home> {
                             ),
                             SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
+                              child: LayoutBuilder(
+                                builder: (context, constraints) {
+                                  final itemWidth = min(
+                                      250.0,
+                                      constraints.maxWidth /
+                                          3); // Adjust based on constraints
+
+                                  return Row(
+                                    children: state.data!
+                                        .map((e) => SizedBox(
+                                              width:
+                                                  itemWidth, // Set width for each card
+                                              child: OrderCard(
+                                                service: e,
+                                                onTap: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          SingleServiceRoute(
+                                                        service: e,
+                                                      ),
+                                                    ),
+                                                  ).then((_) {
+                                                    setState(
+                                                        () {}); // Refresh view on return
+                                                  });
+                                                },
+                                              ),
+                                            ))
+                                        .toList(),
+                                  );
+                                },
+                              ),
+                            )
+
+                            /* SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
                               child: Row(
                                 children: state.data!
                                     /*.getRange(4, min(7, state.data!.length))*/
@@ -633,7 +711,7 @@ class _HomeState extends State<Home> {
                                         ))
                                     .toList(),
                               ),
-                            ),
+                            ), */
                           ],
                         ),
                       ),
@@ -678,6 +756,44 @@ class _HomeState extends State<Home> {
                             ),
                             SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
+                              child: LayoutBuilder(
+                                builder: (context, constraints) {
+                                  final itemWidth = min(
+                                      250.0,
+                                      constraints.maxWidth /
+                                          3); // Adjust based on constraints
+
+                                  return Row(
+                                    children: state.data!
+                                        .map((e) => SizedBox(
+                                              width:
+                                                  itemWidth, // Set width for each card
+                                              child: OrderCard(
+                                                service: e,
+                                                onTap: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          SingleServiceRoute(
+                                                        service: e,
+                                                      ),
+                                                    ),
+                                                  ).then((_) {
+                                                    setState(
+                                                        () {}); // Refresh view on return
+                                                  });
+                                                },
+                                              ),
+                                            ))
+                                        .toList(),
+                                  );
+                                },
+                              ),
+                            )
+
+                            /* SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
                               child: Row(
                                   children: state.data!
                                       /*.getRange(7, min(10, state.data!.length))*/
@@ -700,7 +816,7 @@ class _HomeState extends State<Home> {
                                             },
                                           ))
                                       .toList()),
-                            ),
+                            ), */
                           ],
                         ),
                       ),

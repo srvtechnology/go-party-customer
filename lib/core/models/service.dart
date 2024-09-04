@@ -42,7 +42,7 @@ class ServiceModel {
   });
 
   factory ServiceModel.fromJson(Map json) {
-    List<String> temp = [
+    /*   List<String> temp = [
       "${APIConfig.baseUrl}/storage/app/public/service/${json["image"]}"
     ];
 
@@ -50,6 +50,21 @@ class ServiceModel {
         json["additional_images"] is! String) {
       for (String i in json["additional_images"]) {
         temp.add("${APIConfig.baseUrl}/storage/app/public/service/$i");
+      }
+    } */
+
+    List<String> images = [];
+
+    if (json["image"] != null && json["image"] is List<dynamic>) {
+      for (String imageUrl in json["image"]) {
+        images.add(imageUrl);
+      }
+    }
+
+    if (json["additional_images"] != null &&
+        json["additional_images"] is List<dynamic>) {
+      for (String imageUrl in json["additional_images"]) {
+        images.add(imageUrl);
       }
     }
 
@@ -106,7 +121,7 @@ class ServiceModel {
       price: json["price"].toString(),
       priceBasis: json["price_basis"],
       discountedPrice: json["discount_price"].toString(),
-      images: temp,
+      images: images,
       minQnty: json["min_qty"],
       /* serviceCategoryDetails: json["service_category_details"], */
       package: json["package_category"] != null

@@ -23,7 +23,7 @@ class PackageModel {
       required this.videos,
       required this.services});
   factory PackageModel.fromJson(Map json) {
-    List<String> temp = [
+    /*  List<String> temp = [
       "${APIConfig.baseUrl}/storage/app/public/packages/${json["image"]}"
     ];
 
@@ -31,6 +31,20 @@ class PackageModel {
         json["additional_images"] is! String) {
       for (String i in json["additional_images"]) {
         temp.add("${APIConfig.baseUrl}/storage/app/public/packages/$i");
+      }
+    } */
+    List<String> images = [];
+
+    if (json["image"] != null && json["image"] is List<dynamic>) {
+      for (String imageUrl in json["image"]) {
+        images.add(imageUrl);
+      }
+    }
+
+    if (json["additional_images"] != null &&
+        json["additional_images"] is List<dynamic>) {
+      for (String imageUrl in json["additional_images"]) {
+        images.add(imageUrl);
       }
     }
 
@@ -56,7 +70,7 @@ class PackageModel {
         description: json["description"],
         price: json["price"].toString(),
         discountedPrice: json["discount_price"].toString(),
-        images: temp,
+        images: images,
         videos: tempVideos,
         services: servicesList,
         category: json["category"],

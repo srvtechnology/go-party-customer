@@ -166,19 +166,27 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                           ),
                         ),
                       ),
-                      body: NestedScrollView(
-                        controller: _scrollController,
-                        floatHeaderSlivers: true,
-                        headerSliverBuilder: (context, isChange) {
-                          return [];
-                        },
-                        body: SizedBox(
-                          height: double.infinity,
-                          width: double.infinity,
-                          child: SingleChildScrollView(
-                            controller: _scrollController,
-                            child: state.isLoading
-                                ? Container(
+                      body: state.isLoading
+                          ? Container(
+                              height: MediaQuery.of(context).size.height * 0.6,
+                              width: MediaQuery.of(context).size.width,
+                              alignment: Alignment.center,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  CircularProgressIndicator(),
+                                  SizedBox(height: 10),
+                                  Text(
+                                    "Searching for services",
+                                    style: TextStyle(
+                                        fontSize: 14, color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : state.data == null || state.searchData!.isEmpty
+                              ? Center(
+                                  child: Container(
                                     height: MediaQuery.of(context).size.height *
                                         0.6,
                                     width: MediaQuery.of(context).size.width,
@@ -187,90 +195,61 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: const [
-                                        CircularProgressIndicator(),
-                                        SizedBox(
-                                          height: 10,
+                                        Icon(
+                                          Icons.search,
+                                          size: 100,
+                                          color: Colors.grey,
                                         ),
+                                        SizedBox(height: 5),
                                         Text(
-                                          "Searching for services",
+                                          "Search for services",
                                           style: TextStyle(
                                               fontSize: 14, color: Colors.grey),
-                                        )
+                                        ),
                                       ],
                                     ),
-                                  )
-                                : Column(
-                                    children: state.data == null ||
-                                            state.searchData!.isEmpty
-                                        ? [
-                                            Container(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.6,
-                                              width: MediaQuery.of(context)
-                                                  .size
-                                                  .width,
-                                              alignment: Alignment.center,
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: const [
-                                                  Icon(
-                                                    Icons.search,
-                                                    size: 100,
-                                                    color: Colors.grey,
-                                                  ),
-                                                  SizedBox(
-                                                    height: 5,
-                                                  ),
-                                                  Text(
-                                                    "Search for services",
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        color: Colors.grey),
-                                                  )
-                                                ],
-                                              ),
-                                            )
-                                          ]
-                                        : state.searchData!.map((e) {
-                                            if (e.package is PackageModel) {
-                                              return PackageTile(
+                                  ),
+                                )
+                              : ListView.builder(
+                                  controller: _scrollController,
+                                  itemCount: state.searchData!.length,
+                                  itemBuilder: (context, index) {
+                                    final e = state.searchData![index];
+                                    if (e.package is PackageModel) {
+                                      return PackageTile(
+                                        package: e.package,
+                                        onTap: () {
+                                          _removeOverlay();
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  SinglePackageRoute(
                                                 package: e.package,
-                                                onTap: () {
-                                                  _removeOverlay();
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          SinglePackageRoute(
-                                                              package:
-                                                                  e.package),
-                                                    ),
-                                                  );
-                                                },
-                                              );
-                                            } else {
-                                              return ProductTile(
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    } else {
+                                      return ProductTile(
+                                        service: e,
+                                        onTap: () {
+                                          _removeOverlay();
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  SingleServiceRoute(
                                                 service: e,
-                                                onTap: () {
-                                                  _removeOverlay();
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          SingleServiceRoute(
-                                                              service: e),
-                                                    ),
-                                                  );
-                                                },
-                                              );
-                                            }
-                                          }).toList()),
-                          ),
-                        ),
-                      ),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    }
+                                  },
+                                ),
                     ),
                   );
                 },
@@ -282,7 +261,7 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
     );
   }
 
-  Widget _searchBar({
+  /* Widget _searchBar({
     required GlobalKey<State<StatefulWidget>> key,
     AuthProvider? auth,
     List<SaveSearchTextModel>? savedSearchList,
@@ -382,6 +361,110 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
           ),
         ),
       ),
+    );
+  }
+ */
+
+  Widget _searchBar({
+    required GlobalKey<State<StatefulWidget>> key,
+    AuthProvider? auth,
+    List<SaveSearchTextModel>? savedSearchList,
+    required TextEditingController controller,
+    required FilterProvider filterState,
+    required ServiceProvider serviceState,
+  }) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Container(
+          height: 10.49.h,
+          width: constraints.maxWidth,
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+          child: TextFormField(
+            key: key,
+            controller: controller,
+            onTap: () {
+              if (savedSearchList != null && savedSearchList.isNotEmpty) {
+                _showOverlay(context, savedSearchList, auth, serviceState);
+              }
+            },
+            onChanged: (value) {
+              if (value.isEmpty) {
+                if (savedSearchList != null && savedSearchList.isNotEmpty) {
+                  _showOverlay(context, savedSearchList, auth, serviceState);
+                }
+              } else {
+                _removeOverlay();
+              }
+            },
+            onFieldSubmitted: (value) {
+              FocusScope.of(context).unfocus();
+              if (controller.text.isNotEmpty) {
+                serviceState.getFilteredServices(auth, filterState,
+                    searchString: controller.text);
+              } else {
+                Fluttertoast.showToast(
+                  msg: "Search field cannot be empty",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  backgroundColor: Colors.red,
+                  textColor: Colors.white,
+                  fontSize: 16.0,
+                );
+              }
+            },
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.only(top: 10, left: 20),
+              hintText: "Search ...",
+              filled: true,
+              fillColor: Colors.white,
+              prefixIcon: IconButton(
+                onPressed: () {
+                  if (controller.text.isNotEmpty) {
+                    serviceState.getFilteredServices(auth, filterState,
+                        searchString: controller.text);
+                  } else {
+                    Fluttertoast.showToast(
+                      msg: "Search field cannot be empty",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      backgroundColor: Colors.red,
+                      textColor: Colors.white,
+                      fontSize: 16.0,
+                    );
+                  }
+                  _removeOverlay();
+                },
+                icon: const Icon(Icons.search),
+                color: Colors.black,
+              ),
+              suffixIcon: Visibility(
+                visible: controller.text.isNotEmpty,
+                child: IconButton(
+                  onPressed: () {
+                    controller.clear();
+                    FocusScope.of(context).unfocus();
+                    _removeOverlay();
+                  },
+                  icon: const Icon(Icons.clear),
+                  color: Colors.black,
+                ),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5),
+                borderSide: const BorderSide(color: Colors.white),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5),
+                borderSide: const BorderSide(color: Colors.white),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5),
+                borderSide: const BorderSide(color: Colors.white),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
