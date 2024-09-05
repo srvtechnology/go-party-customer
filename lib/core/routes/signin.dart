@@ -44,6 +44,9 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
       try {
         await state.login(_emailController.text, _passwordController.text);
         if (state.status == 'I') {
+          setState(() {
+            _isLoading = false;
+          });
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('User is not active'),
@@ -53,6 +56,9 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
           return;
         }
         if (state.status == 'B') {
+          setState(() {
+            _isLoading = false;
+          });
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('User has blocked '),
