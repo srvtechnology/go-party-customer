@@ -744,7 +744,7 @@ class _AgentSignUpState extends State<AgentSignUp> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [
                         Text(
-                          "Incorrect username or password",
+                          "Something went wrong. Please try again later",
                           style: TextStyle(color: Colors.red),
                         ),
                       ],

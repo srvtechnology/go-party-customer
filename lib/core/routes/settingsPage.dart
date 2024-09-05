@@ -1,3 +1,6 @@
+import 'package:customerapp/core/routes/mainpage.dart';
+import 'package:customerapp/core/routes/signin.dart';
+
 import '../constant/themData.dart';
 import 'package:customerapp/core/components/commonHeader.dart';
 import 'package:customerapp/core/components/divider.dart';
@@ -169,7 +172,13 @@ class _SettingsPageState extends State<SettingsPage> {
                     TextButton(
                         onPressed: () async {
                           await state.deActivateAccount();
-                          Navigator.pop(context);
+                          if (context.mounted) {
+                            Navigator.pushReplacementNamed(
+                              context,
+                              SignInPageRoute.routeName,
+                            );
+                          }
+                          /* Navigator.pop(context); */
                         },
                         child: const Text("Yes")),
                   ],

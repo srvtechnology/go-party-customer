@@ -7,7 +7,7 @@ import '../models/user.dart';
 import '../utils/logger.dart';
 import '../repo/auth.dart' as authRepo;
 
-enum AuthState { loggedOut, waiting, loggedIn, error, noState }
+enum AuthState { loggedOut, waiting, loggedIn, error }
 
 class AuthProvider with ChangeNotifier {
   AuthState _authState = AuthState.waiting;
@@ -136,7 +136,7 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
 
       // Show error message and reset authState
-      Future.delayed(const Duration(seconds: 5), () {
+      Future.delayed(const Duration(seconds: 2), () {
         _authState = AuthState.loggedOut;
         notifyListeners();
       });
@@ -184,7 +184,7 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
 
       // Reset authState after showing the error message
-      Future.delayed(const Duration(seconds: 5), () {
+      Future.delayed(const Duration(seconds: 2), () {
         _authState = AuthState.loggedOut;
         notifyListeners();
       });
@@ -226,6 +226,7 @@ class AuthProvider with ChangeNotifier {
         }
         final userType = pref.getString("userType");
         await getUser(userType: userType);
+
         _authState = AuthState.loggedIn;
       } catch (e) {
         _authState = AuthState.loggedOut;
@@ -324,7 +325,7 @@ class AuthProvider with ChangeNotifier {
       CustomLogger.error(e);
 
       // Reset the authState after handling the error
-      Future.delayed(const Duration(seconds: 5), () {
+      Future.delayed(const Duration(seconds: 2), () {
         _authState = AuthState.loggedOut;
         notifyListeners();
       });
@@ -373,7 +374,7 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
 
       // Reset the auth state after the error is handled
-      Future.delayed(const Duration(seconds: 5), () {
+      Future.delayed(const Duration(seconds: 2), () {
         _authState = AuthState.loggedOut;
         notifyListeners();
       });
@@ -513,7 +514,7 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
 
       // Reset authState after showing the error message
-      Future.delayed(const Duration(seconds: 5), () {
+      Future.delayed(const Duration(seconds: 2), () {
         _authState = AuthState.loggedOut;
         notifyListeners();
       });
