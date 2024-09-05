@@ -3,10 +3,8 @@ import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../../views/view.dart';
-import '../constant/themData.dart';
 
 class AgentSignIn extends StatefulWidget {
   static String routeName = "/agent_signIn";
@@ -183,7 +181,7 @@ class _AgentSignInState extends State<AgentSignIn> {
                                       email: _emailController.text,
                                       password: _passwordController.text)
                                   .whenComplete(() {
-                                if (state.authState == AuthState.LoggedIn) {
+                                if (state.authState == AuthState.loggedIn) {
                                   Navigator.pushReplacementNamed(
                                       context, MainPageRoute.routeName);
                                 } else {

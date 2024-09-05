@@ -184,10 +184,18 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                       ],
                     ),
                   ),
-                  if (state.authState == AuthState.Error)
-                    const Text(
-                      "Incorrect username or password",
-                      style: TextStyle(color: Colors.red),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  if (state.authState == AuthState.error)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Text(
+                          "Incorrect username or password",
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ],
                     ),
                   const SizedBox(
                     height: 20,

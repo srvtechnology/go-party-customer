@@ -118,7 +118,7 @@ class _BottomNavState extends State<BottomNav> {
                     color: color,
                   ),
                 ),
-                if (auth.authState == AuthState.LoggedIn &&
+                if (auth.authState == AuthState.loggedIn &&
                     auth.user != null &&
                     cart.data.isNotEmpty) ...[
                   if (!isActive)

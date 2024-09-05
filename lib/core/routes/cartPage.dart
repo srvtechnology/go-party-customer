@@ -69,7 +69,7 @@ class _CartPageState extends State<CartPage> {
           create: (_) => CartProvider(auth: context.read<AuthProvider>()),
           child: Consumer2<CartProvider, AuthProvider>(
             builder: (context, cart, auth, child) {
-              if (auth.authState != AuthState.LoggedIn) {
+              if (auth.authState != AuthState.loggedIn) {
                 return Scaffold(
                     appBar: CommonHeader.headerMain(context, isShowLogo: false,
                         onSearch: () {

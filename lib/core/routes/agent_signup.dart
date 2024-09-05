@@ -99,13 +99,13 @@ class _AgentSignUpState extends State<AgentSignUp> {
                       ),*/
                       const SizedBox(height: 16.0),
 
-                      // SizedBox(
-                      //   height: 32.0,
-                      //   child: state.authState == AuthState.Error
-                      //       ? const Text(
-                      //           "Something went wrong. Please try again later")
-                      //       : null,
-                      // ),
+                      /* SizedBox(
+                        height: 32.0,
+                        child: state.authState == AuthState.Error
+                            ? const Text(
+                                "Something went wrong. Please try again later")
+                            : null,
+                      ), */
                       TextFormField(
                         style: const TextStyle(color: Colors.grey),
                         controller: _emailController,
@@ -394,7 +394,6 @@ class _AgentSignUpState extends State<AgentSignUp> {
                         value: false,
                         onChanged: (value) {},
                       ),
-
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -695,7 +694,7 @@ class _AgentSignUpState extends State<AgentSignUp> {
                               ifscCode: _ifscCodeController.text,
                             )
                                 .whenComplete(() {
-                              if (state.authState == AuthState.LoggedIn) {
+                              if (state.authState == AuthState.loggedIn) {
                                 Navigator.pushReplacementNamed(
                                     context, MainPageRoute.routeName);
                               } else {
@@ -739,8 +738,17 @@ class _AgentSignUpState extends State<AgentSignUp> {
           default:
             return SizedBox(
               height: 32.0,
-              child: state.authState == AuthState.Error
-                  ? const Text("Something went wrong. Please try again later")
+              child: state.authState == AuthState.error
+                  ? /* const Text("Something went wrong. Please try again later") */
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Text(
+                          "Incorrect username or password",
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ],
+                    )
                   : null,
             );
         }

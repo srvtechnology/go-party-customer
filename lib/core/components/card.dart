@@ -559,34 +559,34 @@ class _OrderTileState extends State<OrderTile> {
                   ),
                 ),
 
-                // const SizedBox(
-                //   height: 5,
-                // ),
+                /*  const SizedBox(
+                  height: 5,
+                ),
 
-                // const SizedBox(
-                //   height: 5,
-                // ),
-                // Container(
-                //   padding: const EdgeInsets.all(5),
-                //   child: Text(
-                //     "₹ ${widget.order.totalPrice}",
-                //     style: TextStyle(
-                //         fontSize: 20,
-                //         color: Theme.of(context).primaryColor,
-                //         fontWeight: FontWeight.w500),
-                //   ),
-                // ),
-                // if (widget.review)
-                //   Center(
-                //     child: ElevatedButton(
-                //         style: ElevatedButton.styleFrom(
-                //             shape: RoundedRectangleBorder(
-                //                 borderRadius: BorderRadius.circular(20))),
-                //         onPressed: () {
-                //           _writeReview();
-                //         },
-                //         child: const Text("Write a Review")),
-                //   )
+                const SizedBox(
+                  height: 5,
+                ),
+                Container(
+                  padding: const EdgeInsets.all(5),
+                  child: Text(
+                    "₹ ${widget.order.totalPrice}",
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ),
+                if (widget.review)
+                  Center(
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20))),
+                        onPressed: () {
+                          _writeReview();
+                        },
+                        child: const Text("Write a Review")),
+                  ) */
               ],
             ),
           ],
@@ -981,7 +981,7 @@ class ProductTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Per ${service.priceBasis} unit",
+                        "Per ${service.priceBasis}",
                         style: TextStyle(
                           fontSize: 16.sp,
                           color: Colors.black,

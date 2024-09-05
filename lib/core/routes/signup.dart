@@ -161,9 +161,18 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                   ),*/
                   SizedBox(
                     height: 32.0,
-                    child: state.authState == AuthState.Error
-                        ? const Text(
-                            "Something went wrong. Please try again later")
+                    child: state.authState == AuthState.error
+                        ? /* const Text(
+                            "Something went wrong. Please try again later") */
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Text(
+                                "Incorrect username or password",
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ],
+                          )
                         : null,
                   ),
                   TextFormField(

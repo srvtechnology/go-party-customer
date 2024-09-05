@@ -31,7 +31,7 @@ Future<void> addtoCart(
 }
 
 Future<List<CartModel>> getCartItems(AuthProvider auth) async {
-  if (auth.authState != AuthState.LoggedIn &&
+  if (auth.authState != AuthState.loggedIn &&
       auth.user == null &&
       auth.token == null) {
     return Future.error("User not logged in");

@@ -186,7 +186,7 @@ class ServiceProvider with ChangeNotifier {
   Future<void> callSaveSearchStringAPi(
       AuthProvider? auth, String searchString) async {
     if (auth == null &&
-        auth!.authState != AuthState.LoggedIn &&
+        auth!.authState != AuthState.loggedIn &&
         auth.user == null &&
         searchString.isNotEmpty) {
       log("==> CallSearchSaveString Failed");
@@ -202,7 +202,7 @@ class ServiceProvider with ChangeNotifier {
 
   Future<void> getSavedSearchText(AuthProvider? auth) async {
     if (auth == null &&
-        auth!.authState != AuthState.LoggedIn &&
+        auth!.authState != AuthState.loggedIn &&
         auth.user == null) {
       log("==> GetSearchSaveString Failed");
       return;
@@ -216,7 +216,7 @@ class ServiceProvider with ChangeNotifier {
 
   Future<void> clearSavedSearchTextApi(AuthProvider? auth) async {
     if (auth == null &&
-        auth!.authState != AuthState.LoggedIn &&
+        auth!.authState != AuthState.loggedIn &&
         auth.user == null) {
       log("==> GetSearchSaveString Failed");
       return;

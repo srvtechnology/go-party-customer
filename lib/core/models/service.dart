@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../config.dart';
@@ -42,7 +43,7 @@ class ServiceModel {
   });
 
   factory ServiceModel.fromJson(Map json) {
-    /*   List<String> temp = [
+    List<String> temp = [
       "${APIConfig.baseUrl}/storage/app/public/service/${json["image"]}"
     ];
 
@@ -51,9 +52,9 @@ class ServiceModel {
       for (String i in json["additional_images"]) {
         temp.add("${APIConfig.baseUrl}/storage/app/public/service/$i");
       }
-    } */
+    }
 
-    List<String> images = [];
+    /* List<String> images = [];
 
     if (json["image"] != null && json["image"] is List<dynamic>) {
       for (String imageUrl in json["image"]) {
@@ -66,6 +67,10 @@ class ServiceModel {
       for (String imageUrl in json["additional_images"]) {
         images.add(imageUrl);
       }
+    } */
+
+    if (kDebugMode) {
+      print("===> images: $temp");
     }
 
     List<ReviewModel> tempReviews = [];
@@ -121,7 +126,7 @@ class ServiceModel {
       price: json["price"].toString(),
       priceBasis: json["price_basis"],
       discountedPrice: json["discount_price"].toString(),
-      images: images,
+      images: temp,
       minQnty: json["min_qty"],
       /* serviceCategoryDetails: json["service_category_details"], */
       package: json["package_category"] != null

@@ -82,7 +82,7 @@ class _OrdersState extends State<Orders> {
       create: (_) => OrderProvider(context.read<AuthProvider>()),
       child: Consumer2<OrderProvider, AuthProvider>(
           builder: (context, state, auth, child) {
-        if (auth.authState != AuthState.LoggedIn) {
+        if (auth.authState != AuthState.loggedIn) {
           return Scaffold(
               appBar: CommonHeader.headerMain(context, isShowLogo: false,
                   onSearch: () {

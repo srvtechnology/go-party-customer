@@ -977,7 +977,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    if (auth.authState == AuthState.LoggedIn) {
+                                    if (auth.authState == AuthState.loggedIn) {
                                       addToCartDialog(context, categories);
                                     } else {
                                       Navigator.push(
@@ -988,7 +988,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                     comeBack: true,
                                                   ))).then((value) {
                                         if (auth.authState ==
-                                            AuthState.LoggedIn) {
+                                            AuthState.loggedIn) {
                                           addToCartDialog(context, categories);
                                         } else {
                                           ScaffoldMessenger.of(context)
@@ -1020,7 +1020,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    if (auth.authState == AuthState.LoggedIn) {
+                                    if (auth.authState == AuthState.loggedIn) {
                                       addToCartDialog(context, categories,
                                           isFromBookNow:
                                               (serviceIds, data, totalPrice) {
@@ -1044,7 +1044,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                     comeBack: true,
                                                   ))).then((value) {
                                         if (auth.authState ==
-                                            AuthState.LoggedIn) {
+                                            AuthState.loggedIn) {
                                           addToCartDialog(context, categories,
                                               isFromBookNow: (serviceIds, data,
                                                   totalPrice) {

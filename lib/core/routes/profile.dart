@@ -1,4 +1,3 @@
-
 import '../constant/themData.dart';
 import 'package:customerapp/core/routes/addressPage.dart';
 import 'package:customerapp/core/routes/agent_sign_in.dart';
@@ -39,7 +38,7 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Consumer<AuthProvider>(builder: (context, state, child) {
-      if (state.authState != AuthState.LoggedIn || state.user == null) {
+      if (state.authState != AuthState.loggedIn || state.user == null) {
         return Scaffold(
           // appBar:
           //     CommonHeader.headerMain(context, isShowLogo: false, onSearch: () {

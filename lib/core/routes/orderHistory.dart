@@ -96,96 +96,96 @@ class OrderHistory extends StatelessWidget {
                         SizedBox(
                           height: 1.h,
                         ),
-                        // Row(
-                        //   children: [
-                        //     Text(
-                        //       "₹ ${order.totalPrice}",
-                        //       style: TextStyle(
-                        //           fontSize: 18.sp,
-                        //           color: Theme.of(context).primaryColor,
-                        //           fontWeight: FontWeight.w600),
-                        //     ),
-                        //     const SizedBox(
-                        //       width: 2,
-                        //     ),
-                        //     Text(
-                        //       "  ${order.service.priceBasis}",
-                        //       style: TextStyle(
-                        //         fontSize: 14.sp,
-                        //         color: Colors.grey,
-                        //         fontWeight: FontWeight.w600,
-                        //       ),
-                        //     ),
-                        //   ],
-                        // ),
-                        // SizedBox(
-                        //   height: 1.h,
-                        // ),
-                        // Row(
-                        //   children: [
-                        //     Text(
-                        //       "Discount Price: ",
-                        //       style: TextStyle(
-                        //         fontSize: 16.sp,
-                        //         fontWeight: FontWeight.w500,
-                        //       ),
-                        //     ),
-                        //     const Spacer(),
-                        //     Text(
-                        //       "₹ ${order.service.discountedPrice}",
-                        //       style: TextStyle(
-                        //         fontSize: 16.sp,
-                        //         color: primaryColor,
-                        //         fontWeight: FontWeight.w600,
-                        //       ),
-                        //     ),
-                        //   ],
-                        // ),
-                        // const DashedDivider(),
-                        // Row(
-                        //   children: [
-                        //     Text(
-                        //       "Price: ",
-                        //       style: TextStyle(
-                        //         fontSize: 16.sp,
-                        //         fontWeight: FontWeight.w500,
-                        //       ),
-                        //     ),
-                        //     const Spacer(),
-                        //     Text(
-                        //       "₹ ${order.service.price}",
-                        //       // price cut decoration
+                        /*  Row(
+                          children: [
+                            Text(
+                              "₹ ${order.totalPrice}",
+                              style: TextStyle(
+                                  fontSize: 18.sp,
+                                  color: Theme.of(context).primaryColor,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            const SizedBox(
+                              width: 2,
+                            ),
+                            Text(
+                              "  ${order.service.priceBasis}",
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 1.h,
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              "Discount Price: ",
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const Spacer(),
+                            Text(
+                              "₹ ${order.service.discountedPrice}",
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                color: primaryColor,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const DashedDivider(),
+                        Row(
+                          children: [
+                            Text(
+                              "Price: ",
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const Spacer(),
+                            Text(
+                              "₹ ${order.service.price}",
+                              // price cut decoration
 
-                        //       style: TextStyle(
-                        //         fontSize: 16.sp,
-                        //         decoration: TextDecoration.lineThrough,
-                        //         color: primaryColor,
-                        //         fontWeight: FontWeight.w600,
-                        //       ),
-                        //     ),
-                        //   ],
-                        // ),
-                        // const DashedDivider(),
-                        // Row(
-                        //   children: [
-                        //     Text(
-                        //       "Unit: ",
-                        //       style: TextStyle(
-                        //         fontSize: 16.sp,
-                        //         fontWeight: FontWeight.w500,
-                        //       ),
-                        //     ),
-                        //     const Spacer(),
-                        //     Text(
-                        //       order.service.priceBasis ?? "",
-                        //       style: TextStyle(
-                        //         fontSize: 16.sp,
-                        //         color: primaryColor,
-                        //         fontWeight: FontWeight.w600,
-                        //       ),
-                        //     ),
-                        //   ],
-                        // ),
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                decoration: TextDecoration.lineThrough,
+                                color: primaryColor,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const DashedDivider(),
+                        Row(
+                          children: [
+                            Text(
+                              "Unit: ",
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const Spacer(),
+                            Text(
+                              order.service.priceBasis ?? "",
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                color: primaryColor,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ), */
                       ],
                     )),
                   ],

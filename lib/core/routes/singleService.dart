@@ -1112,7 +1112,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                       GestureDetector(
                                         onTap: () {
                                           if (auth.authState ==
-                                              AuthState.LoggedIn) {
+                                              AuthState.loggedIn) {
                                             addToCartDialog(
                                                 context, categories);
                                           } else {
@@ -1124,7 +1124,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                                           comeBack: true,
                                                         ))).then((value) {
                                               if (auth.authState ==
-                                                  AuthState.LoggedIn) {
+                                                  AuthState.loggedIn) {
                                                 addToCartDialog(
                                                     context, categories);
                                               } else {
@@ -1159,7 +1159,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                       GestureDetector(
                                         onTap: () {
                                           if (auth.authState ==
-                                              AuthState.LoggedIn) {
+                                              AuthState.loggedIn) {
                                             addToCartDialog(context, categories,
                                                 isFromBookNow: (serviceIds,
                                                     data, totalPrice) {
@@ -1184,7 +1184,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                                           comeBack: true,
                                                         ))).then((value) {
                                               if (auth.authState ==
-                                                  AuthState.LoggedIn) {
+                                                  AuthState.loggedIn) {
                                                 addToCartDialog(
                                                     context, categories,
                                                     isFromBookNow: (serviceIds,
@@ -1439,7 +1439,7 @@ class WriteReview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final auth = context.read<AuthProvider>();
-    if (auth.authState != AuthState.LoggedIn) return const SizedBox();
+    if (auth.authState != AuthState.loggedIn) return const SizedBox();
     return ListenableProvider(
       create: (_) => OrderProvider(context.read<AuthProvider>()),
       child: Consumer<OrderProvider>(builder: (context, state, child) {

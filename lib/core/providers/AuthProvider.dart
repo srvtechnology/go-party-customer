@@ -7,10 +7,10 @@ import '../models/user.dart';
 import '../utils/logger.dart';
 import '../repo/auth.dart' as authRepo;
 
-enum AuthState { LoggedOut, Waiting, LoggedIn, Error }
+enum AuthState { loggedOut, waiting, loggedIn, error, noState }
 
 class AuthProvider with ChangeNotifier {
-  AuthState _authState = AuthState.Waiting;
+  AuthState _authState = AuthState.waiting;
   String? _token;
   bool _isLoading = false;
   String? status;
@@ -39,9 +39,9 @@ class AuthProvider with ChangeNotifier {
 
   void isLoggedIn() {
     if (_token == null) {
-      _authState = AuthState.LoggedOut;
+      _authState = AuthState.loggedOut;
     } else {
-      _authState = AuthState.LoggedIn;
+      _authState = AuthState.loggedIn;
     }
     notifyListeners();
   }
@@ -65,7 +65,7 @@ class AuthProvider with ChangeNotifier {
   }*/
 
   /*--- modified on 25-07-24 ----*/
-  Future<void> register(
+  /* Future<void> register(
       String name, String email, String phone, String password) async {
     try {
       final res = await authRepo.register(email, password, name, phone);
@@ -76,7 +76,7 @@ class AuthProvider with ChangeNotifier {
       }
     } catch (e) {
       CustomLogger.error(e);
-      _authState = AuthState.Error;
+      _authState = AuthState.error;
       notifyListeners();
       rethrow;
     }
@@ -113,8 +113,81 @@ class AuthProvider with ChangeNotifier {
           content: Text('Email or Phone already exists'),
         ),
       );
-      _authState = AuthState.Error;
+      _authState = AuthState.error;
       notifyListeners();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  } */
+
+  Future<void> register(
+      String name, String email, String phone, String password) async {
+    try {
+      final res = await authRepo.register(email, password, name, phone);
+      if (res != null && res.statusCode == 200) {
+        login(email, password);
+      } else {
+        throw Exception('Registration failed.');
+      }
+    } catch (e) {
+      CustomLogger.error(e);
+      _authState = AuthState.error;
+      notifyListeners();
+
+      // Show error message and reset authState
+      Future.delayed(const Duration(seconds: 5), () {
+        _authState = AuthState.loggedOut;
+        notifyListeners();
+      });
+
+      rethrow;
+    }
+  }
+
+  Future<void> registerAgent(
+    BuildContext context, {
+    required String name,
+    required String email,
+    required String phone,
+    required String password,
+    required TextEditingController otpcontroller,
+  }) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+      log("Registering Agent");
+      final res = await authRepo.registerAgent(email, password, name, phone);
+      log(res.toString(), name: "Agent Registered");
+      if (res!.statusCode == 200) {
+        log(res.data.toString(), name: "Agent Registered OTP");
+        agentRegistrationStep = 2;
+        notifyListeners();
+        /*-- commented on 24-07-24 because OTP is set by default ---*/
+        /*otpcontroller.text = res.data['opt_code'].toString();*/
+        return;
+      }
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(res.data['error'] ?? "Invalid Credentials"),
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Email or Phone already exists'),
+        ),
+      );
+      _authState = AuthState.error;
+      notifyListeners();
+
+      // Reset authState after showing the error message
+      Future.delayed(const Duration(seconds: 5), () {
+        _authState = AuthState.loggedOut;
+        notifyListeners();
+      });
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -144,7 +217,7 @@ class AuthProvider with ChangeNotifier {
     pref = await SharedPreferences.getInstance();
     String? tempToken = await getTokenFromStorage();
     if (tempToken == null) {
-      _authState = AuthState.LoggedOut;
+      _authState = AuthState.loggedOut;
     } else {
       try {
         _token = tempToken;
@@ -153,9 +226,9 @@ class AuthProvider with ChangeNotifier {
         }
         final userType = pref.getString("userType");
         await getUser(userType: userType);
-        _authState = AuthState.LoggedIn;
+        _authState = AuthState.loggedIn;
       } catch (e) {
-        _authState = AuthState.LoggedOut;
+        _authState = AuthState.loggedOut;
       }
     }
     stopLoading();
@@ -233,22 +306,100 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> login(String email, String password) async {
-    _authState = AuthState.Waiting;
+    _authState = AuthState.waiting;
     notifyListeners();
     try {
       String tempToken = await authRepo.login(email, password);
       saveTokenToStorage(tempToken);
       saveEmailPasswordToStorage(email, password);
       _token = tempToken;
-      _authState = AuthState.LoggedIn;
+      _authState = AuthState.loggedIn;
       final userType = pref.getString("userType");
       await getUser(userType: userType);
     } catch (e) {
-      _authState = AuthState.Error;
+      _authState = AuthState.error;
+      notifyListeners();
+
+      // Show error message
+      CustomLogger.error(e);
+
+      // Reset the authState after handling the error
+      Future.delayed(const Duration(seconds: 5), () {
+        _authState = AuthState.loggedOut;
+        notifyListeners();
+      });
       rethrow;
     }
     notifyListeners();
   }
+
+  Future loginAgent(
+    scaffoldKey, {
+    required String email,
+    required String password,
+  }) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+      final res = await authRepo.agentLogin(
+        email: email,
+        password: password,
+      );
+      if (res?.statusCode == 200) {
+        final tempToken = res!.data['token'];
+        if (tempToken == null) {
+          ScaffoldMessenger.of(scaffoldKey.currentContext!).showSnackBar(
+            SnackBar(
+              content: Text(res.data['error'] ?? "Invalid Credentials"),
+            ),
+          );
+
+          // Reset auth state after showing the error message
+          _authState = AuthState.loggedOut;
+          notifyListeners();
+          return;
+        }
+        saveTokenToStorage(tempToken);
+        saveEmailPasswordToStorage(email, password);
+        saveUserType("agent");
+        _token = tempToken;
+        _authState = AuthState.loggedIn;
+        final userType = pref.getString("userType");
+        await getUser(userType: userType);
+      }
+    } catch (e) {
+      CustomLogger.error(e);
+      _authState = AuthState.error;
+      notifyListeners();
+
+      // Reset the auth state after the error is handled
+      Future.delayed(const Duration(seconds: 5), () {
+        _authState = AuthState.loggedOut;
+        notifyListeners();
+      });
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /*  Future<void> login(String email, String password) async {
+    _authState = AuthState.waiting;
+    notifyListeners();
+    try {
+      String tempToken = await authRepo.login(email, password);
+      saveTokenToStorage(tempToken);
+      saveEmailPasswordToStorage(email, password);
+      _token = tempToken;
+      _authState = AuthState.loggedIn;
+      final userType = pref.getString("userType");
+      await getUser(userType: userType);
+    } catch (e) {
+      _authState = AuthState.error;
+      rethrow;
+    }
+    notifyListeners();
+  } */
 
   void deleteAllFromStorage() {
     pref.remove("token");
@@ -258,7 +409,7 @@ class AuthProvider with ChangeNotifier {
 
   void logout() {
     _token = null;
-    _authState = AuthState.LoggedOut;
+    _authState = AuthState.loggedOut;
     _user = null;
     CustomLogger.debug("Changed");
     notifyListeners();
@@ -274,7 +425,7 @@ class AuthProvider with ChangeNotifier {
       final data = await authRepo.de_Activate(_token!, _user!.id);
       if (data["status"] == true) {
         _token = null;
-        _authState = AuthState.LoggedOut;
+        _authState = AuthState.loggedOut;
         _user = null;
         CustomLogger.debug("Changed");
         notifyListeners();
@@ -313,7 +464,7 @@ class AuthProvider with ChangeNotifier {
       }
     } catch (e) {
       CustomLogger.error(e);
-      _authState = AuthState.Error;
+      _authState = AuthState.error;
       agentRegistrationStep = 2;
       notifyListeners();
     } finally {
@@ -350,22 +501,72 @@ class AuthProvider with ChangeNotifier {
         saveUserType("agent");
         _token = tempToken;
         agentRegistrationStep = 1;
-        _authState = AuthState.LoggedIn;
+        _authState = AuthState.loggedIn;
         final userType = pref.getString("userType");
         await getUser(userType: userType);
+      } else {
+        throw Exception('Bank registration failed.');
       }
     } catch (e) {
       CustomLogger.error(e);
-
-      _authState = AuthState.Error;
+      _authState = AuthState.error;
       notifyListeners();
+
+      // Reset authState after showing the error message
+      Future.delayed(const Duration(seconds: 5), () {
+        _authState = AuthState.loggedOut;
+        notifyListeners();
+      });
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
-  Future loginAgent(
+  /* Future registerAgentBankDetails(
+    BuildContext context, {
+    required String email,
+    required String bankName,
+    required String accountNumber,
+    required String accountHolderName,
+    required String ifscCode,
+    required String password,
+  }) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+      final res = await authRepo.submitAgentBankData(
+        email: email,
+        bankName: bankName,
+        accountNumber: accountNumber,
+        accountHolderName: accountHolderName,
+        ifscCode: ifscCode,
+      );
+
+      if (res?.statusCode == 200) {
+        log(res!.data.toString(), name: "Agent Registered 3");
+        final tempToken = res.data['token'];
+        saveTokenToStorage(tempToken);
+        saveEmailPasswordToStorage(email, password);
+        saveUserType("agent");
+        _token = tempToken;
+        agentRegistrationStep = 1;
+        _authState = AuthState.loggedIn;
+        final userType = pref.getString("userType");
+        await getUser(userType: userType);
+      }
+    } catch (e) {
+      CustomLogger.error(e);
+
+      _authState = AuthState.error;
+      notifyListeners();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  } */
+
+  /* Future loginAgent(
     scaffoldKey, {
     required String email,
     required String password,
@@ -391,17 +592,17 @@ class AuthProvider with ChangeNotifier {
         saveEmailPasswordToStorage(email, password);
         saveUserType("agent");
         _token = tempToken;
-        _authState = AuthState.LoggedIn;
+        _authState = AuthState.loggedIn;
         final userType = pref.getString("userType");
         await getUser(userType: userType);
       }
     } catch (e) {
       CustomLogger.error(e);
-      _authState = AuthState.Error;
+      _authState = AuthState.error;
       notifyListeners();
     } finally {
       _isLoading = false;
       notifyListeners();
     }
-  }
+  } */
 }
