@@ -30,6 +30,7 @@ class OrderModel {
   String eventCity;
   String eventAddress;
   String orderId;
+  String? orderStatus;
   String? paidStatus;
 
   OrderModel({
@@ -61,6 +62,7 @@ class OrderModel {
     required this.eventCity,
     required this.eventAddress,
     required this.orderId,
+    required this.orderStatus,
     this.paidStatus,
   });
 
@@ -94,6 +96,7 @@ class OrderModel {
       eventCity: json['event_city'].toString(),
       eventAddress: json['event_address'].toString(),
       orderId: json['order_id'].toString(),
+      orderStatus: json['order_status'].toString(),
       paidStatus: json['paid_status'].toString(),
     );
   }

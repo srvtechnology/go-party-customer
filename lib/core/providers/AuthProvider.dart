@@ -317,6 +317,7 @@ class AuthProvider with ChangeNotifier {
       _authState = AuthState.loggedIn;
       final userType = pref.getString("userType");
       await getUser(userType: userType);
+      log("token: $_token");
     } catch (e) {
       _authState = AuthState.error;
       notifyListeners();

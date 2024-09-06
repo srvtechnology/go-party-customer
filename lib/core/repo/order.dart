@@ -13,6 +13,12 @@ import 'package:flutter/foundation.dart';
 import '../models/orders.dart';
 import '../utils/dio.dart';
 
+/* Order Status:
+1 -> pending
+2 -> cancel/reject
+3 -> delivered
+ */
+
 Future<OrderRes?> placeOrder(AuthProvider auth, PaymentPostData payload) async {
   try {
     if (kDebugMode) {

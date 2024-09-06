@@ -139,7 +139,8 @@ class _OrderSummaryState extends State<OrderSummary> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    widget.order.eventDate,
+                                    DateFormat('dd.MM.yyyy').format(
+                                        DateTime.parse(widget.order.eventDate)),
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.bold,
@@ -217,11 +218,11 @@ class _OrderSummaryState extends State<OrderSummary> {
                               fontSize: 18.sp, fontWeight: FontWeight.bold),
                         ),
                         const Divider(),
-                        Text('Delivery ',
+                        /* Text('Delivery ',
                             style: TextStyle(
                                 fontSize: 16.sp, fontWeight: FontWeight.w400)),
                         const Divider(),
-                        Text(
+                       Text(
                           'Delivered',
                           style: TextStyle(
                             fontSize: 16.sp,
@@ -234,8 +235,8 @@ class _OrderSummaryState extends State<OrderSummary> {
                           'Delivery Estimate',
                           style: TextStyle(
                               fontSize: 16.sp, fontWeight: FontWeight.w400),
-                        ),
-                        Text(
+                        ), 
+                         Text(
                           DateFormat('dd.MM.yyyy').format(
                               DateTime.parse(widget.order.eventEndDate)),
                           style: TextStyle(
@@ -243,25 +244,72 @@ class _OrderSummaryState extends State<OrderSummary> {
                             fontWeight: FontWeight.w600,
                             color: Colors.green,
                           ),
+                        ), */
+
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              if (widget.order.orderStatus == "2")
+                                TextSpan(
+                                  text: 'Order Cancelled',
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.red,
+                                  ),
+                                )
+                              else if (widget.order.orderStatus == "1")
+                                TextSpan(
+                                  text: 'Order Pending',
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
+                                )
+                              else ...[
+                                TextSpan(
+                                  text:
+                                      'Order Received on ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventDate))}\n',
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: Theme.of(context)
+                                        .primaryColor, // Adjust color as needed
+                                  ),
+                                ),
+                                TextSpan(
+                                  text:
+                                      'Order Delivered on ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventEndDate))}',
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors
+                                        .green, // Green for "Order Delivered on"
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
                         ),
                         SizedBox(height: 2.h),
                         OrderTile(
                           order: widget.order,
                           isShowPrice: true,
                         ),
-                        // const Divider(),
-                        // Row(
-                        //   children: [
-                        //     Text(
-                        //       'Tracking Shipment',
-                        //       style: TextStyle(
-                        //           fontSize: 16.sp, fontWeight: FontWeight.w400),
-                        //     ),
-                        //     const Spacer(),
-                        //     const Icon(Icons.arrow_forward_ios_rounded, size: 16),
-                        //   ],
-                        // ),
-                        // const Divider(),
+                        /*  const Divider(),
+                        Row(
+                          children: [
+                            Text(
+                              'Tracking Shipment',
+                              style: TextStyle(
+                                  fontSize: 16.sp, fontWeight: FontWeight.w400),
+                            ),
+                            const Spacer(),
+                            const Icon(Icons.arrow_forward_ios_rounded, size: 16),
+                          ],
+                        ),
+                        const Divider(), */
                         SizedBox(height: 2.h),
                       ],
                     ),

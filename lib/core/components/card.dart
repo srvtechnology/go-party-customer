@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import '../constant/themData.dart';
 import 'package:customerapp/core/components/cutom_card.dart';
 import 'package:customerapp/core/components/divider.dart';
@@ -546,6 +547,48 @@ class _OrderTileState extends State<OrderTile> {
                               ],
                             )
                           : Text(
+                              (() {
+                                if (widget.isDelivered) {
+                                  if (kDebugMode) {
+                                    print("orderId : ${widget.order.id}");
+                                  }
+                                  if (widget.order.orderStatus == "3") {
+                                    return 'Delivered on ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventEndDate))}';
+                                  } else if (widget.order.orderStatus == "2") {
+                                    return 'Cancelled';
+                                  } else if (widget.order.orderStatus == "1") {
+                                    return 'Pending since ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventEndDate))}';
+                                  } else {
+                                    return ''; // Fallback for unexpected statuses
+                                  }
+                                } else {
+                                  return 'Arriving ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventDate))}';
+                                }
+                              })()
+                                  .toUpperCase(),
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                                color: (() {
+                                  if (widget.isDelivered) {
+                                    if (widget.order.orderStatus == "2") {
+                                      return Colors.red; // Red for cancelled
+                                    } else if (widget.order.orderStatus ==
+                                        "1") {
+                                      return Colors.black; // Black for pending
+                                    } else {
+                                      return Theme.of(context)
+                                          .primaryColorDark; // Default color for other delivered statuses
+                                    }
+                                  } else {
+                                    return Theme.of(context)
+                                        .primaryColorDark; // Default color for arriving status
+                                  }
+                                })(),
+                              ),
+                            ),
+
+                      /* Text(
                               (widget.isDelivered
                                       ? 'Delivered ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventEndDate))}'
                                       : 'Arriving ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventDate))}')
@@ -554,7 +597,7 @@ class _OrderTileState extends State<OrderTile> {
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w600,
                                   color: Theme.of(context).primaryColorDark),
-                            ),
+                            ), */
                     ],
                   ),
                 ),

@@ -256,7 +256,7 @@ class OrderHistory extends StatelessWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
+                      /* Container(
                         height: 20,
                         width: 20,
                         margin: EdgeInsets.only(
@@ -269,6 +269,22 @@ class OrderHistory extends StatelessWidget {
                           color: Colors.green,
                           size: 15,
                         ),
+                      ), */
+                      Container(
+                        height: 20,
+                        width: 20,
+                        margin: EdgeInsets.only(
+                          right: 4.w,
+                        ),
+                        alignment: Alignment.center,
+                        color: order.orderStatus == "2"
+                            ? Colors.red
+                            : Colors.greenAccent,
+                        child: const Icon(
+                          Icons.check,
+                          color: Colors.white,
+                          size: 15,
+                        ),
                       ),
                       Expanded(
                         child: Column(
@@ -276,12 +292,34 @@ class OrderHistory extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
+                              (() {
+                                if (order.orderStatus == "3") {
+                                  return 'Delivered on ${DateFormat('dd.MM.yyyy').format(DateTime.parse(order.eventDate))}';
+                                } else if (order.orderStatus == "2") {
+                                  return 'Cancelled';
+                                } else {
+                                  return 'Pending since ${DateFormat('dd.MM.yyyy').format(DateTime.parse(order.eventEndDate))}';
+                                }
+                              })(),
+                              style: TextStyle(
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w700,
+                                color: order.orderStatus == "2"
+                                    ? Colors.red // Red for cancelled
+                                    : order.orderStatus == "1"
+                                        ? Colors.black // Black for pending
+                                        : Theme.of(context)
+                                            .primaryColorDark, // Default color for other statuses
+                              ),
+                            ),
+
+                            /*  Text(
                               "Delivered on ${DateFormat('dd.MM.yyyy').format(DateTime.parse(order.eventDate))} ",
                               style: TextStyle(
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w700,
                               ),
-                            ),
+                            ), */
                           ],
                         ),
                       ),
@@ -291,7 +329,15 @@ class OrderHistory extends StatelessWidget {
                     height: 2.h,
                   ),
                   Text(
-                    'Rate your delivery experience',
+                    /* 'Rate your delivery experience' */
+                    (() {
+                      if (order.orderStatus == "2") {
+                        return 'Rate your experience.';
+                      } else {
+                        return 'Rate your delivery experience';
+                      }
+                      /*  return '';  */ // Default non-null value if no condition matches
+                    })(),
                     style: TextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w500,

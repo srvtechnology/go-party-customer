@@ -264,19 +264,19 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                           order: widget.order,
                           isShowPrice: true,
                         ),
-                        // const Divider(),
-                        // Row(
-                        //   children: [
-                        //     Text(
-                        //       'Tracking Shipment',
-                        //       style: TextStyle(
-                        //           fontSize: 16.sp, fontWeight: FontWeight.w400),
-                        //     ),
-                        //     const Spacer(),
-                        //     const Icon(Icons.arrow_forward_ios_rounded, size: 16),
-                        //   ],
-                        // ),
-                        // const Divider(),
+                        /* const Divider(),
+                        Row(
+                          children: [
+                            Text(
+                              'Tracking Shipment',
+                              style: TextStyle(
+                                  fontSize: 16.sp, fontWeight: FontWeight.w400),
+                            ),
+                            const Spacer(),
+                            const Icon(Icons.arrow_forward_ios_rounded, size: 16),
+                          ],
+                        ),
+                        const Divider(), */
                         SizedBox(height: 2.h),
                       ],
                     ),
@@ -461,29 +461,29 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                             ),
                           ],
                         ),
-                        // if (order.paidStatus == "partial")
-                        //   Row(
-                        //     children: [
-                        //       Text(
-                        //         'Paid Amount ',
-                        //         style: TextStyle(
-                        //           fontSize: 16.sp,
-                        //           fontWeight: FontWeight.w600,
-                        //           color: Colors.grey,
-                        //         ),
-                        //       ),
-                        //       const Spacer(),
+                        /*  if (order.paidStatus == "partial")
+                          Row(
+                            children: [
+                              Text(
+                                'Paid Amount ',
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const Spacer(),
 
-                        //       // 25% of total price
-                        //       Text(
-                        //         "₹ ${int.parse(order.totalPrice) * 0.25}",
-                        //         style: TextStyle(
-                        //           fontSize: 16.sp,
-                        //           fontWeight: FontWeight.w500,
-                        //         ),
-                        //       ),
-                        //     ],
-                        //   ),
+                              // 25% of total price
+                              Text(
+                                "₹ ${int.parse(order.totalPrice) * 0.25}",
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ), */
                         widget.order.paidStatus == "partial"
                             ?
                             // remaining amount
