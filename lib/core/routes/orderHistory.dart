@@ -277,9 +277,10 @@ class OrderHistory extends StatelessWidget {
                           right: 4.w,
                         ),
                         alignment: Alignment.center,
-                        color: order.orderStatus == "2"
-                            ? Colors.red
-                            : Colors.greenAccent,
+                        color:
+                            order.orderStatus == "1" || order.orderStatus == "2"
+                                ? Colors.red
+                                : Colors.greenAccent,
                         child: const Icon(
                           Icons.check,
                           color: Colors.white,
@@ -306,10 +307,9 @@ class OrderHistory extends StatelessWidget {
                                 fontWeight: FontWeight.w700,
                                 color: order.orderStatus == "2"
                                     ? Colors.red // Red for cancelled
-                                    : order.orderStatus == "1"
-                                        ? Colors.black // Black for pending
-                                        : Theme.of(context)
-                                            .primaryColorDark, // Default color for other statuses
+                                    : order.orderStatus == "3"
+                                        ? Colors.green // Green for delivered
+                                        : null, // No color specified for pending, will use default
                               ),
                             ),
 
@@ -331,7 +331,8 @@ class OrderHistory extends StatelessWidget {
                   Text(
                     /* 'Rate your delivery experience' */
                     (() {
-                      if (order.orderStatus == "2") {
+                      if (order.orderStatus == "1" ||
+                          order.orderStatus == "2") {
                         return 'Rate your experience.';
                       } else {
                         return 'Rate your delivery experience';

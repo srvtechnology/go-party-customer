@@ -246,51 +246,74 @@ class _OrderSummaryState extends State<OrderSummary> {
                           ),
                         ), */
 
-                        RichText(
-                          text: TextSpan(
-                            children: [
-                              if (widget.order.orderStatus == "2")
-                                TextSpan(
-                                  text: 'Order Cancelled',
-                                  style: TextStyle(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.red,
-                                  ),
-                                )
-                              else if (widget.order.orderStatus == "1")
-                                TextSpan(
-                                  text: 'Order Pending',
-                                  style: TextStyle(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black,
-                                  ),
-                                )
-                              else ...[
-                                TextSpan(
-                                  text:
-                                      'Order Received on ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventDate))}\n',
-                                  style: TextStyle(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: Theme.of(context)
-                                        .primaryColor, // Adjust color as needed
-                                  ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (widget.order.orderStatus == "2")
+                              Text(
+                                'Order Cancelled',
+                                style: TextStyle(
+                                  fontSize: 17.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.red,
                                 ),
-                                TextSpan(
-                                  text:
-                                      'Order Delivered on ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventEndDate))}',
-                                  style: TextStyle(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors
-                                        .green, // Green for "Order Delivered on"
+                              )
+                            else if (widget.order.orderStatus == "1")
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Order Pending',
+                                    style: TextStyle(
+                                      fontSize: 18.sp,
+                                      fontWeight: FontWeight.w600,
+                                      // Black for pending
+                                    ),
                                   ),
+                                  const SizedBox(
+                                      height:
+                                          1), // Space between text and divider
+                                  const Divider(),
+                                  const SizedBox(
+                                      height:
+                                          1), // Space between divider and the following text
+                                  Text(
+                                    'Event Start Date: ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventDate))}',
+                                    style: TextStyle(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Event End Date: ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventEndDate))}',
+                                    style: TextStyle(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            else ...[
+                              Text(
+                                'Order Received on ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventDate))}\n',
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Theme.of(context)
+                                      .primaryColor, // Adjust color as needed
                                 ),
-                              ],
+                              ),
+                              Text(
+                                'Order Delivered on ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventEndDate))}',
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors
+                                      .green, // Green for "Order Delivered on"
+                                ),
+                              ),
                             ],
-                          ),
+                          ],
                         ),
                         SizedBox(height: 2.h),
                         OrderTile(

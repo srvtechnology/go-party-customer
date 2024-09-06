@@ -573,13 +573,14 @@ class _OrderTileState extends State<OrderTile> {
                                   if (widget.isDelivered) {
                                     if (widget.order.orderStatus == "2") {
                                       return Colors.red; // Red for cancelled
-                                    } else if (widget.order.orderStatus ==
+                                    } /* else if (widget.order.orderStatus ==
                                         "1") {
                                       return Colors.black; // Black for pending
-                                    } else {
+                                    } 
+                                    else {
                                       return Theme.of(context)
                                           .primaryColorDark; // Default color for other delivered statuses
-                                    }
+                                    }*/
                                   } else {
                                     return Theme.of(context)
                                         .primaryColorDark; // Default color for arriving status
