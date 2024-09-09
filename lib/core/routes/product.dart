@@ -261,110 +261,6 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
     );
   }
 
-  /* Widget _searchBar({
-    required GlobalKey<State<StatefulWidget>> key,
-    AuthProvider? auth,
-    List<SaveSearchTextModel>? savedSearchList,
-    required TextEditingController controller,
-    required FilterProvider filterState,
-    required ServiceProvider serviceState,
-  }) {
-    return Container(
-      height: 10.49.h,
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-      child: TextFormField(
-        key: key, // Use the passed key instead of _searchBarKey
-        controller: controller,
-        onTap: () {
-          if (kDebugMode) {
-            print('onTap - savedSearchList: $savedSearchList');
-          }
-          if (savedSearchList != null && savedSearchList.isNotEmpty) {
-            _showOverlay(context, savedSearchList, auth, serviceState);
-          }
-        },
-        onChanged: (value) {
-          if (value.isEmpty) {
-            if (savedSearchList != null && savedSearchList.isNotEmpty) {
-              _showOverlay(context, savedSearchList, auth, serviceState);
-            }
-          } else {
-            _removeOverlay();
-          }
-        },
-        onFieldSubmitted: (value) {
-          FocusScope.of(context).unfocus();
-          if (controller.text.isNotEmpty) {
-            serviceState.getFilteredServices(auth, filterState,
-                searchString: controller.text);
-          } else {
-            Fluttertoast.showToast(
-              msg: "Search field cannot be empty",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              backgroundColor: Colors.red,
-              textColor: Colors.white,
-              fontSize: 16.0,
-            );
-          }
-        },
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.only(top: 10, left: 20),
-          hintText: "Search ...",
-          filled: true,
-          fillColor: Colors.white,
-          prefixIcon: IconButton(
-            onPressed: () {
-              if (controller.text.isNotEmpty) {
-                serviceState.getFilteredServices(auth, filterState,
-                    searchString: controller.text);
-              } else {
-                Fluttertoast.showToast(
-                  msg: "Search field cannot be empty",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                  fontSize: 16.0,
-                );
-              }
-              // Remove the overlay when search is initiated
-              _removeOverlay();
-            },
-            icon: const Icon(Icons.search),
-            color: Colors.black,
-          ),
-          suffixIcon: Visibility(
-            visible: controller.text.isNotEmpty ? true : false,
-            child: IconButton(
-              onPressed: () {
-                controller.clear();
-                FocusScope.of(context).unfocus();
-                // Remove the overlay when clearing the search field
-                _removeOverlay();
-              },
-              icon: const Icon(Icons.clear),
-              color: Colors.black,
-            ),
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-            borderSide: const BorderSide(color: Colors.white),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-            borderSide: const BorderSide(color: Colors.white),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-            borderSide: const BorderSide(color: Colors.white),
-          ),
-        ),
-      ),
-    );
-  }
- */
-
   Widget _searchBar({
     required GlobalKey<State<StatefulWidget>> key,
     AuthProvider? auth,
@@ -474,6 +370,144 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
     AuthProvider? auth,
     ServiceProvider serviceState,
   ) {
+    final RenderBox renderBox =
+        _searchBarKey.currentContext!.findRenderObject() as RenderBox;
+    final size = renderBox.size;
+    final offset = renderBox.localToGlobal(Offset.zero);
+
+    _overlayEntry = OverlayEntry(
+      builder: (context) => GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          _removeOverlay();
+        },
+        child: Stack(
+          children: [
+            Positioned(
+              left: offset.dx,
+              top: offset.dy + size.height + 10.0,
+              width: size.width,
+              child: Material(
+                elevation: 4.0,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    color: Colors.white,
+                    child: savedSearchList != null && savedSearchList.isNotEmpty
+                        ? Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      await serviceState
+                                          .clearSavedSearchTextApi(auth);
+
+                                      _removeOverlay();
+                                    },
+                                    child: const Text(
+                                      'Clear',
+                                      style: TextStyle(
+                                        color: Colors.blue,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              ...savedSearchList.expand((item) {
+                                final dataItems = item.data;
+                                return dataItems.expand((datum) {
+                                  return [
+                                    ListTile(
+                                      title: Text(datum.value ?? ''),
+                                      onTap: () {
+                                        _searchController.text =
+                                            datum.value ?? '';
+                                        _removeOverlay();
+                                      },
+                                    ),
+                                    const Divider(),
+                                  ];
+                                }).toList();
+                              }).toList()
+                                ..removeLast(),
+                            ],
+                          )
+                        : Container(),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    Overlay.of(context).insert(_overlayEntry!);
+  }
+
+  void _removeOverlay() {
+    if (_overlayEntry != null) {
+      _overlayEntry?.remove();
+      _overlayEntry = null;
+    }
+  }
+}
+
+class PackageListPageRoute extends StatefulWidget {
+  final List<PackageModel> packages;
+  static const routeName = "/packagelist";
+
+  const PackageListPageRoute({Key? key, required this.packages})
+      : super(key: key);
+
+  @override
+  State<PackageListPageRoute> createState() => _PackageListPageRouteState();
+}
+
+class _PackageListPageRouteState extends State<PackageListPageRoute> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: CommonHeader.header(context, onBack: () {
+        Navigator.pop(context);
+      }, onSearch: () {
+        if (kDebugMode) {
+          print("search");
+        }
+        Navigator.pushNamed(context, ProductPageRoute.routeName);
+      }),
+      body: ListView.builder(
+        itemCount: widget.packages.length,
+        itemBuilder: (context, index) {
+          return PackageTile(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SinglePackageRoute(
+                              package: widget.packages[index],
+                            )));
+              },
+              package: widget.packages[index]);
+        },
+      ),
+    );
+  }
+}
+
+
+/* --- commented on 10-09-24 ---- */
+  /* void _showOverlay(
+    BuildContext context,
+    List<SaveSearchTextModel>? savedSearchList,
+    AuthProvider? auth,
+    ServiceProvider serviceState,
+  ) {
     // Get the RenderBox of the TextFormField
     final RenderBox renderBox =
         _searchBarKey.currentContext!.findRenderObject() as RenderBox;
@@ -561,20 +595,117 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
     );
 
     Overlay.of(context).insert(_overlayEntry!);
-  }
+  } */
 
-  void _removeOverlay() {
-    if (_overlayEntry != null) {
-      _overlayEntry?.remove();
-      _overlayEntry = null;
-    }
-  }
 
-  /*  void _removeOverlay() {
+/* Widget _searchBar({
+    required GlobalKey<State<StatefulWidget>> key,
+    AuthProvider? auth,
+    List<SaveSearchTextModel>? savedSearchList,
+    required TextEditingController controller,
+    required FilterProvider filterState,
+    required ServiceProvider serviceState,
+  }) {
+    return Container(
+      height: 10.49.h,
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+      child: TextFormField(
+        key: key, // Use the passed key instead of _searchBarKey
+        controller: controller,
+        onTap: () {
+          if (kDebugMode) {
+            print('onTap - savedSearchList: $savedSearchList');
+          }
+          if (savedSearchList != null && savedSearchList.isNotEmpty) {
+            _showOverlay(context, savedSearchList, auth, serviceState);
+          }
+        },
+        onChanged: (value) {
+          if (value.isEmpty) {
+            if (savedSearchList != null && savedSearchList.isNotEmpty) {
+              _showOverlay(context, savedSearchList, auth, serviceState);
+            }
+          } else {
+            _removeOverlay();
+          }
+        },
+        onFieldSubmitted: (value) {
+          FocusScope.of(context).unfocus();
+          if (controller.text.isNotEmpty) {
+            serviceState.getFilteredServices(auth, filterState,
+                searchString: controller.text);
+          } else {
+            Fluttertoast.showToast(
+              msg: "Search field cannot be empty",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0,
+            );
+          }
+        },
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.only(top: 10, left: 20),
+          hintText: "Search ...",
+          filled: true,
+          fillColor: Colors.white,
+          prefixIcon: IconButton(
+            onPressed: () {
+              if (controller.text.isNotEmpty) {
+                serviceState.getFilteredServices(auth, filterState,
+                    searchString: controller.text);
+              } else {
+                Fluttertoast.showToast(
+                  msg: "Search field cannot be empty",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  backgroundColor: Colors.red,
+                  textColor: Colors.white,
+                  fontSize: 16.0,
+                );
+              }
+              // Remove the overlay when search is initiated
+              _removeOverlay();
+            },
+            icon: const Icon(Icons.search),
+            color: Colors.black,
+          ),
+          suffixIcon: Visibility(
+            visible: controller.text.isNotEmpty ? true : false,
+            child: IconButton(
+              onPressed: () {
+                controller.clear();
+                FocusScope.of(context).unfocus();
+                // Remove the overlay when clearing the search field
+                _removeOverlay();
+              },
+              icon: const Icon(Icons.clear),
+              color: Colors.black,
+            ),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5),
+            borderSide: const BorderSide(color: Colors.white),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5),
+            borderSide: const BorderSide(color: Colors.white),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5),
+            borderSide: const BorderSide(color: Colors.white),
+          ),
+        ),
+      ),
+    );
+  }
+ */
+
+/*  void _removeOverlay() {
     _overlayEntry?.remove();
     _overlayEntry = null;
   } */
-}
 
 /* Widget _searchBar({
     AuthProvider? auth,
@@ -701,44 +832,4 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
   }
   */
 
-class PackageListPageRoute extends StatefulWidget {
-  final List<PackageModel> packages;
-  static const routeName = "/packagelist";
 
-  const PackageListPageRoute({Key? key, required this.packages})
-      : super(key: key);
-
-  @override
-  State<PackageListPageRoute> createState() => _PackageListPageRouteState();
-}
-
-class _PackageListPageRouteState extends State<PackageListPageRoute> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CommonHeader.header(context, onBack: () {
-        Navigator.pop(context);
-      }, onSearch: () {
-        if (kDebugMode) {
-          print("search");
-        }
-        Navigator.pushNamed(context, ProductPageRoute.routeName);
-      }),
-      body: ListView.builder(
-        itemCount: widget.packages.length,
-        itemBuilder: (context, index) {
-          return PackageTile(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SinglePackageRoute(
-                              package: widget.packages[index],
-                            )));
-              },
-              package: widget.packages[index]);
-        },
-      ),
-    );
-  }
-}

@@ -208,6 +208,7 @@ class ServiceProvider with ChangeNotifier {
       return;
     } else {
       savedSearchData = await getSavedSearchTextApi(auth);
+      notifyListeners();
       /* await getSavedSearchText(auth); 
       notifyListeners();*/
       log("savedSearchData : $savedSearchData");
@@ -222,7 +223,7 @@ class ServiceProvider with ChangeNotifier {
       return;
     } else {
       await clearSavedSearchApi(auth);
-      /*  await getSavedSearchText(auth); */
+      await getSavedSearchText(auth);
       notifyListeners();
     }
   }

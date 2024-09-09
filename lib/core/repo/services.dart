@@ -197,7 +197,7 @@ Future<void> clearSavedSearchApi(
     Response response = await customDioClient.client.get(
         "${APIConfig.baseUrl}/api/delete-search",
         options: Options(headers: {"Authorization": "Bearer ${auth.token}"}));
-
+    /* getSavedSearchTextApi(auth); */
     log(jsonEncode(response.data), name: "getDeleteSearchResponse");
   } catch (e) {
     if (e is DioException) {
