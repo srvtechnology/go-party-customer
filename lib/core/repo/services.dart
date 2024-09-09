@@ -192,12 +192,11 @@ Future<List<SaveSearchTextModel>> getSavedSearchTextApi(
 Future<void> clearSavedSearchApi(
   AuthProvider auth,
 ) async {
-  /*  log(jsonEncode(data), name: "addtoCart"); */
   try {
     Response response = await customDioClient.client.get(
         "${APIConfig.baseUrl}/api/delete-search",
         options: Options(headers: {"Authorization": "Bearer ${auth.token}"}));
-    /* getSavedSearchTextApi(auth); */
+
     log(jsonEncode(response.data), name: "getDeleteSearchResponse");
   } catch (e) {
     if (e is DioException) {

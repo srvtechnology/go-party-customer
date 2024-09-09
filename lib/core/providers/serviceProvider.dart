@@ -156,6 +156,10 @@ class ServiceProvider with ChangeNotifier {
       }
 
       searchData = await searchServices(data);
+      if (searchData!.isEmpty) {
+        filters.refresh();
+        notifyListeners();
+      }
       callSaveSearchStringAPi(auth, searchString);
       log(searchData.toString(), name: "SearchData");
     } catch (e) {
