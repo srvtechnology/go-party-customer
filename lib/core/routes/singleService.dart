@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
+import '../../views/view.dart';
 import '../constant/themData.dart';
 import 'package:customerapp/core/components/bottomNav.dart';
 import 'package:customerapp/core/components/card.dart';
@@ -1116,7 +1117,9 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                             addToCartDialog(
                                                 context, categories);
                                           } else {
-                                            Navigator.push(
+                                            showAuthDialog(context, auth,
+                                                categories, false);
+                                            /* Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
@@ -1133,7 +1136,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                                         content: Text(
                                                             "Please login to continue")));
                                               }
-                                            });
+                                            }); */
                                           }
                                         },
                                         child: Container(
@@ -1176,7 +1179,9 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                               );
                                             });
                                           } else {
-                                            Navigator.push(
+                                            showAuthDialog(context, auth,
+                                                categories, true);
+                                            /*  Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
@@ -1208,7 +1213,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                                         content: Text(
                                                             "Please login to continue")));
                                               }
-                                            });
+                                            }); */
                                           }
                                         },
                                         child: Container(
@@ -1426,6 +1431,179 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
       ),
     );
   }
+
+  void showAuthDialog(BuildContext context, AuthProvider authProvider,
+      CategoryProvider categories, bool isBookNow) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Text('Authentication Required'),
+          content: const Text(
+              'You need to be signed in to add items to the cart or proceed to checkout.'),
+          actions: [
+            // Sign In Button
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop(); // Close the dialog
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SignInPageRoute(
+                      comeBack: true,
+                    ),
+                  ),
+                ).then((_) {
+                  if (authProvider.authState == AuthState.loggedIn) {
+                    if (isBookNow) {
+                      addToCartDialog(context, categories,
+                          isFromBookNow: (serviceIds, data, totalPrice) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CheckoutPage(
+                              serviceIds: serviceIds,
+                              cartItems: data,
+                              cartSubTotal: totalPrice,
+                            ),
+                          ),
+                        );
+                      });
+                    } else {
+                      addToCartDialog(context, categories);
+                    }
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Please login to continue"),
+                      ),
+                    );
+                  }
+                });
+              },
+              child: const Text('Sign In'),
+            ),
+
+            // Sign Up Button
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop(); // Close the dialog
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SignUpPageRoute(
+                      comeback: true,
+                    ),
+                  ),
+                ).then((_) {
+                  if (authProvider.authState == AuthState.loggedIn) {
+                    if (isBookNow) {
+                      addToCartDialog(context, categories,
+                          isFromBookNow: (serviceIds, data, totalPrice) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CheckoutPage(
+                              serviceIds: serviceIds,
+                              cartItems: data,
+                              cartSubTotal: totalPrice,
+                            ),
+                          ),
+                        );
+                      });
+                    } else {
+                      addToCartDialog(context, categories);
+                    }
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Please sign up to continue"),
+                      ),
+                    );
+                  }
+                });
+              },
+              child: const Text('Sign Up'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /* void showAuthDialog(BuildContext context, AuthProvider authProvider,
+      CategoryProvider categories, bool isBookNow) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Text('Authentication Required'),
+          content: const Text(
+              'You need to be signed in to add items to the cart or proceed to checkout.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SignInPageRoute(
+                      comeBack: true,
+                    ),
+                  ),
+                ).then((value) {
+                  if (authProvider.authState == AuthState.loggedIn) {
+                    Navigator.pop(context);
+                    addToCartDialog(context, categories);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Please login to continue"),
+                      ),
+                    );
+                  }
+                });
+              },
+              child: const Text('Sign In'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SignUpPageRoute(
+                      comeback: true,
+                    ),
+                  ),
+                ).then((value) {
+                  if (kDebugMode) {
+                    print(
+                        'Auth state after sign up: ${authProvider.authState}');
+                  }
+                  if (authProvider.authState == AuthState.loggedIn) {
+                    Navigator.pop(context);
+                    addToCartDialog(context, categories);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Please signUp to continue"),
+                      ),
+                    );
+                  }
+                });
+              },
+              child: const Text('Sign Up'),
+            ),
+          ],
+        );
+      },
+    );
+  } */
 }
 
 class WriteReview extends StatelessWidget {

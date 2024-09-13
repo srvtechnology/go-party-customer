@@ -451,7 +451,7 @@ class _PaymentPageState extends State<PaymentPage> {
                       height: 5,
                     ),
                     Text(
-                      "Mobile: ${widget.selectedAddress?.billingMobile}" ?? "",
+                      "Mobile: ${widget.selectedAddress?.billingMobile}",
                       style: const TextStyle(
                           fontSize: 13, fontWeight: FontWeight.bold),
                     ),

@@ -126,7 +126,11 @@ class AuthProvider with ChangeNotifier {
     try {
       final res = await authRepo.register(email, password, name, phone);
       if (res != null && res.statusCode == 200) {
-        login(email, password);
+        await login(email, password);
+        if (_authState == AuthState.loggedIn) {
+          // Registration and login successful
+          log("User successfully registered and logged in.");
+        }
       } else {
         throw Exception('Registration failed.');
       }
@@ -524,6 +528,7 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+}
 
   /* Future registerAgentBankDetails(
     BuildContext context, {
@@ -607,4 +612,4 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
     }
   } */
-}
+
