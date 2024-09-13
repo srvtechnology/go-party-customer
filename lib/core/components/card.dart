@@ -924,7 +924,7 @@ class PackageTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Discounted Price : ₹ ${package.discountedPrice}",
+                        "Discounted Price : ₹ ${package.discountedPrice != 'null' ? package.discountedPrice : '0.0'}",
                         style: TextStyle(
                           fontSize: 16.sp,
                           color: Theme.of(context).primaryColor,
@@ -1024,16 +1024,18 @@ class ProductTile extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Per ${service.priceBasis}",
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
+                      if (service.priceBasis != null &&
+                          service.priceBasis != 'null')
+                        Text(
+                          "Per ${service.priceBasis}",
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
                       Text(
-                        "Discounted Price : ₹ ${service.discountedPrice}",
+                        "Discounted Price : ₹ ${service.discountedPrice != null && service.discountedPrice != 'null' ? service.discountedPrice : '0.0'}",
                         style: TextStyle(
                           fontSize: 16.sp,
                           color: Colors.black,

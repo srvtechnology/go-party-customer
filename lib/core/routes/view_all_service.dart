@@ -5,7 +5,6 @@ import '../components/commonHeader.dart';
 import '../constant/themData.dart';
 import 'package:customerapp/core/components/bottomNav.dart';
 import 'package:customerapp/core/providers/serviceProvider.dart';
-import 'package:customerapp/core/routes/filter.dart';
 import 'package:customerapp/core/routes/singleService.dart';
 import 'package:customerapp/core/utils/debounce.dart';
 import 'package:flutter/material.dart';
