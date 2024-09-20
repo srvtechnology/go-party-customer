@@ -146,19 +146,6 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                       ],
                     ),
                   ),
-
-                  /* Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      // radio
-                      Radio(
-                        value: true,
-                        onChanged: (v) {},
-                        groupValue: true,
-                      ),
-                      const Text("Create an account. New to Utsavlife?"),
-                    ],
-                  ),*/
                   SizedBox(
                     height: 32.0,
                     child: state.authState == AuthState.error
@@ -365,26 +352,7 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                             ),
                           ),
                   ),
-                  const SizedBox(height: 16.0),
-                  TramsAndConditionsCheckBox(
-                    value: false,
-                    onChanged: (value) {},
-                  ),
-                  /*Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      // radio
-                      Radio(
-                        value: true,
-                        onChanged: (v) {
-                          Navigator.pushNamed(
-                              context, SignInPageRoute.routeName);
-                        },
-                        groupValue: false,
-                      ),
-                      const Text("Sign in. Already a customer?"),
-                    ],
-                  ),*/
+                  const SizedBox(height: 10.0),
                   InkWell(
                     onTap: () {
                       Navigator.pushNamed(context, SignInPageRoute.routeName);
@@ -466,6 +434,10 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                         ),
                       ),
                     ),
+                  ),
+                  TramsAndConditionsCheckBox(
+                    value: false,
+                    onChanged: (value) {},
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

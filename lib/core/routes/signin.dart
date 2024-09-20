@@ -141,7 +141,7 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                       const Text("Sign in. Already a customer?"),
                     ],
                   ),*/
-                  InkWell(
+                  /* InkWell(
                     onTap: () {
                       Navigator.pushNamed(context, SignUpPageRoute.routeName);
                     },
@@ -361,6 +361,211 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                             ),
                           ],
                         ),
+                      ),
+                    ),
+                  ), */
+
+                  Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(15.0), // Rounded corners
+                    ),
+                    elevation: 5,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment
+                            .start, // Align items to the start
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, SignUpPageRoute.routeName);
+                            },
+                            child: Row(
+                              children: const [
+                                Icon(Icons.radio_button_unchecked,
+                                    color: Colors.black),
+                                SizedBox(width: 10),
+                                Text(
+                                  "Create an account. New to Utsavlife?",
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 10.0),
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, SignInPageRoute.routeName);
+                            },
+                            child: Row(
+                              children: const [
+                                Icon(Icons.radio_button_checked,
+                                    color: Colors.black),
+                                SizedBox(width: 10),
+                                Text(
+                                  "Sign in. Already a customer?",
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 20.0),
+                          if (state.authState == AuthState.error)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Text(
+                                  "Incorrect username or password",
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ],
+                            ),
+                          const SizedBox(height: 20.0),
+                          TextFormField(
+                            controller: _emailController,
+                            decoration: const InputDecoration(
+                              labelText: 'Email',
+                              labelStyle: TextStyle(color: Colors.grey),
+                              prefixIcon: Icon(Icons.email, color: Colors.grey),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your email';
+                              }
+                              if (!value.contains('@')) {
+                                return 'Please enter a valid email address';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 16.0),
+                          TextFormField(
+                            controller: _passwordController,
+                            obscureText: _obscureText,
+                            decoration: InputDecoration(
+                              labelText: 'Password',
+                              labelStyle: const TextStyle(color: Colors.grey),
+                              prefixIcon:
+                                  const Icon(Icons.lock, color: Colors.grey),
+                              suffixIcon: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _obscureText = !_obscureText;
+                                  });
+                                },
+                                child: Icon(
+                                  _obscureText
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your password';
+                              }
+                              if (value.length < 6) {
+                                return 'Password should be at least 6 characters long';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 16.0),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, ForgotPassword.routeName);
+                              },
+                              child: const Text(
+                                "Forgot Password?",
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16.0),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed:
+                                  _isLoading ? null : () => _submitForm(state),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Theme.of(context).primaryColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12.0,
+                                ),
+                                elevation: 5,
+                                shadowColor: Colors.black.withOpacity(0.2),
+                              ),
+                              child: _isLoading
+                                  ? const CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Colors.white),
+                                    )
+                                  : const Text(
+                                      'Sign In',
+                                      style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                            ),
+                          ),
+                          const SizedBox(height: 16.0),
+                          Center(
+                            child: RichText(
+                              text: TextSpan(
+                                text: 'Are you an agent? ',
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                ),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        Navigator.pushNamed(
+                                            context, AgentSignIn.routeName);
+                                      },
+                                    text: 'Sign in',
+                                    style: const TextStyle(
+                                      color: Colors.blue,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  const TextSpan(
+                                    text: ' or ',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        Navigator.pushNamed(
+                                            context, AgentSignUp.routeName);
+                                      },
+                                    text: 'Sign up',
+                                    style: const TextStyle(
+                                      color: Colors.blue,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
