@@ -484,11 +484,10 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                           TextFormField(
                             style: const TextStyle(color: Colors.black),
                             controller: _emailController,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               labelText: 'Email',
-                              prefixIcon:
-                                  const Icon(Icons.email, color: Colors.grey),
-                              labelStyle: const TextStyle(color: Colors.grey),
+                              prefixIcon: Icon(Icons.email, color: Colors.grey),
+                              labelStyle: TextStyle(color: Colors.grey),
                               border: UnderlineInputBorder(
                                 borderSide: BorderSide(color: Colors.grey),
                               ),
@@ -509,11 +508,11 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                           TextFormField(
                             style: const TextStyle(color: Colors.black),
                             controller: _nameController,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               labelText: 'Name',
                               prefixIcon:
-                                  const Icon(Icons.person, color: Colors.grey),
-                              labelStyle: const TextStyle(color: Colors.grey),
+                                  Icon(Icons.person, color: Colors.grey),
+                              labelStyle: TextStyle(color: Colors.grey),
                               border: UnderlineInputBorder(
                                 borderSide: BorderSide(color: Colors.grey),
                               ),
@@ -531,11 +530,10 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                           TextFormField(
                             style: const TextStyle(color: Colors.black),
                             controller: _phoneNumberController,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               labelText: 'Phone Number',
-                              prefixIcon:
-                                  const Icon(Icons.phone, color: Colors.grey),
-                              labelStyle: const TextStyle(color: Colors.grey),
+                              prefixIcon: Icon(Icons.phone, color: Colors.grey),
+                              labelStyle: TextStyle(color: Colors.grey),
                               border: UnderlineInputBorder(
                                 borderSide: BorderSide(color: Colors.grey),
                               ),
@@ -575,7 +573,7 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                                 ),
                               ),
                               labelStyle: const TextStyle(color: Colors.grey),
-                              border: UnderlineInputBorder(
+                              border: const UnderlineInputBorder(
                                 borderSide: BorderSide(color: Colors.grey),
                               ),
                             ),
@@ -614,7 +612,7 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                                 ),
                               ),
                               labelStyle: const TextStyle(color: Colors.grey),
-                              border: UnderlineInputBorder(
+                              border: const UnderlineInputBorder(
                                 borderSide: BorderSide(color: Colors.grey),
                               ),
                             ),

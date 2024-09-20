@@ -67,7 +67,8 @@ class _AgentSignUpState extends State<AgentSignUp> {
                         ),
                       ),
                       const SizedBox(height: 32.0),
-                      Container(
+
+                      /* Container(
                         padding: const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 10),
                         decoration: BoxDecoration(
@@ -90,22 +91,7 @@ class _AgentSignUpState extends State<AgentSignUp> {
                           ],
                         ),
                       ),
-                      /*Text(
-                        "Sign Up as Agent ",
-                        style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600),
-                      ),*/
                       const SizedBox(height: 16.0),
-
-                      /* SizedBox(
-                        height: 32.0,
-                        child: state.authState == AuthState.Error
-                            ? const Text(
-                                "Something went wrong. Please try again later")
-                            : null,
-                      ), */
                       TextFormField(
                         style: const TextStyle(color: Colors.grey),
                         controller: _emailController,
@@ -388,6 +374,312 @@ class _AgentSignUpState extends State<AgentSignUp> {
                             ),
                           ),
                         ),
+                      ), */
+
+                      Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        elevation: 5,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: const [
+                                  Icon(Icons.radio_button_checked,
+                                      color: Colors.black),
+                                  SizedBox(width: 10),
+                                  Text(
+                                    "Sign Up as Agent",
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 16.0),
+                              TextFormField(
+                                style: const TextStyle(color: Colors.grey),
+                                controller: _emailController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Email',
+                                  prefixIcon:
+                                      Icon(Icons.email, color: Colors.grey),
+                                  labelStyle: TextStyle(color: Colors.grey),
+                                  focusedBorder: UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey)),
+                                  enabledBorder: UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey)),
+                                ),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Please enter your email';
+                                  }
+                                  if (!value.contains('@')) {
+                                    return 'Please enter a valid email address';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 16.0),
+                              TextFormField(
+                                style: const TextStyle(color: Colors.grey),
+                                controller: _nameController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Name',
+                                  prefixIcon:
+                                      Icon(Icons.person, color: Colors.grey),
+                                  labelStyle: TextStyle(color: Colors.grey),
+                                  focusedBorder: UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey)),
+                                  enabledBorder: UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey)),
+                                ),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Please enter your name';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 16.0),
+                              TextFormField(
+                                style: const TextStyle(color: Colors.grey),
+                                controller: _phoneNumberController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Phone Number',
+                                  prefixIcon:
+                                      Icon(Icons.phone, color: Colors.grey),
+                                  labelStyle: TextStyle(color: Colors.grey),
+                                  focusedBorder: UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey)),
+                                  enabledBorder: UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey)),
+                                ),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Please enter your Phone Number';
+                                  }
+                                  if (value.length != 10) {
+                                    return 'Please enter a valid Phone Number';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 16.0),
+                              TextFormField(
+                                style: const TextStyle(color: Colors.grey),
+                                controller: _passwordController,
+                                obscureText: _obscureText,
+                                decoration: InputDecoration(
+                                  labelText: 'Password',
+                                  prefixIcon: const Icon(Icons.lock,
+                                      color: Colors.grey),
+                                  suffixIcon: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _obscureText = !_obscureText;
+                                      });
+                                    },
+                                    child: Icon(
+                                      _obscureText
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  labelStyle:
+                                      const TextStyle(color: Colors.grey),
+                                  focusedBorder: const UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey)),
+                                  enabledBorder: const UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey)),
+                                ),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Please enter your password';
+                                  }
+                                  if (value.length < 6) {
+                                    return 'Password should be at least 6 characters long';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 16.0),
+                              TextFormField(
+                                style: const TextStyle(color: Colors.grey),
+                                controller: _confirmPasswordController,
+                                obscureText: _obscureTextConfirm,
+                                decoration: InputDecoration(
+                                  labelText: 'Confirm Password',
+                                  prefixIcon: const Icon(Icons.lock,
+                                      color: Colors.grey),
+                                  suffixIcon: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _obscureTextConfirm =
+                                            !_obscureTextConfirm;
+                                      });
+                                    },
+                                    child: Icon(
+                                      _obscureTextConfirm
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  labelStyle:
+                                      const TextStyle(color: Colors.grey),
+                                  focusedBorder: const UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey)),
+                                  enabledBorder: const UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey)),
+                                ),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Please enter your password';
+                                  }
+                                  if (value.length < 6) {
+                                    return 'Password should be at least 6 characters long';
+                                  }
+                                  if (value != _passwordController.text) {
+                                    return 'Password does not match';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 32.0),
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    final isValid =
+                                        _formKey.currentState!.validate();
+                                    if (isValid) {
+                                      state.registerAgent(
+                                        context,
+                                        email: _emailController.text,
+                                        name: _nameController.text,
+                                        password:
+                                            _confirmPasswordController.text,
+                                        phone: _phoneNumberController.text,
+                                        otpcontroller: _otpController,
+                                      );
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        Theme.of(context).primaryColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0),
+                                  ),
+                                  child: state.isLoading
+                                      ? const CircularProgressIndicator(
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                  Colors.grey),
+                                        )
+                                      : const Text(
+                                          'Sign Up',
+                                          style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Center(
+                                child: RichText(
+                                  text: TextSpan(
+                                    text: 'Already an Agent? ',
+                                    style: const TextStyle(
+                                      color:
+                                          Colors.black, // Change color to black
+                                      fontSize: 16,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () {
+                                            Navigator.pushNamed(
+                                                context, AgentSignIn.routeName);
+                                          },
+                                        text: 'Sign In',
+                                        style: const TextStyle(
+                                          color: Colors
+                                              .blue, // Change color to blue
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Center(
+                                child: RichText(
+                                  text: TextSpan(
+                                    text: 'Are you a Customer? ',
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 16,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () {
+                                            Navigator.pushNamed(context,
+                                                SignInPageRoute.routeName);
+                                          },
+                                        text: 'Sign in',
+                                        style: const TextStyle(
+                                          color: Colors.blue,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      const TextSpan(
+                                        text: ' or ',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () {
+                                            Navigator.pushNamed(context,
+                                                SignUpPageRoute.routeName);
+                                          },
+                                        text: 'Sign up',
+                                        style: const TextStyle(
+                                          color: Colors.blue,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 16.0),
                       TramsAndConditionsCheckBox(
@@ -449,15 +741,12 @@ class _AgentSignUpState extends State<AgentSignUp> {
                                 ),
                               ),
                               const SizedBox(height: 32.0),
-                              Container(
-                                // alignment: Alignment.center,
-                                child: Text(
-                                  "Verify Agent Account",
-                                  style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600),
-                                ),
+                              Text(
+                                "Verify Agent Account",
+                                style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600),
                               ),
                               const SizedBox(height: 16.0),
                               TextFormField(
@@ -557,15 +846,12 @@ class _AgentSignUpState extends State<AgentSignUp> {
                         ),
                       ),
                       const SizedBox(height: 32.0),
-                      Container(
-                        // alignment: Alignment.center,
-                        child: Text(
-                          "Setup Agent Bank Details",
-                          style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600),
-                        ),
+                      Text(
+                        "Setup Agent Bank Details",
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
                       ),
                       const SizedBox(height: 16.0),
                       TextFormField(
