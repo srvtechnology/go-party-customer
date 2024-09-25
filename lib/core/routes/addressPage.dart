@@ -8,6 +8,8 @@ import 'package:customerapp/core/providers/addressProvider.dart';
 import 'package:customerapp/core/utils/addressFormater.dart';
 import 'package:customerapp/core/utils/geolocator.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -43,6 +45,7 @@ class _AddressAddPageState extends State<AddressAddPage> {
   late Future<List<Country>> _countryFuture;
   late Future<Map> _geolocationFuture;
   final focusNode = FocusNode();
+  bool _isLoadingLocation = false;
 
   @override
   void initState() {
@@ -54,6 +57,44 @@ class _AddressAddPageState extends State<AddressAddPage> {
         getLocationByPin();
       }
     });
+  }
+
+  Future<void> _getCurrentLocationAndFillFields() async {
+    setState(() {
+      _isLoadingLocation = true;
+    });
+
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
+
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks[0];
+        _houseNumberController.text = place.subThoroughfare ?? '';
+        _areaController.text =
+            '${place.thoroughfare ?? ''}, ${place.subLocality ?? ''}';
+        _landmarkController.text = place.name ?? '';
+        _pinCodeController.text = place.postalCode ?? '';
+
+        // Use getLocationByPin to update country, state, and city
+        final data = await getCityStateCountryByPin(_pinCodeController.text);
+
+        setState(() {
+          country = data["country"] ?? place.country;
+          state = data["state"] ?? place.administrativeArea;
+          city = data["city"] ?? place.locality;
+        });
+      }
+    } catch (e) {
+      CustomLogger.error('Error getting location: $e');
+    } finally {
+      setState(() {
+        _isLoadingLocation = false;
+      });
+    }
   }
 
   getLocationByPin() async {
@@ -194,6 +235,22 @@ class _AddressAddPageState extends State<AddressAddPage> {
                             "Address Details",
                             style: TextStyle(
                                 fontSize: 15.sp, fontWeight: FontWeight.w600),
+                          ),
+                          const Spacer(),
+                          // current loction pick icon button
+                          IconButton(
+                            onPressed: _isLoadingLocation
+                                ? null
+                                : _getCurrentLocationAndFillFields,
+                            icon: _isLoadingLocation
+                                ? const SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : const Icon(Icons.my_location_outlined),
                           )
                         ],
                       ),

@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 
 import '../../config.dart';
 import 'package.dart';
@@ -13,8 +12,10 @@ class ServiceModel {
       price,
       discountedPrice,
       priceBasis;
+
   List<String>? images;
   int? minQnty;
+  String? featured_description;
   String? rating, categoryId;
   final String? imageUrl = "storage/app/public/service/";
   List<ReviewModel>? reviews = [];
@@ -40,6 +41,7 @@ class ServiceModel {
     this.categoryId,
     this.package,
     this.videos,
+    this.featured_description,
   });
 
   factory ServiceModel.fromJson(Map json) {
@@ -114,25 +116,25 @@ class ServiceModel {
     }
 
     return ServiceModel(
-      reviews: tempReviews,
-      rating: tempavgReview,
-      popupCategories: tempPopupCategories,
-      availableCities: tempAvailableCities,
-      videos: tempVideos,
-      id: json["id"].toString(),
-      name: json["service"],
-      companyName: json["company_name"],
-      description: json["description"],
-      price: json["price"].toString(),
-      priceBasis: json["price_basis"],
-      discountedPrice: json["discount_price"].toString(),
-      images: temp,
-      minQnty: json["min_qty"],
-      /* serviceCategoryDetails: json["service_category_details"], */
-      package: json["package_category"] != null
-          ? PackageModel.fromJson(json)
-          : json["service_category_details"],
-    );
+        reviews: tempReviews,
+        rating: tempavgReview,
+        popupCategories: tempPopupCategories,
+        availableCities: tempAvailableCities,
+        videos: tempVideos,
+        id: json["id"].toString(),
+        name: json["service"],
+        companyName: json["company_name"],
+        description: json["description"],
+        price: json["price"].toString(),
+        priceBasis: json["price_basis"],
+        discountedPrice: json["discount_price"].toString(),
+        images: temp,
+        minQnty: json["min_qty"],
+        /* serviceCategoryDetails: json["service_category_details"], */
+        package: json["package_category"] != null
+            ? PackageModel.fromJson(json)
+            : json["service_category_details"],
+        featured_description: json["featured_description"]);
   }
 }
 

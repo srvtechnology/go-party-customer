@@ -101,18 +101,20 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                   SizedBox(
                     child: Image.asset(
                       'assets/images/logo/Utsavlife full logo.png',
+                      width: 60.w,
+                      height: 12.h,
                     ),
                   ),
-                  Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Welcome ",
-                      style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 26,
-                          fontWeight: FontWeight.w600),
-                    ),
-                  ),
+                  // Container(
+                  //   alignment: Alignment.center,
+                  //   child: Text(
+                  //     "Welcome ",
+                  //     style: TextStyle(
+                  //         color: Theme.of(context).primaryColor,
+                  //         fontSize: 26,
+                  //         fontWeight: FontWeight.w600),
+                  //   ),
+                  // ),
                   const SizedBox(height: 16.0),
                   /*Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -372,47 +374,48 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                     ),
                     elevation: 5,
                     child: Padding(
-                      padding: const EdgeInsets.all(20.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment
                             .start, // Align items to the start
                         children: [
-                          InkWell(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                  context, SignUpPageRoute.routeName);
-                            },
-                            child: Row(
-                              children: const [
-                                Icon(Icons.radio_button_unchecked,
-                                    color: Colors.black),
-                                SizedBox(width: 10),
-                                Text(
-                                  "Create an account. New to Utsavlife?",
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 10.0),
-                          InkWell(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                  context, SignInPageRoute.routeName);
-                            },
-                            child: Row(
-                              children: const [
-                                Icon(Icons.radio_button_checked,
-                                    color: Colors.black),
-                                SizedBox(width: 10),
-                                Text(
-                                  "Sign in. Already a customer?",
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 20.0),
+                          // InkWell(
+                          //   onTap: () {
+                          //     Navigator.pushNamed(
+                          //         context, SignUpPageRoute.routeName);
+                          //   },
+                          //   child: Row(
+                          //     children: const [
+                          //       Icon(Icons.radio_button_unchecked,
+                          //           color: Colors.black),
+                          //       SizedBox(width: 10),
+                          //       Text(
+                          //         "Create an account. New to Utsavlife?",
+                          //         style: TextStyle(color: Colors.black),
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
+                          // const SizedBox(height: 10.0),
+                          // InkWell(
+                          //   onTap: () {
+                          //     Navigator.pushNamed(
+                          //         context, SignInPageRoute.routeName);
+                          //   },
+                          //   child: Row(
+                          //     children: const [
+                          //       Icon(Icons.radio_button_checked,
+                          //           color: Colors.black),
+                          //       SizedBox(width: 10),
+                          //       Text(
+                          //         "Sign in. Already a customer?",
+                          //         style: TextStyle(color: Colors.black),
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
+                          // const SizedBox(height: 20.0),
                           if (state.authState == AuthState.error)
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -491,43 +494,116 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                           const SizedBox(height: 16.0),
                           SizedBox(
                             width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed:
+                            child: InkWell(
+                              onTap:
                                   _isLoading ? null : () => _submitForm(state),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Theme.of(context).primaryColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
+                              child: Container(
                                 padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0,
+                                    horizontal: 20, vertical: 10),
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  // color: Theme.of(context).primaryColor,
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Theme.of(context)
+                                          .primaryColor
+                                          .withOpacity(0.8),
+                                      Theme.of(context)
+                                          .primaryColor
+                                          .withOpacity(0.4),
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
                                 ),
-                                elevation: 5,
-                                shadowColor: Colors.black.withOpacity(0.2),
-                              ),
-                              child: _isLoading
-                                  ? const CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                          Colors.white),
-                                    )
-                                  : const Text(
-                                      'Sign In',
-                                      style: TextStyle(
-                                        fontSize: 16.0,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
+                                child: _isLoading
+                                    ? const CircularProgressIndicator(
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.white),
+                                      )
+                                    : const Text(
+                                        'Sign In',
+                                        style: TextStyle(
+                                          fontSize: 15.0,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white,
+                                        ),
                                       ),
-                                    ),
+                              ),
                             ),
                           ),
                           const SizedBox(height: 16.0),
+                          // or
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: const [
+                              Text(
+                                "OR",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                ),
+                              )
+                              //
+                            ],
+                          ),
+                          // const SizedBox(height: 16.0),
+                          // Textbutton new to utsav life
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              TextButton(
+                                onPressed: () {},
+                                child: const Text(
+                                  "New to Utsav Life?",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          // create your
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, SignUpPageRoute.routeName);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.grey[200],
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 12.0),
+                              ),
+                              child: const Text(
+                                'Create Your Account',
+                                style: TextStyle(
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16.0),
+
                           Center(
                             child: RichText(
                               text: TextSpan(
                                 text: 'Are you an agent? ',
                                 style: const TextStyle(
                                   color: Colors.black,
-                                  fontSize: 16,
+                                  fontSize: 14,
                                 ),
                                 children: <TextSpan>[
                                   TextSpan(
@@ -565,10 +641,12 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                               ),
                             ),
                           ),
+                          const SizedBox(height: 16.0),
                         ],
                       ),
                     ),
                   ),
+                  const SizedBox(height: 20.0),
 
                   /* Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -633,6 +711,10 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                           },
                           child: const Text(
                             "Terms & Condition",
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
                           )),
                       TextButton(
                           onPressed: () {
@@ -641,6 +723,10 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                           },
                           child: const Text(
                             "Privacy & policy",
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
                           )),
                     ],
                   ),

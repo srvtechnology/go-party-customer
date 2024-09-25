@@ -4,6 +4,7 @@ import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:customerapp/core/components/Rating_view.dart';
 import 'package:customerapp/core/models/orders.dart';
 import 'package:customerapp/core/models/single_package.dart';
+import 'package:customerapp/core/utils/textFormater.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,10 +29,7 @@ import 'package:customerapp/core/providers/categoryProvider.dart';
 import 'package:customerapp/core/providers/orderProvider.dart';
 import 'package:customerapp/core/repo/cartRepo.dart';
 import 'package:customerapp/core/repo/services.dart';
-import 'package:customerapp/core/routes/cartPage.dart';
 import 'package:customerapp/core/routes/checkoutPage.dart';
-import 'package:customerapp/core/routes/product.dart';
-import 'package:customerapp/core/routes/signin.dart';
 
 import '../components/banner.dart';
 import '../utils/logger.dart';
@@ -1021,18 +1019,22 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                   SizedBox(
                                     height: 2.h,
                                   ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        "Discount Price:",
-                                        style: TextStyle(fontSize: 16),
-                                      ),
-                                      Text(
-                                          "\u20B9 ${selectedCategory?.discountPrice ?? widget.service.discountedPrice}")
-                                    ],
-                                  ),
+                                  if ((selectedCategory?.discountPrice ?? "0")
+                                          .toString() !=
+                                      "0") ...[
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                          "Discount Price:",
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                        Text(
+                                            "\u20B9 ${selectedCategory?.discountPrice ?? "0.0"}")
+                                      ],
+                                    ),
+                                  ],
                                   const DashedDivider(),
                                   Row(
                                     mainAxisAlignment:
@@ -1416,6 +1418,51 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                 ),
                               ),
                             ), */
+
+                            // feature description
+                            if (widget.service.featured_description != null ||
+                                parseHtmlString(
+                                        widget.service.featured_description ??
+                                            "") !=
+                                    "") ...[
+                              Divider(
+                                thickness: 1,
+                                height: 6.h,
+                              ),
+                              Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 4.w,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        "Feature Description",
+                                        style: TextStyle(
+                                          fontSize: 16, //16
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 2.h,
+                                      ),
+                                      Text(
+                                        parseHtmlString(widget
+                                                .service.featured_description ??
+                                            ""),
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.grey,
+                                        ),
+                                        maxLines: 3,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  )),
+                            ],
+
                             Divider(
                               thickness: 1,
                               height: 6.h,

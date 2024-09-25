@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:csc_picker/csc_picker.dart';
 import 'package:flutter/services.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import '../constant/themData.dart';
 import 'package:customerapp/core/components/errors.dart';
 import 'package:customerapp/core/components/loading.dart';
@@ -62,6 +64,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   late Future<List<Country>> _countryFuture;
   bool isAddressLoading = false;
   bool showAddressContainer = false;
+  bool _isLoadingLocation = false;
 
   @override
   void initState() {
@@ -77,17 +80,54 @@ class _CheckoutPageState extends State<CheckoutPage> {
     });
   }
 
+  Future<void> _getCurrentLocationAndFillFields() async {
+    setState(() {
+      _isLoadingLocation = true;
+    });
+
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
+
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks[0];
+        _houseNumberController.text = place.name ?? '';
+        _areaController.text =
+            '${place.thoroughfare ?? ''}, ${place.subLocality ?? ''}';
+        _landmarkController.text = place.subThoroughfare ?? '';
+        _pinCodeController.text = place.postalCode ?? '';
+        final data = await getLocationByPin();
+      }
+    } catch (e) {
+      // CustomLogger.error('Error getting location: $e');
+      log('Error getting location: $e');
+      // final data = await getLocationByPin();
+    } finally {
+      setState(() {
+        _isLoadingLocation = false;
+      });
+      // final data = await getLocationByPin();
+    }
+  }
+
   getLocationByPin() async {
     setState(() {
       isAddressLoading = true;
     });
     final data = await getCityStateCountryByPin(_pinCodeController.text);
+    log(data.toString());
     if (data.isEmpty) return {};
     setState(() {
       country = data["country"];
       state = data["state"];
       city = data["city"];
     });
+    log(country.toString());
+    log(state.toString());
+    log(city.toString());
     setState(() {
       isAddressLoading = false;
     });
@@ -248,8 +288,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.start,
-                              children: const [
-                                Text(
+                              children: [
+                                const Text(
                                   'Add New Address',
                                   style: TextStyle(
                                     // Text color
@@ -257,7 +297,24 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                SizedBox(width: 10),
+                                const SizedBox(width: 10),
+                                const Spacer(),
+                                if (showAddressContainer)
+                                  IconButton(
+                                    onPressed: _isLoadingLocation
+                                        ? null
+                                        : _getCurrentLocationAndFillFields,
+                                    icon: _isLoadingLocation
+                                        ? const SizedBox(
+                                            width: 24,
+                                            height: 24,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                            ),
+                                          )
+                                        : const Icon(
+                                            Icons.my_location_outlined),
+                                  )
                               ],
                             ),
                           ),
@@ -431,19 +488,16 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                         onCountryChanged: (value) {
                                           setState(() {
                                             country = value;
-                                            //   _countryController.text=value;
                                           });
                                         },
                                         onStateChanged: (value) {
                                           setState(() {
                                             state = value;
-                                            // _stateController.text=value!;
                                           });
                                         },
                                         onCityChanged: (value) {
                                           setState(() {
                                             city = value;
-                                            // _cityController.text = value!;
                                           });
                                         },
                                       ),

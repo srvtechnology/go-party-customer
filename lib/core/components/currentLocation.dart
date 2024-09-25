@@ -22,7 +22,9 @@ class _CurrentLocationViewState extends State<CurrentLocationView> {
 
   void getLocation() async {
     currentLocation = await getCountryCityState();
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
