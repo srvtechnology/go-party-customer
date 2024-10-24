@@ -633,8 +633,8 @@ class _PaymentPageState extends State<PaymentPage> {
                                 Text(
                                   _paymentTypeController.text
                                           .contains("Partial")
-                                      ? "₹ ${widget.total * 0.25 + widget.total * 0.25 * 0.18}"
-                                      : "₹ ${widget.total + widget.total * 0.18}",
+                                      ? "₹ ${(widget.total * 0.25 + widget.total * 0.25 * 0.18).toStringAsFixed(2)}"
+                                      : "₹ ${(widget.total + widget.total * 0.18).toStringAsFixed(2)}",
                                   style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,
@@ -882,30 +882,6 @@ class _PaymentPageState extends State<PaymentPage> {
           return;
         }
       }
-      /* if (auth.isAgent) {
-        await placeOrderAgent(
-          auth,
-          payment_method: "online",
-          payment_type: _paymentTypeController.text.contains("Partial")
-              ? "partial"
-              : "completed",
-          txn_id: auth.user!.id.toString(),
-          address_id: widget.selectedAddress?.id.toString() ?? "",
-          current_city: locationData["city"],
-        ).then((res) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(res['messgae'] ?? "Order Placed Successfully")));
-          if (res["status"] == true) {
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const MainPageRoute()),
-                (route) => route.isFirst);
-          }
-        }).whenComplete(() => setState(() {
-              isloading = false;
-            }));
-        return;
-      } */
 
       await placeOrder(auth, data).then((value) {
         if (value == null) {

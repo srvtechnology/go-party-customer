@@ -112,17 +112,8 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                   SizedBox(
                     child: Image.asset(
                       'assets/images/logo/Utsavlife full logo.png',
-                    ),
-                  ),
-                  const SizedBox(height: 32.0),
-                  Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Welcome ",
-                      style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 26,
-                          fontWeight: FontWeight.w600),
+                      width: 60.w,
+                      height: 12.h,
                     ),
                   ),
                   const SizedBox(height: 16.0),
@@ -442,43 +433,42 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                     ),
                     elevation: 5,
                     child: Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           // Centered "Create an account" text
-                          Center(
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: const [
-                                Icon(Icons.radio_button_checked,
-                                    color: Colors.black),
-                                SizedBox(width: 10),
-                                Text(
-                                  "Create an account. New to Utsavlife?",
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 16),
+                          // Center(
+                          //   child: Row(
+                          //     mainAxisSize: MainAxisSize.min,
+                          //     children: const [
+                          //       Icon(Icons.radio_button_checked,
+                          //           color: Colors.black),
+                          //       SizedBox(width: 10),
+                          //       Text(
+                          //         "Create an account. New to Utsavlife?",
+                          //         style: TextStyle(color: Colors.black),
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
+                          // const SizedBox(height: 16),
 
                           // Error handling
-                          SizedBox(
-                            height: 32.0,
-                            child: state.authState == AuthState.error
-                                ? Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Text(
-                                        "Something went wrong. Please try again later",
-                                        style: TextStyle(color: Colors.red),
-                                      ),
-                                    ],
-                                  )
-                                : null,
-                          ),
-                          const SizedBox(height: 16),
+                          (state.authState == AuthState.error)
+                              ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    Text(
+                                      "Something went wrong. Please try again later",
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  ],
+                                )
+                              : const SizedBox(height: 0),
+
+                          // const SizedBox(height: 16),
 
                           // Email field
                           TextFormField(
@@ -632,57 +622,140 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                           const SizedBox(height: 32),
 
                           // Expanded Sign Up button
+                          // SizedBox(
+                          //   width: double.infinity,
+                          //   child: ElevatedButton(
+                          //     onPressed:
+                          //         _isLoading ? null : () => _submitForm(state),
+                          //     style: ElevatedButton.styleFrom(
+                          //       backgroundColor: Theme.of(context).primaryColor,
+                          //       shape: RoundedRectangleBorder(
+                          //         borderRadius: BorderRadius.circular(8),
+                          //       ),
+                          //       padding:
+                          //           const EdgeInsets.symmetric(vertical: 16),
+                          //     ),
+                          //     child: _isLoading
+                          //         ? const CircularProgressIndicator(
+                          //             valueColor: AlwaysStoppedAnimation<Color>(
+                          //                 Colors.grey),
+                          //           )
+                          //         : const Text(
+                          //             'Sign Up',
+                          //             style: TextStyle(
+                          //               fontSize: 18,
+                          //               fontWeight: FontWeight.bold,
+                          //               color: Colors.white,
+                          //             ),
+                          //           ),
+                          //   ),
+                          // ),
                           SizedBox(
                             width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed:
+                            child: InkWell(
+                              onTap:
                                   _isLoading ? null : () => _submitForm(state),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Theme.of(context).primaryColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 10),
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  // color: Theme.of(context).primaryColor,
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Theme.of(context)
+                                          .primaryColor
+                                          .withOpacity(0.8),
+                                      Theme.of(context)
+                                          .primaryColor
+                                          .withOpacity(0.4),
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
                                 ),
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 16),
-                              ),
-                              child: _isLoading
-                                  ? const CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                          Colors.grey),
-                                    )
-                                  : const Text(
-                                      'Sign Up',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
+                                child: _isLoading
+                                    ? const CircularProgressIndicator(
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.white),
+                                      )
+                                    : const Text(
+                                        'Sign Up',
+                                        style: TextStyle(
+                                          fontSize: 15.0,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white,
+                                        ),
                                       ),
-                                    ),
+                              ),
                             ),
                           ),
                           const SizedBox(height: 16),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: const [
+                              Text(
+                                "OR",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                ),
+                              )
+                              //
+                            ],
+                          ),
+                          const SizedBox(height: 16),
 
-                          // Centered "Sign in" text
-                          Center(
-                            child: InkWell(
-                              onTap: () {
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () {
                                 Navigator.pushNamed(
-                                    context, SignInPageRoute.routeName);
+                                    context, SignUpPageRoute.routeName);
                               },
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: const [
-                                  Icon(Icons.radio_button_unchecked,
-                                      color: Colors.black),
-                                  SizedBox(width: 10),
-                                  Text(
-                                    "Sign in. Already a customer?",
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                ],
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.grey[200],
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 12.0),
+                              ),
+                              child: const Text(
+                                'Sign in. Already a customer?',
+                                style: TextStyle(
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           ),
+
+                          // Centered "Sign in" text
+                          // Center(
+                          //   child: InkWell(
+                          //     onTap: () {
+                          //       Navigator.pushNamed(
+                          //           context, SignInPageRoute.routeName);
+                          //     },
+                          //     child: Row(
+                          //       mainAxisSize: MainAxisSize.min,
+                          //       children: const [
+                          //         Icon(Icons.radio_button_unchecked,
+                          //             color: Colors.black),
+                          //         SizedBox(width: 10),
+                          //         Text(
+                          //           "Sign in. Already a customer?",
+                          //           style: TextStyle(color: Colors.black),
+                          //         ),
+                          //       ],
+                          //     ),
+                          //   ),
+                          // ),
                           const SizedBox(height: 16),
 
                           // Centered "Are you an agent?" text
@@ -731,10 +804,12 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                               ),
                             ),
                           ),
+                          const SizedBox(height: 16.0),
                         ],
                       ),
                     ),
                   ),
+                  const SizedBox(height: 20.0),
                   TramsAndConditionsCheckBox(
                     value: false,
                     onChanged: (value) {},

@@ -22,14 +22,18 @@ import '../utils/dio.dart';
 Future<OrderRes?> placeOrder(AuthProvider auth, PaymentPostData payload) async {
   try {
     if (kDebugMode) {
-      print({
-        "payment_method": payload.paymentMethod,
-        "address_id": payload.addressId,
-        "current_city": payload.currentCity,
-        "full_amount": payload.fullAmount,
-        "partial_amount": payload.partialAmount,
-      });
+      log(
+          jsonEncode({
+            "payment_method": payload.paymentMethod,
+            "address_id": payload.addressId,
+            "current_city": payload.currentCity,
+            "full_amount": payload.fullAmount,
+            "partial_amount": payload.partialAmount,
+          }),
+          name: "placeOrder  payload");
     }
+    log("Bearer ${auth.token}", name: "Token");
+    log("${APIConfig.baseUrl}/api/customer/address-submit", name: "placeOrder");
     Response response = await customDioClient.client.post(
         "${APIConfig.baseUrl}/api/customer/address-submit",
         data: {
@@ -42,9 +46,11 @@ Future<OrderRes?> placeOrder(AuthProvider auth, PaymentPostData payload) async {
         options: Options(headers: {"Authorization": "Bearer ${auth.token}"}));
 
     final result = json.decode(response.toString());
+    log(jsonEncode(result), name: "placeOrder res");
     OrderRes orderRes = OrderRes.fromJson(result);
     return orderRes;
   } catch (e) {
+    log(e.toString());
     if (e is DioException) {
       CustomLogger.error(e.response!.data);
     }

@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import '../constant/themData.dart';
 import 'package:customerapp/core/components/cutom_card.dart';
 import 'package:customerapp/core/components/divider.dart';
-import 'package:customerapp/core/components/htmlTextView.dart';
 import 'package:customerapp/core/routes/orderHistory.dart';
 import 'package:customerapp/core/routes/orderStatusPage.dart';
 import 'package:customerapp/core/routes/singleService.dart';
@@ -915,26 +914,35 @@ class PackageTile extends StatelessWidget {
                         fontSize: 18.sp,
                         fontWeight: FontWeight.w500),
                   ),
-                  Expanded(
-                    child: HtmlTextView(
-                      htmlText: package.description,
+                  Text(
+                    parseHtmlString(package.description ?? ""),
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 15.sp,
+                      color: Colors.grey,
                     ),
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Discounted Price : ₹ ${package.discountedPrice != 'null' ? package.discountedPrice : '0.0'}",
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.w400,
+                      if ((package.discountedPrice != 'null'
+                              ? package.discountedPrice
+                              : '0.0') !=
+                          "0.0") ...[
+                        Text(
+                          "Discounted Price : ₹ ${package.discountedPrice != 'null' ? package.discountedPrice : '0.0'}",
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
-                      ),
+                      ],
                       Text(
                         "Price : ₹ ${package.price}",
                         style: TextStyle(
-                            fontSize: 15.sp,
+                            fontSize: 13.sp,
                             color: Colors.grey,
                             fontWeight: FontWeight.w600,
                             decoration: TextDecoration.lineThrough),
@@ -1016,40 +1024,77 @@ class ProductTile extends StatelessWidget {
                         fontSize: 15.sp,
                         fontWeight: FontWeight.w600),
                   ),
-                  Expanded(
-                    child: HtmlTextView(
-                      htmlText: service.description ?? "",
+
+                  Text(
+                    parseHtmlString(service.description ?? ""),
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 15.sp,
+                      color: Colors.grey,
                     ),
                   ),
+
+                  // Expanded(
+                  //   child: HtmlTextView(
+                  //     htmlText: service.description ?? "",
+                  //   ),
+                  // ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (service.priceBasis != null &&
                           service.priceBasis != 'null')
                         Text(
-                          "Per ${service.priceBasis}",
+                          "${service.priceBasis}",
                           style: TextStyle(
-                            fontSize: 16.sp,
+                            fontSize: 14.sp,
                             color: Colors.black,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                      Text(
-                        "Discounted Price : ₹ ${service.discountedPrice != null && service.discountedPrice != 'null' ? service.discountedPrice : '0.0'}",
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
+                      if ((service.discountedPrice != null &&
+                                  service.discountedPrice != 'null'
+                              ? service.discountedPrice
+                              : '0.0') !=
+                          "0.0") ...[
+                        Text(
+                          "Discounted Price : ₹ ${service.discountedPrice != null && service.discountedPrice != 'null' ? service.discountedPrice : '0.0'}",
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                      Text(
-                        "Price : ₹ ${service.price}",
-                        style: TextStyle(
-                            fontSize: 15.sp,
-                            color: Colors.grey,
-                            fontWeight: FontWeight.normal,
-                            decoration: TextDecoration.lineThrough),
-                      ),
+                      ],
+                      (service.discountedPrice != null &&
+                                      service.discountedPrice != 'null'
+                                  ? service.discountedPrice
+                                  : '0.0') ==
+                              "0.0"
+                          ? Text("Price : ₹ ${service.price}",
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w600,
+                              ))
+                          : Text(
+                              "Price : ₹ ${service.price}",
+                              style: TextStyle(
+                                  fontSize: 13.sp,
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.normal,
+                                  decoration: TextDecoration.lineThrough),
+                            ),
+                      if ((service.discountedPrice != null &&
+                                  service.discountedPrice != 'null'
+                              ? service.discountedPrice
+                              : '0.0') ==
+                          "0.0") ...[
+                        const SizedBox(
+                          height: 10,
+                        )
+                      ]
                     ],
                   ),
                 ],

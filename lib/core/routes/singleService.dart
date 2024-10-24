@@ -869,8 +869,14 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                         text: TextSpan(
                                           children: [
                                             TextSpan(
-                                                text:
-                                                    "\u20B9 ${selectedCategory?.discountPrice?.toString().trim() ?? "0.00"} ",
+                                                text: (selectedCategory
+                                                                ?.discountPrice
+                                                                ?.toString()
+                                                                .trim() ??
+                                                            "0") ==
+                                                        "0"
+                                                    ? "\u20B9 ${selectedCategory?.servicePrice?.toString().trim() ?? "0.00"} "
+                                                    : "\u20B9 ${selectedCategory?.discountPrice?.toString().trim() ?? "0.00"} ",
                                                 style: TextStyle(
                                                     fontSize: 16.sp,
                                                     fontWeight: FontWeight.w600,
@@ -1046,9 +1052,15 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                       ),
                                       Text(
                                         "\u20B9 ${selectedCategory?.servicePrice ?? widget.service.price}",
-                                        style: const TextStyle(
-                                            decoration:
-                                                TextDecoration.lineThrough),
+                                        style: TextStyle(
+                                            decoration: (selectedCategory
+                                                            ?.discountPrice
+                                                            ?.toString()
+                                                            .trim() ??
+                                                        "0") ==
+                                                    "0"
+                                                ? TextDecoration.none
+                                                : TextDecoration.lineThrough),
                                       )
                                     ],
                                   ),
@@ -1456,8 +1468,8 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                           fontWeight: FontWeight.w400,
                                           color: Colors.grey,
                                         ),
-                                        maxLines: 3,
-                                        overflow: TextOverflow.ellipsis,
+                                        // maxLines: 6,
+                                        // overflow: TextOverflow.ellipsis,
                                       ),
                                     ],
                                   )),
