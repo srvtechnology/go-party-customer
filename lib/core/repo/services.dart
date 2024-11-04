@@ -207,18 +207,21 @@ Future<void> clearSavedSearchApi(
 }
 
 Future<List<String>> getBannerImages() async {
-  try {
-    Response response =
-        await Dio().get("${APIConfig.baseUrl}/api/adv-banners-list");
-    List<String> images = [];
-
-    for (var i in response.data["data"]) {
-      images.add(i["image"]);
-    }
-    return images;
-  } catch (e) {
-    rethrow;
+  Response response =
+      await Dio().get("${APIConfig.baseUrl}/api/adv-banners-list");
+  log(jsonEncode(response.data), name: "Banner Images");
+  List<String> images = [];
+  for (var i in response.data["data"]) {
+    images.add(i["image"]);
   }
+  log(images.toString(), name: "Banner Images");
+  return images;
+  // try {
+
+  // } catch (e) {
+  //   log(jsonEncode(e.toString()), name: "Banner Images");
+  //   rethrow;
+  // }
 }
 
 Future<List<String>> getMobileBannerImages() async {

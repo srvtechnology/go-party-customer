@@ -162,22 +162,24 @@ class _ImageSliderState extends State<ImageSlider> {
             ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: AnimatedSmoothIndicator(
-                count: widget.imageUrls.length,
-                effect: ExpandingDotsEffect(
-                  dotHeight: 8,
-                  dotWidth: 8,
-                  dotColor: Colors.white.withOpacity(0.9),
-                  activeDotColor: primaryColor,
-                  expansionFactor: 2,
-                  spacing: 4,
-                ),
-                onDotClicked: (index) {},
-                activeIndex: _currentCarouselIndex,
-              ),
-            ),
+            child: widget.imageUrls.isEmpty
+                ? const SizedBox()
+                : Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: AnimatedSmoothIndicator(
+                      count: widget.imageUrls.length,
+                      effect: ExpandingDotsEffect(
+                        dotHeight: 8,
+                        dotWidth: 8,
+                        dotColor: Colors.white.withOpacity(0.9),
+                        activeDotColor: primaryColor,
+                        expansionFactor: 2,
+                        spacing: 4,
+                      ),
+                      onDotClicked: (index) {},
+                      activeIndex: _currentCarouselIndex,
+                    ),
+                  ),
           )
         ],
       ),

@@ -61,7 +61,6 @@ class ServiceProvider with ChangeNotifier {
     try {
       startLoading();
       _data = await getServices();
-      banner1Images = await getBannerImages();
       mobileBannerImages = await getMobileBannerImages();
       _eventData = await getEvents();
       _packageData = await getPackages();
@@ -70,9 +69,11 @@ class ServiceProvider with ChangeNotifier {
         CustomLogger.error(e);
       }
       CustomLogger.error(e);
+      banner1Images = await getBannerImages();
     } finally {
       stopLoading();
     }
+    // banner1Images = await getBannerImages();
   }
 
   Future<void> getFilteredServices(AuthProvider? auth, FilterProvider filters,
