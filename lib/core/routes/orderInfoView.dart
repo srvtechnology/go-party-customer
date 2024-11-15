@@ -159,7 +159,7 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                                   SizedBox(height: 1.h),
                                   Text(
                                     /* "₹ ${widget.order.totalPrice}", */
-                                    "₹ ${widget.order.totalPrice}",
+                                    "₹ ${(double.parse(widget.order.totalPrice) * 0.25 +double.parse(widget.order.totalPrice) * 0.25 * 0.18).toStringAsFixed(2)}",
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.bold,
@@ -530,7 +530,6 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                                 ],
                               ),
                         // total
-
                         const Divider(),
                         widget.order.paidStatus == "partial"
                             ? Row(
@@ -544,7 +543,7 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                                   ),
                                   const Spacer(),
                                   Text(
-                                    "₹ ${int.parse(widget.order.totalPrice) * 0.25}",
+                                    "₹ ${(double.parse(widget.order.totalPrice) * 0.25 +double.parse(widget.order.totalPrice) * 0.25 * 0.18).toStringAsFixed(2)}",
                                     style: TextStyle(
                                       fontSize: 18.sp,
                                       fontWeight: FontWeight.w600,
@@ -563,8 +562,9 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                                     ),
                                   ),
                                   const Spacer(),
+                                  //
                                   Text(
-                                    "₹ ${widget.order.totalPrice}",
+                                    "₹ ${(double.parse(widget.order.totalPrice) * 0.25 +double.parse(widget.order.totalPrice) * 0.25 * 0.18).toStringAsFixed(2)}",
                                     style: TextStyle(
                                       fontSize: 18.sp,
                                       fontWeight: FontWeight.w600,

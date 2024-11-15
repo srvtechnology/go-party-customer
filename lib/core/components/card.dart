@@ -86,14 +86,16 @@ class OrderCard extends StatelessWidget {
                 SizedBox(
                   width: 1.w,
                 ),
-                Text("₹ ${priceFormatter(service.price ?? "0")}",
+                Text(" ${priceFormatter(service.price ?? "0")}",
                     style: priceStyle(context)),
                 SizedBox(
                   // add to cart button
                   width: 2.w,
                 ),
-                Text("₹ ${priceFormatter(service.discountedPrice ?? "0")}",
-                    style: discountedStyle(context)),
+                Text(
+                  " ${service.discountedPrice != null ? priceFormatter(service.discountedPrice!) : "0"}",
+                  style: discountedStyle(context),
+                ),
               ],
             ),
             SizedBox(
@@ -173,13 +175,13 @@ class PackageCard extends StatelessWidget {
                 SizedBox(
                   width: 1.w,
                 ),
-                Text("₹ ${priceFormatter(package.price)}",
+                Text(" ${priceFormatter(package.price)}",
                     style: priceStyle(context)),
                 SizedBox(
                   // add to cart button
                   width: 2.w,
                 ),
-                Text("₹ ${priceFormatter(package.discountedPrice)}",
+                Text(" ${priceFormatter(package.discountedPrice)}",
                     style: discountedStyle(context)),
               ],
             ),

@@ -631,8 +631,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                   ),
                                 ),
                                 Text(
-                                  _paymentTypeController.text
-                                          .contains("Partial")
+                                  _paymentTypeController.text.contains("Partial")
                                       ? "₹ ${(widget.total * 0.25 + widget.total * 0.25 * 0.18).toStringAsFixed(2)}"
                                       : "₹ ${(widget.total + widget.total * 0.18).toStringAsFixed(2)}",
                                   style: const TextStyle(
