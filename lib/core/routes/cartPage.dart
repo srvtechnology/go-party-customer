@@ -625,28 +625,30 @@ class ExtraDetails extends StatelessWidget {
           child: Consumer2<ServiceProvider, AuthProvider>(
             builder: (context, state, auth, child) {
               if (state.isLoading) {
-                // progress indicator
                 return Container(
                   height: 10.h,
                   alignment: Alignment.center,
                   child: SizedBox(
-                      height: 3.h,
-                      width: 3.h,
-                      child: const CircularProgressIndicator(
-                        color: primaryColor,
-                        strokeWidth: 2,
-                      )),
+                    height: 3.h,
+                    width: 3.h,
+                    child: const CircularProgressIndicator(
+                      color: primaryColor,
+                      strokeWidth: 2,
+                    ),
+                  ),
                 );
               }
               if (state.data == null) {
                 return Container();
               }
+
               return Column(
                 children: [
                   CustomCard(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Header and View All button
                         Padding(
                           padding: const EdgeInsets.only(top: 10, right: 5),
                           child: Row(
@@ -662,7 +664,7 @@ class ExtraDetails extends StatelessWidget {
                                           .textTheme
                                           .labelLarge!
                                           .copyWith(
-                                              fontSize: 14, color: textColor),
+                                          fontSize: 14, color: textColor),
                                     ),
                                   ],
                                 ),
@@ -670,43 +672,51 @@ class ExtraDetails extends StatelessWidget {
                               const Spacer(),
                               TextButton(
                                   onPressed: () {
-                                    MaterialPageRoute(
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
                                         builder: (context) =>
                                             PackageListPageRoute(
-                                                packages: state.packageData!));
+                                                packages: state.packageData!),
+                                      ),
+                                    );
                                   },
                                   child: Text(
                                     "View All",
                                     style: TextStyle(
                                         color:
-                                            Theme.of(context).primaryColorDark,
+                                        Theme.of(context).primaryColorDark,
                                         fontSize: 12),
                                   ))
                             ],
                           ),
                         ),
-                        SizedBox(
-                          height: 2.h,
-                        ),
+                        SizedBox(height: 2.h),
                         SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Row(
-                              children: state.packageData!
-                                  .getRange(
-                                      0, min(4, state.packageData!.length))
-                                  .map((e) => PackageCard(
-                                        package: e,
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      SinglePackageRoute(
-                                                        package: e,
-                                                      )));
-                                        },
-                                      ))
-                                  .toList()),
+                            children: state.packageData != null &&
+                                state.packageData!.isNotEmpty
+                                ? state.packageData!
+                                .getRange(
+                                0, min(4, state.packageData!.length))
+                                .map((e) => PackageCard(
+                              package: e,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        SinglePackageRoute(
+                                          package: e,
+                                        ),
+                                  ),
+                                );
+                              },
+                            ))
+                                .toList()
+                                : [Text("No packages available")],
+                          ),
                         ),
                       ],
                     ),
@@ -715,6 +725,7 @@ class ExtraDetails extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Header and View All button
                         Padding(
                           padding: const EdgeInsets.only(top: 10, right: 5),
                           child: Row(
@@ -730,7 +741,7 @@ class ExtraDetails extends StatelessWidget {
                                           .textTheme
                                           .labelLarge!
                                           .copyWith(
-                                              fontSize: 14, color: textColor),
+                                          fontSize: 14, color: textColor),
                                     ),
                                   ],
                                 ),
@@ -738,49 +749,50 @@ class ExtraDetails extends StatelessWidget {
                               const Spacer(),
                               TextButton(
                                   onPressed: () {
-                                    /* Navigator.pushNamed(
-                                        context, ProductPageRoute.routeName); */
-                                    /* --commented on : 09-04-24 -- */
                                     Navigator.pushNamed(
-                                        context, ViewAllServiceRoute.routeName);
+                                      context,
+                                      ViewAllServiceRoute.routeName,
+                                    );
                                   },
                                   child: Text(
                                     "View All",
                                     style: TextStyle(
                                         color:
-                                            Theme.of(context).primaryColorDark,
+                                        Theme.of(context).primaryColorDark,
                                         fontSize: 12),
                                   ))
                             ],
                           ),
                         ),
-                        SizedBox(
-                          height: 2.h,
-                        ),
+                        SizedBox(height: 2.h),
                         SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Row(
-                              children: state.data!
-                                  .getRange(4, min(7, state.data!.length))
-                                  .map((e) => OrderCard(
-                                        service: e,
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      SingleServiceRoute(
-                                                          service: e)));
-                                        },
-                                      ))
-                                  .toList()),
+                            children: state.data != null &&
+                                state.data!.length > 4
+                                ? state.data!
+                                .getRange(4, min(7, state.data!.length))
+                                .map((e) => OrderCard(
+                              service: e,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        SingleServiceRoute(
+                                            service: e),
+                                  ),
+                                );
+                              },
+                            ))
+                                .toList()
+                                : [Text("No more services available")],
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(
-                    height: 5.h,
-                  ),
+                  SizedBox(height: 5.h),
                 ],
               );
             },
@@ -789,247 +801,9 @@ class ExtraDetails extends StatelessWidget {
       }),
     );
   }
+
 }
 
 
-/*--- commented on : 29-07-24 to fix the design of the cart CardTile ----*/
-/*Widget _cartTile(CartProvider state, CartModel item, AuthProvider auth) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    SingleServiceRoute(service: item.service)));
-      },
-      child: CustomCard(
-        padding: EdgeInsets.symmetric(vertical: 2.h),
-        child: Column(
-          children: [
-            Container(
-              constraints: BoxConstraints(minHeight: 20.h, maxHeight: 56.h),
-              child: Row(
-                children: [
-                  Container(
-                    alignment: Alignment.topCenter,
-                    width: 40.w,
-                    margin: EdgeInsets.only(right: 4.w, left: 4.w),
-                    child: Container(
-                      height: 150,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          image: DecorationImage(
-                              image: NetworkImage(item.service.images.first),
-                              fit: BoxFit.fill)),
-                    ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.service.name,
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w600),
-                        ),
-                        /*  Builder(builder: (context) {
-                          try {
-                            return Container(
-                              margin: EdgeInsets.only(top: 1.w),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    "₹ ${item.service.price}",
-                                    style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  Text(
-                                    "  ${item.service.priceBasis}",
-                                    style: const TextStyle(fontSize: 12),
-                                  )
-                                ],
-                              ),
-                            );
-                          } catch (e) {
-                            return Container(
-                              margin: EdgeInsets.only(top: 1.h),
-                              child: Text(
-                                "₹ ${item.service.price}",
-                                style: TextStyle(
-                                    color: Theme.of(context).primaryColor,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                            );
-                          }
-                        }), */
-                        Container(
-                          padding: EdgeInsets.symmetric(vertical: 1.w),
-                          margin: EdgeInsets.only(right: 4.w, top: 1.h),
-                          alignment: Alignment.centerLeft,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text("Price :",
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                      )),
-                                  FittedBox(
-                                    child: Text(
-                                        "\u20B9 ${item.service
-                                            .discountedPrice}",
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            color:
-                                            Theme
-                                                .of(context)
-                                                .primaryColor,
-                                            fontWeight: FontWeight.w600)),
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(right: 4.w, top: 1.h),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Text(
-                                "Quantity",
-                                style: TextStyle(fontSize: 12),
-                              ),
-                              const SizedBox(
-                                width: 50,
-                              ),
-                              Expanded(
-                                child: SizedBox(
-                                  width: 50,
-                                  height: 30,
-                                  child: TextFormField(
-                                    keyboardType:
-                                    const TextInputType.numberWithOptions(
-                                        signed: false, decimal: false),
-                                    textAlign: TextAlign.center,
-                                    textAlignVertical: TextAlignVertical.center,
-                                    initialValue: item.quantity,
-                                    decoration: const InputDecoration(
-                                        contentPadding: EdgeInsets.all(0),
-                                        enabledBorder: OutlineInputBorder(),
-                                        border: OutlineInputBorder()),
-                                    onChanged: (text) {
-                                      if (text.isNotEmpty) {
-                                        setState(() {
-                                          item.quantity = text;
-                                          item.totalPrice =
-                                              (double.parse(text) *
-                                                  double.parse(item.price))
-                                                  .toString();
-                                          changedQuantity[item.id] = text;
-                                          state.calculateTotal();
-                                        });
-                                        _handleQuantityChanged(auth);
-                                      }
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(right: 4.w, top: 1.h),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Text(
-                                "Total",
-                                style: TextStyle(fontSize: 15),
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              FittedBox(
-                                  child: Text(
-                                    "\u20B9 ${item.totalPrice}",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: primaryColor),
-                                  )),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(top: 2.h, right: 4.w),
-                          child: Row(
-                            children: [
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.white,
-                                    shadowColor: Colors.grey,
-                                    elevation: 2.5,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius.circular(10))),
-                                onPressed: () async {
-                                  await removeFromCart(
-                                      context.read<AuthProvider>(), item.id);
-                                  state.getCart(auth);
-                                },
-                                child: const Text(
-                                  "Delete",
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 8),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 2.w,
-                              ),
-                              Expanded(
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                          BorderRadius.circular(10))),
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                SingleServiceRoute(
-                                                  service: item.service,
-                                                )));
-                                  },
-                                  child: const Text(
-                                    "See More",
-                                    style: TextStyle(fontSize: 8),
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }*/
 
 

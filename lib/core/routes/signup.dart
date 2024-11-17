@@ -714,7 +714,7 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                             child: ElevatedButton(
                               onPressed: () {
                                 Navigator.pushNamed(
-                                    context, SignUpPageRoute.routeName);
+                                    context, SignInPageRoute.routeName);
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.grey[200],

@@ -126,7 +126,7 @@ Future<GenerateOrderValue?> generateOrderVal(AuthProvider auth, int orderId,
     rethrow;
   }
 }
-
+//add new api for get single order information...
 Future<List<OrderModel>> getUpcomingOrderItems(AuthProvider auth) async {
   try {
     // log("getUpcomingOrderItems");
@@ -152,6 +152,34 @@ Future<List<OrderModel>> getUpcomingOrderItems(AuthProvider auth) async {
     return Future.error(e);
   }
 }
+
+
+/*Future<List<OrderModel>> getSingleOrderItems(AuthProvider auth,String orderid) async {
+  try {
+    // log("getUpcomingOrderItems");
+    Response response = await customDioClient.client.get(
+        "${APIConfig.baseUrl}/api/customer-upcoming-order",
+        data: {"id": id},
+        options: Options(headers: {"Authorization": "Bearer ${auth.token}"}));
+    log(jsonEncode(response.data), name: "Single-order");
+    List<OrderModel> list = [];
+
+    for (var i in response.data["data"]) {
+      try {
+        list.add(OrderModel.fromJson(i));
+      } catch (e) {
+        CustomLogger.error(i);
+        CustomLogger.error(e);
+      }
+    }
+    return list;
+  } catch (e) {
+    if (e is DioException) {
+      CustomLogger.error(e.response!.data);
+    }
+    return Future.error(e);
+  }
+}*/
 
 Future<bool> rateOrder(AuthProvider auth,
     {required String orderId, rate, feedback}) async {

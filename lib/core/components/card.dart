@@ -87,13 +87,12 @@ class OrderCard extends StatelessWidget {
                   width: 1.w,
                 ),
                 Text(" ${priceFormatter(service.price ?? "0")}",
-                    style: priceStyle(context)),
+                    style: service.discountedPrice!="null" ? priceStyle(context):discountedStyle(context) ),
                 SizedBox(
                   // add to cart button
                   width: 2.w,
                 ),
-                Text(
-                  " ${service.discountedPrice != null ? priceFormatter(service.discountedPrice!) : "0"}",
+                Text("${ priceFormatter(service.discountedPrice!)}",
                   style: discountedStyle(context),
                 ),
               ],

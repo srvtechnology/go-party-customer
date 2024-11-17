@@ -62,10 +62,20 @@ class _OrderInfoViewState extends State<OrderInfoView> {
     );
   }
 
+  double getGSTaddedAmount(double price) {
+    return price * 0.18;
+  }
+
   @override
   Widget build(BuildContext context) {
     DateTime eventDate = DateTime.parse(widget.order.eventDate);
     String formattedDate = DateFormat('dd.MM.yyyy').format(eventDate);
+    double gamt = (double.parse(widget.order.totalPrice) +
+        getGSTaddedAmount(double.parse(widget.order.totalPrice)));
+    print(gamt);
+    double remainingamt = gamt -
+        double.parse(double.parse(widget.order.totalPrice).toStringAsFixed(2));
+    remainingamt.toStringAsFixed(2);
 
     return Scaffold(
         appBar: CommonHeader.header(
@@ -159,7 +169,7 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                                   SizedBox(height: 1.h),
                                   Text(
                                     /* "₹ ${widget.order.totalPrice}", */
-                                    "₹ ${(double.parse(widget.order.totalPrice) * 0.25 +double.parse(widget.order.totalPrice) * 0.25 * 0.18).toStringAsFixed(2)}",
+                                    "₹ ${(double.parse(widget.order.totalPrice) + double.parse(widget.order.totalPrice) * 0.18).toStringAsFixed(2)}",
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.bold,
@@ -174,19 +184,6 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                         InkWell(
                           onTap: () async {
                             showCancelOrderDialog(context, widget.order.id);
-                            /*context
-                                .read<OrderProvider>()
-                                .cancelOrder(context.read<AuthProvider>(),
-                                    widget.order.id)
-                                .whenComplete(() =>
-                                    Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const MainPageRoute(
-                                                  index: 0,
-                                                )),
-                                        (route) => route.isFirst));*/
                           },
                           child: Column(
                             children: [
@@ -241,11 +238,6 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                           ),
                         ),
                         SizedBox(height: 1.h),
-                        /* Text(
-                          'Delivery Estimate',
-                          style: TextStyle(
-                              fontSize: 16.sp, fontWeight: FontWeight.w400),
-                        ), */
                         Text(
                           'Event Dates',
                           style: TextStyle(
@@ -264,19 +256,6 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                           order: widget.order,
                           isShowPrice: true,
                         ),
-                        /* const Divider(),
-                        Row(
-                          children: [
-                            Text(
-                              'Tracking Shipment',
-                              style: TextStyle(
-                                  fontSize: 16.sp, fontWeight: FontWeight.w400),
-                            ),
-                            const Spacer(),
-                            const Icon(Icons.arrow_forward_ios_rounded, size: 16),
-                          ],
-                        ),
-                        const Divider(), */
                         SizedBox(height: 2.h),
                       ],
                     ),
@@ -453,7 +432,7 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                             ),
                             const Spacer(),
                             Text(
-                              "₹ ${widget.order.totalPrice}",
+                              "₹ ${(double.parse(widget.order.totalPrice) * 0.25 + double.parse(widget.order.totalPrice) * 0.25 * 0.18).toStringAsFixed(2)}",
                               style: TextStyle(
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w500,
@@ -461,29 +440,6 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                             ),
                           ],
                         ),
-                        /*  if (order.paidStatus == "partial")
-                          Row(
-                            children: [
-                              Text(
-                                'Paid Amount ',
-                                style: TextStyle(
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              const Spacer(),
-
-                              // 25% of total price
-                              Text(
-                                "₹ ${int.parse(order.totalPrice) * 0.25}",
-                                style: TextStyle(
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ), */
                         widget.order.paidStatus == "partial"
                             ?
                             // remaining amount
@@ -498,10 +454,9 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                                     ),
                                   ),
                                   const Spacer(),
-
                                   // 25% of total price
                                   Text(
-                                    "₹ ${int.parse(widget.order.totalPrice) * 0.75}",
+                                    "₹ ${remainingamt.toStringAsFixed(2)}",
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.w500,
@@ -543,7 +498,7 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                                   ),
                                   const Spacer(),
                                   Text(
-                                    "₹ ${(double.parse(widget.order.totalPrice) * 0.25 +double.parse(widget.order.totalPrice) * 0.25 * 0.18).toStringAsFixed(2)}",
+                                    "₹ ${(double.parse(widget.order.totalPrice) * 0.25 + double.parse(widget.order.totalPrice) * 0.25 * 0.18).toStringAsFixed(2)}",
                                     style: TextStyle(
                                       fontSize: 18.sp,
                                       fontWeight: FontWeight.w600,
@@ -564,7 +519,7 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                                   const Spacer(),
                                   //
                                   Text(
-                                    "₹ ${(double.parse(widget.order.totalPrice) * 0.25 +double.parse(widget.order.totalPrice) * 0.25 * 0.18).toStringAsFixed(2)}",
+                                    "₹ ${(double.parse(widget.order.totalPrice) * 0.25 + double.parse(widget.order.totalPrice) * 0.25 * 0.18).toStringAsFixed(2)}",
                                     style: TextStyle(
                                       fontSize: 18.sp,
                                       fontWeight: FontWeight.w600,

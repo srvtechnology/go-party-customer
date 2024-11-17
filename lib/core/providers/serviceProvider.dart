@@ -64,16 +64,16 @@ class ServiceProvider with ChangeNotifier {
       mobileBannerImages = await getMobileBannerImages();
       _eventData = await getEvents();
       _packageData = await getPackages();
+      banner1Images = await getBannerImages();
     } catch (e) {
       if (e is DioException) {
         CustomLogger.error(e);
       }
       CustomLogger.error(e);
-      banner1Images = await getBannerImages();
+
     } finally {
       stopLoading();
     }
-    // banner1Images = await getBannerImages();
   }
 
   Future<void> getFilteredServices(AuthProvider? auth, FilterProvider filters,

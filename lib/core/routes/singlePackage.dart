@@ -1257,7 +1257,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                               padding: const EdgeInsets.only(
                                                   right: 8.0),
                                               child: Text(
-                                                "\u20B9 ${selectedCategory?.discountPrice ?? widget.package.discountedPrice}",
+                                                "\u20B9 ${selectedCategory?.servicePrice ?? widget.package.services}",
                                                 style: const TextStyle(
                                                     fontSize: 16,
                                                     fontWeight:
