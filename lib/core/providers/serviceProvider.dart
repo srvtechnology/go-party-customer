@@ -70,7 +70,6 @@ class ServiceProvider with ChangeNotifier {
         CustomLogger.error(e);
       }
       CustomLogger.error(e);
-
     } finally {
       stopLoading();
     }

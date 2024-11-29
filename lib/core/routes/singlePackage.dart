@@ -204,7 +204,6 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                 Navigator.pushNamed(context, ProductPageRoute.routeName);
               }),
               body: Container(
-                constraints: BoxConstraints(minHeight: 500.h),
                 width: double.infinity,
                 child: SingleChildScrollView(
                   child: Column(
@@ -634,50 +633,6 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                           ]),
                         ),
                       ),
-                      /* ---commented About since it shows the same as above Show More/Less on : 29-07-24 --*/
-                      /*  Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 4.w,
-                          ),
-                          margin: EdgeInsets.only(top: 1.h),
-                          child: const Text(
-                            "About",
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.w600),
-                          )),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 4.w,
-                        ),
-                        child: Row(
-                          children: [
-                            ...widget.package.services.map((e) => Container(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(e.name ?? ''),
-                                ))
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 1.h,
-                      ),
-                      Container(
-                        constraints: BoxConstraints(
-                            minHeight: 1.h,
-                            maxHeight: double.infinity,
-                            minWidth: double.infinity,
-                            maxWidth: double.infinity),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 4.w,
-                        ),
-                        alignment: Alignment.centerLeft,
-                        child:
-                            HtmlTextView(htmlText: widget.package.description),
-                      ),
-                      */
-                      const Divider(
-                        thickness: 1,
-                      ),
                       Container(
                           constraints: BoxConstraints(
                               minHeight: 1.h,
@@ -691,7 +646,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                             children: widget.package.images
                                 .map((e) => Container(
                                       margin: EdgeInsets.only(
-                                          bottom: 2.h, top: 2.h),
+                                          bottom: 2.h),
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(10),
@@ -703,10 +658,6 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                     ))
                                 .toList(),
                           )),
-                      SizedBox(
-                        height: 2.h,
-                      ),
-
                       const ExtraDetails()
                       // SizedBox(
                       //   height: 5.h,
@@ -997,7 +948,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 20, vertical: 5),
                                   alignment: Alignment.topCenter,
-                                  margin: const EdgeInsets.only(bottom: 20),
+                                  margin: const EdgeInsets.only(bottom: 5),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -1072,8 +1023,6 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                       }),
                                       const SizedBox(height: 10),
                                       Container(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 5),
                                         child: Text(
                                           "Event End Date",
                                           style: TextStyle(
@@ -1165,8 +1114,6 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                         height: 10,
                                       ),
                                       Container(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 5),
                                         child: Text(
                                           "Days",
                                           style: TextStyle(

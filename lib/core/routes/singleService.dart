@@ -727,7 +727,6 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                               ),
                             ),
                             Container(
-                              margin: EdgeInsets.only(top: 1.h),
                               padding: EdgeInsets.symmetric(
                                 horizontal: 4.w,
                               ),
@@ -744,7 +743,6 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                               ),
                             ),
                             Container(
-                              margin: EdgeInsets.only(top: 0.h),
                               padding: EdgeInsets.symmetric(
                                 horizontal: 4.w,
                               ),
@@ -765,21 +763,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                         color: Theme.of(context).primaryColor),
                               ),
                             ),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            /* Container(
-                                constraints: BoxConstraints(
-                                    minHeight: 1.h,
-                                    maxHeight: double.infinity,
-                                    minWidth: double.infinity,
-                                    maxWidth: double.infinity),
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 4.w,
-                                ),
-                                alignment: Alignment.centerLeft,
-                                child:
-                                    HtmlTextView(htmlText: widget.service.description)), */
+
                             AnimatedContainer(
                                 constraints: BoxConstraints(
                                     minHeight: 1.h,
@@ -853,9 +837,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                 ],
                               ),
                             ), */
-                            const Divider(
-                              thickness: 1,
-                            ),
+
                             Container(
                               padding: EdgeInsets.symmetric(
                                   horizontal: 4.w, vertical: 2.h),
@@ -939,7 +921,6 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                       ),
                                     ],
                                   ),
-                                  const Spacer(),
                                 ],
                               ),
                             ),
@@ -1263,19 +1244,6 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                       fontSize: 20,
                                       fontWeight: FontWeight.w600),
                                 )),
-                            /* Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 4.w,
-                              ),
-                              child: Row(
-                                children: [
-                                  ...widget.service.s.map((e) => Container(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(e.name),
-                                      ))
-                                ],
-                              ),
-                            ), */
                             SizedBox(
                               height: 1.h,
                             ),
@@ -1294,7 +1262,6 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                             ),
                             Container(
                                 constraints: BoxConstraints(
-                                    minHeight: 1.h,
                                     maxHeight: double.infinity,
                                     minWidth: double.infinity,
                                     maxWidth: double.infinity),
@@ -1317,130 +1284,12 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                           ))
                                       .toList(),
                                 )),
-                            SizedBox(
-                              height: 2.h,
-                            ),
-                            /*  Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 4.w,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    const Text(
-                                      "Reviews",
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                    // write review button
-                                    WriteReview(
-                                      serviceId: widget.service.id.toString(),
-                                    ),
-                                  ],
-                                )),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 4.w,
-                              ),
-                              height: 5.h,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  const Icon(
-                                    Icons.star,
-                                    color: Color.fromARGB(255, 212, 119, 61),
-                                  ),
-                                  SizedBox(
-                                    width: 2.w,
-                                  ),
-                                  Text(
-                                    widget.service.rating ?? "Not Rated",
-                                    style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                  SizedBox(
-                                    width: 2.w,
-                                  ),
-                                  Text(
-                                      "( ${widget.service.reviews?.length} rating${widget.service.reviews!.length > 1 ? "s" : ""} )")
-                                ],
-                              ),
-                            ),
-                            const Divider(
-                              thickness: 1,
-                            ),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 4.w,
-                              ),
-                              child: Column(
-                                  children: widget.service.reviews!
-                                      .getRange(
-                                          0,
-                                          min(4,
-                                              widget.service.reviews!.length))
-                                      .map((e) => ReviewTile(e: e))
-                                      .toList()),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ReviewPage(
-                                            reviews: widget.service.reviews!)));
-                              },
-                              child: Container(
-                                height: 6.h,
-                                margin: EdgeInsets.symmetric(
-                                  horizontal: 4.w,
-                                ),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                      width: 0.5,
-                                      color: Theme.of(context).primaryColor),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    const Text(
-                                      'View All Reviews',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        color: primaryColor,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 2.w,
-                                    ),
-                                    const Icon(
-                                      Icons.arrow_forward_ios_rounded,
-                                      color: primaryColor,
-                                      size: 16,
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ), */
-
                             // feature description
                             if (widget.service.featured_description != null ||
                                 parseHtmlString(
                                         widget.service.featured_description ??
                                             "") !=
                                     "") ...[
-                              Divider(
-                                thickness: 1,
-                                height: 6.h,
-                              ),
                               Container(
                                   padding: EdgeInsets.symmetric(
                                     horizontal: 4.w,
@@ -1456,30 +1305,22 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
-                                      SizedBox(
-                                        height: 2.h,
-                                      ),
-                                      Text(
-                                        parseHtmlString(widget
-                                                .service.featured_description ??
-                                            ""),
+                                      Text(parseHtmlString(widget.service.featured_description ?? ""),
                                         style: const TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w400,
                                           color: Colors.grey,
                                         ),
-                                        // maxLines: 6,
-                                        // overflow: TextOverflow.ellipsis,
                                       ),
+
                                     ],
                                   )),
+
+                              const Divider(thickness: 1, // Thickness of the line
+                                height: 5,  ),
+                              const ExtraDetails(),
                             ],
 
-                            Divider(
-                              thickness: 1,
-                              height: 6.h,
-                            ),
-                            const ExtraDetails(),
                           ],
                         ),
                       ),
@@ -1511,7 +1352,8 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const SignInPageRoute(
+                    builder: (context) =>
+                    const SignInPageRoute(
                       comeBack: true,
                     ),
                   ),
@@ -1520,17 +1362,18 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                     if (isBookNow) {
                       addToCartDialog(context, categories,
                           isFromBookNow: (serviceIds, data, totalPrice) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CheckoutPage(
-                              serviceIds: serviceIds,
-                              cartItems: data,
-                              cartSubTotal: totalPrice,
-                            ),
-                          ),
-                        );
-                      });
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    CheckoutPage(
+                                      serviceIds: serviceIds,
+                                      cartItems: data,
+                                      cartSubTotal: totalPrice,
+                                    ),
+                              ),
+                            );
+                          });
                     } else {
                       addToCartDialog(context, categories);
                     }
@@ -1546,14 +1389,14 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
               child: const Text('Sign In'),
             ),
 
-            // Sign Up Button
             TextButton(
               onPressed: () {
-                Navigator.of(dialogContext).pop(); // Close the dialog
+                Navigator.of(dialogContext).pop();
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const SignUpPageRoute(
+                    builder: (context) =>
+                    const SignUpPageRoute(
                       comeback: true,
                     ),
                   ),
@@ -1562,17 +1405,18 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                     if (isBookNow) {
                       addToCartDialog(context, categories,
                           isFromBookNow: (serviceIds, data, totalPrice) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CheckoutPage(
-                              serviceIds: serviceIds,
-                              cartItems: data,
-                              cartSubTotal: totalPrice,
-                            ),
-                          ),
-                        );
-                      });
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    CheckoutPage(
+                                      serviceIds: serviceIds,
+                                      cartItems: data,
+                                      cartSubTotal: totalPrice,
+                                    ),
+                              ),
+                            );
+                          });
                     } else {
                       addToCartDialog(context, categories);
                     }
@@ -1592,77 +1436,6 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
       },
     );
   }
-
-  /* void showAuthDialog(BuildContext context, AuthProvider authProvider,
-      CategoryProvider categories, bool isBookNow) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          title: const Text('Authentication Required'),
-          content: const Text(
-              'You need to be signed in to add items to the cart or proceed to checkout.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SignInPageRoute(
-                      comeBack: true,
-                    ),
-                  ),
-                ).then((value) {
-                  if (authProvider.authState == AuthState.loggedIn) {
-                    Navigator.pop(context);
-                    addToCartDialog(context, categories);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Please login to continue"),
-                      ),
-                    );
-                  }
-                });
-              },
-              child: const Text('Sign In'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SignUpPageRoute(
-                      comeback: true,
-                    ),
-                  ),
-                ).then((value) {
-                  if (kDebugMode) {
-                    print(
-                        'Auth state after sign up: ${authProvider.authState}');
-                  }
-                  if (authProvider.authState == AuthState.loggedIn) {
-                    Navigator.pop(context);
-                    addToCartDialog(context, categories);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Please signUp to continue"),
-                      ),
-                    );
-                  }
-                });
-              },
-              child: const Text('Sign Up'),
-            ),
-          ],
-        );
-      },
-    );
-  } */
 }
 
 class WriteReview extends StatelessWidget {

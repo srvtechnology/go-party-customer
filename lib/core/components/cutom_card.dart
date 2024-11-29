@@ -9,12 +9,12 @@ class CustomCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      margin: const EdgeInsets.symmetric(horizontal: 5),
       alignment: Alignment.centerLeft,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: const BorderRadius.all(Radius.circular(10)),
-        border: Border.all(width: 0.15, color: Colors.grey),
+        border: Border.all(width: 0.0, color: Colors.white),
       ),
       padding: padding ?? contentPadding,
       child: child,

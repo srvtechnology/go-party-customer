@@ -44,234 +44,6 @@ class _AgentSignInState extends State<AgentSignIn> {
                     ),
                   ),
                   const SizedBox(height: 32.0),
-                  /*Center(
-                    child: Text(
-                      "Sign In as Agent",
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColor, // Text color
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),*/
-                  /* InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, AgentSignUp.routeName);
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: const [
-                          // Icon or leading element (can be a radio button icon)
-                          Icon(Icons.radio_button_unchecked,
-                              color: Colors.white),
-                          SizedBox(width: 10),
-                          Text(
-                            "Sign Up as Agent",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: const [
-                        // Icon or leading element (can be a radio button icon)
-                        Icon(Icons.radio_button_checked, color: Colors.white),
-                        SizedBox(width: 10),
-                        Text(
-                          "Already an Agent ? Sign in.",
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.w600),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16.0),
-                  TextFormField(
-                    style: const TextStyle(color: Colors.grey),
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      prefixIcon: const Icon(Icons.email, color: Colors.grey),
-                      labelStyle: const TextStyle(color: Colors.grey),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide:
-                              const BorderSide(width: 0.5, color: Colors.grey)),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide:
-                              const BorderSide(width: 0.5, color: Colors.grey)),
-                    ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter your email';
-                      }
-                      if (!value.contains('@')) {
-                        return 'Please enter a valid email address';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16.0),
-                  TextFormField(
-                    style: const TextStyle(color: Colors.grey),
-                    controller: _passwordController,
-                    obscureText: obscureText,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      prefixIcon: const Icon(Icons.lock, color: Colors.grey),
-                      suffixIcon: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            obscureText = !obscureText;
-                          });
-                        },
-                        child: Icon(
-                          obscureText ? Icons.visibility_off : Icons.visibility,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      labelStyle: const TextStyle(color: Colors.grey),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide:
-                              const BorderSide(width: 0.5, color: Colors.grey)),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide:
-                              const BorderSide(width: 0.5, color: Colors.grey)),
-                    ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter your password';
-                      }
-                      if (value.length < 6) {
-                        return 'Password should be at least 6 characters long';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 32.0),
-                  ElevatedButton(
-                    onPressed: state.isLoading
-                        ? null
-                        : () {
-                            if (_formKey.currentState!.validate()) {
-                              state
-                                  .loginAgent(scaffoldKey,
-                                      email: _emailController.text,
-                                      password: _passwordController.text)
-                                  .whenComplete(() {
-                                if (state.authState == AuthState.loggedIn) {
-                                  Navigator.pushReplacementNamed(
-                                      context, MainPageRoute.routeName);
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                          "Something went wrong. Please try again later"),
-                                    ),
-                                  );
-                                }
-                              });
-                            }
-                          },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    ),
-                    child: state.isLoading
-                        ? const CircularProgressIndicator(
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.grey),
-                          )
-                        : const Text(
-                            'Sign In',
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context)
-                          .primaryColor, // Background color for the button
-                      borderRadius: BorderRadius.circular(8), // Rounded corners
-                    ),
-                    child: Center(
-                      child: RichText(
-                        text: TextSpan(
-                          text: 'Are you a Customer ? ',
-                          style: const TextStyle(
-                            color: Colors.white, // Text color
-                            fontSize: 16,
-                          ),
-                          children: <TextSpan>[
-                            TextSpan(
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Navigator.pushNamed(
-                                      context, SignInPageRoute.routeName);
-                                },
-                              text: 'Sign in',
-                              style: const TextStyle(
-                                color: Colors.yellow, // Link color
-                                fontSize: 16,
-                              ),
-                            ),
-                            const TextSpan(
-                              text: ' or ',
-                              style: TextStyle(
-                                color: Colors.white, // Text color
-                                fontSize: 16,
-                              ),
-                            ),
-                            TextSpan(
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Navigator.pushNamed(
-                                      context, SignUpPageRoute.routeName);
-                                },
-                              text: 'Sign up',
-                              style: const TextStyle(
-                                color: Colors.yellow, // Link color
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ), */
                   Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -283,49 +55,10 @@ class _AgentSignInState extends State<AgentSignIn> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           // Sign Up as Agent
-                          InkWell(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                  context, AgentSignUp.routeName);
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: const [
-                                Icon(Icons.radio_button_unchecked,
-                                    color: Colors.black),
-                                SizedBox(width: 10),
-                                Text(
-                                  "Sign Up as Agent",
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ],
-                            ),
-                          ),
                           const SizedBox(height: 10.0),
 
                           // Already an Agent? Sign In
-                          InkWell(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                  context, AgentSignIn.routeName);
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: const [
-                                Icon(Icons.radio_button_checked,
-                                    color: Colors.black),
-                                SizedBox(width: 10),
-                                Text(
-                                  "Already an Agent? Sign in.",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ],
-                            ),
-                          ),
                           const SizedBox(height: 16.0),
-
                           // Email Field
                           TextFormField(
                             style: const TextStyle(color: Colors.black),
@@ -352,7 +85,6 @@ class _AgentSignInState extends State<AgentSignIn> {
                             },
                           ),
                           const SizedBox(height: 16.0),
-
                           // Password Field
                           TextFormField(
                             style: const TextStyle(color: Colors.black),
@@ -446,7 +178,50 @@ class _AgentSignInState extends State<AgentSignIn> {
                                   ),
                           ),
                           const SizedBox(height: 10),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              TextButton(
+                                onPressed: () {},
+                                child: const Text(
+                                  "New to Utsav Life?",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
 
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, AgentSignUp.routeName);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.grey[200],
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                padding:
+                                const EdgeInsets.symmetric(vertical: 12.0),
+                              ),
+                              child: const Text(
+                                'Create Your Account',
+                                style: TextStyle(
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16.0),
                           // Customer Prompt
                           Center(
                             child: RichText(

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:customerapp/core/models/single_order.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/utils/file_open.dart';
 import 'package:customerapp/core/utils/logger.dart';
@@ -10,13 +11,52 @@ import '../repo/order.dart' as OrderRepo;
 class OrderProvider with ChangeNotifier {
   List<OrderModel> _upcomingData = [];
   List<OrderModel> _deliveredData = [];
+
   List<OrderModel> get upcomingData => _upcomingData;
+
   List<OrderModel> get deliveredData => _deliveredData;
   bool _isLoading = false;
+
   bool get isLoading => _isLoading;
 
+  List<SingleOrder> _singleOrder = [];
+
+  List<SingleOrder> get singleOrder => _singleOrder;
+
   double _rating = 0;
+
   double get rating => _rating;
+
+  String _gstPrice = "";
+
+  String get gstPrice => _gstPrice;
+
+  set gstPrice(String value) {
+    if (orderId != value) {
+      _gstPrice = value;
+      notifyListeners();
+    }
+  }
+
+  String orderId = "";
+
+  void setOrderId(BuildContext context, String id, AuthProvider auth) {
+    if (orderId != id) {
+      orderId = id;
+      notifyListeners();
+      if (orderId.isNotEmpty) {
+        getSingleOrder(
+            auth, orderId); // Call getSingleOrder after setting the orderId
+      }
+    }
+  }
+
+  void setGstPrice(String value) {
+    if (gstPrice != value) {
+      _gstPrice = value;
+      notifyListeners();
+    }
+  }
 
   set rating(double value) {
     _rating = value;
@@ -49,13 +89,28 @@ class OrderProvider with ChangeNotifier {
     stopLoading();
   }
 
-  Future<void> cancelOrder(AuthProvider auth, String payload, String reason) async {
+  Future<void> cancelOrder(
+      AuthProvider auth, String payload, String reason) async {
     startLoading();
     try {
       final v = await OrderRepo.cancelOrder(auth, payload, reason);
       if (v) {
         getUpcomingOrders(auth);
       }
+    } catch (e) {
+      CustomLogger.error(e);
+    }
+    stopLoading();
+  }
+
+  Future<void> getSingleOrder(AuthProvider auth, String orderId) async {
+    startLoading();
+    try {
+      _singleOrder = await OrderRepo.getSingleOrder(auth, orderid: orderId);
+      if (_singleOrder.length > 0) {
+        print(_singleOrder);
+      }
+      notifyListeners();
     } catch (e) {
       CustomLogger.error(e);
     }

@@ -19,7 +19,9 @@ class _EventsPageState extends State<EventsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CommonHeader.header(context, onBack: () {
+      appBar: CommonHeader.header(
+          showBackButton: true,
+          context, onBack: () {
         Navigator.pop(context);
       }, onSearch: () {
         if (kDebugMode) {

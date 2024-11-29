@@ -75,6 +75,14 @@ TextStyle headerTextStyle(BuildContext context) =>
           fontWeight: FontWeight.w700,
         );
 
+TextStyle headerTextStylerelated(BuildContext context) =>
+    Theme.of(context).textTheme.labelLarge!.copyWith(
+      fontSize: 16,
+      color: textColor,
+      fontWeight: FontWeight.w700,
+    );
+
+
 TextStyle descriptionStyle(BuildContext context) =>
     Theme.of(context).textTheme.labelLarge!.copyWith(
           fontSize: 12,

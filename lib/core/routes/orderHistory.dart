@@ -25,8 +25,10 @@ class OrderHistory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(">>>>>>Nishant order history");
     return Scaffold(
       appBar: CommonHeader.header(
+        showBackButton: true,
         context,
         onBack: () {
           Navigator.pop(context);
@@ -45,11 +47,7 @@ class OrderHistory extends StatelessWidget {
               ),
               child: InkWell(
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              SingleServiceRoute(service: order.service)));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => SingleServiceRoute(service: order.service)));
                 },
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,96 +94,6 @@ class OrderHistory extends StatelessWidget {
                         SizedBox(
                           height: 1.h,
                         ),
-                        /*  Row(
-                          children: [
-                            Text(
-                              "₹ ${order.totalPrice}",
-                              style: TextStyle(
-                                  fontSize: 18.sp,
-                                  color: Theme.of(context).primaryColor,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                            const SizedBox(
-                              width: 2,
-                            ),
-                            Text(
-                              "  ${order.service.priceBasis}",
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                color: Colors.grey,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 1.h,
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              "Discount Price: ",
-                              style: TextStyle(
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const Spacer(),
-                            Text(
-                              "₹ ${order.service.discountedPrice}",
-                              style: TextStyle(
-                                fontSize: 16.sp,
-                                color: primaryColor,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const DashedDivider(),
-                        Row(
-                          children: [
-                            Text(
-                              "Price: ",
-                              style: TextStyle(
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const Spacer(),
-                            Text(
-                              "₹ ${order.service.price}",
-                              // price cut decoration
-
-                              style: TextStyle(
-                                fontSize: 16.sp,
-                                decoration: TextDecoration.lineThrough,
-                                color: primaryColor,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const DashedDivider(),
-                        Row(
-                          children: [
-                            Text(
-                              "Unit: ",
-                              style: TextStyle(
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const Spacer(),
-                            Text(
-                              order.service.priceBasis ?? "",
-                              style: TextStyle(
-                                fontSize: 16.sp,
-                                color: primaryColor,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ), */
                       ],
                     )),
                   ],
@@ -235,41 +143,9 @@ class OrderHistory extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  /*--- commented on 26-07-24 ---*/
-                  /*
-                  Text(
-                    'Shipping to ${order.billingName}',
-                    style: TextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    order.address,
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const DashedDivider(),
-                  */
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      /* Container(
-                        height: 20,
-                        width: 20,
-                        margin: EdgeInsets.only(
-                          right: 4.w,
-                        ),
-                        alignment: Alignment.center,
-                        color: Colors.greenAccent,
-                        child: const Icon(
-                          Icons.check,
-                          color: Colors.green,
-                          size: 15,
-                        ),
-                      ), */
                       Container(
                         height: 20,
                         width: 20,
@@ -295,11 +171,11 @@ class OrderHistory extends StatelessWidget {
                             Text(
                               (() {
                                 if (order.orderStatus == "3") {
-                                  return 'Delivered on ${DateFormat('dd.MM.yyyy').format(DateTime.parse(order.eventDate))}';
+                                  return 'Delivered on ${DateFormat('dd/MM/yyyy').format(DateTime.parse(order.eventDate))}';
                                 } else if (order.orderStatus == "2") {
                                   return 'Cancelled';
                                 } else {
-                                  return 'Pending since ${DateFormat('dd.MM.yyyy').format(DateTime.parse(order.eventEndDate))}';
+                                  return 'Pending since ${DateFormat('dd/MM/yyyy').format(DateTime.parse(order.eventEndDate))}';
                                 }
                               })(),
                               style: TextStyle(

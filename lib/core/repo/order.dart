@@ -5,6 +5,7 @@ import 'package:customerapp/config.dart';
 import 'package:customerapp/core/features/ccavenues/models/enc_val_res.dart';
 import 'package:customerapp/core/features/ccavenues/models/order_res.dart';
 import 'package:customerapp/core/models/paymentPostData.dart';
+import 'package:customerapp/core/models/single_order.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/utils/logger.dart';
 import 'package:dio/dio.dart';
@@ -106,6 +107,39 @@ Future<Map?> payRemainingOrder(AuthProvider auth,
   }
 }
 
+Future<List<SingleOrder>> getSingleOrder(AuthProvider auth, {required String orderid}) async {
+  try {
+    Response response = await customDioClient.client.post(
+      "${APIConfig.baseUrl}/api/customer/single-order",
+      data: {"id": orderid},
+      options: Options(headers: {"Authorization": "Bearer ${auth.token}"}),
+    );
+
+    List<SingleOrder> list = [];
+
+    // Ensure the "data" key exists and is an iterable list
+    if (response.data["data"] != null) {
+      for (var i in response.data["data"]) {
+        try {
+          list.add(SingleOrder.fromJson(i));
+        } catch (e) {
+          CustomLogger.error(i);
+          CustomLogger.error(e);
+        }
+      }
+    }
+    return list;
+  } catch (e) {
+    if (e is DioException) {
+      CustomLogger.error(e.response?.data ?? 'No response data');
+    } else {
+      CustomLogger.error(e.toString());
+    }
+    rethrow;
+  }
+}
+
+
 Future<GenerateOrderValue?> generateOrderVal(AuthProvider auth, int orderId,
     {double? amount}) async {
   try {
@@ -126,6 +160,7 @@ Future<GenerateOrderValue?> generateOrderVal(AuthProvider auth, int orderId,
     rethrow;
   }
 }
+
 //add new api for get single order information...
 Future<List<OrderModel>> getUpcomingOrderItems(AuthProvider auth) async {
   try {
@@ -152,34 +187,6 @@ Future<List<OrderModel>> getUpcomingOrderItems(AuthProvider auth) async {
     return Future.error(e);
   }
 }
-
-
-/*Future<List<OrderModel>> getSingleOrderItems(AuthProvider auth,String orderid) async {
-  try {
-    // log("getUpcomingOrderItems");
-    Response response = await customDioClient.client.get(
-        "${APIConfig.baseUrl}/api/customer-upcoming-order",
-        data: {"id": id},
-        options: Options(headers: {"Authorization": "Bearer ${auth.token}"}));
-    log(jsonEncode(response.data), name: "Single-order");
-    List<OrderModel> list = [];
-
-    for (var i in response.data["data"]) {
-      try {
-        list.add(OrderModel.fromJson(i));
-      } catch (e) {
-        CustomLogger.error(i);
-        CustomLogger.error(e);
-      }
-    }
-    return list;
-  } catch (e) {
-    if (e is DioException) {
-      CustomLogger.error(e.response!.data);
-    }
-    return Future.error(e);
-  }
-}*/
 
 Future<bool> rateOrder(AuthProvider auth,
     {required String orderId, rate, feedback}) async {

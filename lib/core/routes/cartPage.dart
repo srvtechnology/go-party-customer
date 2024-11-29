@@ -77,7 +77,6 @@ class _CartPageState extends State<CartPage> {
                     }),
                     body: Container(
                         alignment: Alignment.center,
-                        padding: const EdgeInsets.all(50),
                         child: Column(
                           children: [
                             const Icon(
@@ -162,7 +161,6 @@ class _CartPageState extends State<CartPage> {
                       indicatorBuilder: (BuildContext context,
                           IndicatorController controller) {
                         return Container(
-                            padding: EdgeInsets.all(2.w),
                             alignment: Alignment.center,
                             child: const CircularProgressIndicator(
                               valueColor:
@@ -290,17 +288,16 @@ class _CartPageState extends State<CartPage> {
 
   Widget _cartTile(CartProvider state, CartModel item, AuthProvider auth) {
     return CustomCard(
-      padding: EdgeInsets.symmetric(vertical: 2.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             width: 40.w,
-            margin: EdgeInsets.symmetric(horizontal: 4.w),
+            margin: EdgeInsets.symmetric(horizontal: 1.w),
             child: Container(
               height: 150,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(10),
                 image: DecorationImage(
                   image: NetworkImage(item.service.images.first),
                   fit: BoxFit.fill,
@@ -320,8 +317,7 @@ class _CartPageState extends State<CartPage> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: 1.w),
-                  margin: EdgeInsets.only(right: 4.w, top: 1.h),
+                  margin: EdgeInsets.only(right: 4.w),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -344,7 +340,7 @@ class _CartPageState extends State<CartPage> {
                 ),
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 1.w),
-                  margin: EdgeInsets.only(right: 4.w, top: 1.h),
+                  margin: EdgeInsets.only(right: 4.w),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -366,7 +362,7 @@ class _CartPageState extends State<CartPage> {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(right: 4.w, top: 1.h),
+                  margin: EdgeInsets.only(right: 4.w),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -387,52 +383,7 @@ class _CartPageState extends State<CartPage> {
                     ],
                   ),
                 ),
-                /*--- commented on 03-09-24 : to fix the quantity & price issue ----*/
-                /* Container(
-                  margin: EdgeInsets.only(right: 4.w, top: 1.h),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Text(
-                        "Quantity",
-                        style: TextStyle(fontSize: 12),
-                      ),
-                      SizedBox(
-                        width: 50,
-                        height: 30,
-                        child: TextFormField(
-                          keyboardType:
-                              const TextInputType.numberWithOptions(
-                            signed: false,
-                            decimal: false,
-                          ),
-                          textAlign: TextAlign.center,
-                          textAlignVertical: TextAlignVertical.center,
-                          initialValue: item.quantity,
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.all(0),
-                            enabledBorder: OutlineInputBorder(),
-                            border: OutlineInputBorder(),
-                          ),
-                          onChanged: (text) {
-                            if (text.isNotEmpty) {
-                              setState(() {
-                                item.quantity = text;
-                                item.totalPrice = (double.parse(text) *
-                                        double.parse(item.price))
-                                    .toString();
-                                changedQuantity[item.id] = text;
-                                state.calculateTotal();
-                              });
-                              _handleQuantityChanged(auth);
-                            }
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),*/
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -477,7 +428,7 @@ class _CartPageState extends State<CartPage> {
                             height: 30,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey),
+                              border: Border.all(color: Colors.white),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
@@ -514,7 +465,7 @@ class _CartPageState extends State<CartPage> {
                   ],
                 ),
                 Container(
-                  margin: EdgeInsets.only(right: 4.w, top: 1.h),
+                  margin: EdgeInsets.only(right: 4.w),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -536,7 +487,7 @@ class _CartPageState extends State<CartPage> {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 1.h, right: 4.w),
+                  margin: EdgeInsets.only( right: 4.w),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -626,10 +577,8 @@ class ExtraDetails extends StatelessWidget {
             builder: (context, state, auth, child) {
               if (state.isLoading) {
                 return Container(
-                  height: 10.h,
                   alignment: Alignment.center,
                   child: SizedBox(
-                    height: 3.h,
                     width: 3.h,
                     child: const CircularProgressIndicator(
                       color: primaryColor,
@@ -643,55 +592,46 @@ class ExtraDetails extends StatelessWidget {
               }
 
               return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CustomCard(
+                   CustomCard(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Header and View All button
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10, right: 5),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Browse Similar Packages",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelLarge!
-                                          .copyWith(
-                                          fontSize: 14, color: textColor),
-                                    ),
-                                  ],
-                                ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Similar Packages",
+                                    style: headerTextStylerelated(context),
+                                  )
+                                ],
                               ),
-                              const Spacer(),
-                              TextButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            PackageListPageRoute(
-                                                packages: state.packageData!),
-                                      ),
-                                    );
-                                  },
-                                  child: Text(
-                                    "View All",
-                                    style: TextStyle(
-                                        color:
-                                        Theme.of(context).primaryColorDark,
-                                        fontSize: 12),
-                                  ))
-                            ],
-                          ),
+                            ),
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          PackageListPageRoute(
+                                              packages: state.packageData!),
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  "View All",
+                                  style: TextStyle(
+                                      color:
+                                      Theme.of(context).primaryColorDark,
+                                      fontSize: 12),
+                                ))
+                          ],
                         ),
-                        SizedBox(height: 2.h),
                         SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Row(
@@ -721,48 +661,44 @@ class ExtraDetails extends StatelessWidget {
                       ],
                     ),
                   ),
-                  CustomCard(
+                  state.data!.length>4? CustomCard(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Header and View All button
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10, right: 5),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Browse Similar Services",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelLarge!
-                                          .copyWith(
-                                          fontSize: 14, color: textColor),
-                                    ),
-                                  ],
-                                ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Browse Similar Services",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelLarge!
+                                        .copyWith(
+                                        fontSize: 14, color: textColor),
+                                  ),
+                                ],
                               ),
-                              const Spacer(),
-                              TextButton(
-                                  onPressed: () {
-                                    Navigator.pushNamed(
-                                      context,
-                                      ViewAllServiceRoute.routeName,
-                                    );
-                                  },
-                                  child: Text(
-                                    "View All",
-                                    style: TextStyle(
-                                        color:
-                                        Theme.of(context).primaryColorDark,
-                                        fontSize: 12),
-                                  ))
-                            ],
-                          ),
+                            ),
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    ViewAllServiceRoute.routeName,
+                                  );
+                                },
+                                child: Text(
+                                  "View All",
+                                  style: TextStyle(
+                                      color:
+                                      Theme.of(context).primaryColorDark,
+                                      fontSize: 12),
+                                ))
+                          ],
                         ),
                         SizedBox(height: 2.h),
                         SingleChildScrollView(
@@ -791,8 +727,7 @@ class ExtraDetails extends StatelessWidget {
                         ),
                       ],
                     ),
-                  ),
-                  SizedBox(height: 5.h),
+                  ):SizedBox(),
                 ],
               );
             },

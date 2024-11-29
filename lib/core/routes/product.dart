@@ -110,13 +110,6 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                IconButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  icon: const Icon(Icons.arrow_back_ios),
-                                  color: Colors.white,
-                                ),
                                 Expanded(
                                     child: _searchBar(
                                   key: _searchBarKey,
@@ -392,53 +385,61 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Container(
+                    height: MediaQuery.of(context).size.height - offset.dy - size.height - 20.0,
                     color: Colors.white,
                     child: savedSearchList != null && savedSearchList.isNotEmpty
                         ? Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: GestureDetector(
-                                    onTap: () async {
-                                      await serviceState
-                                          .clearSavedSearchTextApi(auth);
-
-                                      _removeOverlay();
-                                    },
-                                    child: const Text(
-                                      'Clear',
-                                      style: TextStyle(
-                                        color: Colors.blue,
-                                        fontWeight: FontWeight.bold,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ...savedSearchList.expand((item) {
+                          final dataItems = item.data;
+                          return dataItems.expand((datum) {
+                            return [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: ListTile(
+                                        title: Text(datum.value ?? ''),
+                                        onTap: () {
+                                          _searchController.text = datum.value ?? '';
+                                          _removeOverlay();
+                                        },
                                       ),
                                     ),
-                                  ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          final parentIndex = savedSearchList.indexWhere((item) => item.data == dataItems);
+                                          if (parentIndex != -1) {
+                                            savedSearchList[parentIndex].data.remove(datum);
+                                            if (savedSearchList[parentIndex].data.isEmpty) {
+                                              savedSearchList.removeAt(parentIndex);
+                                            }
+                                          }
+                                         // dataItems.remove(datum);
+                                        });
+                                      },
+                                      child: const Icon(
+                                        Icons.close,
+                                        color: Colors.blue,
+                                        size: 24.0,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              ...savedSearchList.expand((item) {
-                                final dataItems = item.data;
-                                return dataItems.expand((datum) {
-                                  return [
-                                    ListTile(
-                                      title: Text(datum.value ?? ''),
-                                      onTap: () {
-                                        _searchController.text =
-                                            datum.value ?? '';
-                                        _removeOverlay();
-                                      },
-                                    ),
-                                    const Divider(),
-                                  ];
-                                }).toList();
-                              }).toList()
-                                ..removeLast(),
-                            ],
-                          )
+                              const Divider(),
+                            ];
+                          }).toList();
+                        }).toList()
+                          ..removeLast(),
+                      ],
+                    )
                         : Container(),
-                  ),
+                  )
+                  ,
                 ),
               ),
             ),
@@ -470,14 +471,21 @@ class PackageListPageRoute extends StatefulWidget {
 }
 
 class _PackageListPageRouteState extends State<PackageListPageRoute> {
+
+  @override
+  void initState() {
+    super.initState();
+    print(">>>> init state product...");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CommonHeader.header(context, onBack: () {
+      appBar: CommonHeader.header(showBackButton: false,context, onBack: () {
         Navigator.pop(context);
       }, onSearch: () {
         if (kDebugMode) {
-          print("search");
+          print("Search");
         }
         Navigator.pushNamed(context, ProductPageRoute.routeName);
       }),
@@ -499,337 +507,5 @@ class _PackageListPageRouteState extends State<PackageListPageRoute> {
     );
   }
 }
-
-
-/* --- commented on 10-09-24 ---- */
-  /* void _showOverlay(
-    BuildContext context,
-    List<SaveSearchTextModel>? savedSearchList,
-    AuthProvider? auth,
-    ServiceProvider serviceState,
-  ) {
-    // Get the RenderBox of the TextFormField
-    final RenderBox renderBox =
-        _searchBarKey.currentContext!.findRenderObject() as RenderBox;
-    final size = renderBox.size;
-    final offset = renderBox.localToGlobal(Offset.zero);
-
-    _overlayEntry = OverlayEntry(
-      builder: (context) => GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onTap: () {
-          // Remove the overlay when the screen is tapped outside the overlay
-          _removeOverlay();
-        },
-        child: Stack(
-          children: [
-            Positioned(
-              left: offset
-                  .dx, // Position horizontally aligned with the TextFormField
-              top: offset.dy +
-                  size.height +
-                  10.0, // Add padding between the TextFormField and the overlay
-              width: size.width, // Match the width of the TextFormField
-              child: Material(
-                elevation: 4.0,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10), // Rounded edges
-                  child: Container(
-                    color: Colors.white,
-                    child: savedSearchList != null && savedSearchList.isNotEmpty
-                        ? Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              // "Clear" text button
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      serviceState
-                                          .clearSavedSearchTextApi(auth);
-                                      serviceState.getSavedSearchText(auth);
-                                      /* _searchController
-                                          .clear(); // Clear the search field */
-                                      _removeOverlay(); // Remove the overlay
-                                    },
-                                    child: const Text(
-                                      'Clear',
-                                      style: TextStyle(
-                                        color: Colors
-                                            .blue, // You can change the color to match your theme
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              ...savedSearchList.expand((item) {
-                                final dataItems = item.data;
-                                return dataItems.expand((datum) {
-                                  return [
-                                    ListTile(
-                                      title: Text(datum.value ?? ''),
-                                      onTap: () {
-                                        _searchController.text =
-                                            datum.value ?? '';
-                                        _removeOverlay();
-                                      },
-                                    ),
-                                    const Divider(), // Divider between items
-                                  ];
-                                }).toList();
-                              }).toList()
-                                ..removeLast(), // Remove the last divider
-                            ],
-                          )
-                        : Container(),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-
-    Overlay.of(context).insert(_overlayEntry!);
-  } */
-
-
-/* Widget _searchBar({
-    required GlobalKey<State<StatefulWidget>> key,
-    AuthProvider? auth,
-    List<SaveSearchTextModel>? savedSearchList,
-    required TextEditingController controller,
-    required FilterProvider filterState,
-    required ServiceProvider serviceState,
-  }) {
-    return Container(
-      height: 10.49.h,
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-      child: TextFormField(
-        key: key, // Use the passed key instead of _searchBarKey
-        controller: controller,
-        onTap: () {
-          if (kDebugMode) {
-            print('onTap - savedSearchList: $savedSearchList');
-          }
-          if (savedSearchList != null && savedSearchList.isNotEmpty) {
-            _showOverlay(context, savedSearchList, auth, serviceState);
-          }
-        },
-        onChanged: (value) {
-          if (value.isEmpty) {
-            if (savedSearchList != null && savedSearchList.isNotEmpty) {
-              _showOverlay(context, savedSearchList, auth, serviceState);
-            }
-          } else {
-            _removeOverlay();
-          }
-        },
-        onFieldSubmitted: (value) {
-          FocusScope.of(context).unfocus();
-          if (controller.text.isNotEmpty) {
-            serviceState.getFilteredServices(auth, filterState,
-                searchString: controller.text);
-          } else {
-            Fluttertoast.showToast(
-              msg: "Search field cannot be empty",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              backgroundColor: Colors.red,
-              textColor: Colors.white,
-              fontSize: 16.0,
-            );
-          }
-        },
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.only(top: 10, left: 20),
-          hintText: "Search ...",
-          filled: true,
-          fillColor: Colors.white,
-          prefixIcon: IconButton(
-            onPressed: () {
-              if (controller.text.isNotEmpty) {
-                serviceState.getFilteredServices(auth, filterState,
-                    searchString: controller.text);
-              } else {
-                Fluttertoast.showToast(
-                  msg: "Search field cannot be empty",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                  fontSize: 16.0,
-                );
-              }
-              // Remove the overlay when search is initiated
-              _removeOverlay();
-            },
-            icon: const Icon(Icons.search),
-            color: Colors.black,
-          ),
-          suffixIcon: Visibility(
-            visible: controller.text.isNotEmpty ? true : false,
-            child: IconButton(
-              onPressed: () {
-                controller.clear();
-                FocusScope.of(context).unfocus();
-                // Remove the overlay when clearing the search field
-                _removeOverlay();
-              },
-              icon: const Icon(Icons.clear),
-              color: Colors.black,
-            ),
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-            borderSide: const BorderSide(color: Colors.white),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-            borderSide: const BorderSide(color: Colors.white),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-            borderSide: const BorderSide(color: Colors.white),
-          ),
-        ),
-      ),
-    );
-  }
- */
-
-/*  void _removeOverlay() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
-  } */
-
-/* Widget _searchBar({
-    AuthProvider? auth,
-    required TextEditingController controller,
-    required FilterProvider filterState,
-    required ServiceProvider serviceState,
-  }) {
-    return Container(
-      height: 10.49.h,
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-      child: TextFormField(
-        controller: controller,
-        onFieldSubmitted: (value) {
-          if (controller.text.isNotEmpty) {
-            serviceState.getFilteredServices(auth, filterState,
-                searchString: controller.text);
-          } else {
-            Fluttertoast.showToast(
-              msg: "Search field cannot be empty",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              backgroundColor: Colors.red,
-              textColor: Colors.white,
-              fontSize: 16.0,
-            );
-          }
-        },
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.only(top: 10, left: 20),
-          hintText: "Search ...",
-          filled: true,
-          fillColor: Colors.white,
-          prefixIcon: IconButton(
-            onPressed: () {
-              if (controller.text.isNotEmpty) {
-                serviceState.getFilteredServices(auth, filterState,
-                    searchString: controller.text);
-              } else {
-                Fluttertoast.showToast(
-                  msg: "Search field cannot be empty",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                  fontSize: 16.0,
-                );
-              }
-            },
-            icon: const Icon(Icons.search),
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(width: 0.5, color: Colors.white),
-          ),
-        ),
-      ),
-    );
-  } */
-
-/*--- commented on 06-8-24 : to fix the scrolling
-  issue on click of Done button in keypad
-  ----*/
-/*
-  Widget _searchBar(
-      {required TextEditingController controller,
-      required FilterProvider filterState,
-      required ServiceProvider serviceState}) {
-    return Container(
-      // color: Colors.white,
-      height: 10.49.h,
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-      child: TextFormField(
-        // autofocus: true,
-        controller: controller,
-        onChanged: (v) {
-          // if (_timer != null) _timer?.cancel();
-          Debouncer(milliseconds: 500).run(() {
-            serviceState.getFilteredServices(filterState,
-                searchString: _searchController.text);
-          });
-          // _timer = Timer(const Duration(milliseconds: 500), () async {
-          //   await serviceState.getFilteredServices(filterState,
-          //       searchString: _searchController.text);
-          // });
-        },
-        decoration: InputDecoration(
-            contentPadding: const EdgeInsets.only(top: 10, left: 20),
-            hintText: "Search ...",
-            filled: true,
-            fillColor: Colors.white,
-            prefixIcon: IconButton(
-                onPressed: () {
-                  serviceState.getFilteredServices(filterState,
-                      searchString: _searchController.text);
-                },
-                icon: const Icon(Icons.search)),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(width: 0.5, color: Colors.white))),
-      ),
-      // height: 10.h,
-      // padding: const EdgeInsets.all(20),
-      // child: Row(
-      //   children: [
-
-      //     SizedBox(
-      //       width: 4.w,
-      //     ),
-      //     IconButton(
-      //         onPressed: () {
-      //           serviceState.getFilteredServices(filterState,
-      //               searchString: _searchController.text);
-      //         },
-      //         icon: const Icon(Icons.search)),
-      //   ],
-      // ),
-    );
-  }
-  */
 
 

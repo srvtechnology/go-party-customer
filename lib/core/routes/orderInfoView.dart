@@ -1,5 +1,9 @@
+import 'dart:convert';
 import 'dart:developer';
 
+import 'package:dio/dio.dart';
+
+import '../../config.dart';
 import '../constant/themData.dart';
 import 'package:customerapp/core/components/card.dart';
 import 'package:customerapp/core/components/divider.dart';
@@ -20,7 +24,10 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
+import '../utils/dio.dart';
 import '../utils/flush_bar_helper.dart';
+import '../utils/logger.dart';
+import '../repo/order.dart' as OrderRepo;
 
 class OrderInfoView extends StatefulWidget {
   static String routeName = "/orderDetailsView";
@@ -37,6 +44,7 @@ class OrderInfoView extends StatefulWidget {
 
 class _OrderInfoViewState extends State<OrderInfoView> {
   bool isLoading = false;
+ late  OrderModel _orderModel;
 
   payNow(double amount) async {
     setState(() => isLoading = true);
@@ -69,16 +77,18 @@ class _OrderInfoViewState extends State<OrderInfoView> {
   @override
   Widget build(BuildContext context) {
     DateTime eventDate = DateTime.parse(widget.order.eventDate);
-    String formattedDate = DateFormat('dd.MM.yyyy').format(eventDate);
+    String formattedDate = DateFormat('dd/MM/yyyy').format(eventDate);
     double gamt = (double.parse(widget.order.totalPrice) +
         getGSTaddedAmount(double.parse(widget.order.totalPrice)));
-    print(gamt);
-    double remainingamt = gamt -
-        double.parse(double.parse(widget.order.totalPrice).toStringAsFixed(2));
-    remainingamt.toStringAsFixed(2);
+    double gprice=(double.parse(widget.order.totalPrice)*0.18);
+    double tprice=gprice + double.parse(widget.order.totalPrice);
+
+
+    OrderProvider(context.read<AuthProvider>()).orderId=widget.order.orderId;
 
     return Scaffold(
         appBar: CommonHeader.header(
+          showBackButton: true,
           context,
           onBack: () {
             Navigator.pop(context);
@@ -244,7 +254,7 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                               fontSize: 16.sp, fontWeight: FontWeight.w400),
                         ),
                         Text(
-                          "Event Start Date: ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventDate))} \nEvent End Date:   ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventEndDate))}",
+                          "Event Start Date: ${DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.order.eventDate))} \nEvent End Date:   ${DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.order.eventEndDate))}",
                           style: TextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w600,
@@ -423,7 +433,7 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                         Row(
                           children: [
                             Text(
-                              'Item Total ',
+                              'Order Total ',
                               style: TextStyle(
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w600,
@@ -432,7 +442,7 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                             ),
                             const Spacer(),
                             Text(
-                              "₹ ${(double.parse(widget.order.totalPrice) * 0.25 + double.parse(widget.order.totalPrice) * 0.25 * 0.18).toStringAsFixed(2)}",
+                              "₹ ${tprice.toStringAsFixed(2)}",
                               style: TextStyle(
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w500,
@@ -446,7 +456,7 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                             Row(
                                 children: [
                                   Text(
-                                    'Remaining Amount ',
+                                    'Remaining Amount',
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.w600,
@@ -456,7 +466,7 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                                   const Spacer(),
                                   // 25% of total price
                                   Text(
-                                    "₹ ${remainingamt.toStringAsFixed(2)}",
+                                    "₹ ${((int.parse(widget.order.totalPrice) + gprice)*0.75) .toStringAsFixed(2)}",
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.w500,
@@ -498,7 +508,7 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                                   ),
                                   const Spacer(),
                                   Text(
-                                    "₹ ${(double.parse(widget.order.totalPrice) * 0.25 + double.parse(widget.order.totalPrice) * 0.25 * 0.18).toStringAsFixed(2)}",
+                                    "₹ ${(int.parse(widget.order.totalPrice) +gprice)*0.25}",
                                     style: TextStyle(
                                       fontSize: 18.sp,
                                       fontWeight: FontWeight.w600,
@@ -583,7 +593,7 @@ Future<void> showCancelOrderDialog(BuildContext context, String orderId) async {
           TextButton(
             child: const Text('Close', style: TextStyle(color: Colors.grey)),
             onPressed: () {
-              Navigator.of(context).pop(); // Close the dialog
+              Navigator.of(context).pop();
             },
           ),
           TextButton(
@@ -591,9 +601,7 @@ Future<void> showCancelOrderDialog(BuildContext context, String orderId) async {
             onPressed: () {
               final String reason = reasonController.text;
               if (reason.isNotEmpty) {
-                context
-                    .read<OrderProvider>()
-                    .cancelOrder(context.read<AuthProvider>(), orderId, reason)
+                context.read<OrderProvider>().cancelOrder(context.read<AuthProvider>(), orderId, reason)
                     .whenComplete(() {
                   Navigator.of(context).pop(); // Close the dialog
                   Navigator.pushAndRemoveUntil(

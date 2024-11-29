@@ -154,7 +154,7 @@ class PackageCard extends StatelessWidget {
               height: 2.h,
             ),
             Text(
-              capitalize(package.name),
+              capitalize("my name is khan"),
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
               style: headerTextStyle(context),
@@ -209,7 +209,7 @@ class CircularOrderCard extends StatelessWidget {
     return Container(
       constraints: const BoxConstraints(
         // mxw
-        maxWidth: 82.5,
+        maxWidth: 90.5,
         maxHeight: 110,
         // mxh
       ),
@@ -272,7 +272,7 @@ class CircularEventCard extends StatelessWidget {
     return Container(
       constraints: const BoxConstraints(
         // mxw
-        maxWidth: 82.5,
+        maxWidth: 90.5,
         maxHeight: 110,
         // mxh
       ),
@@ -537,7 +537,7 @@ class _OrderTileState extends State<OrderTile> {
                                   width: 2,
                                 ),
                                 Text(
-                                  "  / ${widget.order.service.priceBasis}",
+                                  "   ${widget.order.service.priceBasis}",
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     color: Colors.grey,
@@ -553,16 +553,16 @@ class _OrderTileState extends State<OrderTile> {
                                     print("orderId : ${widget.order.id}");
                                   }
                                   if (widget.order.orderStatus == "3") {
-                                    return 'Delivered on ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventEndDate))}';
+                                    return 'Delivered on ${DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.order.eventEndDate))}';
                                   } else if (widget.order.orderStatus == "2") {
                                     return 'Cancelled';
                                   } else if (widget.order.orderStatus == "1") {
-                                    return 'Pending since ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventEndDate))}';
+                                    return 'Pending since ${DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.order.eventEndDate))}';
                                   } else {
                                     return ''; // Fallback for unexpected statuses
                                   }
                                 } else {
-                                  return 'Arriving ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventDate))}';
+                                  return 'Arriving ${DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.order.eventDate))}';
                                 }
                               })()
                                   .toUpperCase(),
@@ -639,222 +639,6 @@ class _OrderTileState extends State<OrderTile> {
     );
   }
 }
-
-/* class PackageTile extends StatelessWidget {
-  final PackageModel package;
-  final OnTap? onTap;
-
-  const PackageTile({Key? key, required this.package, this.onTap})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        if (onTap != null) {
-          onTap!();
-        }
-      },
-      child: Container(
-        height: 22.h,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-                offset: const Offset(1, 1),
-                blurRadius: 1,
-                color: Colors.grey[300]!),
-            BoxShadow(
-                offset: const Offset(-1, -1),
-                blurRadius: 1,
-                color: Colors.grey[300]!)
-          ],
-          borderRadius: BorderRadius.circular(5),
-        ),
-        // margin: EdgeInsets.symmetric(vertical: 5, horizontal: 4.w),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 36.w,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: CachedNetworkImageProvider(package.images[0]))),
-            ),
-            SizedBox(
-              width: 5.w,
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    package.name,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w500),
-                  ),
-                  Expanded(
-                    child: HtmlTextView(
-                      htmlText: package.description,
-                    ),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Discounted Price : ₹ ${package.discountedPrice}",
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      Text(
-                        "Price : ₹ ${package.price}",
-                        style: TextStyle(
-                            fontSize: 15.sp,
-                            color: Colors.grey,
-                            fontWeight: FontWeight.w600,
-                            decoration: TextDecoration.lineThrough),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ProductTile extends StatelessWidget {
-  ServiceModel service;
-  Function? onTap;
-
-  ProductTile({Key? key, required this.service, this.onTap}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        if (onTap != null) {
-          onTap!();
-        }
-      },
-      child: Container(
-        height: 22.h,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-                offset: const Offset(1, 1),
-                blurRadius: 1,
-                color: Colors.grey[300]!),
-            BoxShadow(
-                offset: const Offset(-1, -1),
-                blurRadius: 1,
-                color: Colors.grey[300]!)
-          ],
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 36.w,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: CachedNetworkImageProvider(service.images![0]))),
-            ),
-            SizedBox(
-              width: 5.w,
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    service.name ?? "",
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w600),
-                  ),
-                  Text(
-                    "By utsavlife",
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontSize: 15.sp,
-                        fontWeight: FontWeight.w600),
-                  ),
-                  Expanded(
-                    child: HtmlTextView(
-                      htmlText: service.description ?? "",
-                    ),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Per ${service.priceBasis} unit",
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-
-                      // unit == "per hour"
-
-                      Text(
-                        "Discounted Price : ₹ ${service.discountedPrice}",
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Text(
-                        "Price : ₹ ${service.price}",
-                        style: TextStyle(
-                            fontSize: 15.sp,
-                            color: Colors.grey,
-                            fontWeight: FontWeight.normal,
-                            decoration: TextDecoration.lineThrough),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-} */
 
 class PackageTile extends StatelessWidget {
   final PackageModel package;

@@ -274,11 +274,7 @@ class _OrdersState extends State<Orders> {
       },
       child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Column(
-            children: deliveredOrders
-                .map(
-                    (e) => OrderTile(order: e, review: true, isDelivered: true))
-                .toList()),
+        child: Column(children: deliveredOrders.map((e) => OrderTile(order: e, review: true, isDelivered: true)).toList()),
       ),
     );
   }
@@ -353,7 +349,7 @@ class _HomeState extends State<Home> {
               );
             }
             return Scaffold(
-              appBar: CommonHeader.headerMain(context, onSearch: () {
+              appBar: CommonHeader.headerMain(isShowLogo: false,context, onSearch: () {
                 Navigator.pushNamed(context, ProductPageRoute.routeName);
               }),
               body: CustomMaterialIndicator(
@@ -423,13 +419,8 @@ class _HomeState extends State<Home> {
                               scrollDirection: Axis.horizontal,
                               child: Row(
                                   children: state.eventData!
-                                      /*-- Previously commented */
-                                      /*.getRange(0, min(4, state.data!.length))*/
                                       .map((e) => GestureDetector(
                                             onTap: () {
-                                              /* Navigator.pushNamed(context,
-                                                  ProductPageRoute.routeName); */
-                                              /* --commented on : 09-04-24 -- */
                                               Navigator.pushNamed(
                                                   context,
                                                   ViewAllServiceRoute
@@ -546,10 +537,7 @@ class _HomeState extends State<Home> {
                               scrollDirection: Axis.horizontal,
                               child: LayoutBuilder(
                                 builder: (context, constraints) {
-                                  final itemWidth = min(
-                                      200.0,
-                                      constraints.maxWidth /
-                                          2); // Adjust based on constraints
+                                  final itemWidth = min(250.0, constraints.maxWidth / 3); // Adjust based on constraints
 
                                   return Row(
                                     children: state.packageData!
@@ -579,32 +567,6 @@ class _HomeState extends State<Home> {
                                 },
                               ),
                             )
-
-                            /* SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                  children: state.packageData!
-                                      /*-- Previously commented */
-                                      /*.getRange(0, min(4, state.packageData!.length))*/
-                                      .map((e) => PackageCard(
-                                            package: e,
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      SinglePackageRoute(
-                                                    package: e,
-                                                  ),
-                                                ),
-                                              ).then((_) {
-                                                setState(
-                                                    () {}); // Ensure the view is refreshed
-                                              });
-                                            },
-                                          ))
-                                      .toList()),
-                            ), */
                           ],
                         ),
                       ),
@@ -635,9 +597,6 @@ class _HomeState extends State<Home> {
                                   padding: const EdgeInsets.only(right: 8.0),
                                   child: TextButton(
                                       onPressed: () {
-                                        /*  Navigator.pushNamed(context,
-                                            ProductPageRoute.routeName); */
-                                        /* --commented on : 09-04-24 -- */
                                         Navigator.pushNamed(context,
                                             ViewAllServiceRoute.routeName);
                                       },

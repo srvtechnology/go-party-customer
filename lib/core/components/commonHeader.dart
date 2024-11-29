@@ -6,6 +6,7 @@ class CommonHeader {
     BuildContext context, {
     VoidCallback? onBack,
     VoidCallback? onSearch,
+        bool showBackButton = true,
   }) {
     return PreferredSize(
       preferredSize: Size(MediaQuery.of(context).size.width, 60),
@@ -18,11 +19,11 @@ class CommonHeader {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              IconButton(
+               showBackButton ? IconButton(
                 onPressed: onBack,
                 icon: const Icon(Icons.arrow_back_ios),
                 color: Colors.white,
-              ),
+              ):SizedBox(),
               Expanded(
                   child: Container(
                 // margin: const EdgeInsets.only(right: 10),

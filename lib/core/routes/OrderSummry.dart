@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:ffi';
 
 import '../constant/themData.dart';
 import 'package:customerapp/core/components/card.dart';
@@ -35,37 +36,24 @@ class _OrderSummaryState extends State<OrderSummary> {
   @override
   void initState() {
     super.initState();
+    print(">>>>_OrderSummaryState");
     log(widget.order.id.toString(), name: "ORDER ID");
   }
 
-  // payNow(double amount) async {
-  //   setState(() => isLoading = true);
-  //   log(amount.toString(), name: "URL PAY");
-  //   final auth = context.read<AuthProvider>();
-  //   final res = await payRemainingOrder(auth,
-  //           userID: auth.user!.id, amount: amount, orderID: widget.order.id)
-  //       .whenComplete(() => setState(() => isLoading = false));
-
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => PaymentWebView(
-  //         generateOrderValue: GenerateOrderValue(
-  //           orderId: int.parse(res!['partialSecondPayObject']['order_id']),
-  //           accessCode: res['partialSecondPayObject']['access_code'],
-  //           redirectUrl: res['partialSecondPayObject']['redirect_url'],
-  //           cancelUrl: res['partialSecondPayObject']['cancel_url'],
-  //           encVal: res['partialSecondPayObject']['enc_val'],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
+    print(">>>>summery order id${widget.order.orderId}");
+    String order_Id=widget.order.orderId;
+    double gprice=(double.parse(widget.order.totalPrice)*0.18);
+    double tprice=gprice + double.parse(widget.order.totalPrice);
+    print(">>>>remainin g amount ${widget.order.totalPrice} ${((int.parse(widget.order.totalPrice) + gprice)*0.75) .toStringAsFixed(2)}");
+
+
+    OrderProvider(context.read<AuthProvider>());
     return Scaffold(
         appBar: CommonHeader.header(
+          showBackButton: true,
           context,
           onBack: () {
             Navigator.pop(context);
@@ -77,6 +65,14 @@ class _OrderSummaryState extends State<OrderSummary> {
         body: ListenableProvider(
           create: (_) => OrderProvider(context.read<AuthProvider>()),
           child: Consumer<OrderProvider>(builder: (context, state, child) {
+
+            Future.delayed(Duration.zero, () {
+              // Example: setting the orderId when the widget builds
+              state.setOrderId(context,widget.order.id,context.read<AuthProvider>());
+            });
+
+            print(">>>>provider orderid${state.orderId}");
+
             if (state.isLoading) {
               return const ShimmerWidget();
             }
@@ -139,8 +135,8 @@ class _OrderSummaryState extends State<OrderSummary> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    DateFormat('dd.MM.yyyy').format(
-                                        DateTime.parse(widget.order.eventDate)),
+                                    DateFormat('dd/MM/yyyy').format(
+                                        DateTime.parse("${widget.order?.eventDate}")),
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.bold,
@@ -157,7 +153,7 @@ class _OrderSummaryState extends State<OrderSummary> {
                                   SizedBox(height: 1.h),
                                   Text(
                                     /*  "₹ ${widget.order.totalPrice}", */
-                                    '₹ ${widget.order.totalPrice}',
+                                    '₹ ${tprice.toStringAsFixed(2)}',
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.bold,
@@ -218,34 +214,6 @@ class _OrderSummaryState extends State<OrderSummary> {
                               fontSize: 18.sp, fontWeight: FontWeight.bold),
                         ),
                         const Divider(),
-                        /* Text('Delivery ',
-                            style: TextStyle(
-                                fontSize: 16.sp, fontWeight: FontWeight.w400)),
-                        const Divider(),
-                       Text(
-                          'Delivered',
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        SizedBox(height: 1.h),
-                        Text(
-                          'Delivery Estimate',
-                          style: TextStyle(
-                              fontSize: 16.sp, fontWeight: FontWeight.w400),
-                        ), 
-                         Text(
-                          DateFormat('dd.MM.yyyy').format(
-                              DateTime.parse(widget.order.eventEndDate)),
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.green,
-                          ),
-                        ), */
-
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -278,14 +246,14 @@ class _OrderSummaryState extends State<OrderSummary> {
                                       height:
                                           1), // Space between divider and the following text
                                   Text(
-                                    'Event Start Date: ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventDate))}',
+                                    'Event Start Date: ${DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.order.eventDate))}',
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                   Text(
-                                    'Event End Date: ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventEndDate))}',
+                                    'Event End Date: ${DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.order.eventEndDate))}',
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.w600,
@@ -295,7 +263,7 @@ class _OrderSummaryState extends State<OrderSummary> {
                               )
                             else ...[
                               Text(
-                                'Order Received on ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventDate))}\n',
+                                'Order Received on ${DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.order.eventDate))}\n',
                                 style: TextStyle(
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w600,
@@ -304,7 +272,7 @@ class _OrderSummaryState extends State<OrderSummary> {
                                 ),
                               ),
                               Text(
-                                'Order Delivered on ${DateFormat('dd.MM.yyyy').format(DateTime.parse(widget.order.eventEndDate))}',
+                                'Order Delivered on ${DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.order.eventEndDate))}',
                                 style: TextStyle(
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w600,
@@ -320,19 +288,6 @@ class _OrderSummaryState extends State<OrderSummary> {
                           order: widget.order,
                           isShowPrice: true,
                         ),
-                        /*  const Divider(),
-                        Row(
-                          children: [
-                            Text(
-                              'Tracking Shipment',
-                              style: TextStyle(
-                                  fontSize: 16.sp, fontWeight: FontWeight.w400),
-                            ),
-                            const Spacer(),
-                            const Icon(Icons.arrow_forward_ios_rounded, size: 16),
-                          ],
-                        ),
-                        const Divider(), */
                         SizedBox(height: 2.h),
                       ],
                     ),
@@ -340,7 +295,7 @@ class _OrderSummaryState extends State<OrderSummary> {
                   SizedBox(height: 1.h),
                   Container(
                     padding:
-                        EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+                        EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
                     width: double.infinity,
                     color: Colors.white,
                     child: Column(
@@ -382,9 +337,6 @@ class _OrderSummaryState extends State<OrderSummary> {
                               // paid amount button
                               InkWell(
                                 onTap: () async {
-                                  // await payNow(
-                                  //     int.parse(widget.order.totalPrice) *
-                                  //         0.75);
                                 },
                                 child: Container(
                                   padding: EdgeInsets.symmetric(
@@ -412,8 +364,6 @@ class _OrderSummaryState extends State<OrderSummary> {
                                 ),
                               ),
                             ]
-                            // const Icon(Icons.arrow_forward_ios_rounded,
-                            //     size: 16)
                           ],
                         ),
                         const Divider(),
@@ -437,7 +387,6 @@ class _OrderSummaryState extends State<OrderSummary> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 1.h),
                   Container(
                     padding:
                         EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
@@ -466,7 +415,6 @@ class _OrderSummaryState extends State<OrderSummary> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 1.h),
                   Container(
                     padding:
                         EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
@@ -486,7 +434,7 @@ class _OrderSummaryState extends State<OrderSummary> {
                         Row(
                           children: [
                             Text(
-                              'Item Total ',
+                              'Order Total ',
                               style: TextStyle(
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w600,
@@ -495,7 +443,7 @@ class _OrderSummaryState extends State<OrderSummary> {
                             ),
                             const Spacer(),
                             Text(
-                              "₹ ${widget.order.totalPrice}",
+                              "₹ ${tprice.toStringAsFixed(2)}",
                               style: TextStyle(
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w500,
@@ -503,29 +451,6 @@ class _OrderSummaryState extends State<OrderSummary> {
                             ),
                           ],
                         ),
-                        // if (order.paidStatus == "partial")
-                        //   Row(
-                        //     children: [
-                        //       Text(
-                        //         'Paid Amount ',
-                        //         style: TextStyle(
-                        //           fontSize: 16.sp,
-                        //           fontWeight: FontWeight.w600,
-                        //           color: Colors.grey,
-                        //         ),
-                        //       ),
-                        //       const Spacer(),
-
-                        //       // 25% of total price
-                        //       Text(
-                        //         "₹ ${int.parse(order.totalPrice) * 0.25}",
-                        //         style: TextStyle(
-                        //           fontSize: 16.sp,
-                        //           fontWeight: FontWeight.w500,
-                        //         ),
-                        //       ),
-                        //     ],
-                        //   ),
                         widget.order.paidStatus == "partial"
                             ?
                             // remaining amount
@@ -540,11 +465,7 @@ class _OrderSummaryState extends State<OrderSummary> {
                                     ),
                                   ),
                                   const Spacer(),
-
-                                  // 25% of total price
-                                  Text(
-                                    "₹ ${int.parse(widget.order.totalPrice) * 0.75}",
-                                    style: TextStyle(
+                                  Text("₹ ${((int.parse(widget.order.totalPrice) + gprice)*0.75) .toStringAsFixed(2)}", style: TextStyle(
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.w500,
                                     ),
@@ -563,7 +484,7 @@ class _OrderSummaryState extends State<OrderSummary> {
                                   ),
                                   const Spacer(),
                                   Text(
-                                    '₹ ${widget.order.totalPrice}',
+                                    '₹ ${tprice.toStringAsFixed(2)}',
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.w500,
@@ -571,8 +492,6 @@ class _OrderSummaryState extends State<OrderSummary> {
                                   ),
                                 ],
                               ),
-                        // total
-
                         const Divider(),
                         widget.order.paidStatus == "partial"
                             ? Row(
@@ -586,7 +505,7 @@ class _OrderSummaryState extends State<OrderSummary> {
                                   ),
                                   const Spacer(),
                                   Text(
-                                    "₹ ${int.parse(widget.order.totalPrice) * 0.25}",
+                                    "₹ ${(int.parse(widget.order.totalPrice) +gprice)*0.25}",
                                     style: TextStyle(
                                       fontSize: 18.sp,
                                       fontWeight: FontWeight.w600,
@@ -606,7 +525,7 @@ class _OrderSummaryState extends State<OrderSummary> {
                                   ),
                                   const Spacer(),
                                   Text(
-                                    "₹ ${widget.order.totalPrice}",
+                                    "₹ ${widget.order?.totalPrice}",
                                     style: TextStyle(
                                       fontSize: 18.sp,
                                       fontWeight: FontWeight.w600,
@@ -619,12 +538,8 @@ class _OrderSummaryState extends State<OrderSummary> {
                       ],
                     ),
                   ),
-                  Container(
-                    width: double.infinity,
+                  const ExtraDetails(
                     color: Colors.white,
-                    child: const ExtraDetails(
-                      color: Colors.white,
-                    ),
                   )
                 ],
               ),
