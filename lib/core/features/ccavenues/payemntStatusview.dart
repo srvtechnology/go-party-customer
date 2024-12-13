@@ -100,7 +100,7 @@ class _PaymentStatusViewState extends State<PaymentStatusView> {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           width: MediaQuery.of(context).size.width,
           child: Text(
-            widget.paymentRes?.type ?? "",
+            widget.paymentRes?.message ?? "",
             style: const TextStyle(
                 fontSize: 12, color: Colors.grey, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,

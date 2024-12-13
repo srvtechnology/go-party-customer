@@ -11,10 +11,12 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../constant/themData.dart';
 
 class AgentWallet extends StatefulWidget {
   static const routeName = "/agent-wallet";
+
   const AgentWallet({
     super.key,
   });
@@ -27,15 +29,24 @@ class _AgentWalletState extends State<AgentWallet> {
   late AuthProvider auth;
   bool isLoading = true;
   AgentWalletData? agentWalletData;
+  late final SharedPreferences pref;
   TextEditingController withdrawAmountController = TextEditingController();
+  late String userType;
 
   @override
   void initState() {
+    super.initState();
+    initializeData();
+  }
+
+  void initializeData() async {
     auth = Provider.of<AuthProvider>(context, listen: false);
-    if (auth.isAgent) {
+    pref = await SharedPreferences.getInstance();
+    userType = pref.getString("userType") ?? "";
+
+    if (userType == "agent") {
       getWalletData(auth);
     }
-    super.initState();
   }
 
   Future getWalletData(AuthProvider auth) async {
@@ -84,17 +95,16 @@ class _AgentWalletState extends State<AgentWallet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // widrawal button
-
+      appBar: AppBar(
+        title: const Text('Wallet'),
+      ),
       body: Container(
-        margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
         child: Column(
           children: [
             // wallet Hedder with balance
             Container(
               width: double.infinity,
-              height: 110,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               decoration: BoxDecoration(
                 color: primaryColor,
                 boxShadow: [
@@ -111,124 +121,8 @@ class _AgentWalletState extends State<AgentWallet> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        "Wallet",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600),
-                      ),
                       // withdraw button
                       const Spacer(),
-                      TextButton.icon(
-                          onPressed: () {
-                            showModalBottomSheet(
-                              useSafeArea: true,
-                              isScrollControlled: true,
-                              context: context,
-                              builder: (BuildContext context) {
-                                return StatefulBuilder(
-                                  builder: (BuildContext context,
-                                      void Function(void Function()) setState) {
-                                    return Padding(
-                                      padding: EdgeInsets.only(
-                                        bottom: MediaQuery.of(context)
-                                                .viewInsets
-                                                .bottom +
-                                            20,
-                                      ),
-                                      child: Container(
-                                        height: 220,
-                                        padding: const EdgeInsets.all(20),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            const Text(
-                                              "Withdraw Amount",
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w600,
-                                                color: primaryColor,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 10),
-                                            TextFormField(
-                                              keyboardType:
-                                                  TextInputType.number,
-                                              controller:
-                                                  withdrawAmountController,
-                                              inputFormatters: [
-                                                FilteringTextInputFormatter
-                                                    .digitsOnly,
-                                                // max amount will be agentWalletData?.remainingBalance value
-                                              ],
-                                              decoration: const InputDecoration(
-                                                labelText: "Amount",
-                                                border: OutlineInputBorder(),
-                                              ),
-                                            ),
-                                            const SizedBox(height: 10),
-                                            SizedBox(
-                                              width: double.infinity,
-                                              height: 50,
-                                              child: ElevatedButton(
-                                                onPressed: () {
-                                                  // make withdraw request will max amount will be agentWalletData?.remainingBalance value
-                                                  if (agentWalletData
-                                                          ?.remainingBalance ==
-                                                      null) {
-                                                    return;
-                                                  }
-                                                  if (int.tryParse(
-                                                          withdrawAmountController
-                                                              .text) !=
-                                                      null) {
-                                                    if (int.tryParse(
-                                                            withdrawAmountController
-                                                                .text)! >
-                                                        agentWalletData!
-                                                            .remainingBalance!) {
-                                                      Navigator.pop(context);
-                                                      ScaffoldMessenger.of(
-                                                              context)
-                                                          .showSnackBar(
-                                                        const SnackBar(
-                                                          content: Text(
-                                                              "You can't withdraw more than your balance"),
-                                                        ),
-                                                      );
-                                                      return;
-                                                    }
-                                                  }
-                                                  Navigator.pop(context);
-                                                  withdrawAmount(int.tryParse(
-                                                          withdrawAmountController
-                                                              .text) ??
-                                                      0);
-                                                  withdrawAmountController
-                                                      .clear();
-                                                },
-                                                child: const Text("Withdraw"),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                            );
-                          },
-                          icon: const Icon(
-                            Icons.account_balance_wallet,
-                            color: Colors.white,
-                          ),
-                          label: const Text(
-                            "Withdraw",
-                            style: TextStyle(color: Colors.white),
-                          ))
                     ],
                   ),
                   const SizedBox(
@@ -382,6 +276,90 @@ class _AgentWalletState extends State<AgentWallet> {
             )),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showModalBottomSheet(
+            useSafeArea: true,
+            isScrollControlled: true,
+            context: context,
+            builder: (BuildContext context) {
+              return StatefulBuilder(
+                builder: (BuildContext context,
+                    void Function(void Function()) setState) {
+                  return Padding(
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+                    ),
+                    child: Container(
+                      height: 260, // Adjust height to accommodate the button
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Withdraw Amount",
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: primaryColor,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          TextFormField(
+                            keyboardType: TextInputType.number,
+                            controller: withdrawAmountController,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
+                            decoration: const InputDecoration(
+                              labelText: "Amount",
+                              border: OutlineInputBorder(),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          // Add space between TextField and button
+                          ElevatedButton(
+                            onPressed: () {
+                              if (int.tryParse(withdrawAmountController.text)! >
+                                  agentWalletData!.remainingBalance!) {
+                                Navigator.pop(context);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        "You can't withdraw more than your balance"),
+                                  ),
+                                );
+                              }else{
+                                Navigator.pop(context);
+                                withdrawAmount(int.tryParse(
+                                                          withdrawAmountController
+                                                              .text) ??
+                                                      0);
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: primaryColor,
+                              minimumSize: const Size(
+                                  double.infinity, 50), // Full-width button
+                            ),
+                            child: const Text(
+                              "Submit",
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        },
+        backgroundColor: Theme.of(context).primaryColor, // Button color
+        child: Icon(Icons.account_balance_wallet), // Icon inside the button
+        tooltip: 'Add', // Tooltip when long-pressed
       ),
     );
   }
@@ -679,3 +657,37 @@ class User {
         "Vendor_status": vendorStatus,
       };
 }
+//  if (agentWalletData
+//                                                           ?.remainingBalance ==
+//                                                       null) {
+//                                                     return;
+//                                                   }
+//                                                   if (int.tryParse(
+//                                                           withdrawAmountController
+//                                                               .text) !=
+//                                                       null) {
+//                                                     if (int.tryParse(
+//                                                             withdrawAmountController
+//                                                                 .text)! >
+//                                                         agentWalletData!
+//                                                             .remainingBalance!) {
+//                                                       Navigator.pop(context);
+//                                                       ScaffoldMessenger.of(
+//                                                               context)
+//                                                           .showSnackBar(
+//                                                         const SnackBar(
+//                                                           content: Text(
+//                                                               "You can't withdraw more than your balance"),
+//                                                         ),
+//                                                       );
+//                                                       return;
+//                                                     }
+//                                                   }
+//                                                   Navigator.pop(context);
+//                                                   withdrawAmount(int.tryParse(
+//                                                           withdrawAmountController
+//                                                               .text) ??
+//                                                       0);
+//                                                   withdrawAmountController
+//                                                       .clear();
+//                                                 }

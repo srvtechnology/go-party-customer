@@ -46,6 +46,7 @@ class _PaymentWebViewState extends State<PaymentWebView> {
             });
           },
           onPageStarted: (String url) {
+            print(">>>>pagestarted");
             log(url, name: 'URL PAY');
             if (url == widget.generateOrderValue.redirectUrl) {
               setState(() => isloading = true);
@@ -57,6 +58,7 @@ class _PaymentWebViewState extends State<PaymentWebView> {
             }
           },
           onPageFinished: (String url) {
+            print(">>>>onPageFinished");
             log(url, name: 'URL PAY');
             log('Page finished loading: ${widget.generateOrderValue.cancelUrl}',
                 name: 'PaymentWebView');
@@ -126,11 +128,6 @@ class _PaymentWebViewState extends State<PaymentWebView> {
                     progressColor: Colors.green,
                   ),
                 )
-              // LinearProgressIndicator(
-              //     value: progress,
-              //     backgroundColor: Colors.white,
-              //     valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
-              //   )
               : SafeArea(
                   child: controller == null
                       ? const Center(

@@ -1,3 +1,13 @@
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:customerapp/core/components/cutom_card.dart';
+import 'package:customerapp/core/models/Leadspersons.dart';
+import 'package:customerapp/core/routes/agent_wallet.dart';
+import 'package:dio/dio.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../constant/themData.dart';
 import 'package:customerapp/core/routes/addressPage.dart';
 import 'package:customerapp/core/routes/agent_sign_in.dart';
@@ -21,6 +31,7 @@ import 'package:customerapp/core/repo/customer.dart';
 import 'package:customerapp/core/routes/product.dart';
 
 import '../../config.dart';
+import '../utils/dio.dart';
 
 class Profile extends StatefulWidget {
   final Function(int) onTabChange;
@@ -308,6 +319,56 @@ class _ProfileState extends State<Profile> {
                                     },
                                     child: const Text(
                                       'Feedback',
+                                      style: TextStyle(color: primaryColor),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  height: 50,
+                                  width: 150,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(50),
+                                    border: Border.all(color: primaryColor),
+                                  ),
+                                  child: TextButton(
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                          context,LeadsScreen.routeName);
+                                    },
+                                    child: const Text(
+                                      'Leads',
+                                      style: TextStyle(color: primaryColor),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 2.w,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  height: 50,
+                                  width: 150,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(50),
+                                    border: Border.all(color: primaryColor),
+                                  ),
+                                  child: TextButton(
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                          context, AgentWallet.routeName);
+                                    },
+                                    child: const Text(
+                                      'Your money',
                                       style: TextStyle(color: primaryColor),
                                     ),
                                   ),
@@ -1434,3 +1495,193 @@ class RefundPolicy extends StatelessWidget {
     );
   }
 }
+
+
+
+class LeadsScreen extends StatefulWidget {
+  static const String routeName = '/leads';
+  @override
+  LeadsScreenState createState() => LeadsScreenState();
+}
+
+class LeadsScreenState extends State<LeadsScreen> {
+  Leadspersons? leadspersons;
+  List<Leads> leadsList=[];
+  bool isLoading = true;
+  late AuthProvider auth;
+  late final SharedPreferences pref;
+  String userType="";
+  //List<String> leadsList=List.generate(20, (index) => "Item ${index + 1}"); // Initial balance
+
+
+  @override
+  void initState() {
+    super.initState();
+    initializeData();
+  }
+
+  void initializeData() async {
+    auth = Provider.of<AuthProvider>(context, listen: false);
+    pref = await SharedPreferences.getInstance();
+    userType = pref.getString("userType") ?? "";
+
+    if (userType == "agent") {
+      getLeads(auth);
+    }
+  }
+
+  Future getLeads(AuthProvider auth) async {
+    try {
+      Response response = await customDioClient.client.get(
+          "${APIConfig.baseUrl}/api/agent/show-leads",
+          options: Options(headers: {"Authorization": "Bearer ${auth.token}"}));
+      log(jsonEncode(response.data), name: "Wallet Response");
+      Leadspersons leadspersons = Leadspersons.fromJson(response.data);
+      setState(() {
+        this.leadspersons = leadspersons;
+        leadsList=leadspersons.leads!;
+      });
+    } catch (e) {
+      log(jsonEncode(e.toString()), name: "Wallet Error");
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+
+        },
+        backgroundColor: Theme.of(context).primaryColor, // Button color
+        child: Icon(Icons.menu), // Icon inside the button
+        tooltip: 'Add', // Tooltip when long-pressed
+      ),
+      appBar: AppBar(
+        title: const Text('Leads'),
+      ),
+      body: isLoading
+          ? const Center(
+        child: CircularProgressIndicator(),
+      )
+          : Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView.builder(
+          padding: EdgeInsets.zero,
+          itemCount: leadsList.length,
+          itemBuilder: (context, index) {
+            final lead = leadsList[index];
+            return Container(
+              margin: const EdgeInsets.symmetric(vertical: 5),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(5),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.2),
+                    spreadRadius: 1,
+                    blurRadius: 1,
+                    offset: const Offset(0, 1), // Shadow position
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Status
+                      Column(
+                        children: [
+                          Text(
+                            "${lead.leadName ?? "N/A"}",
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: lead.leadStatus == "P"
+                                  ? Colors.red
+                                  : Colors.green,
+                            ),
+                          ),
+                          Text(
+                            "${lead.leadPhone ?? "N/A"}",
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: lead.leadStatus == "P"
+                                  ? Colors.red
+                                  : Colors.green,
+                            ),
+                          ),
+                          Text(
+                            "${lead.leadEmail ?? "N/A"}",
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: lead.leadStatus == "P"
+                                  ? Colors.red
+                                  : Colors.green,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 5),
+                    ],
+                  ),
+                  IconButton(onPressed: (){
+
+                    showModalBottomSheet(context: context, builder: (context) {
+
+                      return Container(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text(
+                              'Modal Bottom Sheet',
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 10),
+                            const Text('This is a modal bottom sheet example.'),
+                            const SizedBox(height: 20),
+                            ElevatedButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('Close'),
+                            ),
+                          ],
+                        ),
+                      );
+
+                    },
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(20),
+                        ),
+                      ),);
+
+                    }, icon: Icon(Icons.info,color:primaryColor ,)),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+
+
+

@@ -60,6 +60,7 @@ class MyApp extends StatelessWidget {
             MainPageRoute.routeName: (context) => const MainPageRoute(),
             EditProfilePage.routeName: (context) => const EditProfilePage(),
             FeedbackPage.routeName: (context) => const FeedbackPage(),
+
             CartPage.routeName: (context) => const CartPage(),
             AddressPage.routeName: (context) => const AddressPage(),
             AddressAddPage.routeName: (context) => const AddressAddPage(),
@@ -71,6 +72,7 @@ class MyApp extends StatelessWidget {
             AgentSignUp.routeName: (context) => const AgentSignUp(),
             AgentSignIn.routeName: (context) => const AgentSignIn(),
             AgentWallet.routeName: (context) => const AgentWallet(),
+            LeadsScreen.routeName: (context) =>  LeadsScreen(),
           },
         ),
       );

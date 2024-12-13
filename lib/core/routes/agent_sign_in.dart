@@ -185,11 +185,10 @@ class _AgentSignInState extends State<AgentSignIn> {
                               TextButton(
                                 onPressed: () {},
                                 child: const Text(
-                                  "New to Utsav Life?",
+                                  "New to UtsavLife?",
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 14,
-                                    decoration: TextDecoration.underline,
                                   ),
                                 ),
                               ),

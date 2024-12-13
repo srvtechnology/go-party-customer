@@ -38,6 +38,7 @@ dependencies:
   google_fonts: ^4.0.4
   smooth_page_indicator: ^1.1.0
   flutter_widget_from_html:
+  html_unescape: ^2.0.0
   share_plus: ^7.2.1
   custom_refresh_indicator: ^3.0.0
   timelines: ^0.1.0

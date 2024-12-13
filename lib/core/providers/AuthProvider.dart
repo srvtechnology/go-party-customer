@@ -360,7 +360,7 @@ class AuthProvider with ChangeNotifier {
             ),
           );
 
-          // Reset auth state after showing the error message
+          // Reset auth state after showing the error message.
           _authState = AuthState.loggedOut;
           notifyListeners();
           return;

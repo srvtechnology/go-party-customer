@@ -315,9 +315,10 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                               // paid amount button
                               InkWell(
                                 onTap: () async {
-                                  await payNow(
-                                      int.parse(widget.order.totalPrice) *
-                                          0.75);
+                                  double amt = double.parse(
+                                      ((double.parse(widget.order.totalPrice) + gprice) * 0.75)
+                                          .toStringAsFixed(2));
+                                  await payNow(amt);
                                 },
                                 child: Container(
                                   padding: EdgeInsets.symmetric(
@@ -452,7 +453,6 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                         ),
                         widget.order.paidStatus == "partial"
                             ?
-                            // remaining amount
                             Row(
                                 children: [
                                   Text(

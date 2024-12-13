@@ -571,7 +571,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                             builder: (context) => CheckoutPage(
                                               serviceIds: serviceIds,
                                               cartItems: data,
-                                              cartSubTotal: totalPrice,
+                                              cartSubTotal: double.parse(widget.package.price),
                                             ),
                                           ),
                                         );
@@ -708,7 +708,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                             builder: (context) => CheckoutPage(
                               serviceIds: serviceIds,
                               cartItems: data,
-                              cartSubTotal: totalPrice,
+                              cartSubTotal: double.parse(widget.package.price),
                             ),
                           ),
                         );

@@ -131,7 +131,7 @@ class _OrderStatusPageState extends State<OrderStatusPage> {
                               padding: const EdgeInsets.only(left: 20),
                               child: Text(
                                 // order date here
-                                'Order ${DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.order.eventDate))}',
+                                'Order Start ${DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.order.eventDate))}',
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.grey.shade700,
@@ -161,7 +161,7 @@ class _OrderStatusPageState extends State<OrderStatusPage> {
                             contents: Padding(
                               padding: const EdgeInsets.only(left: 20),
                               child: Text(
-                                'Arriving ${DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.order.eventEndDate))}',
+                                'Order End ${DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.order.eventEndDate))}',
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.grey.shade700,

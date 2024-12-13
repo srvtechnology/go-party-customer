@@ -556,14 +556,13 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              TextButton(
-                                onPressed: () {},
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
                                 child: const Text(
-                                  "New to Utsav Life?",
+                                  "New to UtsavLife?",
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 14,
-                                    decoration: TextDecoration.underline,
                                   ),
                                 ),
                               ),

@@ -1161,14 +1161,16 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                             addToCartDialog(context, categories,
                                                 isFromBookNow: (serviceIds,
                                                     data, totalPrice) {
+                                              List<String> lis=[];
+                                              lis.add("${selectedCategory?.id}");
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (context) =>
                                                       CheckoutPage(
-                                                    serviceIds: serviceIds,
+                                                    serviceIds:lis ,
                                                     cartItems: data,
-                                                    cartSubTotal: totalPrice,
+                                                    cartSubTotal: double.parse("${selectedCategory?.discountPrice}"),
                                                   ),
                                                 ),
                                               );
@@ -1305,13 +1307,9 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
-                                      Text(parseHtmlString(widget.service.featured_description ?? ""),
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
+
+                                      HtmlTextView(htmlText: widget.service.featured_description ?? "")
+                                     // Text(parseHtmlString(),),
 
                                     ],
                                   )),
@@ -1320,7 +1318,6 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                 height: 5,  ),
                               const ExtraDetails(),
                             ],
-
                           ],
                         ),
                       ),
