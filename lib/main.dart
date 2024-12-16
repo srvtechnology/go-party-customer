@@ -2,6 +2,7 @@ import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/providers/categoryProvider.dart';
 import 'package:customerapp/core/providers/networkProvider.dart';
 import 'package:customerapp/core/providers/orderProvider.dart';
+import 'package:customerapp/core/routes/update_leads.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -9,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import '../../../views/view.dart';
 import './core/constant/themData.dart';
+import 'core/routes/add_leads.dart';
 
 GetIt getIt = GetIt.asNewInstance();
 
@@ -73,6 +75,8 @@ class MyApp extends StatelessWidget {
             AgentSignIn.routeName: (context) => const AgentSignIn(),
             AgentWallet.routeName: (context) => const AgentWallet(),
             LeadsScreen.routeName: (context) =>  LeadsScreen(),
+            AddLeads.routeName: (context) =>  AddLeads(),
+            UpdateLeads.routeName: (context) =>  UpdateLeads( ),
           },
         ),
       );

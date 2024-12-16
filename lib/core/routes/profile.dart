@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:customerapp/core/components/cutom_card.dart';
 import 'package:customerapp/core/models/Leadspersons.dart';
 import 'package:customerapp/core/routes/agent_wallet.dart';
+import 'package:customerapp/core/routes/update_leads.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,6 +33,7 @@ import 'package:customerapp/core/routes/product.dart';
 
 import '../../config.dart';
 import '../utils/dio.dart';
+import 'add_leads.dart';
 
 class Profile extends StatefulWidget {
   final Function(int) onTabChange;
@@ -1506,11 +1508,12 @@ class LeadsScreen extends StatefulWidget {
 
 class LeadsScreenState extends State<LeadsScreen> {
   Leadspersons? leadspersons;
-  List<Leads> leadsList=[];
+  List<Leads> leadsList = [];
   bool isLoading = true;
   late AuthProvider auth;
   late final SharedPreferences pref;
-  String userType="";
+  String userType = "";
+
   //List<String> leadsList=List.generate(20, (index) => "Item ${index + 1}"); // Initial balance
 
 
@@ -1539,7 +1542,7 @@ class LeadsScreenState extends State<LeadsScreen> {
       Leadspersons leadspersons = Leadspersons.fromJson(response.data);
       setState(() {
         this.leadspersons = leadspersons;
-        leadsList=leadspersons.leads!;
+        leadsList = leadspersons.leads!;
       });
     } catch (e) {
       log(jsonEncode(e.toString()), name: "Wallet Error");
@@ -1561,10 +1564,12 @@ class LeadsScreenState extends State<LeadsScreen> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-
+          Navigator.pushNamed(context, AddLeads.routeName);
         },
-        backgroundColor: Theme.of(context).primaryColor, // Button color
-        child: Icon(Icons.menu), // Icon inside the button
+        backgroundColor: Theme
+            .of(context)
+            .primaryColor, // Button color
+        child: Icon(Icons.add), // Icon inside the button
         tooltip: 'Add', // Tooltip when long-pressed
       ),
       appBar: AppBar(
@@ -1580,7 +1585,6 @@ class LeadsScreenState extends State<LeadsScreen> {
           padding: EdgeInsets.zero,
           itemCount: leadsList.length,
           itemBuilder: (context, index) {
-            final lead = leadsList[index];
             return Container(
               margin: const EdgeInsets.symmetric(vertical: 5),
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -1592,7 +1596,7 @@ class LeadsScreenState extends State<LeadsScreen> {
                     color: Colors.grey.withOpacity(0.2),
                     spreadRadius: 1,
                     blurRadius: 1,
-                    offset: const Offset(0, 1), // Shadow position
+                    offset: const Offset(0, 1), // changes position of shadow
                   ),
                 ],
               ),
@@ -1603,85 +1607,334 @@ class LeadsScreenState extends State<LeadsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Status
-                      Column(
-                        children: [
-                          Text(
-                            "${lead.leadName ?? "N/A"}",
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: lead.leadStatus == "P"
-                                  ? Colors.red
-                                  : Colors.green,
-                            ),
-                          ),
-                          Text(
-                            "${lead.leadPhone ?? "N/A"}",
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: lead.leadStatus == "P"
-                                  ? Colors.red
-                                  : Colors.green,
-                            ),
-                          ),
-                          Text(
-                            "${lead.leadEmail ?? "N/A"}",
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: lead.leadStatus == "P"
-                                  ? Colors.red
-                                  : Colors.green,
-                            ),
-                          ),
-                        ],
+                      Text(
+                        "Name: ${leadsList[index].leadName ?? ""}",
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: leadsList[index].leadStatus == "P"
+                              ? Colors.red
+                              : Colors.green,
+                        ),
                       ),
                       const SizedBox(height: 5),
+                      Text(
+                        formatDate(leadsList[index].createdAt!),
+                        style: const TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.w500),
+                      ),
                     ],
                   ),
-                  IconButton(onPressed: (){
-
-                    showModalBottomSheet(context: context, builder: (context) {
-
-                      return Container(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Text(
-                              'Modal Bottom Sheet',
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 10),
-                            const Text('This is a modal bottom sheet example.'),
-                            const SizedBox(height: 20),
-                            ElevatedButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text('Close'),
-                            ),
-                          ],
-                        ),
-                      );
-
+                  // PopupMenuButton for actions
+                  PopupMenuButton<String>(
+                    onSelected: (value) {
+                      // Handle selected option
+                      switch (value) {
+                        case 'edit':
+                          // Navigator.pushNamed(
+                          //   context,
+                          //   UpdateLeads.routeName,
+                          //   arguments: leadsList[index]);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Coming soon'),
+                              ),);
+                          // Add your edit logic here
+                          break;
+                        case 'view':
+                          _showLeadDetailsDialog(context, leadsList[index]);
+                          print(
+                              'View clicked for ${leadsList[index].leadName}');
+                          // Add your view logic here
+                          break;
+                        case 'reject':
+                          print('Reject clicked for ${leadsList[index]
+                              .leadName}');
+                          showRejectDialog(context,leadsList[index]);
+                          // Add your reject logic here
+                          break;
+                        case 'inquiry':
+                          _showLeadDetailsDialogInqury(context, leadsList[index]);
+                          print('Inquiry clicked for ${leadsList[index]
+                              .leadName}');
+                          // Add your inquiry logic here
+                          break;
+                      }
                     },
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(20),
+                    itemBuilder: (context) {
+                      return [
+                        PopupMenuItem<String>(
+                          value: 'edit',
+                          child: Row(
+                            children: const [
+                              Icon(Icons.edit, size: 18),
+                              SizedBox(width: 8),
+                              Text('Edit'),
+                            ],
+                          ),
                         ),
-                      ),);
-
-                    }, icon: Icon(Icons.info,color:primaryColor ,)),
+                        PopupMenuItem<String>(
+                          value: 'view',
+                          child: Row(
+                            children: const [
+                              Icon(Icons.visibility, size: 18),
+                              SizedBox(width: 8),
+                              Text('View'),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem<String>(
+                          value: 'reject',
+                          child: Row(
+                            children: const [
+                              Icon(Icons.cancel, size: 18),
+                              SizedBox(width: 8),
+                              Text('Reject'),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem<String>(
+                          value: 'inquiry',
+                          child: Row(
+                            children: const [
+                              Icon(Icons.question_answer, size: 18),
+                              SizedBox(width: 8),
+                              Text('Inquiry'),
+                            ],
+                          ),
+                        ),
+                      ];
+                    },
+                  ),
                 ],
               ),
             );
           },
+        )
+        ,
+      ),
+    );
+  }
+
+  String formatDate(String isoDateString) {
+    try {
+      // Parse the ISO date string
+      DateTime parsedDate = DateTime.parse(isoDateString);
+      // Format the date into a readable format
+      return DateFormat('dd MMM yyyy, hh:mm a').format(parsedDate);
+    } catch (e) {
+      // Handle invalid date string
+      return "Invalid date";
+    }
+  }
+
+
+  void _showLeadDetailsDialog(BuildContext context, Leads lead) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Lead Details'),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildDetailRow("Category Name", lead.leadName),
+                _buildDetailRow("Service Name", lead.services),
+                _buildDetailRow("User Name", lead.leadName),
+                _buildDetailRow("User Email", lead.leadEmail),
+                _buildDetailRow("User Mobile", lead.leadPhone),
+                _buildDetailRow("User Address", lead.leadAddress),
+                _buildDetailRow("User City", lead.leadCity),
+                _buildDetailRow("User Pin", lead.leadPin),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+
+  void _showLeadDetailsDialogInqury(BuildContext context, Leads lead)
+  {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Lead Details'),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildDetailRowInq("Message", lead.leadName),
+                _buildDetailRowInq("Service Link", lead.services),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showRejectDialog(BuildContext context,Leads leads) {
+    final TextEditingController _reasonController = TextEditingController();
+    final _formKey = GlobalKey<FormState>();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dismissing by clicking outside
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Reject Lead'),
+          content: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Please provide a reason for rejecting this lead.',
+                  style: TextStyle(fontSize: 14),
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _reasonController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Enter reason',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please provide a reason';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close dialog
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () async{
+                if (_formKey.currentState!.validate()) {
+                  final reason = _reasonController.text;
+                 // submitRejection(reason);
+                  await rejeactLeads(reason, leads.id.toString());
+                  Navigator.of(context).pop(); // Close dialog
+                }
+              },
+              child: const Text('Submit'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+  Widget _buildDetailRow(String label, String? value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Text.rich(
+        TextSpan(
+          text: "$label: ",
+          style: const TextStyle(fontWeight: FontWeight.normal, color: Colors.black),
+          children: [
+            TextSpan(
+              text: value ?? 'N/A',
+              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+            ),
+          ],
         ),
       ),
     );
   }
+
+
+  Widget _buildDetailRowInq(String label, String? value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Text.rich(
+        TextSpan(
+          text: "$label: ",
+          style: const TextStyle(fontWeight: FontWeight.normal, color: Colors.black),
+          children: [
+            TextSpan(
+              text: value ?? 'N/A',
+              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> rejeactLeads(String reason,String leadId) async {
+    try {
+      // Adjust Dio options to allow for automatic redirection
+      final options = Options(
+        headers: {"Authorization": "Bearer ${auth.token}"},
+        validateStatus: (status) {
+          return status! < 500;
+        },
+      );
+
+      Response response = await Dio().post(
+        "${APIConfig.baseUrl}/api/agent/cancel-leads",
+        data: {
+          "reason": reason,
+          "lead_id": leadId,
+        },
+        options: options,
+      );
+
+      // Assuming the response contains 'success' and 'message'
+      bool success = response.data['success'];
+      String message = response.data['message'];
+
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Success: $message')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $message')),
+        );
+      }
+    } catch (e) {
+      log(jsonEncode(e.toString()), name: "Save leads Error");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('An error occurred, please try again')),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+
 }
-
-
-
-
