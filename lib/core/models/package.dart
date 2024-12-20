@@ -8,7 +8,7 @@ class PackageModel {
   List<String> images;
   List<String> videos;
   List<ServiceModel> services;
-  int minQnty;
+  int? minQnty;
 
   PackageModel(
       {required this.id,

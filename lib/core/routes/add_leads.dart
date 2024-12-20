@@ -272,7 +272,7 @@ class AddLeadsState extends State<AddLeads> {
                       setState(() {
                         isLoading = true; // Show loader
                       });
-                      saveLeads();
+                      addLeads();
                     },
                     child: const Text('Submit'),
                   ),
@@ -285,7 +285,8 @@ class AddLeadsState extends State<AddLeads> {
     );
   }
 
-  Future<void> saveLeads() async {
+
+  Future<Response?> addLeads() async {
     try {
       // Adjust Dio options to allow for automatic redirection
       final options = Options(
@@ -294,6 +295,7 @@ class AddLeadsState extends State<AddLeads> {
           return status! < 500;
         },
       );
+
 
       Response response = await Dio().post(
         "${APIConfig.baseUrl}/api/agent/save-leads",
@@ -309,7 +311,51 @@ class AddLeadsState extends State<AddLeads> {
         options: options,
       );
 
+
+      print(">>>>>${auth.token} /n url:-${APIConfig.baseUrl}/api/agent/save-leads ${response.statusCode}");
       // Assuming the response contains 'success' and 'message'
+      bool success = response.data['success'];
+      String message = response.data['message'];
+
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Success: $message')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $message')),
+        );
+      }
+    } catch (e) {
+      log(jsonEncode(e.toString()), name: "Save leads Error");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('An error occurred, please try again')),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+  Future<void> saveLeads() async {
+    try {
+      final options = Options(
+        headers: {"Authorization": "Bearer ${auth.token}"},
+        validateStatus: (status) {
+          return status! < 500;
+        },
+      );
+
+      Response response = await customDioClient.client.post("${APIConfig.baseUrl}/api/agent/save-leads", data: {
+          "category_id": selectedCategory_id,
+          "service_id": selectedService_id,
+          "lead_name": _nameController.text,
+          "lead_address": _addressController.text,
+          "lead_pin": _pinController.text,
+          "lead_email": _emailController.text,
+          "lead_phone": _mobileController.text,
+        }, options: options,
+      );
       bool success = response.data['success'];
       String message = response.data['message'];
 

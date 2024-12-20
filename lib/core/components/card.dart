@@ -186,11 +186,8 @@ class PackageCard extends StatelessWidget {
             ),
             Text(parseHtmlString(package.description),
                 overflow: TextOverflow.ellipsis,
-                maxLines: 2,
+                maxLines: 1,
                 style: descriptionStyle(context)),
-            const SizedBox(
-              height: 10,
-            ),
           ],
         ),
       ),
@@ -700,7 +697,7 @@ class PackageTile extends StatelessWidget {
                         fontWeight: FontWeight.w500),
                   ),
                   Text(
-                    parseHtmlString(package.description ?? ""),
+                    parseHtmlString(package.name ?? ""),
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
