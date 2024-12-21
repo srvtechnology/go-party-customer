@@ -30,6 +30,7 @@ import '../models/package.dart';
 import '../providers/AuthProvider.dart';
 import '../providers/categoryProvider.dart';
 import '../repo/cartRepo.dart';
+import '../utils/textFormater.dart';
 
 class SinglePackageRoute extends StatefulWidget {
   final PackageModel package;
@@ -96,6 +97,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
   void initState() {
     super.initState();
 
+    print(">>>>_SinglePackageRouteState");
     getSinglePackage();
     _startDate.addListener(_calculateDays);
     _endDate.addListener(_calculateDays);
@@ -339,80 +341,134 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                       if (!isLoading)
                         Container(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 4.w, vertical: 2.h),
+                              horizontal: 0, vertical: 2.h),
                           child: Row(
                             children: [
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  RichText(
-                                    text: TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text:
-                                              "\u20B9 ${selectedCategory?.discountPrice ?? widget.package.discountedPrice} ",
-                                          style: TextStyle(
-                                            fontSize: 16.sp,
-                                            fontWeight: FontWeight.w600,
-                                            color: Theme.of(context)
-                                                .primaryColorDark,
-                                          ),
-                                          children: [
-                                            TextSpan(
-                                              text:
-                                                  "for ${selectedCategory?.category?.categoryName?.trim() ?? ""}",
-                                              style: TextStyle(
-                                                color: Theme.of(context)
-                                                    .primaryColorDark,
-                                                fontSize: 14.sp,
-                                              ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text:
+                                            "\u20B9 ${selectedCategory?.discountPrice ?? widget.package.discountedPrice} ",
+                                            style: TextStyle(
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.w600,
+                                              color: Theme.of(context).primaryColorDark,
                                             ),
-                                          ],
+                                            children: [
+                                              TextSpan(
+                                                text:
+                                                "for ${selectedCategory?.category?.categoryName?.trim() ?? ""}",
+                                                style: TextStyle(
+                                                  color: Theme.of(context).primaryColorDark,
+                                                  fontSize: 14.sp,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: const Text(
+                                      'Exc. all taxes',
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: const Text(
+                                      'Check price for other event',
+                                      style: TextStyle(fontSize: 14),
+                                    ),
+                                  ),
+                                  widget.package.featureDescription != null ||
+                                      parseHtmlString(widget.package.featureDescription ?? "") != ""
+                                      ? Container(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const Padding(
+                                          padding: EdgeInsets.only(left: 8.0),
+                                          child: Text(
+                                            "Feature Image",
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                       widget.package.featuredImage!.length>0?Padding(
+                                         padding: const EdgeInsets.only(left: 8.0),
+                                         child: Container(height:150,width:150,child: Image.network("https://utsavlife.com/storage/app/public/packages/featured/${widget.package.featuredImage![0]}"),),
+                                       ):SizedBox(),
+                                        const Padding(
+                                          padding: EdgeInsets.only(left: 8.0),
+                                          child: Text(
+                                            "Feature Description",
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                        // Ensure proper constraints and styles for Html content
+                                        ConstrainedBox(
+                                          constraints: BoxConstraints(
+                                            maxWidth: MediaQuery.of(context).size.width,
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(left: 8.0),
+                                            child: HtmlTextView(
+                                              htmlText: widget.package.featureDescription ?? "" ,
+                                            ),
+                                          ),
                                         ),
                                       ],
                                     ),
-                                  ),
-                                  const Text(
-                                    'Exc. all taxes',
-                                    style: TextStyle(fontSize: 12),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  const Text(
-                                    'Check price for other event',
-                                    style: TextStyle(fontSize: 14),
-                                  ),
-                                  DropdownButton<PopupCategory?>(
-                                    style: TextStyle(
-                                        color: Theme.of(context).primaryColor),
-                                    underline: Container(),
-                                    iconSize: 16,
-                                    icon: const Icon(
-                                      Icons.arrow_drop_down_circle_outlined,
-                                      color: primaryColor,
+                                  )
+                                      : const SizedBox(),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: DropdownButton<PopupCategory?>(
+                                      style: TextStyle(color: Theme.of(context).primaryColor),
+                                      underline: Container(),
+                                      iconSize: 16,
+                                      icon: const Icon(
+                                        Icons.arrow_drop_down_circle_outlined,
+                                        color: primaryColor,
+                                      ),
+                                      value: selectedCategory,
+                                      items: popupCategories
+                                          .map(
+                                            (e) => DropdownMenuItem<PopupCategory>(
+                                          value: e,
+                                          child: Text(
+                                            e.category?.categoryName ?? "",
+                                            style: const TextStyle(fontSize: 14),
+                                          ),
+                                        ),
+                                      )
+                                          .toList(),
+                                      onChanged: (v) {
+                                        setState(() {
+                                          selectedCategory = v;
+                                          _categoryName.text = selectedCategory?.category?.categoryName ?? "";
+                                        });
+                                      },
                                     ),
-                                    value: selectedCategory,
-                                    items: popupCategories
-                                        .map((e) =>
-                                            DropdownMenuItem<PopupCategory>(
-                                              value: e,
-                                              child: Text(
-                                                e.category?.categoryName ?? "",
-                                                style: const TextStyle(
-                                                    fontSize: 14),
-                                              ),
-                                            ))
-                                        .toList(),
-                                    onChanged: (v) {
-                                      setState(() {
-                                        selectedCategory = v;
-                                        _categoryName.text = selectedCategory
-                                                ?.category?.categoryName ??
-                                            "";
-                                      });
-                                    },
                                   ),
                                 ],
                               ),
+
                               const Spacer(),
                             ],
                           ),
@@ -579,37 +635,6 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                     } else {
                                       showAuthDialog(
                                           context, auth, categories, true);
-                                      /* Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const SignInPageRoute(
-                                                    comeBack: true,
-                                                  ))).then((value) {
-                                        if (auth.authState ==
-                                            AuthState.loggedIn) {
-                                          addToCartDialog(context, categories,
-                                              isFromBookNow: (serviceIds, data,
-                                                  totalPrice) {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    CheckoutPage(
-                                                  serviceIds: serviceIds,
-                                                  cartItems: data,
-                                                  cartSubTotal: totalPrice,
-                                                ),
-                                              ),
-                                            );
-                                          });
-                                        } else {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(const SnackBar(
-                                                  content: Text(
-                                                      "Please login to continue")));
-                                        }
-                                      }); */
                                     }
                                   },
                                   child: Container(

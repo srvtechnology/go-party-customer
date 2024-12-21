@@ -91,6 +91,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
   @override
   void initState() {
     super.initState();
+    print(">>>>_SingleServiceRouteState");
     _startDate.addListener(_calculateDays);
     _endDate.addListener(_calculateDays);
     _quantity.text = widget.service.minQnty.toString() == "0" ||
@@ -1288,10 +1289,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                 )),
                             // feature description
                             if (widget.service.featured_description != null ||
-                                parseHtmlString(
-                                        widget.service.featured_description ??
-                                            "") !=
-                                    "") ...[
+                                parseHtmlString(widget.service.featured_description ?? "") != "") ...[
                               Container(
                                   padding: EdgeInsets.symmetric(
                                     horizontal: 4.w,

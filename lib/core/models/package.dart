@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import '../../config.dart';
 
 class PackageModel {
-  String id, name, description, price, discountedPrice, category, unit;
+  String id, name, description, price, discountedPrice, category, unit,featureDescription;
   List<String> images;
+  List<String>? featuredImage;
   List<String> videos;
   List<ServiceModel> services;
   int? minQnty;
@@ -21,6 +22,9 @@ class PackageModel {
       required this.discountedPrice,
       required this.images,
       required this.videos,
+        required this.featuredImage,
+        required this.featureDescription,
+
       required this.services});
   factory PackageModel.fromJson(Map json) {
     List<String> temp = [
@@ -33,20 +37,6 @@ class PackageModel {
         temp.add("${APIConfig.baseUrl}/storage/app/public/packages/$i");
       }
     }
-    /* List<String> images = [];
-
-    if (json["image"] != null && json["image"] is List<dynamic>) {
-      for (String imageUrl in json["image"]) {
-        images.add(imageUrl);
-      }
-    }
-
-    if (json["additional_images"] != null &&
-        json["additional_images"] is List<dynamic>) {
-      for (String imageUrl in json["additional_images"]) {
-        images.add(imageUrl);
-      }
-    } */
 
     List<String> tempVideos = [];
     var videoUrl = json["video_url"];
@@ -71,10 +61,12 @@ class PackageModel {
         price: json["price"].toString(),
         discountedPrice: json["discount_price"].toString(),
         images: temp,
+        featuredImage: json["featured_image"].cast<String>(),
         videos: tempVideos,
         services: servicesList,
         category: json["category"],
         unit: json["unit"],
-        minQnty: json["min_qty"]);
+        minQnty: json["min_qty"],
+      featureDescription: json["featured_description"],);
   }
 }
