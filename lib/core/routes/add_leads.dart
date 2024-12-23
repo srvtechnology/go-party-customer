@@ -285,34 +285,42 @@ class AddLeadsState extends State<AddLeads> {
     );
   }
 
-
   Future<Response?> addLeads() async {
     try {
-      // Adjust Dio options to allow for automatic redirection
       final options = Options(
-        headers: {"Authorization": "Bearer ${auth.token}"},
+        headers: {
+          "Authorization": "Bearer ${auth.token}",
+          "Accept": "application/json",
+        },
         validateStatus: (status) {
           return status! < 500;
         },
       );
 
+      final url = "${APIConfig.baseUrl}/api/agent/save-leads";
+      final requestData = {
+        "category_id": selectedCategory_id,
+        "service_id": selectedService_id,
+        "lead_name": _nameController.text,
+        "lead_address": _addressController.text,
+        "lead_city":_cityController.text,
+        "lead_pin": _pinController.text,
+        "lead_email": _emailController.text,
+        "lead_phone": _mobileController.text,
+      };
 
-      Response response = await Dio().post(
-        "${APIConfig.baseUrl}/api/agent/save-leads",
-        data: {
-          "category_id": selectedCategory_id,
-          "service_id": selectedService_id,
-          "lead_name": _nameController.text,
-          "lead_address": _addressController.text,
-          "lead_pin": _pinController.text,
-          "lead_email": _emailController.text,
-          "lead_phone": _mobileController.text,
-        },
-        options: options,
-      );
+      // Log request details
+      log(">>>>Request URL: $url", name: "API Request");
+      log(">>>>Request Headers: ${options.headers}", name: "API Request");
+      log(">>>>Request Body: $requestData", name: "API Request");
 
+      // Make the request
+      Response response = await Dio().post(url, data: requestData, options: options);
 
-      print(">>>>>${auth.token} /n url:-${APIConfig.baseUrl}/api/agent/save-leads ${response.statusCode}");
+      // Log response details
+      log("Response Status Code: ${response.statusCode}", name: "API Response");
+      log("Response Data: ${response.data}", name: "API Response");
+
       // Assuming the response contains 'success' and 'message'
       bool success = response.data['success'];
       String message = response.data['message'];
@@ -321,22 +329,27 @@ class AddLeadsState extends State<AddLeads> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Success: $message')),
         );
+        Navigator.pop(context);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: $message')),
         );
       }
+
+      return response;
     } catch (e) {
-      log(jsonEncode(e.toString()), name: "Save leads Error");
+      log("Error: ${e.toString()}", name: "API Error");
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('An error occurred, please try again')),
       );
+      return null;
     } finally {
       setState(() {
         isLoading = false;
       });
     }
   }
+
   Future<void> saveLeads() async {
     try {
       final options = Options(
