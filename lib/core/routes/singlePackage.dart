@@ -54,8 +54,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
   final TextEditingController _duration = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   List<PopupCategory> popupCategories = [];
-  PopupCategory? selectedCategory;
-  /* List<String> videoUrls = []; */
+  PopupCategory? selectedCategory=null;
 
   void _calculateDays() {
     if (_startDate.text.isNotEmpty && _endDate.text.isNotEmpty) {
@@ -107,15 +106,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
         : widget.package.minQnty.toString();
     _duration.text = "Full Day";
     log(widget.package.minQnty.toString(), name: "Package");
-    /*_categoryName.addListener(() {
-      if (popupCategories.isNotEmpty) {
-        selectedCategory = popupCategories.firstWhere(
-            (element) => element.category?.categoryName == _categoryName.text);
-        setState(() {});
-        log(selectedCategory!.category!.categoryName.toString(),
-            name: "Selected Category");
-      }
-    });*/
+
   }
 
   Future<void> getSinglePackage() async {
@@ -214,14 +205,13 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                     children: [
                       ShareRapper(
                           title: widget.package.name,
-                          url:
-                              'https://utsavlife.com/customer/package/details/${widget.package.id}',
+                          url: 'https://utsavlife.com/customer/package/details/${widget.package.id}',
                           child: PackageImageSlider(
                             imageUrls: widget.package.images,
                             videoUrls: widget.package.videos,
                           )),
                       Container(
-                        margin: EdgeInsets.only(top: 2.h),
+                        margin: EdgeInsets.only(top: 0.h),
                         padding: EdgeInsets.symmetric(
                           horizontal: 4.w,
                         ),
@@ -240,47 +230,6 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                       const SizedBox(
                         height: 8,
                       ),
-                      /* --- commented for the fix below on : 29-07-24 --*/
-                      /* AnimatedContainer(
-                          constraints: BoxConstraints(
-                              minHeight: 1.h,
-                              maxHeight: _isShowMore ? double.infinity : 10.h,
-                              minWidth: double.infinity,
-                              maxWidth: double.infinity),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 4.w,
-                          ),
-                          alignment: Alignment.centerLeft,
-                          duration: const Duration(milliseconds: 600),
-                          child: LayoutBuilder(
-                            builder: (context, constraints) {
-                              if (kDebugMode) {
-                                print(constraints.maxHeight.toString());
-                              }
-                              return HtmlTextView(
-                                  htmlText: widget.package.description);
-                            },
-                          )),
-                      if (widget.package.description.length > 100)
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _isShowMore = !_isShowMore;
-                            });
-                          },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 4.w,
-                            ),
-                            child: Text(
-                              _isShowMore ? "Show Less" : "Show More",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelLarge!
-                                  .copyWith(fontSize: 14, color: primaryColor),
-                            ),
-                          ),
-                        ), */
                       AnimatedSwitcher(
                         duration: const Duration(milliseconds: 600),
                         child: Column(
@@ -300,9 +249,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                               ),
                               alignment: Alignment.centerLeft,
                               child: SingleChildScrollView(
-                                physics: _isShowMore
-                                    ? const NeverScrollableScrollPhysics()
-                                    : null,
+                                physics:  const NeverScrollableScrollPhysics(),
                                 child: HtmlTextView(
                                     htmlText: widget.package.description),
                               ),
@@ -334,6 +281,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                       const Divider(
                         thickness: 1,
                       ),
+
                       if (isLoading)
                         const Center(
                           child: CircularProgressIndicator(),
@@ -341,7 +289,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                       if (!isLoading)
                         Container(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 0, vertical: 2.h),
+                              horizontal: 0, vertical: 1.h),
                           child: Row(
                             children: [
                               Column(
@@ -354,19 +302,21 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                         children: [
                                           TextSpan(
                                             text:
-                                            "\u20B9 ${selectedCategory?.discountPrice ?? widget.package.discountedPrice} ",
+                                                "\u20B9 ${selectedCategory?.discountPrice ?? widget.package.discountedPrice} ",
                                             style: TextStyle(
-                                              fontSize: 16.sp,
+                                              fontSize: 20.sp,
                                               fontWeight: FontWeight.w600,
-                                              color: Theme.of(context).primaryColorDark,
+                                              color: Theme.of(context)
+                                                  .primaryColorDark,
                                             ),
                                             children: [
                                               TextSpan(
                                                 text:
-                                                "for ${selectedCategory?.category?.categoryName?.trim() ?? ""}",
+                                                    "for ${selectedCategory?.category?.categoryName?.trim() ?? ""}",
                                                 style: TextStyle(
-                                                  color: Theme.of(context).primaryColorDark,
-                                                  fontSize: 14.sp,
+                                                  fontSize: 20.sp,
+                                                  color: Theme.of(context)
+                                                      .primaryColorDark,
                                                 ),
                                               ),
                                             ],
@@ -379,7 +329,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                     padding: const EdgeInsets.only(left: 8.0),
                                     child: const Text(
                                       'Exc. all taxes',
-                                      style: TextStyle(fontSize: 12),
+                                      style: TextStyle(fontSize: 16),
                                     ),
                                   ),
                                   const SizedBox(height: 8),
@@ -387,89 +337,63 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                     padding: const EdgeInsets.only(left: 8.0),
                                     child: const Text(
                                       'Check price for other event',
-                                      style: TextStyle(fontSize: 14),
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600),
                                     ),
                                   ),
-                                  widget.package.featureDescription != null ||
-                                      parseHtmlString(widget.package.featureDescription ?? "") != ""
-                                      ? Container(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        const Padding(
-                                          padding: EdgeInsets.only(left: 8.0),
-                                          child: Text(
-                                            "Feature Image",
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
+                                  const SizedBox(height: 8),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width - 16.0,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context).primaryColor, // Background color
+                                        borderRadius: BorderRadius.circular(12.0), // Rounded corners
+                                      ),
+                                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0), // Internal padding
+                                      child: DropdownButton<PopupCategory?>(
+                                        isExpanded: true,
+                                        style: TextStyle(color: Theme.of(context).primaryColor),
+                                        underline: Container(),
+                                        iconSize: 20,
+                                        icon: const Icon(
+                                          Icons.arrow_drop_down_circle_outlined,
+                                          color: Colors.white, // Icon color to match the blue background
+                                        ),
+                                        value: selectedCategory, // Ensure this is the correct binding to selectedCategory
+                                        hint: selectedCategory == null
+                                            ? Text(
+                                          "Select a category", // Hint text
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.white, // Hint text color
+                                          ),
+                                        )
+                                            : null, // Hide the hint once a value is selected
+                                        dropdownColor: Theme.of(context).primaryColor, // Optional: Dropdown menu background
+                                        items: popupCategories
+                                            .map(
+                                              (e) => DropdownMenuItem<PopupCategory>(
+                                            value: e,
+                                            child: Text(
+                                              e.category?.categoryName ?? "",
+                                              style: const TextStyle(fontSize: 14, color: Colors.white),
                                             ),
                                           ),
-                                        ),
-                                       widget.package.featuredImage!.length>0?Padding(
-                                         padding: const EdgeInsets.only(left: 8.0),
-                                         child: Container(height:150,width:150,child: Image.network("https://utsavlife.com/storage/app/public/packages/featured/${widget.package.featuredImage![0]}"),),
-                                       ):SizedBox(),
-                                        const Padding(
-                                          padding: EdgeInsets.only(left: 8.0),
-                                          child: Text(
-                                            "Feature Description",
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ),
-                                        // Ensure proper constraints and styles for Html content
-                                        ConstrainedBox(
-                                          constraints: BoxConstraints(
-                                            maxWidth: MediaQuery.of(context).size.width,
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(left: 8.0),
-                                            child: HtmlTextView(
-                                              htmlText: widget.package.featureDescription ?? "" ,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                                        )
+                                            .toList(),
+                                        onChanged: (PopupCategory? newValue) {
+                                          setState(() {
+                                            selectedCategory = newValue; // Update selectedCategory when a new value is selected
+                                            _categoryName.text = selectedCategory?.category?.categoryName ?? "";
+                                          });
+                                        },
+                                      ),
                                     ),
                                   )
-                                      : const SizedBox(),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8.0),
-                                    child: DropdownButton<PopupCategory?>(
-                                      style: TextStyle(color: Theme.of(context).primaryColor),
-                                      underline: Container(),
-                                      iconSize: 16,
-                                      icon: const Icon(
-                                        Icons.arrow_drop_down_circle_outlined,
-                                        color: primaryColor,
-                                      ),
-                                      value: selectedCategory,
-                                      items: popupCategories
-                                          .map(
-                                            (e) => DropdownMenuItem<PopupCategory>(
-                                          value: e,
-                                          child: Text(
-                                            e.category?.categoryName ?? "",
-                                            style: const TextStyle(fontSize: 14),
-                                          ),
-                                        ),
-                                      )
-                                          .toList(),
-                                      onChanged: (v) {
-                                        setState(() {
-                                          selectedCategory = v;
-                                          _categoryName.text = selectedCategory?.category?.categoryName ?? "";
-                                        });
-                                      },
-                                    ),
-                                  ),
                                 ],
                               ),
-
-                              const Spacer(),
                             ],
                           ),
                         ),
@@ -531,42 +455,8 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                         visible: !isLoading,
                         child: Container(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 4.w, vertical: 2.h),
+                              horizontal: 0.0, vertical: 2.h),
                           child: Column(children: [
-                            /* Container(
-                              height: 6.h,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                    width: 0.5,
-                                    color: Theme.of(context).primaryColor),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    'View More Details',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: primaryColor,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 2.w,
-                                  ),
-                                  const Icon(
-                                    Icons.arrow_forward_ios_rounded,
-                                    color: primaryColor,
-                                    size: 16,
-                                  )
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: 2.h,
-                            ), */
                             Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -577,39 +467,26 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                     } else {
                                       showAuthDialog(
                                           context, auth, categories, false);
-                                      /* Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const SignInPageRoute(
-                                                    comeBack: true,
-                                                  ))).then((value) {
-                                        if (auth.authState ==
-                                            AuthState.loggedIn) {
-                                          addToCartDialog(context, categories);
-                                        } else {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(const SnackBar(
-                                                  content: Text(
-                                                      "Please login to continue")));
-                                        }
-                                      }); */
                                     }
                                   },
-                                  child: Container(
-                                    height: 6.h,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      color: tertiaryColor,
-                                      borderRadius: BorderRadius.circular(10),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 8.0, right: 8.0, bottom: 8.0),
+                                    child: Container(
+                                      height: 6.h,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: tertiaryColor,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: const Text('Add to Cart',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            color: primaryColor,
+                                          )),
                                     ),
-                                    child: const Text('Add to Cart',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          color: primaryColor,
-                                        )),
                                   ),
                                 ),
                                 SizedBox(
@@ -627,7 +504,8 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                             builder: (context) => CheckoutPage(
                                               serviceIds: serviceIds,
                                               cartItems: data,
-                                              cartSubTotal: double.parse(widget.package.price),
+                                              cartSubTotal: double.parse(
+                                                  widget.package.price),
                                             ),
                                           ),
                                         );
@@ -637,21 +515,127 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                           context, auth, categories, true);
                                     }
                                   },
-                                  child: Container(
-                                    height: 6.h,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      color: primaryColor,
-                                      borderRadius: BorderRadius.circular(10),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 8.0, right: 8.0, bottom: 8.0),
+                                    child: Container(
+                                      height: 6.h,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: primaryColor,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: const Text('Book Now',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white,
+                                          )),
                                     ),
-                                    child: const Text('Book Now',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.white,
-                                        )),
                                   ),
+                                ),
+                                SizedBox(
+                                  height: 1.h,
+                                ),
+                                const Divider(
+                                  thickness: 1,
+                                  height: 1,
+                                ),
+                                widget.package.featureDescription != null ||
+                                        parseHtmlString(widget.package
+                                                    .featureDescription ??
+                                                "") !=
+                                            ""
+                                    ? Container(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Padding(
+                                              padding: EdgeInsets.only(
+                                                  top: 8.0,
+                                                  left: 8.0,
+                                                  bottom: 8.0),
+                                              child: Text(
+                                                "Feature Image",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+                                            widget.package.featuredImage!
+                                                        .length >
+                                                    0
+                                                ? Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 8.0),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 8.0,
+                                                              bottom: 8.0,
+                                                              right: 8.0),
+                                                      child: Container(
+                                                        height: 26.h,
+                                                        width: double.infinity,
+                                                        decoration: BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                            image: DecorationImage(
+                                                                image: NetworkImage(
+                                                                    "https://utsavlife.com/storage/app/public/packages/featured/${widget.package.featuredImage![0]}"),
+                                                                fit: BoxFit
+                                                                    .cover)),
+                                                      ),
+                                                    ),
+                                                  )
+                                                : SizedBox(),
+
+                                            const Padding(
+                                              padding: EdgeInsets.only(
+                                                  top: 8.0,
+                                                  bottom: 8.0,
+                                                  left: 8.0),
+                                              child: Text(
+                                                "Feature Description",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+                                            // Ensure proper constraints and styles for Html content
+                                            ConstrainedBox(
+                                              constraints: BoxConstraints(
+                                                maxWidth: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 8.0),
+                                                child: HtmlTextView(
+                                                  htmlText: widget.package
+                                                          .featureDescription ??
+                                                      "",
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    : const SizedBox(),
+                                SizedBox(
+                                  height: 1.h,
+                                ),
+                                const Divider(
+                                  thickness: 1,
+                                  height: 1,
                                 ),
                               ],
                             )
@@ -670,8 +654,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                           child: Column(
                             children: widget.package.images
                                 .map((e) => Container(
-                                      margin: EdgeInsets.only(
-                                          bottom: 2.h),
+                                      margin: EdgeInsets.only(bottom: 2.h),
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(10),
@@ -683,10 +666,11 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                     ))
                                 .toList(),
                           )),
-                      const ExtraDetails()
-                      // SizedBox(
-                      //   height: 5.h,
-                      // ),
+                      const Divider(
+                        thickness: 1,
+                        height: 1,
+                      ),
+                      const ExtraDetails(),
                     ],
                   ),
                 ),

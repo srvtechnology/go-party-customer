@@ -598,6 +598,7 @@ class ExtraDetails extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+
                         Row(
                           children: [
                             Expanded(
@@ -661,10 +662,15 @@ class ExtraDetails extends StatelessWidget {
                       ],
                     ),
                   ),
+                  Divider(
+                    thickness: 1,
+                    height: 1,
+                  ),
                   state.data!.length>4? CustomCard(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+
                         // Header and View All button
                         Row(
                           children: [
@@ -673,13 +679,10 @@ class ExtraDetails extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+
                                   Text(
-                                    "Browse Similar Services",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelLarge!
-                                        .copyWith(
-                                        fontSize: 14, color: textColor),
+                                    "Similar Services",
+                                    style:  headerTextStylerelated(context),
                                   ),
                                 ],
                               ),
@@ -700,7 +703,6 @@ class ExtraDetails extends StatelessWidget {
                                 ))
                           ],
                         ),
-                        SizedBox(height: 2.h),
                         SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Row(

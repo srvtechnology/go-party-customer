@@ -287,19 +287,6 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                     const SizedBox(
                                       height: 10,
                                     ),
-                                    /* CustomDropdown.search(
-                                      borderSide: BorderSide(
-                                          width: 0.5,
-                                          color:
-                                              Theme.of(context).primaryColor),
-                                      borderRadius: BorderRadius.circular(10),
-                                      hintText: "Select Service City",
-                                      controller: _selectedCity,
-                                      items: _cities.map((e) => e).toList(),
-                                    ),
-                                    const SizedBox(
-                                      height: 20,
-                                    ), */
                                     Container(
                                       padding: const EdgeInsets.only(bottom: 5),
                                       child: Text(
@@ -489,18 +476,6 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                     const SizedBox(
                                       height: 20,
                                     ),
-                                    /* CustomDropdown(
-                                        borderSide: BorderSide(
-                                            width: 0.5,
-                                            color:
-                                                Theme.of(context).primaryColor),
-                                        borderRadius: BorderRadius.circular(10),
-                                        items: const [
-                                          "Full Day",
-                                          "Morning",
-                                          "Night"
-                                        ],
-                                        controller: _duration), */
                                     Container(
                                       padding: EdgeInsets.symmetric(
                                           vertical: 2.h, horizontal: 2.w),
@@ -711,7 +686,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                   videoUrls: widget.service.videos!,
                                 )),
                             Container(
-                              margin: EdgeInsets.only(top: 2.h),
+                              margin: EdgeInsets.only(top: 0.h),
                               padding: EdgeInsets.symmetric(
                                 horizontal: 4.w,
                               ),
@@ -808,36 +783,10 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                   ),
                                 ),
                               ),
-                            /* Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 4.w,
-                              ),
-                              height: 5.h,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  const Icon(
-                                    Icons.star,
-                                    color: Color.fromARGB(255, 212, 119, 61),
-                                  ),
-                                  SizedBox(
-                                    width: 2.w,
-                                  ),
-                                  Text(
-                                    widget.service.rating ?? "Not Rated",
-                                    style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                  SizedBox(
-                                    width: 2.w,
-                                  ),
-                                  Text(
-                                      "( ${widget.service.reviews!.length} rating${widget.service.reviews!.length > 1 ? "s" : ""} )")
-                                ],
-                              ),
-                            ), */
+                            const Divider(
+                              thickness: 1,
+                              height: 1,
+                            ),
 
                             Container(
                               padding: EdgeInsets.symmetric(
@@ -848,6 +797,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
+
                                       RichText(
                                         text: TextSpan(
                                           children: [
@@ -861,7 +811,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                                     ? "\u20B9 ${selectedCategory?.servicePrice?.toString().trim() ?? "0.00"} "
                                                     : "\u20B9 ${selectedCategory?.discountPrice?.toString().trim() ?? "0.00"} ",
                                                 style: TextStyle(
-                                                    fontSize: 16.sp,
+                                                    fontSize: 20.sp,
                                                     fontWeight: FontWeight.w600,
                                                     color: Theme.of(context)
                                                         .primaryColorDark),
@@ -872,7 +822,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                                     style: TextStyle(
                                                         color: Theme.of(context)
                                                             .primaryColorDark,
-                                                        fontSize: 14.sp),
+                                                        fontSize: 20.sp),
                                                   ),
                                                 ]),
                                           ],
@@ -880,55 +830,75 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                       ),
                                       const Text(
                                         'Exc. all taxes',
-                                        style: TextStyle(fontSize: 12),
+                                        style: TextStyle(fontSize: 16),
                                       ),
                                       const SizedBox(height: 8),
                                       const Text(
                                         'Check price for other event',
-                                        style: TextStyle(fontSize: 14),
+                                        style:  TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600),
                                       ),
-                                      DropdownButton<PopupCategory?>(
-                                        style: TextStyle(
-                                            color:
-                                                Theme.of(context).primaryColor),
-                                        underline: Container(),
-                                        iconSize: 16,
-                                        icon: const Icon(
-                                          Icons.arrow_drop_down_circle_outlined,
-                                          color: primaryColor,
+                                      const SizedBox(height: 8),
+                                      Container(
+                                        width: MediaQuery.of(context).size.width - 30.0,
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context).primaryColor, // Background color
+                                          borderRadius: BorderRadius.circular(12.0), // Rounded corners
                                         ),
-                                        value: selectedCategory,
-                                        items: popupCategories
-                                            .map((e) =>
-                                                DropdownMenuItem<PopupCategory>(
-                                                  value: e,
-                                                  child: Text(
-                                                    e.category?.categoryName ??
-                                                        "",
-                                                    style: const TextStyle(
-                                                        fontSize: 14),
-                                                  ),
-                                                ))
-                                            .toList(),
-                                        onChanged: (v) {
-                                          setState(() {
-                                            selectedCategory = v;
-                                            _categoryName.text =
-                                                selectedCategory?.category
-                                                        ?.categoryName ??
-                                                    "";
-                                          });
-                                        },
-                                      ),
+                                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0), // Internal padding
+                                        child: DropdownButton<PopupCategory?>(
+                                          isExpanded: true,
+                                          style: TextStyle(color: Theme.of(context).primaryColor),
+                                          underline: Container(),
+                                          iconSize: 20,
+                                          icon: const Icon(
+                                            Icons.arrow_drop_down_circle_outlined,
+                                            color: Colors.white, // Icon color to match the blue background
+                                          ),
+                                          value: selectedCategory, // Ensure this is the correct binding to selectedCategory
+                                          hint: selectedCategory == null
+                                              ? Text(
+                                            "Select a category", // Hint text
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.white, // Hint text color
+                                            ),
+                                          )
+                                              : null, // Hide the hint once a value is selected
+                                          dropdownColor: Theme.of(context).primaryColor, // Optional: Dropdown menu background
+                                          items: popupCategories
+                                              .map(
+                                                (e) => DropdownMenuItem<PopupCategory>(
+                                              value: e,
+                                              child: Text(
+                                                e.category?.categoryName ?? "",
+                                                style: const TextStyle(fontSize: 14, color: Colors.white),
+                                              ),
+                                            ),
+                                          )
+                                              .toList(),
+                                          onChanged: (PopupCategory? newValue) {
+                                            setState(() {
+                                              selectedCategory = newValue; // Update selectedCategory when a new value is selected
+                                              _categoryName.text = selectedCategory?.category?.categoryName ?? "";
+                                            });
+                                          },
+                                        ),
+                                      )
                                     ],
                                   ),
                                 ],
                               ),
                             ),
-                            /*-- 25-07-24 : for available city ----*/
+                            const Divider(
+                              thickness: 1,
+                              height: 1,
+                            ),
                             Container(
                               padding: EdgeInsets.symmetric(
                                 horizontal: 4.w,
+                                vertical: 1.h
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1046,19 +1016,6 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                       )
                                     ],
                                   ),
-                                  /* const DashedDivider(),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        "Unit:",
-                                        style: TextStyle(fontSize: 16),
-                                      ),
-                                      Text(
-                                        widget.service.priceBasis,
-                                      )
-                                    ],
-                                  ), */
                                 ],
                               ),
                             ),
@@ -1068,39 +1025,8 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                 padding: EdgeInsets.symmetric(
                                     horizontal: 4.w, vertical: 2.h),
                                 child: Column(children: [
-                                  /* Container(
-                                    height: 6.h,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 0.5,
-                                          color: Theme.of(context).primaryColor),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        const Text(
-                                          'View More Details',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                            color: primaryColor,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 2.w,
-                                        ),
-                                        const Icon(
-                                          Icons.arrow_forward_ios_rounded,
-                                          color: primaryColor,
-                                          size: 16,
-                                        )
-                                      ],
-                                    ),
-                                  ), */
                                   SizedBox(
-                                    height: 2.h,
+                                    height: 1.h,
                                   ),
                                   Column(
                                     mainAxisAlignment:
@@ -1115,24 +1041,6 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                           } else {
                                             showAuthDialog(context, auth,
                                                 categories, false);
-                                            /* Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const SignInPageRoute(
-                                                          comeBack: true,
-                                                        ))).then((value) {
-                                              if (auth.authState ==
-                                                  AuthState.loggedIn) {
-                                                addToCartDialog(
-                                                    context, categories);
-                                              } else {
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(const SnackBar(
-                                                        content: Text(
-                                                            "Please login to continue")));
-                                              }
-                                            }); */
                                           }
                                         },
                                         child: Container(
@@ -1153,7 +1061,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                         ),
                                       ),
                                       SizedBox(
-                                        height: 1.h,
+                                        height: 2.h,
                                       ),
                                       GestureDetector(
                                         onTap: () {
@@ -1179,39 +1087,6 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                           } else {
                                             showAuthDialog(context, auth,
                                                 categories, true);
-                                            /*  Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const SignInPageRoute(
-                                                          comeBack: true,
-                                                        ))).then((value) {
-                                              if (auth.authState ==
-                                                  AuthState.loggedIn) {
-                                                addToCartDialog(
-                                                    context, categories,
-                                                    isFromBookNow: (serviceIds,
-                                                        data, totalPrice) {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          CheckoutPage(
-                                                        serviceIds: serviceIds,
-                                                        cartItems: data,
-                                                        cartSubTotal:
-                                                            totalPrice,
-                                                      ),
-                                                    ),
-                                                  );
-                                                });
-                                              } else {
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(const SnackBar(
-                                                        content: Text(
-                                                            "Please login to continue")));
-                                              }
-                                            }); */
                                           }
                                         },
                                         child: Container(
@@ -1235,6 +1110,10 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                   )
                                 ]),
                               ),
+                            ),
+                            const Divider(
+                              thickness: 1,
+                              height: 1,
                             ),
                             Container(
                                 padding: EdgeInsets.symmetric(
@@ -1288,6 +1167,10 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                       .toList(),
                                 )),
                             // feature description
+                            const Divider(
+                              thickness: 1,
+                              height: 1,
+                            ),
                             if (widget.service.featured_description != null ||
                                 parseHtmlString(widget.service.featured_description ?? "") != "") ...[
                               Container(
