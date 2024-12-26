@@ -349,13 +349,14 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   @override
   void initState() {
     super.initState();
-    // Ensure the video is paused when the page is initialized
-    widget.controller.pauseVideo();
+
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
     ]);
+
+    widget.controller.playVideo();
   }
 
   @override
@@ -395,6 +396,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                 child: AspectRatio(
                   aspectRatio: 16 / 9,
                   child: YoutubePlayer(
+
                     controller: widget.controller,
                   ),
                 ),

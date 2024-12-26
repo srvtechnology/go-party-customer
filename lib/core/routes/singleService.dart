@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:customerapp/core/components/Rating_view.dart';
+import 'package:customerapp/core/constant/HorizontalImageSlider.dart';
 import 'package:customerapp/core/models/orders.dart';
 import 'package:customerapp/core/models/single_package.dart';
 import 'package:customerapp/core/utils/textFormater.dart';
@@ -579,9 +580,16 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                                                   const SnackBar(
                                                                       content: Text(
                                                                           "Successfully added to cart")));
+
+                                                          setState((){
+                                                            isProcessing=false;
+                                                          });
                                                         }
 
                                                         if (context.mounted) {
+                                                          setState(() {
+                                                            isProcessing = false;
+                                                          });
                                                           Navigator.pop(
                                                               context);
                                                         }
@@ -1150,22 +1158,9 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                 padding: EdgeInsets.symmetric(
                                   horizontal: 4.w,
                                 ),
-                                child: Column(
-                                  children: widget.service.images!
-                                      .map((e) => Container(
-                                            margin: EdgeInsets.only(
-                                                bottom: 2.h, top: 2.h),
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                image: DecorationImage(
-                                                    image: NetworkImage(e),
-                                                    fit: BoxFit.cover)),
-                                            height: 26.h,
-                                            width: double.infinity,
-                                          ))
-                                      .toList(),
-                                )),
+                                child: HorizontalImageSlider(images: widget.service.images!,)),
+
+                            SizedBox(height: 10,),
                             // feature description
                             const Divider(
                               thickness: 1,

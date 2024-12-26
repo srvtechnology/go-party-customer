@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import '../../views/view.dart';
+import '../constant/HorizontalImageSlider.dart';
 import '../constant/themData.dart';
 import 'package:customerapp/core/components/bottomNav.dart';
 import 'package:customerapp/core/components/commonHeader.dart';
@@ -651,21 +652,8 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                           padding: EdgeInsets.symmetric(
                             horizontal: 4.w,
                           ),
-                          child: Column(
-                            children: widget.package.images
-                                .map((e) => Container(
-                                      margin: EdgeInsets.only(bottom: 2.h),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          image: DecorationImage(
-                                              image: NetworkImage(e),
-                                              fit: BoxFit.cover)),
-                                      height: 26.h,
-                                      width: double.infinity,
-                                    ))
-                                .toList(),
-                          )),
+                          child:  HorizontalImageSlider(images: widget.package.images!,)),
+                      SizedBox(height: 10,),
                       const Divider(
                         thickness: 1,
                         height: 1,
@@ -736,8 +724,6 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
               },
               child: const Text('Sign In'),
             ),
-
-            // Sign Up Button
             TextButton(
               onPressed: () {
                 Navigator.of(dialogContext).pop(); // Close the dialog
@@ -784,118 +770,9 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
     );
   }
 
-  /* void showAuthDialog(BuildContext context, AuthProvider authProvider,
-      CategoryProvider categories, bool isBookNow) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          title: const Text('Authentication Required'),
-          content: const Text(
-              'You need to be signed in to add items to the cart or proceed to checkout.'),
-          actions: [
-            // Sign In Button
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SignInPageRoute(
-                      comeBack: true,
-                    ),
-                  ),
-                ).then((value) {
-                  if (authProvider.authState == AuthState.loggedIn) {
-                    Navigator.pop(context);
-
-                    if (isBookNow) {
-                      addToCartDialog(context, categories,
-                          isFromBookNow: (serviceIds, data, totalPrice) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CheckoutPage(
-                              serviceIds: serviceIds,
-                              cartItems: data,
-                              cartSubTotal: totalPrice,
-                            ),
-                          ),
-                        );
-                      });
-                    } else {
-                      // Regular Add to Cart Flow
-                      addToCartDialog(context, categories);
-                    }
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Please login to continue"),
-                      ),
-                    );
-                  }
-                });
-              },
-              child: const Text('Sign In'),
-            ),
-
-            // Sign Up Button
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SignUpPageRoute(
-                      comeback: true,
-                    ),
-                  ),
-                ).then((value) {
-                  if (kDebugMode) {
-                    print(
-                        'Auth state after sign up: ${authProvider.authState}');
-                  }
-                  if (authProvider.authState == AuthState.loggedIn) {
-                    Navigator.pop(context);
-
-                    if (isBookNow) {
-                      addToCartDialog(context, categories,
-                          isFromBookNow: (serviceIds, data, totalPrice) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CheckoutPage(
-                              serviceIds: serviceIds,
-                              cartItems: data,
-                              cartSubTotal: totalPrice,
-                            ),
-                          ),
-                        );
-                      });
-                    } else {
-                      // Regular Add to Cart Flow
-                      addToCartDialog(context, categories);
-                    }
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Please sign up to continue"),
-                      ),
-                    );
-                  }
-                });
-              },
-              child: const Text('Sign Up'),
-            ),
-          ],
-        );
-      },
-    );
-  } */
-
   void addToCartDialog(BuildContext context, CategoryProvider categories,
-      {Function(
+      {
+        Function(
               List<String> serviceIds, List<CartModel> data, double totalPrice)?
           isFromBookNow}) {
     showModalBottomSheet(
@@ -1061,16 +938,6 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                 _endDate.text))) {
                                           return "End date should be greater than start date";
                                         }
-
-                                        /*--- commented on 31-07-24 : to validate if
-                                      * start date and end end is same but before 4:00 P.M --*/
-                                        // if start date and end date is same then show error
-                                        /*if (DateTime.parse(_startDate.text)
-                                            .isAtSameMomentAs(DateTime.parse(
-                                                _endDate.text))) {
-                                          return "End date should be greater than start date";
-                                        }*/
-
                                         // Check if the start and end dates are the same
                                         if (DateTime.parse(_startDate.text)
                                             .isAtSameMomentAs(DateTime.parse(
@@ -1088,37 +955,6 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                         }
                                         return null;
                                       }),
-                                      // const SizedBox(
-                                      //   height: 20,
-                                      // ),
-                                      // TextFormField(
-                                      //   keyboardType: TextInputType.number,
-                                      //   controller: _quantity,
-                                      //   validator: (text) {
-                                      //     if (text == null || text.isEmpty) {
-                                      //       return "Required";
-                                      //     }
-                                      //     return null;
-                                      //   },
-                                      //   decoration: InputDecoration(
-                                      //       border: OutlineInputBorder(
-                                      //         borderSide: BorderSide(
-                                      //             width: 0.5,
-                                      //             color: Theme.of(context)
-                                      //                 .primaryColor),
-                                      //         borderRadius:
-                                      //             BorderRadius.circular(10),
-                                      //       ),
-                                      //       enabledBorder: OutlineInputBorder(
-                                      //         borderSide: BorderSide(
-                                      //             width: 0.5,
-                                      //             color: Theme.of(context)
-                                      //                 .primaryColor),
-                                      //         borderRadius:
-                                      //             BorderRadius.circular(10),
-                                      //       ),
-                                      //       hintText: "Select Quantity"),
-                                      // ),
                                       const SizedBox(
                                         height: 10,
                                       ),
@@ -1223,19 +1059,6 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                           ],
                                         ),
                                       ),
-                                      // CustomDropdown(
-                                      //     borderSide: BorderSide(
-                                      //         width: 0.5,
-                                      //         color: Theme.of(context)
-                                      //             .primaryColor),
-                                      //     borderRadius:
-                                      //         BorderRadius.circular(10),
-                                      //     items: const [
-                                      //       "Full Day",
-                                      //       "Morning",
-                                      //       "Night"
-                                      //     ],
-                                      //     controller: _duration),
                                       const SizedBox(
                                         height: 20,
                                       ),
@@ -1262,7 +1085,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                             .currentState!
                                                             .validate()) {
                                                           setState(() {
-                                                            isProcessing = true;
+                                                            isProcessing = false;
                                                           });
                                                           String categoryId = categories
                                                               .data
@@ -1307,6 +1130,14 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                                     const SnackBar(
                                                                         content:
                                                                             Text("Successfully added to cart")));
+
+
+                                                            setState(() {
+                                                              isProcessing =
+                                                              false;
+                                                            });
+
+
                                                           }
                                                           if (context.mounted) {
                                                             Navigator.pop(
@@ -1323,9 +1154,9 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                                   cart.totalPrice);
                                                             }
                                                           });
+                                                          isProcessing =
+                                                          false;
                                                           setState(() {
-                                                            isProcessing =
-                                                                false;
                                                           });
                                                         }
                                                       },
@@ -1350,6 +1181,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
           });
         });
   }
+
 }
 
 class SelectCategory extends StatelessWidget {
@@ -1371,4 +1203,5 @@ class SelectCategory extends StatelessWidget {
       ),
     );
   }
+
 }
