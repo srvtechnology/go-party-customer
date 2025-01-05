@@ -42,6 +42,21 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
     super.dispose();
   }
 
+  Future<void> _handleRefresh() async {
+    final serviceState = context.read<ServiceProvider>();
+    final filterState = context.read<FilterProvider>();
+
+    // Optionally pass a search string if needed
+    await serviceState.getFilteredServices(
+      serviceState.authProvider,
+      filterState,
+      searchString: _searchController.text,
+    );
+
+    //Update the UI with new data (notifier will automatically notify listeners)
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return BottomNav(
@@ -66,11 +81,10 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
 
               // Update search data notifier
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                // Check if saved search data is available and not empty
                 if (state.savedSearchData != null &&
                     state.savedSearchData!
                         .any((model) => model.data.isNotEmpty)) {
-                  _showOverlay(context, state.savedSearchData!, auth, state);
+                  _showOverlay(context, state.savedSearchData!, auth, state,filters);
                 } else if (state.searchData != null &&
                     state.searchData!.isNotEmpty) {
                   _removeOverlay();
@@ -203,46 +217,49 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                                     ),
                                   ),
                                 )
-                              : ListView.builder(
-                                  controller: _scrollController,
-                                  itemCount: state.searchData!.length,
-                                  itemBuilder: (context, index) {
-                                    final e = state.searchData![index];
-                                    if (e.package is PackageModel) {
-                                      return PackageTile(
-                                        package: e.package,
-                                        onTap: () {
-                                          _removeOverlay();
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  SinglePackageRoute(
-                                                package: e.package,
+                              : RefreshIndicator(
+                        onRefresh: _handleRefresh,
+                        child: ListView.builder(
+                                    controller: _scrollController,
+                                    itemCount: state.searchData!.length,
+                                    itemBuilder: (context, index) {
+                                      final e = state.searchData![index];
+                                      if (e.package is PackageModel) {
+                                        return PackageTile(
+                                          package: e.package,
+                                          onTap: () {
+                                            _removeOverlay();
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    SinglePackageRoute(
+                                                  package: e.package,
+                                                ),
                                               ),
-                                            ),
-                                          );
-                                        },
-                                      );
-                                    } else {
-                                      return ProductTile(
-                                        service: e,
-                                        onTap: () {
-                                          _removeOverlay();
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  SingleServiceRoute(
-                                                service: e,
+                                            );
+                                          },
+                                        );
+                                      } else {
+                                        return ProductTile(
+                                          service: e,
+                                          onTap: () {
+                                            _removeOverlay();
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    SingleServiceRoute(
+                                                  service: e,
+                                                ),
                                               ),
-                                            ),
-                                          );
-                                        },
-                                      );
-                                    }
-                                  },
-                                ),
+                                            );
+                                          },
+                                        );
+                                      }
+                                    },
+                                  ),
+                              ),
                     ),
                   );
                 },
@@ -273,13 +290,13 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
             controller: controller,
             onTap: () {
               if (savedSearchList != null && savedSearchList.isNotEmpty) {
-                _showOverlay(context, savedSearchList, auth, serviceState);
+                _showOverlay(context, savedSearchList, auth, serviceState,filterState);
               }
             },
             onChanged: (value) {
               if (value.isEmpty) {
                 if (savedSearchList != null && savedSearchList.isNotEmpty) {
-                  _showOverlay(context, savedSearchList, auth, serviceState);
+                  _showOverlay(context, savedSearchList, auth, serviceState,filterState);
                 }
               } else {
                 _removeOverlay();
@@ -303,7 +320,7 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
             },
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.only(top: 10, left: 20),
-              hintText: "Search ...",
+              hintText: "Search...",
               filled: true,
               fillColor: Colors.white,
               prefixIcon: IconButton(
@@ -333,6 +350,8 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                     controller.clear();
                     FocusScope.of(context).unfocus();
                     _removeOverlay();
+                    //close icon click should go back from the screen...
+                    Navigator.pop(context);
                   },
                   icon: const Icon(Icons.clear),
                   color: Colors.black,
@@ -362,6 +381,7 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
     List<SaveSearchTextModel>? savedSearchList,
     AuthProvider? auth,
     ServiceProvider serviceState,
+      FilterProvider filterState
   ) {
     final RenderBox renderBox =
         _searchBarKey.currentContext!.findRenderObject() as RenderBox;
@@ -403,7 +423,19 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                                       child: ListTile(
                                         title: Text(datum.value ?? ''),
                                         onTap: () {
-                                          _searchController.text = datum.value ?? '';
+                                          if (datum.value != null) {
+                                            serviceState.getFilteredServices(auth, filterState,
+                                                searchString: datum.value);
+                                          } else {
+                                            Fluttertoast.showToast(
+                                              msg: "Search field cannot be empty",
+                                              toastLength: Toast.LENGTH_SHORT,
+                                              gravity: ToastGravity.BOTTOM,
+                                              backgroundColor: Colors.red,
+                                              textColor: Colors.white,
+                                              fontSize: 16.0,
+                                            );
+                                          }
                                           _removeOverlay();
                                         },
                                       ),
@@ -451,6 +483,8 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
     Overlay.of(context).insert(_overlayEntry!);
   }
 
+
+  //Consumer<FilterProvider>(builder: (context, filters, child) {
   void _removeOverlay() {
     if (_overlayEntry != null) {
       _overlayEntry?.remove();

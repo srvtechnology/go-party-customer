@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class HorizontalImageSlider extends StatefulWidget {
-  final List<String> images; // List of image URLs
+  final List<String> images;// List of image URLs
 
   const HorizontalImageSlider({Key? key, required this.images})
       : super(key: key);
@@ -13,6 +13,7 @@ class HorizontalImageSlider extends StatefulWidget {
 class _HorizontalImageSliderState extends State<HorizontalImageSlider> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
+  String fdurl="https://utsavlife.com/storage/app/public/packages/featured/";
 
   void _onNext() {
     if (_currentPage < widget.images.length - 1) {
@@ -68,7 +69,7 @@ class _HorizontalImageSliderState extends State<HorizontalImageSlider> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           image: DecorationImage(
-                            image: NetworkImage(widget.images[index]),
+                            image: NetworkImage( widget.images[index]),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -117,19 +118,20 @@ class FullScreenImageView extends StatelessWidget {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          Center(
+          Positioned.fill(
+            // Ensure the image fills the screen
             child: InteractiveViewer(
               panEnabled: true, // Allow panning
               minScale: 1.0, // Minimum zoom scale
               maxScale: 4.0, // Maximum zoom scale
               child: Image.network(
                 imageUrl,
-                fit: BoxFit.contain,
+                fit: BoxFit.cover, // Fill the screen
               ),
             ),
           ),
           Positioned(
-            top: 16,
+            top: 30,
             right: 16,
             child: GestureDetector(
               onTap: () {
@@ -137,9 +139,10 @@ class FullScreenImageView extends StatelessWidget {
               },
               child: const CircleAvatar(
                 backgroundColor: Colors.black54,
-                child: Padding(
-                  padding: EdgeInsets.all(18.0),
-                  child: Icon(Icons.close, color: Colors.white),
+                child: Icon(
+                  Icons.close,
+                  color: Colors.white,
+                  size: 24, // Adjust size if necessary
                 ),
               ),
             ),
@@ -148,5 +151,4 @@ class FullScreenImageView extends StatelessWidget {
       ),
     );
   }
-
 }

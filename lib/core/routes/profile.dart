@@ -48,6 +48,24 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+
+  late AuthProvider auth;
+  late final SharedPreferences pref;
+  String userType = "";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initializeData();
+  }
+
+  void initializeData() async {
+    auth = Provider.of<AuthProvider>(context, listen: false);
+    pref = await SharedPreferences.getInstance();
+    userType = pref.getString("userType") ?? "";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<AuthProvider>(builder: (context, state, child) {
@@ -331,7 +349,8 @@ class _ProfileState extends State<Profile> {
                           const SizedBox(
                             height: 20,
                           ),
-                          Row(
+                userType =="agent"?
+                Row(
                             children: [
                               Expanded(
                                 child: Container(
@@ -377,7 +396,7 @@ class _ProfileState extends State<Profile> {
                                 ),
                               ),
                             ],
-                          ),
+                          ):const SizedBox(),
                           const SizedBox(
                             height: 20,
                           ),
@@ -417,6 +436,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   bool isLoading = false;
 
+
+  late AuthProvider auth;
+  late final SharedPreferences pref;
+  String userType = "";
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -437,6 +461,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
     /*_emailController.text = context.read<AuthProvider>().user?.email ?? "";
     _nameController.text = context.read<AuthProvider>().user?.name ?? "";
     _phoneController.text = context.read<AuthProvider>().user?.mobile ?? "";*/
+  }
+
+
+  void initializeData() async {
+    auth = Provider.of<AuthProvider>(context, listen: false);
+    pref = await SharedPreferences.getInstance();
+    userType = pref.getString("userType") ?? "";
   }
 
   @override

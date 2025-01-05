@@ -56,6 +56,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
   final TextEditingController _duration = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isShowMore = false;
+  bool _isShowMoreFD = false;
   bool isProcessing = false;
 
   List<String> _cities = [];
@@ -65,6 +66,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
 
   List<PopupCategory> popupCategories = [];
   PopupCategory? selectedCategory;
+  bool isExpanded = false;
   /* List<String> videoUrls = []; */
 
   void _calculateDays() {
@@ -653,6 +655,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
 
   @override
   Widget build(BuildContext context) {
+
     return AnnotatedRegion(
       value: const SystemUiOverlayStyle(
           statusBarColor: primaryColor,
@@ -1151,21 +1154,21 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                   htmlText: widget.service.description ?? ""),
                             ),
                             Container(
-                                constraints: BoxConstraints(
+                                constraints: const BoxConstraints(
                                     maxHeight: double.infinity,
                                     minWidth: double.infinity,
                                     maxWidth: double.infinity),
                                 padding: EdgeInsets.symmetric(
                                   horizontal: 4.w,
                                 ),
-                                child: HorizontalImageSlider(images: widget.service.images!,)),
+                                child: HorizontalImageSlider(images: widget.service.images!)),
 
-                            SizedBox(height: 10,),
-                            // feature description
+                            const SizedBox(height: 5,),
                             const Divider(
                               thickness: 1,
                               height: 1,
                             ),
+                            const SizedBox(height: 5,),
                             if (widget.service.featured_description != null ||
                                 parseHtmlString(widget.service.featured_description ?? "") != "") ...[
                               Container(
@@ -1183,8 +1186,53 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
-
-                                      HtmlTextView(htmlText: widget.service.featured_description ?? "")
+                                      AnimatedContainer(
+                                        constraints: BoxConstraints(
+                                          minHeight: 1.h,
+                                          maxHeight: _isShowMoreFD
+                                              ? MediaQuery.of(context).size.height // Use screen height instead of infinity
+                                              : 10.h,
+                                          minWidth: double.infinity,
+                                          maxWidth: double.infinity,
+                                        ),
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 4.w,
+                                        ),
+                                        alignment: Alignment.centerLeft,
+                                        duration: const Duration(milliseconds: 600),
+                                        child: LayoutBuilder(
+                                          builder: (context, constraints) {
+                                            if (kDebugMode) {
+                                              print(constraints.maxHeight.toString());
+                                            }
+                                            return HtmlTextView(
+                                              htmlText: widget.service.featured_description ?? "",
+                                            );
+                                          },
+                                        ),
+                                      )
+                                      ,
+                                      if (widget.service.featured_description!.length > 100)
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              _isShowMoreFD = !_isShowMoreFD;
+                                            });
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 4.w,
+                                            ),
+                                            child: Text(
+                                              _isShowMoreFD ? "Show Less" : "Show More",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .labelLarge!
+                                                  .copyWith(
+                                                  fontSize: 14, color: primaryColor),
+                                            ),
+                                          ),
+                                        ),
                                      // Text(parseHtmlString(),),
 
                                     ],

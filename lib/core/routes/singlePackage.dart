@@ -92,6 +92,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
   }
 
   bool _isShowMore = false;
+  bool _isShowMoreFD = false;
 
   @override
   void initState() {
@@ -566,37 +567,37 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                 ),
                                               ),
                                             ),
-                                            widget.package.featuredImage!
-                                                        .length >
-                                                    0
-                                                ? Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 8.0),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              top: 8.0,
-                                                              bottom: 8.0,
-                                                              right: 8.0),
-                                                      child: Container(
-                                                        height: 26.h,
-                                                        width: double.infinity,
-                                                        decoration: BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10),
-                                                            image: DecorationImage(
-                                                                image: NetworkImage(
-                                                                    "https://utsavlife.com/storage/app/public/packages/featured/${widget.package.featuredImage![0]}"),
-                                                                fit: BoxFit
-                                                                    .cover)),
-                                                      ),
-                                                    ),
-                                                  )
-                                                : SizedBox(),
 
+                                            widget.package.featuredImage!
+                                                .length >
+                                                0
+                                                ? Padding(
+                                              padding:
+                                              const EdgeInsets.only(
+                                                  left: 8.0),
+                                              child: Padding(
+                                                padding:
+                                                const EdgeInsets.only(
+                                                    top: 8.0,
+                                                    bottom: 8.0,
+                                                    right: 8.0),
+                                                child: Container(
+                                                  height: 26.h,
+                                                  width: double.infinity,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                      BorderRadius
+                                                          .circular(
+                                                          10),
+                                                      image: DecorationImage(
+                                                          image: NetworkImage(
+                                                              "https://utsavlife.com/storage/app/public/packages/featured/${widget.package.featuredImage![0]}"),
+                                                          fit: BoxFit
+                                                              .cover)),
+                                                ),
+                                              ),
+                                            )
+                                                : SizedBox(),
                                             const Padding(
                                               padding: EdgeInsets.only(
                                                   top: 8.0,
@@ -611,20 +612,52 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                               ),
                                             ),
                                             // Ensure proper constraints and styles for Html content
-                                            ConstrainedBox(
-                                              constraints: BoxConstraints(
-                                                maxWidth: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 8.0),
-                                                child: HtmlTextView(
-                                                  htmlText: widget.package
-                                                          .featureDescription ??
-                                                      "",
-                                                ),
+                                            AnimatedSwitcher(
+                                              duration: const Duration(milliseconds: 600),
+                                              child: Column(
+                                                key: ValueKey<bool>(_isShowMoreFD),
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  AnimatedContainer(
+                                                    duration: const Duration(milliseconds: 600),
+                                                    constraints: BoxConstraints(
+                                                      minHeight: 1.h,
+                                                      maxHeight: _isShowMoreFD ? double.infinity : 10.h,
+                                                      minWidth: double.infinity,
+                                                      maxWidth: double.infinity,
+                                                    ),
+                                                    padding: EdgeInsets.symmetric(
+                                                      horizontal: 4.w,
+                                                    ),
+                                                    alignment: Alignment.centerLeft,
+                                                    child: SingleChildScrollView(
+                                                      physics:  const NeverScrollableScrollPhysics(),
+                                                      child: HtmlTextView(
+                                                          htmlText: widget.package.featureDescription),
+                                                    ),
+                                                  ),
+                                                  if (widget.package.featureDescription.length > 100)
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          _isShowMoreFD = !_isShowMoreFD;
+                                                        });
+                                                      },
+                                                      child: Container(
+                                                        padding: EdgeInsets.symmetric(
+                                                          horizontal: 4.w,
+                                                        ),
+                                                        child: Text(
+                                                          _isShowMoreFD ? "Show Less" : "Show More",
+                                                          style: Theme.of(context)
+                                                              .textTheme
+                                                              .labelLarge!
+                                                              .copyWith(
+                                                              fontSize: 14, color: primaryColor),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                ],
                                               ),
                                             ),
                                           ],
@@ -652,8 +685,9 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                           padding: EdgeInsets.symmetric(
                             horizontal: 4.w,
                           ),
-                          child:  HorizontalImageSlider(images: widget.package.images!,)),
-                      SizedBox(height: 10,),
+                          child: Column(
+                            children:  [HorizontalImageSlider(images: widget.package.images!)]
+                          )),
                       const Divider(
                         thickness: 1,
                         height: 1,

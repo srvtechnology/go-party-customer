@@ -86,7 +86,7 @@ class CommonHeader {
                     decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.white,
-                        labelText: "Search ...",
+                        labelText: "Search ",
                         prefixIcon: const Icon(Icons.search),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
