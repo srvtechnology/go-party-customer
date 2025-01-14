@@ -112,7 +112,7 @@ class _CartPageState extends State<CartPage> {
                       indicatorBuilder: (BuildContext context,
                           IndicatorController controller) {
                         return Container(
-                            padding: EdgeInsets.all(2.w),
+                            padding: EdgeInsets.all(0.w),
                             alignment: Alignment.center,
                             child: const CircularProgressIndicator(
                               valueColor:
@@ -130,7 +130,7 @@ class _CartPageState extends State<CartPage> {
                                 height:
                                     MediaQuery.of(context).size.height * 0.9,
                                 alignment: Alignment.center,
-                                padding: const EdgeInsets.all(50),
+                                padding: const EdgeInsets.all(10),
                                 child: Column(
                                   children: const [
                                     Icon(
@@ -232,7 +232,7 @@ class _CartPageState extends State<CartPage> {
                                             style: ElevatedButton.styleFrom(
                                                 backgroundColor: primaryColor),
                                             onPressed: () async {
-                                              print(cart.data.first.quantity);
+                                              print(cart.data.first.quantity );
                                               await _handleQuantityChanged(
                                                   auth);
                                               if (context.mounted) {
@@ -267,7 +267,10 @@ class _CartPageState extends State<CartPage> {
                             ),
                             Column(
                                 children: cart.data
-                                    .map((e) => _cartTile(cart, e, auth))
+                                    .map((e) => Padding(
+                                      padding: const EdgeInsets.only(bottom:8.0),
+                                      child: _cartTile(cart, e, auth),
+                                    ))
                                     .toList()),
                             const ExtraDetails(),
                           ],
@@ -294,13 +297,16 @@ class _CartPageState extends State<CartPage> {
           Container(
             width: 40.w,
             margin: EdgeInsets.symmetric(horizontal: 1.w),
-            child: Container(
-              height: 150,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                image: DecorationImage(
-                  image: NetworkImage(item.service.images.first),
-                  fit: BoxFit.fill,
+            child: Padding(
+              padding: const EdgeInsets.only(top:8.0,bottom: 8.0),
+              child: Container(
+                height: 150,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  image: DecorationImage(
+                    image: NetworkImage(item.service.images.first),
+                    fit: BoxFit.fill,
+                  ),
                 ),
               ),
             ),
@@ -309,12 +315,35 @@ class _CartPageState extends State<CartPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  item.service.name,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        item.service.name,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: IconButton(
+                        onPressed: () async {
+                          await removeFromCart(
+                            context.read<AuthProvider>(),
+                            item.id ?? "",
+                          );
+                          state.getCart(auth);
+                        },
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        iconSize: 20,
+                      ),
+                    ),
+                  ],
                 ),
                 Container(
                   margin: EdgeInsets.only(right: 4.w),
@@ -323,13 +352,13 @@ class _CartPageState extends State<CartPage> {
                     children: [
                       const Text(
                         "Price",
-                        style: TextStyle(fontSize: 15),
+                        style: TextStyle(fontSize: 12),
                       ),
                       FittedBox(
                         child: Text(
-                          "\u20B9 ${item.service.discountedPrice}",
+                          "\u20B9 ${item.discountPrice}",
                           style: TextStyle(
-                            fontSize: 15,
+                            fontSize: 12,
                             color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.w600,
                           ),
@@ -346,13 +375,13 @@ class _CartPageState extends State<CartPage> {
                     children: [
                       const Text(
                         "Package",
-                        style: TextStyle(fontSize: 15),
+                        style: TextStyle(fontSize: 12),
                       ),
                       FittedBox(
                         child: Text(
-                          item.category.name,
+                          item.category?.name ??"",
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 12,
                             color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.w500,
                           ),
@@ -369,11 +398,11 @@ class _CartPageState extends State<CartPage> {
                     children: [
                       const Text(
                         "Days",
-                        style: TextStyle(fontSize: 15),
+                        style: TextStyle(fontSize: 12),
                       ),
                       FittedBox(
                         child: Text(
-                          item.days,
+                          item.days ??"",
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: primaryColor,
@@ -383,14 +412,13 @@ class _CartPageState extends State<CartPage> {
                     ],
                   ),
                 ),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const Text(
                       "Quantity",
-                      style: TextStyle(fontSize: 14),
+                      style: TextStyle(fontSize: 12),
                     ),
                     // Wrapping the right Row with Expanded to prevent overflow
                     Expanded(
@@ -401,19 +429,18 @@ class _CartPageState extends State<CartPage> {
                           IconButton(
                             icon: const Icon(Icons.remove),
                             padding: EdgeInsets.zero,
-                            // Remove padding around the icon
                             constraints: const BoxConstraints(),
                             // Remove constraints
                             onPressed: () {
                               setState(() {
                                 int currentQuantity =
-                                    int.tryParse(item.quantity) ?? 1;
+                                    int.tryParse(item.quantity ??"") ?? 1;
                                 if (currentQuantity > 1) {
                                   currentQuantity -= 1;
                                   item.quantity = currentQuantity.toString();
                                   item.totalPrice = (currentQuantity *
-                                          double.parse(item.days) *
-                                          double.parse(item.price))
+                                          double.parse(item.days??"") *
+                                          double.parse(item.price ??""))
                                       .toString();
                                   changedQuantity[item.id] = item.quantity;
                                   state.calculateTotal();
@@ -432,8 +459,8 @@ class _CartPageState extends State<CartPage> {
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
-                              item.quantity,
-                              style: const TextStyle(fontSize: 16),
+                              item.quantity??"",
+                              style: const TextStyle(fontSize: 12),
                             ),
                           ),
                           // Plus Button
@@ -446,12 +473,12 @@ class _CartPageState extends State<CartPage> {
                             onPressed: () {
                               setState(() {
                                 int currentQuantity =
-                                    int.tryParse(item.quantity) ?? 1;
+                                    int.tryParse(item.quantity??"") ?? 1;
                                 currentQuantity += 1;
                                 item.quantity = currentQuantity.toString();
                                 item.totalPrice = (currentQuantity *
-                                        double.parse(item.days) *
-                                        double.parse(item.price))
+                                        double.parse(item.days??"") *
+                                        double.parse(item.price??""))
                                     .toString();
                                 changedQuantity[item.id] = item.quantity;
                                 state.calculateTotal();
@@ -472,11 +499,11 @@ class _CartPageState extends State<CartPage> {
                     children: [
                       const Text(
                         "Total",
-                        style: TextStyle(fontSize: 15),
+                        style: TextStyle(fontSize: 12),
                       ),
                       FittedBox(
                         child: Text(
-                          "\u20B9 ${item.totalPrice}",
+                          "\u20B9 ${item.discountPrice}",
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: primaryColor,
@@ -491,32 +518,8 @@ class _CartPageState extends State<CartPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          shadowColor: Colors.grey,
-                          elevation: 2.5,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        onPressed: () async {
-                          await removeFromCart(
-                            context.read<AuthProvider>(),
-                            item.id,
-                          );
-                          state.getCart(auth);
-                        },
-                        child: const Text(
-                          "Delete",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 8,
-                          ),
-                        ),
-                      ),
                       SizedBox(width: 2.w),
-                      ElevatedButton(
+                     /* ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -544,7 +547,7 @@ class _CartPageState extends State<CartPage> {
                           "See More",
                           style: TextStyle(fontSize: 8),
                         ),
-                      ),
+                      ),*/
                     ],
                   ),
                 ),
@@ -588,7 +591,8 @@ class ExtraDetails extends StatelessWidget {
                 );
               }
               if (state.data == null) {
-                return Container();
+                return Container(child: const Divider(thickness: 1, // Thickness of the line
+                  height: 5,  ),);
               }
 
               return Column(
@@ -598,7 +602,6 @@ class ExtraDetails extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-
                         Row(
                           children: [
                             Expanded(
@@ -738,9 +741,4 @@ class ExtraDetails extends StatelessWidget {
       }),
     );
   }
-
 }
-
-
-
-

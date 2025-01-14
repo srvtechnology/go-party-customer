@@ -376,8 +376,19 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
 
                                       return null;
                                     }),
-                                    /* const SizedBox(
+                                     const SizedBox(
                                       height: 20,
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.only(bottom: 5),
+                                      child: Text(
+                                        "Quantity",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14.sp,
+                                          color: primaryColor,
+                                        ),
+                                      ),
                                     ),
                                     TextFormField(
                                       keyboardType: TextInputType.number,
@@ -406,7 +417,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                                 BorderRadius.circular(10),
                                           ),
                                           hintText: "Select Quantity"),
-                                    ), */
+                                    ),
                                     const SizedBox(
                                       height: 10,
                                     ),
@@ -425,13 +436,12 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                       children: [
                                         Expanded(
                                           child: TextFormField(
-                                            readOnly: true,
                                             keyboardType: TextInputType.number,
                                             controller: _days,
                                             validator: (text) {
                                               if (text == null ||
                                                   text.isEmpty) {
-                                                return "Days Required";
+                                                return "";
                                               }
 
                                               return null;
@@ -501,7 +511,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                             padding: const EdgeInsets.only(
                                                 right: 8.0),
                                             child: Text(
-                                              "\u20B9 ${double.parse(selectedCategory?.discountPrice?.toString() ?? "0.00") * int.parse(_quantity.text)}",
+                                              "\u20B9 ${double.parse(selectedCategory?.servicePrice.toString() ?? widget.service.price.toString()) * int.parse(_quantity.text)}",
                                               style: const TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w600),
@@ -565,11 +575,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                                           "days": _days.text,
                                                           "time": _duration.text
                                                               .substring(0, 1),
-                                                          // "service_city":
-                                                          //     _selectedCity.text
                                                         };
-                                                        //
-
                                                         await addtoCart(
                                                             context.read<
                                                                 AuthProvider>(),

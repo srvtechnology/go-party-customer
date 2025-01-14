@@ -147,14 +147,14 @@ class PackageCard extends StatelessWidget {
                   image: DecorationImage(
                       fit: BoxFit.cover,
                       image: CachedNetworkImageProvider(
-                        package.images[0],
+                        package.images![0],
                       ))),
             ),
             SizedBox(
               height: 2.h,
             ),
             Text(
-              capitalize("my name is khan"),
+              capitalize("${package.name}"),
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
               style: headerTextStyle(context),
@@ -174,17 +174,17 @@ class PackageCard extends StatelessWidget {
                 SizedBox(
                   width: 1.w,
                 ),
-                Text(" ${priceFormatter(package.price)}",
+                Text(" ${priceFormatter(package.price ??"")}",
                     style: priceStyle(context)),
                 SizedBox(
                   // add to cart button
                   width: 2.w,
                 ),
-                Text(" ${priceFormatter(package.discountedPrice)}",
+                Text(" ${priceFormatter(package.discountedPrice??"")}",
                     style: discountedStyle(context)),
               ],
             ),
-            Text(parseHtmlString(package.description),
+            Text(parseHtmlString(package.description??""),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 style: descriptionStyle(context)),
@@ -504,7 +504,7 @@ class _OrderTileState extends State<OrderTile> {
                             fontSize: 18.sp, fontWeight: FontWeight.w600),
                       ),
                       Text(
-                        widget.order.category.name,
+                        widget.order.category.name ??"",
                         style: TextStyle(
                             fontSize: 15.sp, fontWeight: FontWeight.w600),
                       ),
@@ -681,7 +681,7 @@ class PackageTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(5),
                   image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: CachedNetworkImageProvider(package.images[0]))),
+                      image: CachedNetworkImageProvider(package.images![0]))),
             ),
             SizedBox(width: screenWidth * 0.05),
             Expanded(
@@ -689,7 +689,7 @@ class PackageTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    package.name,
+                    package.name??"",
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                         color: Theme.of(context).primaryColor,

@@ -314,7 +314,7 @@ class _FilterPageState extends State<FilterPage> {
                                   });
                                 },
                                 child: Text(
-                                  e.name,
+                                  e.name ??"",
                                   style: TextStyle(
                                     color:
                                         isSelected ? Colors.blue : Colors.black,

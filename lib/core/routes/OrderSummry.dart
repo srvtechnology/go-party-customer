@@ -18,6 +18,10 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
+import '../features/ccavenues/models/enc_val_res.dart';
+import '../features/ccavenues/patmentWebview.dart';
+import '../repo/order.dart';
+
 class OrderSummary extends StatefulWidget {
   static String routeName = "/orderDetailsView";
   final OrderModel order;
@@ -337,6 +341,12 @@ class _OrderSummaryState extends State<OrderSummary> {
                               // paid amount button
                               InkWell(
                                 onTap: () async {
+
+                                  double amt = double.parse(
+                                      ((double.parse(widget.order.totalPrice) + gprice) * 0.75)
+                                          .toStringAsFixed(2));
+                                  await payNow(amt);
+
                                 },
                                 child: Container(
                                   padding: EdgeInsets.symmetric(
@@ -354,7 +364,7 @@ class _OrderSummaryState extends State<OrderSummary> {
                                           ),
                                         )
                                       : Text(
-                                          'Pay Now',
+                                          'Pay Now ',
                                           style: TextStyle(
                                             fontSize: 14.sp,
                                             fontWeight: FontWeight.w600,
@@ -546,5 +556,31 @@ class _OrderSummaryState extends State<OrderSummary> {
             );
           }),
         ));
+  }
+
+
+
+  payNow(double amount) async {
+    setState(() => isLoading = true);
+    log(amount.toString(), name: "URL PAY");
+    final auth = context.read<AuthProvider>();
+    final res = await payRemainingOrder(auth,
+        userID: auth.user!.id, amount: amount, orderID: widget.order.id)
+        .whenComplete(() => setState(() => isLoading = false));
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PaymentWebView(
+          generateOrderValue: GenerateOrderValue(
+            orderId: int.parse(res!['partialSecondPayObject']['order_id']),
+            accessCode: res['partialSecondPayObject']['access_code'],
+            redirectUrl: res['partialSecondPayObject']['redirect_url'],
+            cancelUrl: res['partialSecondPayObject']['cancel_url'],
+            encVal: res['partialSecondPayObject']['enc_val'],
+          ),
+        ),
+      ),
+    );
   }
 }

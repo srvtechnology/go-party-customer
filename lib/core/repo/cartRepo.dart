@@ -51,7 +51,6 @@ Future<List<CartModel>> getCartItems(AuthProvider auth) async {
       CustomLogger.error(e);
     }
   }
-
   return list;
   /* } catch (e) {
     if (e is DioException) {
@@ -67,10 +66,8 @@ Future<void> changeCartItemQuantity(
     log("Bearer ${auth.token}", name: "changeCartItemQuantity");
     log(quantity, name: "changeCartItemQuantity");
     log(itemId, name: "changeCartItemQuantity");
-
     CustomLogger.debug(quantity);
-    Response response = await customDioClient.client.post(
-        auth.isAgent
+    Response response = await customDioClient.client.post(auth.isAgent
             ? "${APIConfig.baseUrl}/api/agent/update-cart-qty"
             : "${APIConfig.baseUrl}/api/customer/update-cart-qty",
         data: {"cart_id": itemId, "qty": quantity},

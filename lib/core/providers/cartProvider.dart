@@ -34,7 +34,7 @@ class CartProvider with ChangeNotifier {
     startLoading();
     _totalPrice = 0;
     for (var i in _data) {
-      _totalPrice += double.parse(i.totalPrice);
+      _totalPrice += double.parse(i.totalPrice??"");
     }
     stopLoading();
   }
@@ -55,7 +55,7 @@ class CartProvider with ChangeNotifier {
         print("Cart : ${data.toString()}");
       }
       for (var i in data) {
-        _serviceIds.add(i.service.id);
+        _serviceIds.add(i.service.id??"");
       }
       calculateTotal();
     } catch (e) {

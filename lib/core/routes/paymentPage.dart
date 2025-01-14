@@ -264,11 +264,11 @@ class _PaymentPageState extends State<PaymentPage> {
                                                 htmlText: widget
                                                     .cartItems[index]
                                                     .service
-                                                    .description),
+                                                    .description!),
                                           ),
                                         ),
                                         if (widget.cartItems[index].service
-                                                .description.length >
+                                                .description!.length >
                                             100)
                                           GestureDetector(
                                             onTap: () {

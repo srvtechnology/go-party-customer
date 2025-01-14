@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import '../../config.dart';
 
 class PackageModel {
-  String id, name, description, price, discountedPrice, category, unit,featureDescription;
-  List<String> images;
+  String? id, name, description, price, discountedPrice, category, unit,featureDescription;
+  List<String>? images;
   List<String>? featuredImage;
-  List<String> videos;
-  List<ServiceModel> services;
+  List<String>? videos;
+  List<ServiceModel>? services;
   int? minQnty;
 
   PackageModel(
@@ -61,8 +61,8 @@ class PackageModel {
         price: json["price"].toString(),
         discountedPrice: json["discount_price"].toString(),
         images: temp,
-        featuredImage: json["featured_image"].cast<String>(),
-        videos: tempVideos,
+      featuredImage: json["featured_image"] is List ? List<String>.from(json["featured_image"]) : [],
+      videos: tempVideos,
         services: servicesList,
         category: json["category"],
         unit: json["unit"],

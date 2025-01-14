@@ -56,6 +56,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
   final _formKey = GlobalKey<FormState>();
   List<PopupCategory> popupCategories = [];
   PopupCategory? selectedCategory=null;
+  String? SelectedCategoryId="";
 
   void _calculateDays() {
     if (_startDate.text.isNotEmpty && _endDate.text.isNotEmpty) {
@@ -123,10 +124,9 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
       if (popupCategories.isNotEmpty) {
         selectedCategory = popupCategories.first;
         _categoryName.text = selectedCategory!.category?.categoryName ?? "";
+        SelectedCategoryId=popupCategories.first.categoryId;
+        print("$SelectedCategoryId");
       }
-      /* setState(() {
-        videoUrls = data.packages?.videoUrl ?? [];
-      }); */
     } catch (e) {
       CustomLogger.error(e);
     } finally {
@@ -209,8 +209,8 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                           title: widget.package.name,
                           url: 'https://utsavlife.com/customer/package/details/${widget.package.id}',
                           child: PackageImageSlider(
-                            imageUrls: widget.package.images,
-                            videoUrls: widget.package.videos,
+                            imageUrls: widget.package.images!,
+                            videoUrls: widget.package.videos!,
                           )),
                       Container(
                         margin: EdgeInsets.only(top: 0.h),
@@ -219,7 +219,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                         ),
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          widget.package.name,
+                          widget.package.name!,
                           style: Theme.of(context)
                               .textTheme
                               .headlineSmall!
@@ -253,10 +253,10 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                               child: SingleChildScrollView(
                                 physics:  const NeverScrollableScrollPhysics(),
                                 child: HtmlTextView(
-                                    htmlText: widget.package.description),
+                                    htmlText: widget.package.description!),
                               ),
                             ),
-                            if (widget.package.description.length > 100)
+                            if (widget.package.description!.length > 100)
                               GestureDetector(
                                 onTap: () {
                                   setState(() {
@@ -507,7 +507,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                               serviceIds: serviceIds,
                                               cartItems: data,
                                               cartSubTotal: double.parse(
-                                                  widget.package.price),
+                                                  widget.package.price!),
                                             ),
                                           ),
                                         );
@@ -633,10 +633,10 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                     child: SingleChildScrollView(
                                                       physics:  const NeverScrollableScrollPhysics(),
                                                       child: HtmlTextView(
-                                                          htmlText: widget.package.featureDescription),
+                                                          htmlText: widget.package.featureDescription!),
                                                     ),
                                                   ),
-                                                  if (widget.package.featureDescription.length > 100)
+                                                  if (widget.package.featureDescription!.length > 100)
                                                     GestureDetector(
                                                       onTap: () {
                                                         setState(() {
@@ -739,7 +739,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                             builder: (context) => CheckoutPage(
                               serviceIds: serviceIds,
                               cartItems: data,
-                              cartSubTotal: double.parse(widget.package.price),
+                              cartSubTotal: double.parse(widget.package.price!),
                             ),
                           ),
                         );
@@ -846,7 +846,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                     )),
                                 // package name
                                 Text(
-                                  widget.package.name,
+                                  widget.package.name ??"",
                                   style: Theme.of(context)
                                       .textTheme
                                       .headlineSmall!
@@ -989,6 +989,49 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                         }
                                         return null;
                                       }),
+
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      Container(
+                                        child: Text(
+                                          "Quantity",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14.sp,
+                                            color: primaryColor,
+                                          ),
+                                        ),
+                                      ),
+                                      TextFormField(
+                                        keyboardType: TextInputType.number,
+                                        controller: quantity,
+                                        validator: (text) {
+                                          if (text == null || text.isEmpty) {
+                                            return "Required";
+                                          }
+                                          return null;
+                                        },
+                                        decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  width: 0.5,
+                                                  color: Theme.of(context)
+                                                      .primaryColor),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  width: 0.5,
+                                                  color: Theme.of(context)
+                                                      .primaryColor),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            hintText: "Select Quantity"),),
+
+
                                       const SizedBox(
                                         height: 10,
                                       ),
@@ -1006,7 +1049,6 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                         children: [
                                           Expanded(
                                             child: TextFormField(
-                                              readOnly: true,
                                               keyboardType:
                                                   TextInputType.number,
                                               controller: _days,
@@ -1045,7 +1087,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                             child: QuantityManager(
                                               qnty: quantity.text,
                                               minQnty:
-                                                  selectedCategory?.minQty ??
+                                              selectedCategory?.minQty ==null?0:  selectedCategory?.minQty ??
                                                       widget.package.minQnty,
                                               onChanged: (v) {
                                                 setState(() {
@@ -1083,7 +1125,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                               padding: const EdgeInsets.only(
                                                   right: 8.0),
                                               child: Text(
-                                                "\u20B9 ${selectedCategory?.servicePrice ?? widget.package.services}",
+                                                "\u20B9 ${selectedCategory?.discountPrice ?? widget.package.discountedPrice}",
                                                 style: const TextStyle(
                                                     fontSize: 16,
                                                     fontWeight:
@@ -1119,23 +1161,14 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                             .currentState!
                                                             .validate()) {
                                                           setState(() {
-                                                            isProcessing = false;
+                                                            isProcessing = true;
                                                           });
-                                                          String categoryId = categories
-                                                              .data
-                                                              .firstWhere(
-                                                                  (element) =>
-                                                                      element
-                                                                          .name ==
-                                                                      _categoryName
-                                                                          .text)
-                                                              .id
-                                                              .toString();
+                                                          // String categoryId = selectedCategory.categoryId?.toString();
                                                           Map data = {
                                                             "package_id": widget
                                                                 .package.id,
                                                             "cart_category":
-                                                                categoryId,
+                                                            SelectedCategoryId,
                                                             "date":
                                                                 _startDate.text,
                                                             "end_date":
@@ -1147,7 +1180,6 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                                 .text
                                                                 .substring(0, 1)
                                                           };
-
                                                           try {
                                                             await addtoCart(
                                                                 context.read<

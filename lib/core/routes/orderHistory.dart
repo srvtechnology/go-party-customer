@@ -80,7 +80,7 @@ class OrderHistory extends StatelessWidget {
                               fontSize: 18.sp, fontWeight: FontWeight.w600),
                         ),
                         Text(
-                          order.category.name,
+                          order.category.name??"",
                           style: TextStyle(
                               fontSize: 15.sp, fontWeight: FontWeight.w600),
                         ),
