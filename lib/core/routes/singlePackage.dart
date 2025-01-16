@@ -994,6 +994,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                         height: 20,
                                       ),
                                       Container(
+                                        padding: const EdgeInsets.only(bottom: 5),
                                         child: Text(
                                           "Quantity",
                                           style: TextStyle(
@@ -1019,7 +1020,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                   color: Theme.of(context)
                                                       .primaryColor),
                                               borderRadius:
-                                                  BorderRadius.circular(10),
+                                              BorderRadius.circular(10),
                                             ),
                                             enabledBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
@@ -1027,11 +1028,10 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                   color: Theme.of(context)
                                                       .primaryColor),
                                               borderRadius:
-                                                  BorderRadius.circular(10),
+                                              BorderRadius.circular(10),
                                             ),
-                                            hintText: "Select Quantity"),),
-
-
+                                            hintText: "Select Quantity"),
+                                      ),
                                       const SizedBox(
                                         height: 10,
                                       ),
@@ -1125,7 +1125,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                               padding: const EdgeInsets.only(
                                                   right: 8.0),
                                               child: Text(
-                                                "\u20B9 ${selectedCategory?.discountPrice ?? widget.package.discountedPrice}",
+                                                "\u20B9 ${double.parse(selectedCategory?.discountPrice.toString()??  widget.package.price.toString()) * int.parse(quantity.text)}",
                                                 style: const TextStyle(
                                                     fontSize: 16,
                                                     fontWeight:

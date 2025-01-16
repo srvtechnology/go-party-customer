@@ -511,16 +511,11 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                             padding: const EdgeInsets.only(
                                                 right: 8.0),
                                             child: Text(
-                                              "\u20B9 ${((selectedCategory?.discountPrice != null
-                                                  ? double.tryParse(selectedCategory!.discountPrice.toString())
-                                                  : double.tryParse(widget.service.price.toString())) ?? 0.0)
-                                                  * (int.tryParse(_quantity.text) ?? 1)}",
+                                              "\u20B9 ${double.parse(selectedCategory?.discountPrice.toString() ?? widget.service.price.toString()) * int.parse(_quantity.text)}",
                                               style: const TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            )
-                                            ,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
                                           )
                                         ],
                                       ),

@@ -80,6 +80,12 @@ class _CheckoutPageState extends State<CheckoutPage> {
     });
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print(">>>>refresh ui checkout");
+  }
+
   Future<void> _getCurrentLocationAndFillFields() async {
     setState(() {
       _isLoadingLocation = true;
@@ -102,14 +108,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
         final data = await getLocationByPin();
       }
     } catch (e) {
-      // CustomLogger.error('Error getting location: $e');
       log('Error getting location: $e');
-      // final data = await getLocationByPin();
     } finally {
       setState(() {
         _isLoadingLocation = false;
       });
-      // final data = await getLocationByPin();
     }
   }
 
@@ -273,7 +276,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         InkWell(
                           onTap: () {
                             setState(() {
-                              showAddressContainer = !showAddressContainer;
+                              //showAddressContainer = !showAddressContainer;
+                              Navigator.pushNamed(
+                                  context, AddressPage.routeName);
                             });
                           },
                           child: Container(
