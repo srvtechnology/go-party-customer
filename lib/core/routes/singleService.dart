@@ -59,6 +59,8 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
   bool _isShowMoreFD = false;
   bool isProcessing = false;
 
+  int passindex=0;
+
   List<String> _cities = [];
   String? selectedCity = " Select a City";
   String defaultCityMessage = "Open for every city";
@@ -674,7 +676,13 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
         ],
         child: Consumer2<CategoryProvider, AuthProvider>(
             builder: (context, categories, auth, child) {
-          return BottomNav(
+          return BottomNav(onTabChange: (p0) {
+            print(">>>>>>onTabChange$p0");
+            setState(() {
+              passindex=p0;
+            });
+          },
+            index: passindex==0?null:passindex,
             child: Scaffold(
               backgroundColor: Colors.white,
               appBar: CommonHeader.header(context, onBack: () {
@@ -1159,15 +1167,36 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                               child: HtmlTextView(
                                   htmlText: widget.service.description ?? ""),
                             ),
-                            Container(
-                                constraints: const BoxConstraints(
-                                    maxHeight: double.infinity,
-                                    minWidth: double.infinity,
-                                    maxWidth: double.infinity),
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 4.w,
+
+                            const Padding(
+                              padding: EdgeInsets.only(
+                                  top: 8.0,
+                                  left: 15.0,
+                                  bottom: 8.0),
+                              child: Text(
+                                "Feature Image",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
                                 ),
-                                child: HorizontalImageSlider(images: widget.service.images!)),
+                              ),
+                            ),
+                            const Divider(
+                              thickness: 1,
+                              height: 1,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top:8.0),
+                              child: Container(
+                                  constraints: const BoxConstraints(
+                                      maxHeight: double.infinity,
+                                      minWidth: double.infinity,
+                                      maxWidth: double.infinity),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 4.w,
+                                  ),
+                                  child: HorizontalImageSlider(images: widget.service.images!)),
+                            ),
 
                             const SizedBox(height: 5,),
                             const Divider(
@@ -1185,6 +1214,8 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
+
+
                                       const Text(
                                         "Feature Description",
                                         style: TextStyle(
@@ -1202,7 +1233,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                           maxWidth: double.infinity,
                                         ),
                                         padding: EdgeInsets.symmetric(
-                                          horizontal: 4.w,
+                                          horizontal: 4,
                                         ),
                                         alignment: Alignment.centerLeft,
                                         duration: const Duration(milliseconds: 600),

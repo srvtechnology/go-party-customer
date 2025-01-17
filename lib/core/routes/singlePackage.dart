@@ -98,7 +98,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
   @override
   void initState() {
     super.initState();
-
+    Provider.of<CategoryProvider>(context, listen: false).navIndex=1;
     print(">>>>_SinglePackageRouteState");
     getSinglePackage();
     _startDate.addListener(_calculateDays);
@@ -178,6 +178,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
 
   @override
   Widget build(BuildContext context) {
+    int index=0;
     return AnnotatedRegion(
       value: const SystemUiOverlayStyle(
           statusBarColor: primaryColor,
@@ -191,6 +192,13 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
         child: Consumer2<CategoryProvider, AuthProvider>(
             builder: (context, categories, auth, child) {
           return BottomNav(
+            index: categories.navIndex==null?1:categories.navIndex,
+            onTabChange: (p0) {
+            print(">>>>>>$p0");
+                Provider.of<CategoryProvider>(context, listen: false).navIndex=p0;
+           // index=p0;
+          },
+
             child: Scaffold(
               backgroundColor: Colors.white,
               appBar: CommonHeader.header(context, onBack: () {

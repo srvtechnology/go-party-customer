@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import '../../../views/view.dart';
 import './core/constant/themData.dart';
+import 'core/providers/addressProvider.dart';
 import 'core/routes/add_leads.dart';
 
 GetIt getIt = GetIt.asNewInstance();
@@ -34,6 +35,8 @@ class MyApp extends StatelessWidget {
       return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => AuthProvider()),
+          ChangeNotifierProvider(create: (context) => AddressProvider(context.read<AuthProvider>())),
+
           ChangeNotifierProvider(create: (_) => CategoryProvider()),
           ChangeNotifierProxyProvider<AuthProvider, OrderProvider>(
             create: (context) => OrderProvider(context.read<AuthProvider>()),

@@ -13,6 +13,7 @@ class BottomNav extends StatefulWidget {
   final Widget? child;
   final int? index;
   final Function(int)? onTabChange;
+
   const BottomNav({
     Key? key,
     this.child,
@@ -31,8 +32,7 @@ class _BottomNavState extends State<BottomNav> {
   @override
   void initState() {
     super.initState();
-    // Provider.of<AuthProvider>(context, listen: false).init();
-
+    print(">>>>initState${widget.index}");
     if (widget.index != null) {
       currentIndex = widget.index!;
     }

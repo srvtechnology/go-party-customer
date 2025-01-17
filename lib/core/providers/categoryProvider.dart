@@ -24,6 +24,15 @@ class CategoryProvider with ChangeNotifier{
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+  int? _navIndex=1;
+
+
+  int get navIndex => _navIndex!;
+
+  set navIndex(int value) {
+    _navIndex = value;
+    notifyListeners();
+  }
 
   CategoryProvider(){
     getCategories();

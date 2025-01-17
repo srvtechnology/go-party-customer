@@ -290,6 +290,9 @@ class _CartPageState extends State<CartPage> {
   }
 
   Widget _cartTile(CartProvider state, CartModel item, AuthProvider auth) {
+
+    double total=item.discountPrice! * (double.tryParse(item.quantity ?? '0') ?? 0);
+
     return CustomCard(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -377,9 +380,11 @@ class _CartPageState extends State<CartPage> {
                         "Package",
                         style: TextStyle(fontSize: 12),
                       ),
-                      FittedBox(
+                      Flexible(
                         child: Text(
-                          item.category?.name ??"",
+                          item.category?.name ?? "",
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
                           style: TextStyle(
                             fontSize: 12,
                             color: Theme.of(context).primaryColor,
@@ -390,6 +395,7 @@ class _CartPageState extends State<CartPage> {
                     ],
                   ),
                 ),
+
                 Container(
                   margin: EdgeInsets.only(right: 4.w),
                   child: Row(
@@ -503,7 +509,7 @@ class _CartPageState extends State<CartPage> {
                       ),
                       FittedBox(
                         child: Text(
-                          "\u20B9 ${item.discountPrice}",
+                          "\u20B9 ${total}",
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: primaryColor,

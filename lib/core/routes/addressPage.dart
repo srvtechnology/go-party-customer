@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../components/errors.dart';
+import '../models/cartModel.dart';
 import '../models/countries.dart';
 import '../repo/addressRepo.dart';
 import '../repo/countries.dart';
@@ -29,6 +30,8 @@ class AddressAddPage extends StatefulWidget {
 }
 
 class _AddressAddPageState extends State<AddressAddPage> {
+
+
   final TextEditingController _addressForController = TextEditingController();
   final TextEditingController _addressTypeController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -522,6 +525,8 @@ class _AddressAddPageState extends State<AddressAddPage> {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("You have successfully added a new Address.")));
+        final Function? onPop = ModalRoute.of(context)?.settings.arguments as Function?;
+        onPop!();
         Navigator.pop(context);
       }
     } catch (e) {
@@ -532,6 +537,9 @@ class _AddressAddPageState extends State<AddressAddPage> {
           content: Text(
               "Something wrong with the request. Please try again later.")));
       CustomLogger.error(e);
+      final Function? onPop = ModalRoute.of(context)?.settings.arguments as Function?;
+      onPop!();
+      Navigator.pop(context);
     }
   }
 }

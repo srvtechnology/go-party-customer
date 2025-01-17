@@ -13,6 +13,8 @@ class ServiceModel {
       discountedPrice,
       priceBasis;
 
+  List<String>? featuredImage;
+
   List<String>? images;
   int? minQnty;
   String? featured_description;
@@ -42,6 +44,7 @@ class ServiceModel {
     this.package,
     this.videos,
     this.featured_description,
+    this.featuredImage,
   });
 
   factory ServiceModel.fromJson(Map json) {
@@ -55,21 +58,6 @@ class ServiceModel {
         temp.add("${APIConfig.baseUrl}/storage/app/public/service/$i");
       }
     }
-
-    /* List<String> images = [];
-
-    if (json["image"] != null && json["image"] is List<dynamic>) {
-      for (String imageUrl in json["image"]) {
-        images.add(imageUrl);
-      }
-    }
-
-    if (json["additional_images"] != null &&
-        json["additional_images"] is List<dynamic>) {
-      for (String imageUrl in json["additional_images"]) {
-        images.add(imageUrl);
-      }
-    } */
 
     if (kDebugMode) {
       print("===> images: $temp");

@@ -46,6 +46,8 @@ class CheckoutPage extends StatefulWidget {
 }
 
 class _CheckoutPageState extends State<CheckoutPage> {
+
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _addressForController = TextEditingController();
   final TextEditingController _addressTypeController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -66,6 +68,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   bool showAddressContainer = false;
   bool _isLoadingLocation = false;
 
+
   @override
   void initState() {
     super.initState();
@@ -78,12 +81,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
         });
       }
     });
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    print(">>>>refresh ui checkout");
   }
 
   Future<void> _getCurrentLocationAndFillFields() async {
@@ -136,19 +133,58 @@ class _CheckoutPageState extends State<CheckoutPage> {
     });
     return data;
   }
+  void refreshList() async {
+    final authProvider = context.read<AuthProvider>();
+    final addressProvider = context.read<AddressProvider>();
+
+    setState(() {
+      // Optional: Set loading state here
+    });
+
+    try {
+      // Fetch addresses
+      await addressProvider.getAddress(authProvider);
+
+      // Check if the address list is not empty
+      if (addressProvider.data.isNotEmpty) {
+        setState(() {
+          // Set the first address as the selected one
+          _selectedAddress = addressProvider.data[0];
+          _selectedAddressIndex = 0;
+        });
+      } else {
+        // Handle case when there are no addresses
+        setState(() {
+          _selectedAddress = null;
+          _selectedAddressIndex = -1;
+        });
+      }
+    } catch (error) {
+      // Handle error
+      print("Error refreshing list: $error");
+    } finally {
+      setState(() {
+        // Optional: Reset loading state here
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return ListenableProvider(
-      create: (_) => AddressProvider(context.read<AuthProvider>()),
-      child: Consumer<AddressProvider>(builder: (context, addressState, child) {
-        if (addressState.isLoading) {
-          return const Scaffold(body: ShimmerWidget());
-        }
-        if (addressState.data.isEmpty) {
-          showAddressContainer = true;
-        }
-        return FutureBuilder(
+      create: (_) => AddressProvider(context.read<AuthProvider>()), // Simplified provider initialization
+      child: Consumer<AddressProvider>(
+        builder: (context, addressState, child) {
+          if (addressState.isLoading) {
+            return Scaffold(
+              key: scaffoldKey,
+              body: ShimmerWidget(),
+            );
+          }
+          if (addressState.data.isEmpty) {
+            showAddressContainer = true;
+          }
+          return FutureBuilder(
             future: _countryFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -161,9 +197,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
               }
               if (snapshot.hasError || !snapshot.hasData) {
                 return CustomErrorWidget(
-                    backgroundColor: Colors.white,
-                    icon: Icons.error,
-                    message: "Something wrong. Please try again later.");
+                  backgroundColor: Colors.white,
+                  icon: Icons.error,
+                  message: "Something went wrong. Please try again later.",
+                );
               }
               List<Country> data = snapshot.data ?? [];
               return Scaffold(
@@ -176,119 +213,26 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        Container(
-                          color: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Column(
-                                children: const [
-                                  CircleAvatar(
-                                    radius: 10,
-                                    child: Icon(
-                                      Icons.check,
-                                      size: 10,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    "Cart",
-                                    style: TextStyle(fontSize: 12),
-                                  )
-                                ],
-                              ),
-                              Column(
-                                children: const [
-                                  CircleAvatar(
-                                    radius: 10,
-                                    child: Icon(
-                                      Icons.circle,
-                                      size: 10,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    "Select Address",
-                                    style: TextStyle(fontSize: 12),
-                                  )
-                                ],
-                              ),
-                              Column(
-                                children: const [
-                                  CircleAvatar(
-                                    radius: 10,
-                                    backgroundColor: Colors.grey,
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    "Payment",
-                                    style: TextStyle(fontSize: 12),
-                                  )
-                                ],
-                              ),
-                              Column(
-                                children: const [
-                                  CircleAvatar(
-                                    radius: 10,
-                                    backgroundColor: Colors.grey,
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    "Order Placed",
-                                    style: TextStyle(fontSize: 12),
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        /* if (addressState.data.isNotEmpty)
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 5),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  "Select a delivery Address",
-                                  style: TextStyle(
-                                      fontSize: 15.sp,
-                                      fontWeight: FontWeight.w600),
-                                )
-                              ],
-                            ),
-                          ), */
+                        // Address container and navigation code
                         InkWell(
-                          onTap: () {
-                            setState(() {
-                              //showAddressContainer = !showAddressContainer;
-                              Navigator.pushNamed(
-                                  context, AddressPage.routeName);
+                          onTap: () async {
+                            await Navigator.pushNamed(
+                              context,
+                              AddressAddPage.routeName,
+                              arguments: refreshList, // Passing callback
+                            ).then((_) {
+                              // Refresh the address list after returning
+                              addressState.getAddress(context.read<AuthProvider>());
                             });
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 16),
+                              horizontal: 10,
+                              vertical: 16,
+                            ),
                             decoration: BoxDecoration(
-                              color: Colors
-                                  .transparent, // Background color of the button
-                              borderRadius:
-                                  BorderRadius.circular(8), // Rounded corners
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(8),
                             ),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -297,7 +241,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                 const Text(
                                   'Add New Address',
                                   style: TextStyle(
-                                    // Text color
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -311,394 +254,58 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                         : _getCurrentLocationAndFillFields,
                                     icon: _isLoadingLocation
                                         ? const SizedBox(
-                                            width: 24,
-                                            height: 24,
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 2,
-                                            ),
-                                          )
-                                        : const Icon(
-                                            Icons.my_location_outlined),
-                                  )
-                              ],
-                            ),
-                          ),
-                        ),
-                        Visibility(
-                          visible: showAddressContainer,
-                          child: Container(
-                            // color: Colors.white,
-                            padding: EdgeInsets.only(
-                                top: 10,
-                                left: 10,
-                                right: 10,
-                                bottom:
-                                    MediaQuery.of(context).viewInsets.bottom),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                      "Billing Details",
-                                      style: TextStyle(
-                                          fontSize: 15.sp,
-                                          fontWeight: FontWeight.w600),
-                                    )
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                TextFormField(
-                                  controller: _billingNameController,
-                                  validator: (text) {
-                                    if (text == null || text.isEmpty) {
-                                      return "Required";
-                                    }
-                                    return null;
-                                  },
-                                  decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      labelText: "Name"),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                TextFormField(
-                                  controller: _billingMobileController,
-                                  validator: (text) {
-                                    if (text == null || text.isEmpty) {
-                                      return "Required";
-                                    }
-                                    if (text.length != 10) {
-                                      return "Please enter a valid number";
-                                    }
-                                    return null;
-                                  },
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    labelText: "Phone",
-                                  ),
-                                  keyboardType: TextInputType.number,
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                TextFormField(
-                                  controller: _houseNumberController,
-                                  validator: (text) {
-                                    if (text == null || text.isEmpty) {
-                                      return "Required";
-                                    }
-                                    return null;
-                                  },
-                                  decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      labelText:
-                                          "House / Flat / Building Number"),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                TextFormField(
-                                  controller: _pinCodeController,
-                                  onChanged: (text) {
-                                    if (text.length == 6) {
-                                      getLocationByPin();
-                                    }
-                                  },
-                                  validator: (text) {
-                                    if (text == null || text.isEmpty) {
-                                      return "Required";
-                                    }
-                                    if (text.length != 6) {
-                                      return "Please enter a valid pincode";
-                                    }
-                                    return null;
-                                  },
-                                  keyboardType: TextInputType
-                                      .number, // Restrict input to numbers only
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter
-                                        .digitsOnly, // Ensure only digits are allowed
-                                  ],
-                                  decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          borderSide: BorderSide(
-                                              width: 0.2,
-                                              color: Colors.grey[200]!)),
-                                      labelText: "Pin Code"),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                TextFormField(
-                                  controller: _areaController,
-                                  validator: (text) {
-                                    if (text == null || text.isEmpty) {
-                                      return "Required";
-                                    }
-                                    return null;
-                                  },
-                                  decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      labelText: "Area"),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                TextFormField(
-                                  controller: _landmarkController,
-                                  validator: (text) {
-                                    if (text == null || text.isEmpty) {
-                                      return "Required";
-                                    }
-                                    return null;
-                                  },
-                                  decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          borderSide: BorderSide(
-                                              width: 0.2,
-                                              color: Colors.grey[200]!)),
-                                      labelText: "Landmark"),
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                isAddressLoading
-                                    ? const Center(
-                                        child: CircularProgressIndicator(),
-                                      )
-                                    : CSCPicker(
-                                        currentCountry: country,
-                                        currentState: state,
-                                        currentCity: city,
-                                        flagState: CountryFlag.DISABLE,
-                                        onCountryChanged: (value) {
-                                          setState(() {
-                                            country = value;
-                                          });
-                                        },
-                                        onStateChanged: (value) {
-                                          setState(() {
-                                            state = value;
-                                          });
-                                        },
-                                        onCityChanged: (value) {
-                                          setState(() {
-                                            city = value;
-                                          });
-                                        },
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
                                       ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                      "Who is it for ?",
-                                      style: TextStyle(
-                                          fontSize: 15.sp,
-                                          fontWeight: FontWeight.w600),
                                     )
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                CustomDropdown(items: const [
-                                  "Self",
-                                  "Family",
-                                  "Friend",
-                                  "Other"
-                                ], controller: _addressForController),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                      "Select Type of Address",
-                                      style: TextStyle(
-                                          fontSize: 15.sp,
-                                          fontWeight: FontWeight.w600),
-                                    )
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                CustomDropdown(
-                                    items: const ["Home", "Office", "Other"],
-                                    controller: _addressTypeController),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                      "Do you want to make this address default ?",
-                                      style: TextStyle(
-                                          fontSize: 15.sp,
-                                          fontWeight: FontWeight.w600),
-                                    )
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    const Text("Yes"),
-                                    Radio(
-                                        value: "Yes",
-                                        groupValue: defaultAddress,
-                                        onChanged: (text) {
-                                          setState(() {
-                                            defaultAddress = text!;
-                                          });
-                                        }),
-                                    const Text("No"),
-                                    Radio(
-                                        value: "No",
-                                        groupValue: defaultAddress,
-                                        onChanged: (text) {
-                                          setState(() {
-                                            defaultAddress = text!;
-                                          });
-                                        }),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(
-                                      left: 0,
-                                      right: 0,
-                                      bottom: MediaQuery.of(context)
-                                          .viewInsets
-                                          .bottom),
-                                  height: 50,
-                                  width: MediaQuery.of(context).size.width,
-                                  child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                          backgroundColor: primaryColor),
-                                      onPressed: () {
-                                        if (_formKey.currentState!.validate()) {
-                                          submit(context.read<AuthProvider>(),
-                                              data, addressState);
-                                        }
-                                      },
-                                      child: const Text(
-                                          "Deliver to this Address")),
-                                ),
+                                        : const Icon(Icons.my_location_outlined),
+                                  ),
                               ],
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          height: 5,
-                        ),
+                        const SizedBox(height: 5),
                         if (addressState.data.isNotEmpty)
                           Container(
                             decoration: const BoxDecoration(
-                                // borderRadius: BorderRadius.circular(20),
-                                color: Colors.white),
+                              color: Colors.white,
+                            ),
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 10),
+                              horizontal: 10,
+                              vertical: 10,
+                            ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const SizedBox(
-                                  height: 10,
-                                ),
+                                const SizedBox(height: 10),
                                 Text(
                                   "Select a delivery Address",
                                   style: TextStyle(
-                                      fontSize: 15.sp,
-                                      fontWeight: FontWeight.w600),
+                                    fontSize: 15.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
+                                const SizedBox(height: 20),
                                 ...addressState.data
-                                    .mapIndexed((index, e) => _addressTile(
-                                        index, e, data, addressState))
-                                    .toList()
+                                    .mapIndexed((index, e) =>
+                                    _addressTile(index, e, data, addressState))
+                                    .toList(),
                               ],
                             ),
                           ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        const SizedBox(
-                          height: 100,
-                        )
-                        /* if (otherAddress)
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 30),
-                            child: Column(
-                              children: [
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                if (addressState.data.isNotEmpty)
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(
-                                        "OR",
-                                        style: TextStyle(
-                                            fontSize: 15.sp,
-                                            fontWeight: FontWeight.w600),
-                                      )
-                                    ],
-                                  ),
-                                // add hare
-                              ],
-                            ),
-                          ), */
+                        const SizedBox(height: 10),
+                        const SizedBox(height: 100),
                       ],
                     ),
                   ),
                 ),
               );
-            });
-      }),
+            },
+          );
+        },
+      ),
     );
   }
 
@@ -874,7 +481,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     ),
                   ],
                 ),
-                if (_selectedAddress == addresses) ...[
+                if (_selectedAddress != null && _selectedAddress!.id == addresses.id) ...[
                   const Divider(),
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -891,65 +498,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
         ],
       ),
     );
-    /* return Column(
-      children: [
-        Row(
-          children: [
-            Expanded(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Radio(
-                    value: index,
-                    groupValue: _selectedAddressIndex,
-                    onChanged: (index) {
-                      setState(() {
-                        _selectedAddressIndex = index!;
-                        _selectedAddress = e;
-                        otherAddress = false;
-                      });
-                    }),
-              ],
-            )),
-            Expanded(
-                flex: 5,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      e.billingName,
-                      style: TextStyle(
-                          fontSize: 16, color: Theme.of(context).primaryColor),
-                    ),
-                    Text(
-                      e.addressType,
-                      style: const TextStyle(
-                          fontSize: 13, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                        "${e.houseNumber}, ${e.landmark}, ${e.area}, ${e.state}"),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                  ],
-                ))
-          ],
-        ),
-        if (_selectedAddress == e)
-          ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  submit(context.read<AuthProvider>(), data, addressState);
-                }
-              },
-              child: const Text("Deliver to this Address")),
-        const DashedDivider(),
-      ],
-    ); */
   }
 
   Future<void> submit(AuthProvider auth, List<Country> countries,
@@ -1008,7 +556,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
       Map data = {
         "billing_name": _billingNameController.text,
         "billing_mobile": _billingMobileController.text,
-        /* "address": "0", */
+         "address": "0",
         "address": "${_houseNumberController.text}, "
             "${_pinCodeController.text}, "
             "${_areaController.text}, "
@@ -1054,7 +602,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
       // } else {
       //   AddressModel? add = getSelectedAddress(
       //       data, int.parse(addressId), int.parse(auth.user!.id));
-      //   if (context.mounted) {
+      //   if (context.mounted) {Fadd new
       //     Navigator.push(
       //         context,
       //         MaterialPageRoute(
