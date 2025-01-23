@@ -377,7 +377,7 @@ class _HomeState extends State<Home> {
                       ),
                       Container(
                         margin: const EdgeInsets.symmetric(
-                            horizontal: 5, vertical: 0),
+                            horizontal: 10, vertical: 5),
                         alignment: Alignment.centerLeft,
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -415,45 +415,23 @@ class _HomeState extends State<Home> {
                                 )
                               ],
                             ),
-                            state.eventData != null && state.eventData!.isNotEmpty
-                                ? Container(
-                              height: 100.0, // Fixed height for
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                    child: GridView.builder(
-                                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2, // Number of columns
-                                        crossAxisSpacing: 5.0, // Space between columns
-                                        mainAxisSpacing: 5.0, // Space between rows
-                                        childAspectRatio: 1.0, // Adjust to fit the design
-                                      ),
-                                      itemCount: state.eventData!.length,
-                                      physics: const BouncingScrollPhysics(), // Enable scrolling
-                                      itemBuilder: (context, index) {
-                                        final event = state.eventData![index];
-                                        return GestureDetector(
-                                          onTap: () {
-                                            Navigator.pushNamed(context, ViewAllServiceRoute.routeName);
-                                          },
-                                          child: CircularEventCard(
-                                            event: event,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                  children: state.eventData!
+                                      .map((e) => GestureDetector(
+                                            onTap: () {
+                                              Navigator.pushNamed(
+                                                  context,
+                                                  ViewAllServiceRoute
+                                                      .routeName);
+                                            },
+                                            child: CircularEventCard(
+                                              event: e,
+                                            ),
+                                          ))
+                                      .toList()),
                             )
-                                : Container(
-                              height: 300.0, // Same fixed height for empty state
-                              alignment: Alignment.center,
-                              child: Text(
-                                "No items available",
-                                style: TextStyle(fontSize: 16.0, color: Colors.grey),
-                              ),
-                            ),
                           ],
                         ),
                       ),

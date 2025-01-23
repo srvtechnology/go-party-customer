@@ -110,8 +110,8 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                     child: Text(
                       "Customer Login ",
                       style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 20,
+                          color: Colors.black,
+                          fontSize: 16,
                           fontWeight: FontWeight.w600),
                     ),
                   ),

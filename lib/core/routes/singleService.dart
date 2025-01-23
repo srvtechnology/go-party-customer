@@ -1167,7 +1167,13 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                               child: HtmlTextView(
                                   htmlText: widget.service.description ?? ""),
                             ),
-
+                            Padding(
+                              padding: const EdgeInsets.only(top:8.0),
+                              child: const Divider(
+                                thickness: 1,
+                                height: 1,
+                              ),
+                            ),
                             const Padding(
                               padding: EdgeInsets.only(
                                   top: 8.0,
@@ -1181,10 +1187,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                 ),
                               ),
                             ),
-                            const Divider(
-                              thickness: 1,
-                              height: 1,
-                            ),
+
                             Padding(
                               padding: const EdgeInsets.only(top:8.0),
                               child: Container(
@@ -1199,10 +1202,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                             ),
 
                             const SizedBox(height: 5,),
-                            const Divider(
-                              thickness: 1,
-                              height: 1,
-                            ),
+
                             const SizedBox(height: 5,),
                             if (widget.service.featured_description != null ||
                                 parseHtmlString(widget.service.featured_description ?? "") != "") ...[
@@ -1275,8 +1275,8 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                     ],
                                   )),
 
-                              const Divider(thickness: 3, // Thickness of the line
-                                height: 3,  ),
+                              const Divider(thickness: 1, // Thickness of the line
+                                height: 1,  ),
                               const ExtraDetails(),
                             ],
                           ],

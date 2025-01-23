@@ -698,8 +698,8 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                       Padding(
                         padding: const EdgeInsets.only(top: 8.0,bottom: 8.0),
                         child: const Divider(
-                          thickness: 3,
-                          height: 2,
+                          thickness: 1,
+                          height: 1,
                         ),
                       ),
                       const ExtraDetails(),

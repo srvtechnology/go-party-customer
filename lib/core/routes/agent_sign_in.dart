@@ -3,6 +3,7 @@ import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../../views/view.dart';
 
@@ -39,6 +40,8 @@ class _AgentSignInState extends State<AgentSignIn> {
                 children: [
                   const SizedBox(height: 8),
                   SizedBox(
+                    width: 60.w,
+                    height: 12.h,
                     child: Image.asset(
                       'assets/images/logo/Utsavlife full logo.png',
                     ),
@@ -49,8 +52,8 @@ class _AgentSignInState extends State<AgentSignIn> {
                     child: Text(
                       "Agent Login ",
                       style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 20,
+                          color:Colors.black,
+                          fontSize: 16,
                           fontWeight: FontWeight.w600),
                     ),
                   ),

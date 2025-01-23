@@ -377,7 +377,7 @@ class _CartPageState extends State<CartPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
-                        "Package",
+                        "Event",
                         style: TextStyle(fontSize: 12),
                       ),
                       Flexible(
