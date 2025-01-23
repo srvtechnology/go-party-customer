@@ -82,14 +82,7 @@ class _ProfileState extends State<Profile> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(
-                  height: 20.h,
-                ),
-                Image.asset(
-                  'assets/images/logo/Utsavlife full logo.png',
-                  // height: 20,
-                ),
-                const Spacer(),
+
                 TextButton(
                   onPressed: () {},
                   child: const Text(
@@ -216,7 +209,7 @@ class _ProfileState extends State<Profile> {
       }
       return Scaffold(
         backgroundColor: Colors.white,
-        appBar: CommonHeader.headerMain(context, elevation: 0, onSearch: () {
+        appBar: CommonHeader.headerMain(context,isShowLogo: false, elevation: 0, onSearch: () {
           Navigator.pushNamed(context, ProductPageRoute.routeName);
         }),
         body: Column(

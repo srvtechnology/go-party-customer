@@ -44,6 +44,18 @@ class _AgentSignInState extends State<AgentSignIn> {
                     ),
                   ),
                   const SizedBox(height: 32.0),
+                  Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Agent Login ",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
+
+                  const SizedBox(height: 16.0),
                   Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -185,7 +197,7 @@ class _AgentSignInState extends State<AgentSignIn> {
                               TextButton(
                                 onPressed: () {},
                                 child: const Text(
-                                  "New to UtsavLife?",
+                                  "New to Utsavlife?",
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 14,

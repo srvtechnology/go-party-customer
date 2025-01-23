@@ -423,6 +423,7 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                                       child: ListTile(
                                         title: Text(datum.value ?? ''),
                                         onTap: () {
+                                          _removeOverlay();
                                           if (datum.value != null) {
                                             serviceState.getFilteredServices(auth, filterState,
                                                 searchString: datum.value);
@@ -436,7 +437,7 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                                               fontSize: 16.0,
                                             );
                                           }
-                                          _removeOverlay();
+
                                         },
                                       ),
                                     ),

@@ -269,8 +269,8 @@ class CircularEventCard extends StatelessWidget {
     return Container(
       constraints: const BoxConstraints(
         // mxw
-        maxWidth: 90.5,
-        maxHeight: 110,
+        maxWidth: 70,
+        maxHeight: 80,
         // mxh
       ),
       padding: const EdgeInsets.only(right: 5),
@@ -282,8 +282,8 @@ class CircularEventCard extends StatelessWidget {
           Container(
             alignment: Alignment.topCenter,
             child: Container(
-                height: 60,
-                width: 60,
+                height: 50,
+                width: 50,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   shape: BoxShape.circle,
@@ -305,7 +305,6 @@ class CircularEventCard extends StatelessWidget {
           Expanded(
             child: Text(
               capitalize(event.name),
-              overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
               style: titleStyle(context),
             ),

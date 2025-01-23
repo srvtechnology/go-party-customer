@@ -67,6 +67,19 @@ class _AgentSignUpState extends State<AgentSignUp> {
                         ),
                       ),
                       const SizedBox(height: 32.0),
+
+                      Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          "Create an account (Agent) ",
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+
+                      const SizedBox(height: 16.0),
                       Card(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),

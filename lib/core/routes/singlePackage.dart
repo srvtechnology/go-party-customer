@@ -198,7 +198,6 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                 Provider.of<CategoryProvider>(context, listen: false).navIndex=p0;
            // index=p0;
           },
-
             child: Scaffold(
               backgroundColor: Colors.white,
               appBar: CommonHeader.header(context, onBack: () {
@@ -276,7 +275,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                     horizontal: 4.w,
                                   ),
                                   child: Text(
-                                    _isShowMore ? "Show Less" : "Show More",
+                                    _isShowMore ? "Show Less" : "Read More",
                                     style: Theme.of(context)
                                         .textTheme
                                         .labelLarge!
@@ -630,7 +629,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                     duration: const Duration(milliseconds: 600),
                                                     constraints: BoxConstraints(
                                                       minHeight: 1.h,
-                                                      maxHeight: _isShowMoreFD ? double.infinity : 10.h,
+                                                      maxHeight: _isShowMoreFD ? double.infinity : 30.h,
                                                       minWidth: double.infinity,
                                                       maxWidth: double.infinity,
                                                     ),
@@ -656,7 +655,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                           horizontal: 4.w,
                                                         ),
                                                         child: Text(
-                                                          _isShowMoreFD ? "Show Less" : "Show More",
+                                                          _isShowMoreFD ? "Read Less" : "Read More",
                                                           style: Theme.of(context)
                                                               .textTheme
                                                               .labelLarge!
@@ -696,9 +695,12 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                           child: Column(
                             children:  [HorizontalImageSlider(images: widget.package.images!)]
                           )),
-                      const Divider(
-                        thickness: 1,
-                        height: 1,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0,bottom: 8.0),
+                        child: const Divider(
+                          thickness: 3,
+                          height: 2,
+                        ),
                       ),
                       const ExtraDetails(),
                     ],

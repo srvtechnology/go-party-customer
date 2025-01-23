@@ -799,7 +799,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                     horizontal: 4.w,
                                   ),
                                   child: Text(
-                                    _isShowMore ? "Show Less" : "Show More",
+                                    _isShowMore ? "Show Less" : "Read More",
                                     style: Theme.of(context)
                                         .textTheme
                                         .labelLarge!
@@ -1228,7 +1228,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                           minHeight: 1.h,
                                           maxHeight: _isShowMoreFD
                                               ? MediaQuery.of(context).size.height // Use screen height instead of infinity
-                                              : 10.h,
+                                              : 30.h,
                                           minWidth: double.infinity,
                                           maxWidth: double.infinity,
                                         ),
@@ -1261,7 +1261,7 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                               horizontal: 4.w,
                                             ),
                                             child: Text(
-                                              _isShowMoreFD ? "Show Less" : "Show More",
+                                              _isShowMoreFD ? "Read Less" : "Read More",
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .labelLarge!
@@ -1275,8 +1275,8 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                     ],
                                   )),
 
-                              const Divider(thickness: 1, // Thickness of the line
-                                height: 5,  ),
+                              const Divider(thickness: 3, // Thickness of the line
+                                height: 3,  ),
                               const ExtraDetails(),
                             ],
                           ],

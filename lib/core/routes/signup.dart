@@ -117,6 +117,16 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                     ),
                   ),
                   const SizedBox(height: 16.0),
+                  Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Create an Account(Customer)",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
                   /* Container(
                     padding: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 10),

@@ -105,16 +105,16 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                       height: 12.h,
                     ),
                   ),
-                  // Container(
-                  //   alignment: Alignment.center,
-                  //   child: Text(
-                  //     "Welcome ",
-                  //     style: TextStyle(
-                  //         color: Theme.of(context).primaryColor,
-                  //         fontSize: 26,
-                  //         fontWeight: FontWeight.w600),
-                  //   ),
-                  // ),
+                  Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Customer Login ",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
                   const SizedBox(height: 16.0),
                   /*Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -559,7 +559,7 @@ class _SignInPageRouteState extends State<SignInPageRoute> {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: const Text(
-                                  "New to UtsavLife?",
+                                  "New to Utsavlife?",
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 14,
