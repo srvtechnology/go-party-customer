@@ -411,30 +411,6 @@ class _PaymentPageState extends State<PaymentPage> {
                         ),
                       ],
                     ),
-
-                    /*    Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            if (context.mounted) {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => CheckoutPage(
-                                            serviceIds: widget.serviceIds,
-                                            cartItems: widget.cartItems,
-                                            cartSubTotal: widget.total,
-                                          )));
-                            }
-                          },
-                          child: Text(
-                            "Choose Delivery Address",
-                            style: TextStyle(
-                                fontSize: 15.sp, fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                      ],
-                    ), */
                     const Divider(),
                     const SizedBox(
                       height: 0,
@@ -807,7 +783,8 @@ class _PaymentPageState extends State<PaymentPage> {
           context,
           MaterialPageRoute(
             builder: (context) => PaymentWebView(
-              generateOrderValue: GenerateOrderValue(
+              generateOrderValue:
+              GenerateOrderValue(
                 orderId: value.orderId,
                 accessCode: !_paymentTypeController.text.contains("Partial")
                     ? value.fullPayObject!.accessCode

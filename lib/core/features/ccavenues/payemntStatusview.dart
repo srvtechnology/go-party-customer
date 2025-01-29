@@ -108,38 +108,6 @@ class _PaymentStatusViewState extends State<PaymentStatusView> {
         ),
         const SizedBox(height: 10),
         const Divider(),
-        /*-- commented on : 04-08-24 : since there is no OrderId, TrackingId & Payment Mode ---*/
-        /*
-        const SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Order ID: ${widget.paymentRes?.type?.orderId ?? ""}",
-              style: TextStyle(
-                fontSize: 12,
-                color: Theme.of(context).primaryColor,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(width: 10),
-            Text("Tracking ID: ${widget.paymentRes?.type?.trackingId ?? ""}",
-              style: TextStyle(
-                fontSize: 12,
-                color: Theme.of(context).primaryColor,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-        Text("Payment Mode: ${widget.paymentRes?.type?.paymentMode ?? ""}",
-          style: TextStyle(
-            fontSize: 12,
-            color: Theme.of(context).primaryColor,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        */
       ],
     );
   }
