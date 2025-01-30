@@ -5,6 +5,7 @@ import 'package:csc_picker/csc_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import '../components/bottomNav.dart';
 import '../constant/themData.dart';
 import 'package:customerapp/core/components/errors.dart';
 import 'package:customerapp/core/components/loading.dart';
@@ -27,6 +28,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../models/cartModel.dart';
 import '../models/countries.dart';
+import '../providers/categoryProvider.dart';
 
 class CheckoutPage extends StatefulWidget {
   static const routeName = "/checkout";
@@ -203,101 +205,105 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 );
               }
               List<Country> data = snapshot.data ?? [];
-              return Scaffold(
-                appBar: AppBar(
-                  elevation: 0,
-                  title: const Text("Checkout"),
-                ),
-                body: Form(
-                  key: _formKey,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        // Address container and navigation code
-                        InkWell(
-                          onTap: () async {
-                            await Navigator.pushNamed(
-                              context,
-                              AddressAddPage.routeName,
-                              arguments: refreshList, // Passing callback
-                            ).then((_) {
-                              // Refresh the address list after returning
-                              addressState.getAddress(context.read<AuthProvider>());
-                            });
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 16,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Add New Address',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+
+              return  BottomNav(
+                index: 1,
+                child: Scaffold(
+                  appBar: AppBar(
+                    elevation: 0,
+                    title: const Text("Checkout"),
+                  ),
+                  body: Form(
+                    key: _formKey,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          // Address container and navigation code
+                          InkWell(
+                            onTap: () async {
+                              await Navigator.pushNamed(
+                                context,
+                                AddressAddPage.routeName,
+                                arguments: refreshList, // Passing callback
+                              ).then((_) {
+                                // Refresh the address list after returning
+                                addressState.getAddress(context.read<AuthProvider>());
+                              });
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 16,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.transparent,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Add New Address',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(width: 10),
-                                const Spacer(),
-                                if (showAddressContainer)
-                                  IconButton(
-                                    onPressed: _isLoadingLocation
-                                        ? null
-                                        : _getCurrentLocationAndFillFields,
-                                    icon: _isLoadingLocation
-                                        ? const SizedBox(
-                                      width: 24,
-                                      height: 24,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                      ),
-                                    )
-                                        : const Icon(Icons.my_location_outlined),
-                                  ),
-                              ],
+                                  const SizedBox(width: 10),
+                                  const Spacer(),
+                                  if (showAddressContainer)
+                                    IconButton(
+                                      onPressed: _isLoadingLocation
+                                          ? null
+                                          : _getCurrentLocationAndFillFields,
+                                      icon: _isLoadingLocation
+                                          ? const SizedBox(
+                                        width: 24,
+                                        height: 24,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                          : const Icon(Icons.my_location_outlined),
+                                    ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 5),
-                        if (addressState.data.isNotEmpty)
-                          Container(
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 10,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(height: 10),
-                                Text(
-                                  "Select a delivery Address",
-                                  style: TextStyle(
-                                    fontSize: 15.sp,
-                                    fontWeight: FontWeight.w600,
+                          const SizedBox(height: 5),
+                          if (addressState.data.isNotEmpty)
+                            Container(
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 10,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    "Select a delivery Address",
+                                    style: TextStyle(
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: 20),
-                                ...addressState.data
-                                    .mapIndexed((index, e) =>
-                                    _addressTile(index, e, data, addressState))
-                                    .toList(),
-                              ],
+                                  const SizedBox(height: 20),
+                                  ...addressState.data
+                                      .mapIndexed((index, e) =>
+                                      _addressTile(index, e, data, addressState))
+                                      .toList(),
+                                ],
+                              ),
                             ),
-                          ),
-                        const SizedBox(height: 10),
-                        const SizedBox(height: 100),
-                      ],
+                          const SizedBox(height: 10),
+                          const SizedBox(height: 100),
+                        ],
+                      ),
                     ),
                   ),
                 ),

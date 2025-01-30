@@ -274,7 +274,11 @@ class _OrdersState extends State<Orders> {
       },
       child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Column(children: deliveredOrders.map((e) => OrderTile(order: e, review: true, isDelivered: true)).toList()),
+        child: Column(
+            children: deliveredOrders
+                .map(
+                    (e) => OrderTile(order: e, review: true, isDelivered: true))
+                .toList()),
       ),
     );
   }
@@ -288,6 +292,53 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  Widget successCard() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.check_circle,
+                color: Colors.green,
+              ),
+              Text(
+                "Order placed,Thank you",
+                style: successTextStyle(context),
+              ),
+            ],
+          ),
+          Text(
+            "Confirmation will send to message center",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          const Divider(
+            thickness: 1, // Thickness of the line
+            height: 5,
+          ),
+          Text(
+            "Shipping to ",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+          ),
+          Text(
+            "Shiping address",
+            style: TextStyle(
+                color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 12),
+          ),
+        ],
+      ),
+      padding: EdgeInsets.all(8.0),
+      alignment: Alignment.centerLeft,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: const BorderRadius.all(Radius.circular(0)),
+        border: Border.all(width: 0.15, color: Colors.grey),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListenableProvider(
@@ -349,7 +400,8 @@ class _HomeState extends State<Home> {
               );
             }
             return Scaffold(
-              appBar: CommonHeader.headerMain(isShowLogo: false,context, onSearch: () {
+              appBar: CommonHeader.headerMain(isShowLogo: false, context,
+                  onSearch: () {
                 Navigator.pushNamed(context, ProductPageRoute.routeName);
               }),
               body: CustomMaterialIndicator(
@@ -371,6 +423,7 @@ class _HomeState extends State<Home> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      successCard(),
                       const CurrentLocationView(),
                       const SizedBox(
                         height: 5,
@@ -537,13 +590,16 @@ class _HomeState extends State<Home> {
                               scrollDirection: Axis.horizontal,
                               child: LayoutBuilder(
                                 builder: (context, constraints) {
-                                  final itemWidth = min(250.0, constraints.maxWidth / 3); // Adjust based on constraints
+                                  final itemWidth = min(
+                                      250.0,
+                                      constraints.maxWidth /
+                                          3); // Adjust based on constraints
 
                                   return Row(
                                     children: state.packageData!
                                         .map((e) => SizedBox(
-                                              width:
-                                                  itemWidth, // Set the width for each card
+                                              width: itemWidth,
+                                              // Set the width for each card
                                               child: PackageCard(
                                                 package: e,
                                                 onTap: () {
@@ -619,8 +675,8 @@ class _HomeState extends State<Home> {
                                   return Row(
                                     children: state.data!
                                         .map((e) => SizedBox(
-                                              width:
-                                                  itemWidth, // Set width for each card
+                                              width: itemWidth,
+                                              // Set width for each card
                                               child: OrderCard(
                                                 service: e,
                                                 onTap: () {
@@ -725,8 +781,8 @@ class _HomeState extends State<Home> {
                                   return Row(
                                     children: state.data!
                                         .map((e) => SizedBox(
-                                              width:
-                                                  itemWidth, // Set width for each card
+                                              width: itemWidth,
+                                              // Set width for each card
                                               child: OrderCard(
                                                 service: e,
                                                 onTap: () {

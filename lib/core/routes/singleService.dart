@@ -252,6 +252,71 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
+
+
+                                    const Text(
+                                      'Available City',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    Container(
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          width: 0.5,
+                                          color: Theme.of(context).primaryColor,
+                                        ),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                                      child: DropdownButtonHideUnderline(
+                                        child: DropdownButton<String>(
+                                          isExpanded: true, // Ensures full width
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                          ),
+                                          icon: const Icon( // Custom dropdown icon
+                                            Icons.keyboard_arrow_down_outlined,
+                                            color: Colors.black, // Change to your preferred color
+                                            size: 20, // Adjust icon size if needed
+                                          ),
+                                          value: selectedCity,
+                                          items: _cities.isEmpty
+                                              ? [
+                                            DropdownMenuItem<String>(
+                                              value: defaultCityMessage,
+                                              child: Text(defaultCityMessage,
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.black,
+                                                  )),
+                                            ),
+                                          ]
+                                              : _cities.map((city) {
+                                            return DropdownMenuItem<String>(
+                                              value: city,
+                                              child: Text(city),
+                                            );
+                                          }).toList(),
+                                          onChanged: _cities.isEmpty
+                                              ? null // Disable if list is empty
+                                              : (city) {
+                                            setState(() {
+                                              selectedCity = city;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ),
+
+
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
                                     Container(
                                       padding: const EdgeInsets.only(bottom: 5),
                                       child: Text(
@@ -375,12 +440,29 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                           return "End date should be greater than start date or before 4:00 P.M";
                                         }
                                       }
-
                                       return null;
                                     }),
+
                                      const SizedBox(
+                                      height: 10,
+                                    ),
+
+                                    Container(
+                                      padding: const EdgeInsets.only(bottom: 5),
+                                      child: Text(
+                                        "Event end date isn’t consider as serviceable day",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14.sp,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    ),
+
+                                    const SizedBox(
                                       height: 20,
                                     ),
+
                                     Container(
                                       padding: const EdgeInsets.only(bottom: 5),
                                       child: Text(
@@ -938,10 +1020,6 @@ class _SingleServiceRouteState extends State<SingleServiceRoute> {
                                     ),
                                   ),
                                   DropdownButton<String?>(
-                                    style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                    underline: Container(),
                                     iconSize: 16,
                                     icon: _cities.isEmpty
                                         ? Container() // Hide icon if the list is empty

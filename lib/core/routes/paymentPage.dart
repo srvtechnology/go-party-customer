@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:customerapp/core/components/bottomNav.dart';
 import 'package:flutter/foundation.dart';
 
 import '../constant/themData.dart';
@@ -64,672 +65,675 @@ class _PaymentPageState extends State<PaymentPage> {
     if (kDebugMode) {
       print('CartItems : ${widget.cartItems}');
     }
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Payment"),
-        elevation: 0,
-      ),
-      body: SizedBox(
-        height: double.infinity,
-        width: double.infinity,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                color: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Column(
-                      children: const [
-                        CircleAvatar(
-                          radius: 10,
-                          child: Icon(
-                            Icons.check,
-                            size: 10,
+    return BottomNav(
+      index: 1,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Payment"),
+          elevation: 0,
+        ),
+        body: SizedBox(
+          height: double.infinity,
+          width: double.infinity,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  color: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Column(
+                        children: const [
+                          CircleAvatar(
+                            radius: 10,
+                            child: Icon(
+                              Icons.check,
+                              size: 10,
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          "Cart",
-                          style: TextStyle(fontSize: 12),
-                        )
-                      ],
-                    ),
-                    Column(
-                      children: const [
-                        CircleAvatar(
-                          radius: 10,
-                          child: Icon(
-                            Icons.check,
-                            size: 10,
+                          SizedBox(
+                            height: 5,
                           ),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          "Select Address",
-                          style: TextStyle(fontSize: 12),
-                        )
-                      ],
-                    ),
-                    Column(
-                      children: const [
-                        CircleAvatar(
-                          radius: 10,
-                          child: Icon(
-                            Icons.circle,
-                            size: 10,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          "Payment",
-                          style: TextStyle(fontSize: 12),
-                        )
-                      ],
-                    ),
-                    Column(
-                      children: const [
-                        CircleAvatar(
-                          radius: 10,
-                          backgroundColor: Colors.grey,
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          "Order Placed",
-                          style: TextStyle(fontSize: 12),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                width: double.infinity,
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10)),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: widget.cartItems.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        //if length is 1 then show border bottom
-                        border: Border(
-                          bottom: BorderSide(
-                            color: widget.cartItems.length == 1
-                                ? Colors.transparent
-                                : Colors.grey.withOpacity(0.5),
-                          ),
-                        ),
+                          Text(
+                            "Cart",
+                            style: TextStyle(fontSize: 12),
+                          )
+                        ],
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Image of service
-                            Container(
-                              height: 100,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  image: DecorationImage(
-                                      image: NetworkImage(widget
-                                              .cartItems[index]
-                                              .service
-                                              ?.images
-                                              ?.first ??
-                                          ''),
-                                      fit: BoxFit.cover)),
+                      Column(
+                        children: const [
+                          CircleAvatar(
+                            radius: 10,
+                            child: Icon(
+                              Icons.check,
+                              size: 10,
                             ),
-                            const SizedBox(
-                              width: 20,
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            "Select Address",
+                            style: TextStyle(fontSize: 12),
+                          )
+                        ],
+                      ),
+                      Column(
+                        children: const [
+                          CircleAvatar(
+                            radius: 10,
+                            child: Icon(
+                              Icons.circle,
+                              size: 10,
                             ),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(
-                                    height: 0,
-                                  ),
-                                  Text(
-                                    widget.cartItems[index].service.name ?? "",
-                                    style: TextStyle(
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                  Text.rich(
-                                    TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: "Days : ",
-                                          style: TextStyle(
-                                            fontSize: 16.sp,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text: widget.cartItems[index].days,
-                                          style: TextStyle(
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            fontSize: 16.sp,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ],
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            "Payment",
+                            style: TextStyle(fontSize: 12),
+                          )
+                        ],
+                      ),
+                      Column(
+                        children: const [
+                          CircleAvatar(
+                            radius: 10,
+                            backgroundColor: Colors.grey,
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            "Order Placed",
+                            style: TextStyle(fontSize: 12),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: widget.cartItems.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          //if length is 1 then show border bottom
+                          border: Border(
+                            bottom: BorderSide(
+                              color: widget.cartItems.length == 1
+                                  ? Colors.transparent
+                                  : Colors.grey.withOpacity(0.5),
+                            ),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Image of service
+                              Container(
+                                height: 100,
+                                width: 100,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    image: DecorationImage(
+                                        image: NetworkImage(widget
+                                                .cartItems[index]
+                                                .service
+                                                ?.images
+                                                ?.first ??
+                                            ''),
+                                        fit: BoxFit.cover)),
+                              ),
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(
+                                      height: 0,
                                     ),
-                                  ),
-                                  AnimatedSwitcher(
-                                    duration: const Duration(milliseconds: 600),
-                                    child: Column(
-                                      key: ValueKey<bool>(_isShowMore),
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        AnimatedContainer(
-                                          duration:
-                                              const Duration(milliseconds: 600),
-                                          constraints: BoxConstraints(
-                                            minHeight: 1.h,
-                                            maxHeight: _isShowMore
-                                                ? double.infinity
-                                                : 10.h,
-                                            minWidth: double.infinity,
-                                            maxWidth: double.infinity,
-                                          ),
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 0.w,
-                                          ),
-                                          alignment: Alignment.centerLeft,
-                                          child: SingleChildScrollView(
-                                            physics: _isShowMore
-                                                ? const NeverScrollableScrollPhysics()
-                                                : null,
-                                            child: HtmlTextView(
-                                                htmlText: widget
-                                                    .cartItems[index]
-                                                    .service
-                                                    .description!),
-                                          ),
-                                        ),
-                                        if (widget.cartItems[index].service
-                                                .description!.length >
-                                            100)
-                                          GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                _isShowMore = !_isShowMore;
-                                              });
-                                            },
-                                            child: Container(
-                                              padding: EdgeInsets.symmetric(
-                                                horizontal: 4.w,
-                                              ),
-                                              child: Text(
-                                                _isShowMore
-                                                    ? "Show Less"
-                                                    : "Show More",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .labelLarge!
-                                                    .copyWith(
-                                                        fontSize: 14,
-                                                        color: primaryColor),
-                                              ),
+                                    Text(
+                                      widget.cartItems[index].service.name ?? "",
+                                      style: TextStyle(
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                    Text.rich(
+                                      TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: "Days : ",
+                                            style: TextStyle(
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.w600,
                                             ),
                                           ),
-                                      ],
-                                    ),
-                                  ),
-                                  /* --- commented for the fix below on : 29-07-24 --*/
-                                  /*AnimatedContainer(
-                                      constraints: BoxConstraints(
-                                          minHeight: 1.h,
-                                          maxHeight:
-                                              _isShowMore ? double.infinity : 6.h,
-                                          minWidth: double.infinity,
-                                          maxWidth: double.infinity),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 0.w,
+                                          TextSpan(
+                                            text: widget.cartItems[index].days,
+                                            style: TextStyle(
+                                              color:
+                                                  Theme.of(context).primaryColor,
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      alignment: Alignment.centerLeft,
+                                    ),
+                                    AnimatedSwitcher(
                                       duration: const Duration(milliseconds: 600),
-                                      child: LayoutBuilder(
-                                        builder: (context, constraints) {
-                                          print(constraints.maxHeight.toString());
-                                          return HtmlTextView(
-                                              htmlText: widget.cartItems[index]
-                                                  .service.description);
-                                        },
-                                      )),
-                                  if (widget.cartItems[index].service.description.length > 100)
-                                    GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          _isShowMore = !_isShowMore;
-                                        });
-                                      },
-                                      child: Container(
+                                      child: Column(
+                                        key: ValueKey<bool>(_isShowMore),
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          AnimatedContainer(
+                                            duration:
+                                                const Duration(milliseconds: 600),
+                                            constraints: BoxConstraints(
+                                              minHeight: 1.h,
+                                              maxHeight: _isShowMore
+                                                  ? double.infinity
+                                                  : 10.h,
+                                              minWidth: double.infinity,
+                                              maxWidth: double.infinity,
+                                            ),
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 0.w,
+                                            ),
+                                            alignment: Alignment.centerLeft,
+                                            child: SingleChildScrollView(
+                                              physics: _isShowMore
+                                                  ? const NeverScrollableScrollPhysics()
+                                                  : null,
+                                              child: HtmlTextView(
+                                                  htmlText: widget
+                                                      .cartItems[index]
+                                                      .service
+                                                      .description!),
+                                            ),
+                                          ),
+                                          if (widget.cartItems[index].service
+                                                  .description!.length >
+                                              100)
+                                            GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  _isShowMore = !_isShowMore;
+                                                });
+                                              },
+                                              child: Container(
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: 4.w,
+                                                ),
+                                                child: Text(
+                                                  _isShowMore
+                                                      ? "Show Less"
+                                                      : "Show More",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .labelLarge!
+                                                      .copyWith(
+                                                          fontSize: 14,
+                                                          color: primaryColor),
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                    /* --- commented for the fix below on : 29-07-24 --*/
+                                    /*AnimatedContainer(
+                                        constraints: BoxConstraints(
+                                            minHeight: 1.h,
+                                            maxHeight:
+                                                _isShowMore ? double.infinity : 6.h,
+                                            minWidth: double.infinity,
+                                            maxWidth: double.infinity),
                                         padding: EdgeInsets.symmetric(
                                           horizontal: 0.w,
                                         ),
-                                        child: Text(
-                                          _isShowMore ? "Show Less" : "Show More",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .labelLarge!
-                                              .copyWith(
-                                                  fontSize: 14,
-                                                  color: primaryColor),
+                                        alignment: Alignment.centerLeft,
+                                        duration: const Duration(milliseconds: 600),
+                                        child: LayoutBuilder(
+                                          builder: (context, constraints) {
+                                            print(constraints.maxHeight.toString());
+                                            return HtmlTextView(
+                                                htmlText: widget.cartItems[index]
+                                                    .service.description);
+                                          },
+                                        )),
+                                    if (widget.cartItems[index].service.description.length > 100)
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            _isShowMore = !_isShowMore;
+                                          });
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 0.w,
+                                          ),
+                                          child: Text(
+                                            _isShowMore ? "Show Less" : "Show More",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .labelLarge!
+                                                .copyWith(
+                                                    fontSize: 14,
+                                                    color: primaryColor),
+                                          ),
                                         ),
-                                      ),
-                                    ),*/
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "₹ ${widget.cartItems[index].price}",
-                                        style: const TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                            color: primaryColor),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                ],
+                                      ),*/
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "₹ ${widget.cartItems[index].price}",
+                                          style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                              color: primaryColor),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Container(
-                width: double.infinity,
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10)),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          "Choose Delivery Address",
-                          style: TextStyle(
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.w600,
+                            ],
                           ),
                         ),
-                        const Spacer(), // This takes up all available space between the text and the button
-                        ElevatedButton(
-                          onPressed: () {
-                            if (context.mounted) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CheckoutPage(
-                                    serviceIds: widget.serviceIds,
-                                    cartItems: widget.cartItems,
-                                    cartSubTotal: widget.total,
-                                  ),
-                                ),
-                              );
-                            }
-                          },
-                          child: const Text(
-                              "Change"), // You can customize this text
-                        ),
-                      ],
-                    ),
-                    const Divider(),
-                    const SizedBox(
-                      height: 0,
-                    ),
-                    Text(
-                      widget.selectedAddress?.billingName ?? "",
-                      style: TextStyle(
-                          fontSize: 16, color: Theme.of(context).primaryColor),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      "Mobile: ${widget.selectedAddress?.billingMobile}",
-                      style: const TextStyle(
-                          fontSize: 13, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Text(getAddressFormat(widget.selectedAddress!)),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                  ],
+                      );
+                    },
+                  ),
                 ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        Text(
-                          "Choose Payment Method",
-                          style: TextStyle(
-                              fontSize: 15.sp, fontWeight: FontWeight.w600),
-                        )
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    // CustomDropdown(
-                    //     onChanged: (text) {
-                    //       // if (text == "Online") {
-                    //       //   setState(() {
-                    //       //     showCard = true;
-                    //       //   });
-                    //       // } else {
-                    //       //   setState(() {
-                    //       //     showCard = false;
-                    //       //   });
-                    //       // }
-                    //     },
-                    //     hintText: "Select Payment Mode",
-                    //     items: const ["Online"],
-                    //     controller: _paymentModeController),
-
-                    // radio button options for payment type 'complete' or 'partial' in variable _paymentTypeController and vartial amount is 25% of total amount
-                    Column(
-                      children: [
-                        RadioListTile(
-                          contentPadding: EdgeInsets.zero,
-                          value: "Complete",
-                          groupValue: _paymentTypeController.text,
-                          onChanged: (text) {
-                            setState(() {
-                              _paymentTypeController.text = text.toString();
-                            });
-                          },
-                          title: const Text("Complete"),
-                        ),
-                        RadioListTile(
-                          contentPadding: EdgeInsets.zero,
-                          value: "Partial",
-                          groupValue: _paymentTypeController.text,
-                          onChanged: (text) {
-                            setState(() {
-                              _paymentTypeController.text = text.toString();
-                            });
-                          },
-                          title: const Text("Partial"),
-                        ),
-                        if (_paymentTypeController.text.contains("Partial"))
-                          const Text(
-                              "You have to pay 25 % of the total amount as a token. you can pay the remaining balance using cash or electronic payment method 24 hours before your services or event starts."),
-                      ],
-                    ),
-
-                    // CustomDropdown(
-                    //     onChanged: (p0) {
-                    //       if (p0 == "Partial") {
-                    //         ScaffoldMessenger.of(context).showSnackBar(
-                    //             const SnackBar(
-                    //                 content: Text(
-                    //                     "25% of total amount will be paid now. Rest will be paid at the time of delivery")));
-                    //       }
-                    //       setState(() {});
-                    //     },
-                    //     hintText: "Select Payment Type",
-                    //     items: const ["Complete", "Partial"],
-                    //     controller: _paymentTypeController),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    // show total amount
-                    Container(
-                      padding: const EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: Column(
+                const SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
                         children: [
-                          Row(
-                            children: const [
-                              Text(
-                                'Total Price ',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              Text(
-                                'Distribution ',
-                                style: TextStyle(
+                          Text(
+                            "Choose Delivery Address",
+                            style: TextStyle(
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const Spacer(), // This takes up all available space between the text and the button
+                          ElevatedButton(
+                            onPressed: () {
+                              if (context.mounted) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => CheckoutPage(
+                                      serviceIds: widget.serviceIds,
+                                      cartItems: widget.cartItems,
+                                      cartSubTotal: widget.total,
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                            child: const Text(
+                                "Change"), // You can customize this text
+                          ),
+                        ],
+                      ),
+                      const Divider(),
+                      const SizedBox(
+                        height: 0,
+                      ),
+                      Text(
+                        widget.selectedAddress?.billingName ?? "",
+                        style: TextStyle(
+                            fontSize: 16, color: Theme.of(context).primaryColor),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        "Mobile: ${widget.selectedAddress?.billingMobile}",
+                        style: const TextStyle(
+                            fontSize: 13, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(getAddressFormat(widget.selectedAddress!)),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            "Choose Payment Method",
+                            style: TextStyle(
+                                fontSize: 15.sp, fontWeight: FontWeight.w600),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      // CustomDropdown(
+                      //     onChanged: (text) {
+                      //       // if (text == "Online") {
+                      //       //   setState(() {
+                      //       //     showCard = true;
+                      //       //   });
+                      //       // } else {
+                      //       //   setState(() {
+                      //       //     showCard = false;
+                      //       //   });
+                      //       // }
+                      //     },
+                      //     hintText: "Select Payment Mode",
+                      //     items: const ["Online"],
+                      //     controller: _paymentModeController),
+
+                      // radio button options for payment type 'complete' or 'partial' in variable _paymentTypeController and vartial amount is 25% of total amount
+                      Column(
+                        children: [
+                          RadioListTile(
+                            contentPadding: EdgeInsets.zero,
+                            value: "Complete",
+                            groupValue: _paymentTypeController.text,
+                            onChanged: (text) {
+                              setState(() {
+                                _paymentTypeController.text = text.toString();
+                              });
+                            },
+                            title: const Text("Complete"),
+                          ),
+                          RadioListTile(
+                            contentPadding: EdgeInsets.zero,
+                            value: "Partial",
+                            groupValue: _paymentTypeController.text,
+                            onChanged: (text) {
+                              setState(() {
+                                _paymentTypeController.text = text.toString();
+                              });
+                            },
+                            title: const Text("Partial"),
+                          ),
+                          if (_paymentTypeController.text.contains("Partial"))
+                            const Text(
+                                "You have to pay 25 % of the total amount as a token. you can pay the remaining balance using cash or electronic payment method 24 hours before your services or event starts."),
+                        ],
+                      ),
+
+                      // CustomDropdown(
+                      //     onChanged: (p0) {
+                      //       if (p0 == "Partial") {
+                      //         ScaffoldMessenger.of(context).showSnackBar(
+                      //             const SnackBar(
+                      //                 content: Text(
+                      //                     "25% of total amount will be paid now. Rest will be paid at the time of delivery")));
+                      //       }
+                      //       setState(() {});
+                      //     },
+                      //     hintText: "Select Payment Type",
+                      //     items: const ["Complete", "Partial"],
+                      //     controller: _paymentTypeController),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      // show total amount
+                      Container(
+                        padding: const EdgeInsets.all(10.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: const [
+                                Text(
+                                  'Total Price ',
+                                  style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
-                                    color: primaryColor),
-                              ),
-                            ],
-                          ),
-                          const Divider(),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                "Price",
-                                style: TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.w500),
-                              ),
-                              Text(
-                                _paymentTypeController.text.contains("Partial")
-                                    ? "₹ ${(widget.total+widget.total*0.18) * 0.25}"
-                                    : "₹ ${widget.total+widget.total*0.18}",
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: primaryColor,
+                                  ),
                                 ),
-                              )
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [
-                              Text(
-                                "Tax",
-                                style: TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.w500),
-                              ),
-                              Text(
-                                "+ 18% GST",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: primaryColor,
+                                Text(
+                                  'Distribution ',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: primaryColor),
                                 ),
-                              )
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          Container(
-                            color: Colors.grey.withOpacity(0.6),
-                            padding: const EdgeInsets.all(10),
-                            alignment: Alignment.center,
-                            child: Row(
+                              ],
+                            ),
+                            const Divider(),
+                            Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 const Text(
-                                  "Total Amount ",
+                                  "Price",
                                   style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                                      fontSize: 14, fontWeight: FontWeight.w500),
                                 ),
-                                Text(_paymentTypeController.text.contains("Partial")
-                                      ? "₹ ${(widget.total * 0.25 + widget.total * 0.25 * 0.18).toStringAsFixed(2)}"
-                                      : "₹ ${(widget.total + widget.total * 0.18).toStringAsFixed(2)}",
+                                Text(
+                                  _paymentTypeController.text.contains("Partial")
+                                      ? "₹ ${(widget.total+widget.total*0.18) * 0.25}"
+                                      : "₹ ${widget.total+widget.total*0.18}",
                                   style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,
+                                    color: primaryColor,
                                   ),
                                 )
                               ],
                             ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                  child: InkWell(
-                                onTap: isloading
-                                    ? null
-                                    : () {
-                                        submit(context.read<AuthProvider>());
-                                      },
-                                child: Container(
-                                  height: 40,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    color: Theme.of(context).primaryColorDark,
+                            const SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: const [
+                                Text(
+                                  "Tax",
+                                  style: TextStyle(
+                                      fontSize: 14, fontWeight: FontWeight.w500),
+                                ),
+                                Text(
+                                  "+ 18% GST",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: primaryColor,
                                   ),
-                                  child: isloading
-                                      ? const Text(
-                                          'Loading...',
-                                          style: TextStyle(color: Colors.white),
-                                        )
-                                      : const Text(
-                                          "Place Order",
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                ),
-                              ))
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          // policy Rich Text  for payment
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              RichText(
-                                  text: const TextSpan(
-                                text:
-                                    '''When your order is placed, we'll send you an e-mail message acknowledging receipt of your order. If you choose to pay using an electronic payment method (credit card, debit card or net banking), you will be directed to your bank's website to complete your payment. Your contract to book a service will not be complete until we receive your electronic payment and successfully complete the service. If you choose to pay using a partial payment method, you can checkout to pay some amount of the total bill and you can pay the remaining balance using cash or electronic payment method 24 hours before your services starts.''',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 12,
-                                ),
-                              )),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              RichText(
-                                text: TextSpan(
-                                  text: 'See Utsavlife.com ',
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 12,
+                                )
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            Container(
+                              color: Colors.grey.withOpacity(0.6),
+                              padding: const EdgeInsets.all(10),
+                              alignment: Alignment.center,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    "Total Amount ",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                        text: 'Refund Policy.',
-                                        style: const TextStyle(
-                                          color: primaryColor,
-                                          fontSize: 12,
-                                        ),
-                                        recognizer: TapGestureRecognizer()
-                                          ..onTap = () {
-                                            Navigator.pushNamed(context,
-                                                RefundPolicy.routeName);
-                                          }),
-                                  ],
-                                ),
+                                  Text(_paymentTypeController.text.contains("Partial")
+                                        ? "₹ ${(widget.total * 0.25 + widget.total * 0.25 * 0.18).toStringAsFixed(2)}"
+                                        : "₹ ${(widget.total + widget.total * 0.18).toStringAsFixed(2)}",
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  )
+                                ],
                               ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              RichText(
-                                text: TextSpan(
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                    child: InkWell(
+                                  onTap: isloading
+                                      ? null
+                                      : () {
+                                          submit(context.read<AuthProvider>());
+                                        },
+                                  child: Container(
+                                    height: 40,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: Theme.of(context).primaryColorDark,
+                                    ),
+                                    child: isloading
+                                        ? const Text(
+                                            'Loading...',
+                                            style: TextStyle(color: Colors.white),
+                                          )
+                                        : const Text(
+                                            "Place Order",
+                                            style: TextStyle(color: Colors.white),
+                                          ),
+                                  ),
+                                ))
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            // policy Rich Text  for payment
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                RichText(
+                                    text: const TextSpan(
                                   text:
-                                      'Need to add more services to your order? Continue shopping on the',
-                                  style: const TextStyle(
+                                      '''When your order is placed, we'll send you an e-mail message acknowledging receipt of your order. If you choose to pay using an electronic payment method (credit card, debit card or net banking), you will be directed to your bank's website to complete your payment. Your contract to book a service will not be complete until we receive your electronic payment and successfully complete the service. If you choose to pay using a partial payment method, you can checkout to pay some amount of the total bill and you can pay the remaining balance using cash or electronic payment method 24 hours before your services starts.''',
+                                  style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 12,
                                   ),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                        text: ' utsavlife homepage.',
-                                        style: const TextStyle(
-                                          color: primaryColor,
-                                          fontSize: 12,
-                                        ),
-                                        recognizer: TapGestureRecognizer()
-                                          ..onTap = () {
-                                            Navigator.pushAndRemoveUntil(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const MainPageRoute()),
-                                                (route) => route.isFirst);
-                                          }),
-                                  ],
+                                )),
+                                const SizedBox(
+                                  height: 10,
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                                RichText(
+                                  text: TextSpan(
+                                    text: 'See Utsavlife.com ',
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 12,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                          text: 'Refund Policy.',
+                                          style: const TextStyle(
+                                            color: primaryColor,
+                                            fontSize: 12,
+                                          ),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {
+                                              Navigator.pushNamed(context,
+                                                  RefundPolicy.routeName);
+                                            }),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                RichText(
+                                  text: TextSpan(
+                                    text:
+                                        'Need to add more services to your order? Continue shopping on the',
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 12,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                          text: ' utsavlife homepage.',
+                                          style: const TextStyle(
+                                            color: primaryColor,
+                                            fontSize: 12,
+                                          ),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {
+                                              Navigator.pushAndRemoveUntil(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const MainPageRoute()),
+                                                  (route) => route.isFirst);
+                                            }),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
 
-                    const SizedBox(
-                      height: 20,
-                    ),
-                  ],
-                ),
-              )
-            ],
+                      const SizedBox(
+                        height: 20,
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

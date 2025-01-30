@@ -1003,6 +1003,23 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                       const SizedBox(
                                         height: 20,
                                       ),
+
+                                      Container(
+                                        padding: const EdgeInsets.only(bottom: 5),
+                                        child: Text(
+                                          "Event end date isn’t consider as serviceable day",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14.sp,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      ),
+
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+
                                       Container(
                                         padding: const EdgeInsets.only(bottom: 5),
                                         child: Text(

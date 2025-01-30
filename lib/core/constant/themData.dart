@@ -93,6 +93,10 @@ TextStyle descriptionStyle(BuildContext context) =>
 TextStyle buttonTextStyle(BuildContext context) =>
     TextStyle(color: Theme.of(context).primaryColorDark, fontSize: 12);
 
+
+TextStyle successTextStyle(BuildContext context) =>
+    TextStyle(color: Colors.green, fontWeight: FontWeight.bold,fontSize: 12);
+
 TextStyle titleStyle(BuildContext context) =>
     Theme.of(context).textTheme.labelLarge!.copyWith(
           fontSize: 12,
