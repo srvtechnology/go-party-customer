@@ -11,6 +11,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import '../../../views/view.dart';
 import './core/constant/themData.dart';
 import 'core/providers/addressProvider.dart';
+import 'core/providers/payment_status_provider.dart';
 import 'core/routes/add_leads.dart';
 
 GetIt getIt = GetIt.asNewInstance();
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => AddressProvider(context.read<AuthProvider>())),
 
           ChangeNotifierProvider(create: (_) => CategoryProvider()),
+          ChangeNotifierProvider(create: (_) => PaymentStatusProvider()),
           ChangeNotifierProxyProvider<AuthProvider, OrderProvider>(
             create: (context) => OrderProvider(context.read<AuthProvider>()),
             update: (context, authProvider, orderProvider) =>

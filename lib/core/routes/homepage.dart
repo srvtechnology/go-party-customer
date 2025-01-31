@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
+import 'package:customerapp/core/providers/payment_status_provider.dart';
 import '../../views/view.dart';
 import '../constant/themData.dart';
 import 'package:customerapp/core/components/banner.dart';
@@ -38,8 +39,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
 
   @override
   void initState() {
-    // initialize cart provider
-
     super.initState();
   }
 
@@ -292,52 +291,96 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  Widget successCard() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.check_circle,
-                color: Colors.green,
-              ),
-              Text(
-                "Order placed,Thank you",
-                style: successTextStyle(context),
+
+  void onClose(){
+    print(">>>>close");
+    Provider.of<PaymentStatusProvider>(context, listen: false).isPaid=false;
+  }
+
+
+
+  Widget successCard(String? address, String? shippingName, VoidCallback onClose) {
+    return Stack(
+      children: [
+        // Card Container
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          padding: const EdgeInsets.all(12.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(width: 0.5, color: Colors.grey.shade400),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 4,
+                offset: Offset(0, 2),
               ),
             ],
           ),
-          Text(
-            "Confirmation will send to message center",
-            style: TextStyle(fontWeight: FontWeight.bold),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.check_circle, color: Colors.green, size: 22),
+                  const SizedBox(width: 8),
+                  Text(
+                    "Order placed, Thank you!",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 5),
+              Text(
+                "Confirmation will be sent to your message center",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black54,
+                ),
+              ),
+              const Divider(thickness: 1, height: 15),
+              const SizedBox(height: 5),
+              Text(
+                "Shipping to: $shippingName",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(height: 3),
+              Text(
+                "Shipping Address:\n$address",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.grey[700],
+                  fontWeight: FontWeight.w500,
+                  fontSize: 13,
+                ),
+              ),
+            ],
           ),
-          const Divider(
-            thickness: 1, // Thickness of the line
-            height: 5,
+        ),
+
+        // Close Button Positioned at Top Right
+        Positioned(
+          top: 0,
+          right: 0,
+          child: IconButton(
+            icon: Icon(Icons.close, color: Colors.red),
+            onPressed: onClose, // Function to handle close action
           ),
-          Text(
-            "Shipping to ",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-          ),
-          Text(
-            "Shiping address",
-            style: TextStyle(
-                color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 12),
-          ),
-        ],
-      ),
-      padding: EdgeInsets.all(8.0),
-      alignment: Alignment.centerLeft,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: const BorderRadius.all(Radius.circular(0)),
-        border: Border.all(width: 0.15, color: Colors.grey),
-      ),
+        ),
+      ],
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -423,7 +466,10 @@ class _HomeState extends State<Home> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      successCard(),
+                      Consumer<PaymentStatusProvider>(builder: (context, value, child) {
+                        return value.isPaid?successCard(value.address,value.shippingto,onClose):SizedBox();
+                      },),
+
                       const CurrentLocationView(),
                       const SizedBox(
                         height: 5,

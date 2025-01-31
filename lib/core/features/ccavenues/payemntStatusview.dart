@@ -1,6 +1,9 @@
 import 'package:customerapp/core/features/ccavenues/models/payment_res.dart';
 import 'package:customerapp/core/routes/mainpage.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/payment_status_provider.dart';
 
 class PaymentStatusView extends StatefulWidget {
   final PaymentRes? paymentRes;
@@ -60,12 +63,24 @@ class _PaymentStatusViewState extends State<PaymentStatusView> {
               width: MediaQuery.of(context).size.width,
               child: (widget.paymentRes?.code ?? 400) == 200 ||
                       (widget.paymentRes?.code ?? 400) == 202
-                  ? _buildPaymentStatus(context, true)
-                  : _buildPaymentStatus(context, false))),
+                  ? _buildPaymentStatus(context, true,widget.paymentRes?.type?.billingAddress,
+                  widget.paymentRes?.type?.billingName!)
+                  : _buildPaymentStatus(context, false,widget.paymentRes?.type?.billingAddress,
+                  widget.paymentRes?.type?.billingName!))),
     );
   }
 
-  Widget _buildPaymentStatus(BuildContext context, bool isPaymentSuccess) {
+  Widget _buildPaymentStatus(BuildContext context, bool isPaymentSuccess,String? address,String? shippingto) {
+    if(isPaymentSuccess){
+      Provider.of<PaymentStatusProvider>(context, listen: false).isPaid=true;
+      Provider.of<PaymentStatusProvider>(context, listen: false).address=address!;
+      Provider.of<PaymentStatusProvider>(context, listen: false).shippingto=shippingto!;
+    }else{
+      Provider.of<PaymentStatusProvider>(context, listen: false).isPaid=false;
+      Provider.of<PaymentStatusProvider>(context, listen: false).address=address!;
+      Provider.of<PaymentStatusProvider>(context, listen: false).shippingto=shippingto!;
+    }
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,

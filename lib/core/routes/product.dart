@@ -30,7 +30,7 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
   final GlobalKey _searchBarKey = GlobalKey();
   final ScrollController _scrollController = ScrollController();
   OverlayEntry? _overlayEntry;
-
+  bool _isOverlayVisible = false;
   final ValueNotifier<List<dynamic>?> _searchDataNotifier = ValueNotifier(null);
 
   @override
@@ -377,14 +377,18 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
   }
 
   void _showOverlay(
-    BuildContext context,
-    List<SaveSearchTextModel>? savedSearchList,
-    AuthProvider? auth,
-    ServiceProvider serviceState,
-      FilterProvider filterState
-  ) {
+      BuildContext context,
+      List<SaveSearchTextModel>? savedSearchList,
+      AuthProvider? auth,
+      ServiceProvider serviceState,
+      FilterProvider filterState,
+      ) {
+    if (_isOverlayVisible) return; // Prevent duplicate overlay
+
+    _isOverlayVisible = true; // Mark overlay as visible
+
     final RenderBox renderBox =
-        _searchBarKey.currentContext!.findRenderObject() as RenderBox;
+    _searchBarKey.currentContext!.findRenderObject() as RenderBox;
     final size = renderBox.size;
     final offset = renderBox.localToGlobal(Offset.zero);
 
@@ -405,74 +409,79 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Container(
-                    height: MediaQuery.of(context).size.height - offset.dy - size.height - 20.0,
+                    height: 200, // Fixed height for 4 items
                     color: Colors.white,
                     child: savedSearchList != null && savedSearchList.isNotEmpty
-                        ? Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ...savedSearchList.expand((item) {
-                          final dataItems = item.data;
-                          return dataItems.expand((datum) {
-                            return [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: ListTile(
-                                        title: Text(datum.value ?? ''),
-                                        onTap: () {
-                                          _removeOverlay();
-                                          if (datum.value != null) {
-                                            serviceState.getFilteredServices(auth, filterState,
-                                                searchString: datum.value);
-                                          } else {
-                                            Fluttertoast.showToast(
-                                              msg: "Search field cannot be empty",
-                                              toastLength: Toast.LENGTH_SHORT,
-                                              gravity: ToastGravity.BOTTOM,
-                                              backgroundColor: Colors.red,
-                                              textColor: Colors.white,
-                                              fontSize: 16.0,
-                                            );
-                                          }
+                        ? ListView.builder(
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      itemCount: savedSearchList
+                          .expand((item) => item.data)
+                          .length,
+                      itemBuilder: (context, index) {
+                        final datum = savedSearchList
+                            .expand((item) => item.data)
+                            .toList()[index];
 
-                                        },
-                                      ),
-                                    ),
-                                    GestureDetector(
+                        return Column(
+                          children: [
+                            Padding(
+                              padding:
+                              const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: ListTile(
+                                      title: Text(datum.value ?? ''),
                                       onTap: () {
-                                        setState(() {
-                                          final parentIndex = savedSearchList.indexWhere((item) => item.data == dataItems);
-                                          if (parentIndex != -1) {
-                                            savedSearchList[parentIndex].data.remove(datum);
-                                            if (savedSearchList[parentIndex].data.isEmpty) {
-                                              savedSearchList.removeAt(parentIndex);
-                                            }
-                                          }
-                                         // dataItems.remove(datum);
-                                        });
+                                        _removeOverlay(); // Close overlay when tapped
+                                        if (datum.value != null) {
+                                          serviceState.getFilteredServices(
+                                              auth, filterState,
+                                              searchString: datum.value);
+                                        } else {
+                                          Fluttertoast.showToast(
+                                            msg: "Search field cannot be empty",
+                                            toastLength: Toast.LENGTH_SHORT,
+                                            gravity: ToastGravity.BOTTOM,
+                                            backgroundColor: Colors.red,
+                                            textColor: Colors.white,
+                                            fontSize: 16.0,
+                                          );
+                                        }
                                       },
-                                      child: const Icon(
-                                        Icons.close,
-                                        color: Colors.blue,
-                                        size: 24.0,
-                                      ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        final parentIndex = savedSearchList
+                                            .indexWhere(
+                                                (item) => item.data.contains(datum));
+                                        if (parentIndex != -1) {
+                                          savedSearchList[parentIndex].data.remove(datum);
+                                          if (savedSearchList[parentIndex].data.isEmpty) {
+                                            savedSearchList.removeAt(parentIndex);
+                                          }
+                                        }
+                                      });
+                                    },
+                                    child: const Icon(
+                                      Icons.close,
+                                      color: Colors.blue,
+                                      size: 24.0,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              const Divider(),
-                            ];
-                          }).toList();
-                        }).toList()
-                          ..removeLast(),
-                      ],
+                            ),
+                            const Divider(),
+                          ],
+                        );
+                      },
                     )
                         : Container(),
-                  )
-                  ,
+                  ),
                 ),
               ),
             ),
@@ -483,6 +492,9 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
 
     Overlay.of(context).insert(_overlayEntry!);
   }
+
+
+
 
 
   //Consumer<FilterProvider>(builder: (context, filters, child) {
