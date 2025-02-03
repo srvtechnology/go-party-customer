@@ -57,7 +57,7 @@ class _OrderInfoViewState extends State<OrderInfoView> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => PaymentWebView(
+        builder: (context) => PaymentWebView(billingName: widget.order.billingName,selectedaddress: widget.order.address,
           generateOrderValue: GenerateOrderValue(
             orderId: int.parse(res!['partialSecondPayObject']['order_id']),
             accessCode: res['partialSecondPayObject']['access_code'],

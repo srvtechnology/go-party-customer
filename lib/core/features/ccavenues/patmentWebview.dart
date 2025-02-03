@@ -11,9 +11,13 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 class PaymentWebView extends StatefulWidget {
   final GenerateOrderValue generateOrderValue;
+ final String  selectedaddress;
+ final String  billingName;
   const PaymentWebView({
     Key? key,
     required this.generateOrderValue,
+    required this.selectedaddress,
+    required this.billingName
   }) : super(key: key);
 
   @override
@@ -81,7 +85,7 @@ class _PaymentWebViewState extends State<PaymentWebView> {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              PaymentStatusView(paymentRes: paymentRes)));
+                              PaymentStatusView(billingName: widget.billingName,address: widget.selectedaddress,paymentRes: paymentRes)));
                 }
               });
             } catch (e) {
@@ -136,4 +140,5 @@ class _PaymentWebViewState extends State<PaymentWebView> {
                       : WebViewWidget(controller: controller!)),
     );
   }
+
 }

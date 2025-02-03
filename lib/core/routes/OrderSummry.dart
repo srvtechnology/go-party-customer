@@ -571,7 +571,7 @@ class _OrderSummaryState extends State<OrderSummary> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => PaymentWebView(
+        builder: (context) => PaymentWebView(billingName: "",selectedaddress: getAddressFormatOrder(widget.order),
           generateOrderValue: GenerateOrderValue(
             orderId: int.parse(res!['partialSecondPayObject']['order_id']),
             accessCode: res['partialSecondPayObject']['access_code'],

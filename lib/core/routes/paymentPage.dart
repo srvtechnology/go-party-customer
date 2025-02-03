@@ -786,7 +786,7 @@ class _PaymentPageState extends State<PaymentPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PaymentWebView(
+            builder: (context) => PaymentWebView(billingName: widget.selectedAddress?.billingName ??"",selectedaddress:  widget.selectedAddress.toString(),
               generateOrderValue:
               GenerateOrderValue(
                 orderId: value.orderId,

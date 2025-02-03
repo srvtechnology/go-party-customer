@@ -7,10 +7,14 @@ import '../../providers/payment_status_provider.dart';
 
 class PaymentStatusView extends StatefulWidget {
   final PaymentRes? paymentRes;
+  final String address;
+  final String billingName;
 
   const PaymentStatusView({
     Key? key,
     required this.paymentRes,
+    required this.billingName,
+    required this.address,
   }) : super(key: key);
 
   @override
@@ -63,10 +67,10 @@ class _PaymentStatusViewState extends State<PaymentStatusView> {
               width: MediaQuery.of(context).size.width,
               child: (widget.paymentRes?.code ?? 400) == 200 ||
                       (widget.paymentRes?.code ?? 400) == 202
-                  ? _buildPaymentStatus(context, true,widget.paymentRes?.type?.billingAddress,
-                  widget.paymentRes?.type?.billingName!)
-                  : _buildPaymentStatus(context, false,widget.paymentRes?.type?.billingAddress,
-                  widget.paymentRes?.type?.billingName!))),
+                  ? _buildPaymentStatus(context, true,widget.address,
+                  widget.billingName)
+                  : _buildPaymentStatus(context, false,widget.address,
+                  widget.billingName))),
     );
   }
 

@@ -5,7 +5,57 @@
 
 import 'dart:convert';
 
+import 'dart:convert';
+
+/// Function to parse JSON response into `PaymentRes` object
 PaymentRes paymentResFromJson(String str) {
+  final Map<String, dynamic> jsonData = json.decode(str);
+  return PaymentRes.fromJson(jsonData);
+}
+
+/// Function to convert `PaymentRes` object to JSON string
+String paymentResToJson(PaymentRes data) {
+  final Map<String, dynamic> jsonData = data.toJson();
+  return json.encode(jsonData);
+}
+
+/// Model Class for Payment Response
+class PaymentRes {
+  bool? success;
+  int? code;
+  String? type;
+  String? message;
+
+  PaymentRes({
+    this.success,
+    this.code,
+    this.type,
+    this.message,
+  });
+
+  /// Factory constructor for creating `PaymentRes` object from JSON
+  factory PaymentRes.fromJson(Map<String, dynamic> json) => PaymentRes(
+    success: json["success"] as bool?,
+    code: json["code"] as int?,
+    type: json["type"] as String?, // Ensure type safety
+    message: json["message"] as String?,
+  );
+
+  /// Convert `PaymentRes` object to a JSON map
+  Map<String, dynamic> toJson() => {
+    "success": success,
+    "code": code,
+    "type": type,
+    "message": message,
+  };
+}
+
+
+
+
+
+
+/*PaymentRes paymentResFromJson(String str) {
   final Map<String, dynamic> jsonData = json.decode(str);
   return PaymentRes.fromJson(jsonData);
 }
@@ -14,6 +64,7 @@ String paymentResToJson(PaymentRes data) {
   final Map<String, dynamic> jsonData = data.toJson();
   return json.encode(jsonData);
 }
+
 class PaymentRes {
   bool? success;
   int? code;
@@ -225,7 +276,7 @@ class PaymentType {
     "bin_country": binCountry,
     "auth_ref_num": authRefNum,
   };
-}
+}*/
 
 
 
