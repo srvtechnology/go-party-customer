@@ -100,26 +100,80 @@ Future<Map<String, dynamic>> de_Activate(String token, customerId) async {
 /*--- modified on 25-07-24 ----*/
 Future<Response?> register(
     String email, String password, String name, String phone) async {
-  try {
-    Response response = await customDioClient.client
-        .post("${APIConfig.baseUrl}/api/customer-registration", data: {
-      "name": name,
-      "email": email,
-      "password": password,
-      "mobile": phone
-    });
-    log(jsonEncode(response.data.toString()));
-    if (response.statusCode == 200) {
-      return response;
-    } else {
-      String errorMessage = response.data['message'] ?? 'Unknown error';
-      throw Exception(errorMessage);
-    }
-  } catch (e) {
-    log(e.toString(), name: "User Registration Error");
-    return null;
+  log('${APIConfig.baseUrl}/api/customer-registration');
+  // try {
+  Response response = await customDioClient.client
+      .post("${APIConfig.baseUrl}/api/customer-registration", data: {
+    "name": name,
+    "email": email,
+    "password": password,
+    "mobile": phone
+  });
+  print(
+    jsonEncode(response.data.toString()),
+  );
+  if (response.statusCode == 200) {
+    return response;
+  } else {
+    String errorMessage = response.data['message'] ?? 'Unknown error';
+    throw Exception(errorMessage);
   }
+  // } catch (e) {
+  //   log(e.toString(), name: "User Registration Error");
+  //   return null;
+  // }
 }
+
+Future<Map<String, dynamic>> verifyOTP(String id, String otp) async {
+  print('${APIConfig.baseUrl}/api/customer-login/verify-customer-otp');
+  print(id);
+  print(otp);
+  // try {
+  Response response = await customDioClient.client.post(
+      "${APIConfig.baseUrl}/api/customer-login/verify-customer-otp",
+      data: {
+        "user_id": id,
+        "reg_otp": otp,
+      });
+
+  print(
+    jsonEncode(response.data.toString()),
+  );
+
+  if (response.statusCode == 200) {
+    return {
+      "status": response.data['success'],
+      "message": response.data['message'],
+      "token": response.data['token'],
+      "user": response.data['user']
+    };
+  }
+
+  return {"status": false, "message": "Verification failed"};
+  // } catch (e) {
+  //   log(e.toString(), name: "OTP Verification Error");
+  //   return {"status": false, "message": "OTP verification failed"};
+  // }
+}
+
+// Future<Map<String, dynamic>> verifyOTP(String email, String otp) async {
+//   try {
+//     // Simulating API call delay
+//     await Future.delayed(const Duration(seconds: 2));
+
+//     // Dummy validation - accept only "1234" as valid OTP
+//     if (otp == "1234") {
+//       return {
+//         "status": true,
+//         "message": "OTP verified successfully",
+//         "token": "dummy_token_${DateTime.now().millisecondsSinceEpoch}"
+//       };
+//     }
+//     return {"status": false, "message": "Invalid OTP"};
+//   } catch (e) {
+//     return Future.error("OTP verification failed");
+//   }
+// }
 
 Future<Response?> registerAgent(
     String email, String password, String name, String phone) async {
@@ -140,22 +194,22 @@ Future<Response?> registerAgent(
   }
 }
 
-Future<Response?> submitAgentOTp(String otp, email) async {
-  try {
-    Response response = await customDioClient.client
-        .post("${APIConfig.baseUrl}/api/agent/register/otp-code", data: {
-      "opt_code": otp,
-      "email": email,
-    });
-    log(jsonEncode(response.data.toString()));
-    return Future.value(response);
-  } catch (e) {
-    return Future.value(null);
-  }
+Future<Response?> submitAgentOTp(String otp, userId) async {
+  // try {
+  Response response = await customDioClient.client
+      .post("${APIConfig.baseUrl}/api/agent/register/otp-code", data: {
+    "opt_code": otp,
+    "user_id": userId,
+  });
+  log(jsonEncode(response.data.toString()));
+  return Future.value(response);
+  // } catch (e) {
+  //   return Future.value(null);
+  // }
 }
 
 Future<Response?> submitAgentBankData({
-  required String email,
+  required String user_id,
   required String bankName,
   required String accountNumber,
   required String accountHolderName,
@@ -164,7 +218,7 @@ Future<Response?> submitAgentBankData({
   try {
     Response response = await customDioClient.client
         .post("${APIConfig.baseUrl}/api/agent/register/bank-details", data: {
-      "email": email,
+      "user_id": user_id,
       "bank_name": bankName,
       "account_no": accountNumber,
       "holder_name": accountHolderName,
@@ -194,11 +248,11 @@ Future<Response?> agentLogin({
   }
 }
 
-Future<Response?> resendOTp(String email) async {
+Future<Response?> resendOTp(String userId) async {
   try {
     Response response = await customDioClient.client
         .post("${APIConfig.baseUrl}/api/agent/register/otp-code/resend", data: {
-      "email": email,
+      "user_id": userId,
     });
     log(jsonEncode(response.data.toString()));
     return Future.value(response);
