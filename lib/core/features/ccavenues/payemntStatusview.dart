@@ -84,7 +84,6 @@ class _PaymentStatusViewState extends State<PaymentStatusView> {
       Provider.of<PaymentStatusProvider>(context, listen: false).address=address!;
       Provider.of<PaymentStatusProvider>(context, listen: false).shippingto=shippingto!;
     }
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
