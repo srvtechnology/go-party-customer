@@ -516,9 +516,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
         log(widget.serviceIds.toString(), name: 'checkout');
         List notAvailable =
             await getServiceAvailability(widget.serviceIds, addressId);
-
-
-
         print(notAvailable);
         if (notAvailable.isNotEmpty) {
           showNotAvailableDialog(notAvailable);

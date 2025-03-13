@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../config.dart';
 import '../models/addressModel.dart';
@@ -11,8 +12,12 @@ import '../utils/logger.dart';
 
 Future<String> addAddress(AuthProvider auth, Map data) async {
   try {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String userType = pref.getString("userType") ?? "";
+    log(">>>>User Type: $userType");
+
     Response response = await customDioClient.client.post(
-        auth.isAgent
+        userType=="agent"
             ? "${APIConfig.baseUrl}/api/agent/add-address"
             : "${APIConfig.baseUrl}/api/customer/add-address",
         data: data,
@@ -29,8 +34,12 @@ Future<String> addAddress(AuthProvider auth, Map data) async {
 
 Future<String> editAddress(AuthProvider auth, Map data) async {
   try {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String userType = pref.getString("userType") ?? "";
+    log(">>>>User Type: $userType");
+
     Response response = await customDioClient.client.post(
-        auth.isAgent
+        userType=="agent"
             ? "${APIConfig.baseUrl}/api/agent/update-address"
             : "${APIConfig.baseUrl}/api/customer/update-address",
         data: data,
@@ -48,8 +57,12 @@ Future<String> editAddress(AuthProvider auth, Map data) async {
 Future<List<AddressModel>> getAddress(AuthProvider auth) async {
   try {
     log(auth.token.toString(), name: "token");
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String userType = pref.getString("userType") ?? "";
+    log(">>>>User Type: $userType");
+
     Response response = await customDioClient.client.get(
-        auth.isAgent
+        userType=="agent"
             ? "${APIConfig.baseUrl}/api/agent/view-address"
             : "${APIConfig.baseUrl}/api/customer/view-address",
         options: Options(headers: {"Authorization": "Bearer ${auth.token}"}));
@@ -73,8 +86,12 @@ Future<List<AddressModel>> getAddress(AuthProvider auth) async {
 
 Future<void> deleteAddressbyId(AuthProvider auth, String addressId) async {
   try {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String userType = pref.getString("userType") ?? "";
+    log(">>>>User Type: $userType");
+
     Response response = await Dio().post(
-        auth.isAgent
+        userType=="agent"
             ? "${APIConfig.baseUrl}/api/agent/delete-address"
             : "${APIConfig.baseUrl}/api/customer/delete-address",
         options: Options(headers: {"Authorization": "Bearer ${auth.token}"}),

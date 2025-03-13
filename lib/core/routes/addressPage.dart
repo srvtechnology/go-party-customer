@@ -1200,8 +1200,7 @@ class _AddressEditPageState extends State<AddressEditPage> {
                                       setState(() {
                                         clicked = true;
                                       });
-                                      submit(
-                                          context.read<AuthProvider>(), data);
+                                      submit(context.read<AuthProvider>(), data);
                                     }
                                   },
                                   child: clicked

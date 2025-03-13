@@ -638,7 +638,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                     ),
                                     child: isloading
                                         ? const Text(
-                                            'Loading...',
+                                            'Loading',
                                             style: TextStyle(color: Colors.white),
                                           )
                                         : const Text(
