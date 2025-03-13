@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../views/view.dart';
 import '../constant/themData.dart';
@@ -51,10 +52,19 @@ class CartItem {
 class _CartPageState extends State<CartPage> {
   Map changedQuantity = {};
   double total = 0;
+  late final SharedPreferences pref;
+  String userType = "";
 
   @override
   void initState() {
     super.initState();
+    initializeData();
+  }
+
+  void initializeData() async {
+    pref = await SharedPreferences.getInstance();
+    userType = pref.getString("userType") ?? "";
+    print(">>>> CArt page usertype $userType");
   }
 
   @override
@@ -66,7 +76,7 @@ class _CartPageState extends State<CartPage> {
           statusBarColor: primaryColor,
           statusBarIconBrightness: Brightness.light),
       child: ListenableProvider(
-          create: (_) => CartProvider(auth: context.read<AuthProvider>()),
+          create: (_) => CartProvider(auth: context.read<AuthProvider>(),),
           child: Consumer2<CartProvider, AuthProvider>(
             builder: (context, cart, auth, child) {
               if (auth.authState != AuthState.loggedIn) {
@@ -232,7 +242,7 @@ class _CartPageState extends State<CartPage> {
                                             style: ElevatedButton.styleFrom(
                                                 backgroundColor: primaryColor),
                                             onPressed: () async {
-                                              print(cart.data.first.quantity );
+                                              print(cart.data.first.quantity);
                                               await _handleQuantityChanged(
                                                   auth);
                                               if (context.mounted) {
@@ -268,9 +278,10 @@ class _CartPageState extends State<CartPage> {
                             Column(
                                 children: cart.data
                                     .map((e) => Padding(
-                                      padding: const EdgeInsets.only(bottom:8.0),
-                                      child: _cartTile(cart, e, auth),
-                                    ))
+                                          padding: const EdgeInsets.only(
+                                              bottom: 8.0),
+                                          child: _cartTile(cart, e, auth),
+                                        ))
                                     .toList()),
                             const ExtraDetails(),
                           ],
@@ -291,7 +302,14 @@ class _CartPageState extends State<CartPage> {
 
   Widget _cartTile(CartProvider state, CartModel item, AuthProvider auth) {
 
-    double total=item.discountPrice! * (double.tryParse(item.quantity ?? '0') ?? 0);
+    if(item.discountPrice==null){
+       total =
+          (double.parse(item.price ??"0")??0)* (double.tryParse(item.quantity ?? '0') ?? 0);
+    }else{
+       total =
+          item.discountPrice! * (double.tryParse(item.quantity ?? '0') ?? 0);
+    }
+
 
     return CustomCard(
       child: Row(
@@ -301,7 +319,7 @@ class _CartPageState extends State<CartPage> {
             width: 40.w,
             margin: EdgeInsets.symmetric(horizontal: 1.w),
             child: Padding(
-              padding: const EdgeInsets.only(top:8.0,bottom: 8.0),
+              padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
               child: Container(
                 height: 150,
                 decoration: BoxDecoration(
@@ -359,7 +377,7 @@ class _CartPageState extends State<CartPage> {
                       ),
                       FittedBox(
                         child: Text(
-                          "\u20B9 ${item.discountPrice}",
+                          "\u20B9 ${item.discountPrice ==null ? item.price : "0"}",
                           style: TextStyle(
                             fontSize: 12,
                             color: Theme.of(context).primaryColor,
@@ -395,7 +413,6 @@ class _CartPageState extends State<CartPage> {
                     ],
                   ),
                 ),
-
                 Container(
                   margin: EdgeInsets.only(right: 4.w),
                   child: Row(
@@ -408,7 +425,7 @@ class _CartPageState extends State<CartPage> {
                       ),
                       FittedBox(
                         child: Text(
-                          item.days ??"",
+                          item.days ?? "",
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: primaryColor,
@@ -440,13 +457,13 @@ class _CartPageState extends State<CartPage> {
                             onPressed: () {
                               setState(() {
                                 int currentQuantity =
-                                    int.tryParse(item.quantity ??"") ?? 1;
+                                    int.tryParse(item.quantity ?? "") ?? 1;
                                 if (currentQuantity > 1) {
                                   currentQuantity -= 1;
                                   item.quantity = currentQuantity.toString();
                                   item.totalPrice = (currentQuantity *
-                                          double.parse(item.days??"") *
-                                          double.parse(item.price ??""))
+                                          double.parse(item.days ?? "") *
+                                          double.parse(item.price ?? ""))
                                       .toString();
                                   changedQuantity[item.id] = item.quantity;
                                   state.calculateTotal();
@@ -465,7 +482,7 @@ class _CartPageState extends State<CartPage> {
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
-                              item.quantity??"",
+                              item.quantity ?? "",
                               style: const TextStyle(fontSize: 12),
                             ),
                           ),
@@ -479,12 +496,12 @@ class _CartPageState extends State<CartPage> {
                             onPressed: () {
                               setState(() {
                                 int currentQuantity =
-                                    int.tryParse(item.quantity??"") ?? 1;
+                                    int.tryParse(item.quantity ?? "") ?? 1;
                                 currentQuantity += 1;
                                 item.quantity = currentQuantity.toString();
                                 item.totalPrice = (currentQuantity *
-                                        double.parse(item.days??"") *
-                                        double.parse(item.price??""))
+                                        double.parse(item.days ?? "") *
+                                        double.parse(item.price ?? ""))
                                     .toString();
                                 changedQuantity[item.id] = item.quantity;
                                 state.calculateTotal();
@@ -520,12 +537,12 @@ class _CartPageState extends State<CartPage> {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only( right: 4.w),
+                  margin: EdgeInsets.only(right: 4.w),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(width: 2.w),
-                     /* ElevatedButton(
+                      /* ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -597,14 +614,18 @@ class ExtraDetails extends StatelessWidget {
                 );
               }
               if (state.data == null) {
-                return Container(child: const Divider(thickness: 1, // Thickness of the line
-                  height: 5,  ),);
+                return Container(
+                  child: const Divider(
+                    thickness: 1, // Thickness of the line
+                    height: 5,
+                  ),
+                );
               }
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                   CustomCard(
+                  CustomCard(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -636,8 +657,7 @@ class ExtraDetails extends StatelessWidget {
                                 child: Text(
                                   "View All",
                                   style: TextStyle(
-                                      color:
-                                      Theme.of(context).primaryColorDark,
+                                      color: Theme.of(context).primaryColorDark,
                                       fontSize: 12),
                                 ))
                           ],
@@ -646,25 +666,25 @@ class ExtraDetails extends StatelessWidget {
                           scrollDirection: Axis.horizontal,
                           child: Row(
                             children: state.packageData != null &&
-                                state.packageData!.isNotEmpty
+                                    state.packageData!.isNotEmpty
                                 ? state.packageData!
-                                .getRange(
-                                0, min(4, state.packageData!.length))
-                                .map((e) => PackageCard(
-                              package: e,
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        SinglePackageRoute(
+                                    .getRange(
+                                        0, min(4, state.packageData!.length))
+                                    .map((e) => PackageCard(
                                           package: e,
-                                        ),
-                                  ),
-                                );
-                              },
-                            ))
-                                .toList()
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    SinglePackageRoute(
+                                                  package: e,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ))
+                                    .toList()
                                 : [Text("No packages available")],
                           ),
                         ),
@@ -675,70 +695,74 @@ class ExtraDetails extends StatelessWidget {
                     thickness: 1,
                     height: 1,
                   ),
-                  state.data!.length>4? CustomCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-
-                        // Header and View All button
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                  state.data!.length > 4
+                      ? CustomCard(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Header and View All button
+                              Row(
                                 children: [
-
-                                  Text(
-                                    "Similar Services",
-                                    style:  headerTextStylerelated(context),
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Similar Services",
+                                          style:
+                                              headerTextStylerelated(context),
+                                        ),
+                                      ],
+                                    ),
                                   ),
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                          context,
+                                          ViewAllServiceRoute.routeName,
+                                        );
+                                      },
+                                      child: Text(
+                                        "View All",
+                                        style: TextStyle(
+                                            color: Theme.of(context)
+                                                .primaryColorDark,
+                                            fontSize: 12),
+                                      ))
                                 ],
                               ),
-                            ),
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.pushNamed(
-                                    context,
-                                    ViewAllServiceRoute.routeName,
-                                  );
-                                },
-                                child: Text(
-                                  "View All",
-                                  style: TextStyle(
-                                      color:
-                                      Theme.of(context).primaryColorDark,
-                                      fontSize: 12),
-                                ))
-                          ],
-                        ),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: state.data != null &&
-                                state.data!.length > 4
-                                ? state.data!
-                                .getRange(4, min(7, state.data!.length))
-                                .map((e) => OrderCard(
-                              service: e,
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        SingleServiceRoute(
-                                            service: e),
-                                  ),
-                                );
-                              },
-                            ))
-                                .toList()
-                                : [Text("No more services available")],
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: state.data != null &&
+                                          state.data!.length > 4
+                                      ? state.data!
+                                          .getRange(
+                                              4, min(7, state.data!.length))
+                                          .map((e) => OrderCard(
+                                                service: e,
+                                                onTap: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          SingleServiceRoute(
+                                                              service: e),
+                                                    ),
+                                                  );
+                                                },
+                                              ))
+                                          .toList()
+                                      : [Text("No more services available")],
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                  ):SizedBox(),
+                        )
+                      : SizedBox(),
                 ],
               );
             },

@@ -6,6 +6,7 @@ import 'package:customerapp/core/models/cartModel.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/utils/logger.dart';
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../utils/dio.dart';
 
@@ -36,7 +37,12 @@ Future<List<CartModel>> getCartItems(AuthProvider auth) async {
       auth.token == null) {
     return Future.error("User not logged in");
   }
-  final url = auth.isAgent
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  String userType = pref.getString("userType") ?? "";
+  log(">>>>User Type: $userType");
+
+
+  final url = userType=="agent"
       ? "${APIConfig.baseUrl}/api/agent/show-cart"
       : "${APIConfig.baseUrl}/api/customer/show-cart";
   log("Bearer ${auth.token}", name: "$url getCartItems");
