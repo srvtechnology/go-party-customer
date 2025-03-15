@@ -4,6 +4,7 @@ import 'package:customerapp/core/providers/AuthProvider.dart';
 import 'package:customerapp/core/utils/logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/cartModel.dart';
 import '../repo/cartRepo.dart' as cartRepo;
 
@@ -16,10 +17,16 @@ class CartProvider with ChangeNotifier {
   List<CartModel> get data => _data;
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+  late final SharedPreferences pref;
+  String userType="" ;
+
 
   CartProvider({AuthProvider? auth}) {
     getCart(auth);
+    init(auth);
+    //initialise();
   }
+
   void startLoading() {
     _isLoading = true;
     notifyListeners();
@@ -78,6 +85,16 @@ class CartProvider with ChangeNotifier {
   }
 
   Future init(AuthProvider? auth) async {
+    pref = await SharedPreferences.getInstance();
+    userType = pref.getString("userType") ?? "";
+   log(">>>>User Type: $userType");
     await getCart(auth);
   }
+
+
+  // /// Initializes SharedPreferences and retrieves userType
+  // Future<void> init(AuthProvider? auth) async {
+  //    // Debug log
+  //   await getCart(auth);
+  // }
 }

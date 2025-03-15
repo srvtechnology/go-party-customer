@@ -71,7 +71,6 @@ class _AgentSignInState extends State<AgentSignIn> {
                         children: [
                           // Sign Up as Agent
                           const SizedBox(height: 10.0),
-
                           // Already an Agent? Sign In
                           const SizedBox(height: 16.0),
                           // Email Field

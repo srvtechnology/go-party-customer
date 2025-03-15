@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class HorizontalImageSlider extends StatefulWidget {
-  final List<String> images;// List of image URLs
+  final List<String> images; // List of image URLs
 
   const HorizontalImageSlider({Key? key, required this.images})
       : super(key: key);
@@ -13,7 +13,7 @@ class HorizontalImageSlider extends StatefulWidget {
 class _HorizontalImageSliderState extends State<HorizontalImageSlider> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
-  String fdurl="https://utsavlife.com/storage/app/public/packages/featured/";
+  String fdurl = "https://utsavlife.com/storage/app/public/packages/featured/";
 
   void _onNext() {
     if (_currentPage < widget.images.length - 1) {
@@ -69,7 +69,7 @@ class _HorizontalImageSliderState extends State<HorizontalImageSlider> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           image: DecorationImage(
-                            image: NetworkImage( widget.images[index]),
+                            image: NetworkImage(widget.images[index]),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -106,6 +106,53 @@ class _HorizontalImageSliderState extends State<HorizontalImageSlider> {
   }
 }
 
+// class FullScreenImageView extends StatelessWidget {
+//   final String imageUrl;
+
+//   const FullScreenImageView({Key? key, required this.imageUrl})
+//       : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: Colors.black,
+//       body: Stack(
+//         children: [
+//           Positioned.fill(
+//             // Ensure the image fills the screen
+//             child: InteractiveViewer(
+//               panEnabled: true, // Allow panning
+//               minScale: 1.0, // Minimum zoom scale
+//               maxScale: 4.0, // Maximum zoom scale
+//               child: Image.network(
+//                 imageUrl,
+//                 fit: BoxFit.cover, // Fill the screen
+//               ),
+//             ),
+//           ),
+//           Positioned(
+//             top: 30,
+//             right: 16,
+//             child: GestureDetector(
+//               onTap: () {
+//                 Navigator.pop(context);
+//               },
+//               child: const CircleAvatar(
+//                 backgroundColor: Colors.black54,
+//                 child: Icon(
+//                   Icons.close,
+//                   color: Colors.white,
+//                   size: 24, // Adjust size if necessary
+//                 ),
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
 class FullScreenImageView extends StatelessWidget {
   final String imageUrl;
 
@@ -118,15 +165,19 @@ class FullScreenImageView extends StatelessWidget {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          Positioned.fill(
-            // Ensure the image fills the screen
+          Center(
+            // Center the image
             child: InteractiveViewer(
-              panEnabled: true, // Allow panning
-              minScale: 1.0, // Minimum zoom scale
-              maxScale: 4.0, // Maximum zoom scale
+              panEnabled: true,
+              boundaryMargin:
+                  const EdgeInsets.all(20), // Add margin around the image
+              minScale: 0.5, // Allow zooming out slightly
+              maxScale: 4.0,
               child: Image.network(
                 imageUrl,
-                fit: BoxFit.cover, // Fill the screen
+                fit: BoxFit.contain, // Changed from cover to contain
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
               ),
             ),
           ),
@@ -134,15 +185,13 @@ class FullScreenImageView extends StatelessWidget {
             top: 30,
             right: 16,
             child: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
+              onTap: () => Navigator.pop(context),
               child: const CircleAvatar(
                 backgroundColor: Colors.black54,
                 child: Icon(
                   Icons.close,
                   color: Colors.white,
-                  size: 24, // Adjust size if necessary
+                  size: 24,
                 ),
               ),
             ),

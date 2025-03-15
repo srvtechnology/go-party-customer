@@ -16,34 +16,5 @@ class HtmlTextView extends StatelessWidget {
         child: HtmlWidget(
       htmlText,
     ));
-    // SingleChildScrollView(
-    //   child: Html(
-    //     padding: EdgeInsets.zero,
-    //     blockSpacing: 2,
-    //     data: htmlText,
-    //     shrinkToFit: true,
-
-    //     // padding: const EdgeInsets.all(8.0),
-    //     onLinkTap: (url) {
-    //       print("Opening $url...");
-    //     },
-    //     // customRender: (node, children) {
-    //     //   if (node is dom.Element) {
-    //     //     log(node.localName.toString());
-    //     //     switch (node.localName) {
-    //     //       case "<p>": // using this, you can handle custom tags in your HTML
-    //     //         return FittedBox(
-    //     //             child: Text(
-    //     //           node.text,
-    //     //           overflow: TextOverflow.visible,
-    //     //           textAlign: TextAlign.left,
-    //     //           style: const TextStyle(fontSize: 14, color: textColor),
-    //     //         ));
-    //     //     }
-    //     //   }
-    //     //   return null;
-    //     // },
-    //   ),
-    // );
   }
 }

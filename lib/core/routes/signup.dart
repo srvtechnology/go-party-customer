@@ -24,6 +24,7 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
   final _nameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _otpController = TextEditingController();
 
   bool _isLoading = false;
   bool _obscureText = true;
@@ -33,30 +34,10 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _otpController.dispose();
     super.dispose();
   }
 
-/*  void _signUp(AuthProvider auth) async {
-    setState(() {
-      _isLoading = true;
-    });
-    try {
-      await auth.register(_nameController.text, _emailController.text,
-          _phoneNumberController.text, _passwordController.text);
-      if (context.mounted) {
-        if (widget.comeback) {
-          Navigator.pop(context);
-        } else {
-          Navigator.pushReplacementNamed(context, MainPageRoute.routeName);
-        }
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.toString())));
-    }
-  }*/
-
-  /*--- modified on 25-07-24 ----*/
   void _signUp(AuthProvider auth) async {
     setState(() {
       _isLoading = true;
@@ -64,26 +45,137 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
     try {
       await auth.register(_nameController.text, _emailController.text,
           _phoneNumberController.text, _passwordController.text);
+
       if (context.mounted) {
-        if (widget.comeback) {
-          Navigator.pop(context);
-        } else {
-          Navigator.pushReplacementNamed(context, MainPageRoute.routeName);
-        }
+        // showDialog(
+        //   context: context,
+        //   barrierDismissible: false,
+        //   builder: (context) => AlertDialog(
+        //     title: const Text('Enter OTP'),
+        //     content: TextField(
+        //       controller: _otpController,
+        //       keyboardType: TextInputType.number,
+        //       decoration: const InputDecoration(
+        //         hintText: 'Enter verification code',
+        //       ),
+        //     ),
+        //     actions: [
+        //       TextButton(
+        //         onPressed: () async {
+        //           final success = await auth.verifySignupOTP(
+        //               _emailController.text, _otpController.text);
+        //           if (success && mounted) {
+        //             Navigator.pushReplacementNamed(
+        //                 context, MainPageRoute.routeName);
+        //           }
+        //         },
+        //         child: const Text('Verify'),
+        //       ),
+        //     ],
+        //   ),
+        // );
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            title: Column(
+              children: [
+                Icon(Icons.message_rounded,
+                    size: 50, color: Theme.of(context).primaryColor),
+                const SizedBox(height: 10),
+                const Text(
+                  'OTP Verification',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Enter the verification code sent to your email',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+              ],
+            ),
+            content: Column(
+              children: [
+                TextField(
+                  controller: _otpController,
+                  keyboardType: TextInputType.number,
+                  maxLength: 12,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 24, letterSpacing: 8),
+                  decoration: InputDecoration(
+                    hintText: '000000',
+                    counterText: '',
+                    filled: true,
+                    fillColor: Colors.grey[100],
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: () async {
+                    await auth.resendCustomerOTP();
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('OTP resent successfully')),
+                      );
+                    }
+                  },
+                  child: const Text('Resend OTP'),
+                ),
+              ],
+            ),
+            actions: [
+              Row(
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Cancel'),
+                    ),
+                  ),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        final success =
+                            await auth.verifySignupOTP(_otpController.text);
+                        if (success && mounted) {
+                          Navigator.pushReplacementNamed(
+                              context, MainPageRoute.routeName);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: const Text('Verify'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
       }
     } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Email or Phone already exists')),
+        );
+      }
+    } finally {
       setState(() {
         _isLoading = false;
       });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Email or Phone already exists'),
-        ),
-      );
-
-      /*ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Registration failed: ${e.toString()}')));*/
     }
   }
 
@@ -119,7 +211,7 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                   const SizedBox(height: 16.0),
                   Container(
                     alignment: Alignment.center,
-                    child: Text(
+                    child: const Text(
                       "Create an Account(Customer)",
                       style: TextStyle(
                           color: Colors.black,
@@ -127,318 +219,6 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                           fontWeight: FontWeight.w600),
                     ),
                   ),
-
-                  const SizedBox(height: 16.0),
-                  /* Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: const [
-                        // Icon or leading element (can be a radio button icon)
-                        Icon(Icons.radio_button_checked, color: Colors.white),
-                        SizedBox(width: 10),
-                        Text(
-                          "Create an account. New to Utsavlife?",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 32.0,
-                    child: state.authState == AuthState.error
-                        ? /* const Text(
-                            "Something went wrong. Please try again later") */
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Text(
-                                "Something went wrong. Please try again later",
-                                style: TextStyle(color: Colors.red),
-                              ),
-                            ],
-                          )
-                        : null,
-                  ),
-                  TextFormField(
-                    style: const TextStyle(color: Colors.grey),
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      prefixIcon: const Icon(Icons.email, color: Colors.grey),
-                      labelStyle: const TextStyle(color: Colors.grey),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide:
-                              const BorderSide(width: 0.5, color: Colors.grey)),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide:
-                              const BorderSide(width: 0.5, color: Colors.grey)),
-                    ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter your email';
-                      }
-                      if (!value.contains('@')) {
-                        return 'Please enter a valid email address';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16.0),
-                  TextFormField(
-                    style: const TextStyle(color: Colors.grey),
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                      labelText: 'Name',
-                      prefixIcon: const Icon(Icons.person, color: Colors.grey),
-                      labelStyle: const TextStyle(color: Colors.grey),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide:
-                              const BorderSide(width: 0.5, color: Colors.grey)),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide:
-                              const BorderSide(width: 0.5, color: Colors.grey)),
-                    ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter your name';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16.0),
-                  TextFormField(
-                    style: const TextStyle(color: Colors.grey),
-                    controller: _phoneNumberController,
-                    decoration: InputDecoration(
-                      labelText: 'Phone Number',
-                      prefixIcon: const Icon(Icons.phone, color: Colors.grey),
-                      labelStyle: const TextStyle(color: Colors.grey),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide:
-                              const BorderSide(width: 0.5, color: Colors.grey)),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide:
-                              const BorderSide(width: 0.5, color: Colors.grey)),
-                    ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter your Phone Number';
-                      }
-                      if (value.length != 10) {
-                        return 'Please enter a valid Phone Number';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16.0),
-                  TextFormField(
-                    style: const TextStyle(color: Colors.grey),
-                    controller: _passwordController,
-                    obscureText: _obscureText,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      prefixIcon: const Icon(Icons.lock, color: Colors.grey),
-                      suffixIcon: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _obscureText = !_obscureText;
-                          });
-                        },
-                        child: Icon(
-                          _obscureText
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      labelStyle: const TextStyle(color: Colors.grey),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide:
-                              const BorderSide(width: 0.5, color: Colors.grey)),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide:
-                              const BorderSide(width: 0.5, color: Colors.grey)),
-                    ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter your password';
-                      }
-                      if (value.length < 6) {
-                        return 'Password should be at least 6 characters long';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16.0),
-                  TextFormField(
-                    style: const TextStyle(color: Colors.grey),
-                    controller: _confirmPasswordController,
-                    obscureText: _obscureTextConfirm,
-                    decoration: InputDecoration(
-                      labelText: 'Confirm Password',
-                      prefixIcon: const Icon(Icons.lock, color: Colors.grey),
-                      suffixIcon: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _obscureTextConfirm = !_obscureTextConfirm;
-                          });
-                        },
-                        child: Icon(
-                          _obscureTextConfirm
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      labelStyle: const TextStyle(color: Colors.grey),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide:
-                              const BorderSide(width: 0.5, color: Colors.grey)),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide:
-                              const BorderSide(width: 0.5, color: Colors.grey)),
-                    ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter your password';
-                      }
-                      if (value.length < 6) {
-                        return 'Password should be at least 6 characters long';
-                      }
-                      if (value != _passwordController.text) {
-                        return 'Password does not match';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 32.0),
-                  ElevatedButton(
-                    onPressed: _isLoading
-                        ? null
-                        : () {
-                            _submitForm(state);
-                          },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    ),
-                    child: _isLoading
-                        ? const CircularProgressIndicator(
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.grey),
-                          )
-                        : const Text(
-                            'Sign Up',
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                  ),
-                  const SizedBox(height: 10.0),
-                  InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, SignInPageRoute.routeName);
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: const [
-                          // Icon or leading element (can be a radio button icon)
-                          Icon(Icons.radio_button_unchecked,
-                              color: Colors.white),
-                          SizedBox(width: 10),
-                          Text(
-                            "Sign in. Already a customer?",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context)
-                          .primaryColor, // Background color for the button
-                      borderRadius: BorderRadius.circular(8), // Rounded corners
-                    ),
-                    child: Center(
-                      child: RichText(
-                        text: TextSpan(
-                          text: 'Are you an agent? ',
-                          style: const TextStyle(
-                            color: Colors.white, // Text color
-                            fontSize: 16,
-                          ),
-                          children: <TextSpan>[
-                            TextSpan(
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Navigator.pushNamed(
-                                      context, AgentSignIn.routeName);
-                                },
-                              text: 'Sign in',
-                              style: const TextStyle(
-                                color: Colors.yellow, // Link color
-                                fontSize: 16,
-                              ),
-                            ),
-                            const TextSpan(
-                              text: ' or ',
-                              style: TextStyle(
-                                color: Colors.white, // Text color
-                                fontSize: 16,
-                              ),
-                            ),
-                            TextSpan(
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Navigator.pushNamed(
-                                      context, AgentSignUp.routeName);
-                                },
-                              text: 'Sign up',
-                              style: const TextStyle(
-                                color: Colors.yellow, // Link color
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ), */
-
                   Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -450,24 +230,6 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          // Centered "Create an account" text
-                          // Center(
-                          //   child: Row(
-                          //     mainAxisSize: MainAxisSize.min,
-                          //     children: const [
-                          //       Icon(Icons.radio_button_checked,
-                          //           color: Colors.black),
-                          //       SizedBox(width: 10),
-                          //       Text(
-                          //         "Create an account. New to Utsavlife?",
-                          //         style: TextStyle(color: Colors.black),
-                          //       ),
-                          //     ],
-                          //   ),
-                          // ),
-                          // const SizedBox(height: 16),
-
-                          // Error handling
                           (state.authState == AuthState.error)
                               ? Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -479,10 +241,6 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                                   ],
                                 )
                               : const SizedBox(height: 0),
-
-                          // const SizedBox(height: 16),
-
-                          // Email field
                           TextFormField(
                             style: const TextStyle(color: Colors.black),
                             controller: _emailController,
@@ -505,8 +263,6 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                             },
                           ),
                           const SizedBox(height: 16),
-
-                          // Name field
                           TextFormField(
                             style: const TextStyle(color: Colors.black),
                             controller: _nameController,
@@ -527,8 +283,6 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                             },
                           ),
                           const SizedBox(height: 16),
-
-                          // Phone Number field
                           TextFormField(
                             style: const TextStyle(color: Colors.black),
                             controller: _phoneNumberController,
@@ -551,8 +305,6 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                             },
                           ),
                           const SizedBox(height: 16),
-
-                          // Password field
                           TextFormField(
                             style: const TextStyle(color: Colors.black),
                             controller: _passwordController,
@@ -590,8 +342,6 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                             },
                           ),
                           const SizedBox(height: 16),
-
-                          // Confirm Password field
                           TextFormField(
                             style: const TextStyle(color: Colors.black),
                             controller: _confirmPasswordController,
@@ -632,36 +382,6 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                             },
                           ),
                           const SizedBox(height: 32),
-
-                          // Expanded Sign Up button
-                          // SizedBox(
-                          //   width: double.infinity,
-                          //   child: ElevatedButton(
-                          //     onPressed:
-                          //         _isLoading ? null : () => _submitForm(state),
-                          //     style: ElevatedButton.styleFrom(
-                          //       backgroundColor: Theme.of(context).primaryColor,
-                          //       shape: RoundedRectangleBorder(
-                          //         borderRadius: BorderRadius.circular(8),
-                          //       ),
-                          //       padding:
-                          //           const EdgeInsets.symmetric(vertical: 16),
-                          //     ),
-                          //     child: _isLoading
-                          //         ? const CircularProgressIndicator(
-                          //             valueColor: AlwaysStoppedAnimation<Color>(
-                          //                 Colors.grey),
-                          //           )
-                          //         : const Text(
-                          //             'Sign Up',
-                          //             style: TextStyle(
-                          //               fontSize: 18,
-                          //               fontWeight: FontWeight.bold,
-                          //               color: Colors.white,
-                          //             ),
-                          //           ),
-                          //   ),
-                          // ),
                           SizedBox(
                             width: double.infinity,
                             child: InkWell(
@@ -672,7 +392,6 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                                     horizontal: 20, vertical: 10),
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
-                                  // color: Theme.of(context).primaryColor,
                                   borderRadius: BorderRadius.circular(10.0),
                                   gradient: LinearGradient(
                                     colors: [
@@ -716,11 +435,9 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                                   fontSize: 14,
                                 ),
                               )
-                              //
                             ],
                           ),
                           const SizedBox(height: 16),
-
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
@@ -746,31 +463,7 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
                               ),
                             ),
                           ),
-
-                          // Centered "Sign in" text
-                          // Center(
-                          //   child: InkWell(
-                          //     onTap: () {
-                          //       Navigator.pushNamed(
-                          //           context, SignInPageRoute.routeName);
-                          //     },
-                          //     child: Row(
-                          //       mainAxisSize: MainAxisSize.min,
-                          //       children: const [
-                          //         Icon(Icons.radio_button_unchecked,
-                          //             color: Colors.black),
-                          //         SizedBox(width: 10),
-                          //         Text(
-                          //           "Sign in. Already a customer?",
-                          //           style: TextStyle(color: Colors.black),
-                          //         ),
-                          //       ],
-                          //     ),
-                          //   ),
-                          // ),
                           const SizedBox(height: 16),
-
-                          // Centered "Are you an agent?" text
                           Center(
                             child: RichText(
                               textAlign: TextAlign.center,

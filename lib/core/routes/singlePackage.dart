@@ -1,22 +1,18 @@
 import 'dart:developer';
 
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
+import 'package:customerapp/core/constant/HorizontalImageSlider.dart';
 import '../../views/view.dart';
-import '../constant/HorizontalImageSlider.dart';
 import '../constant/themData.dart';
 import 'package:customerapp/core/components/bottomNav.dart';
 import 'package:customerapp/core/components/commonHeader.dart';
-import 'package:customerapp/core/components/htmlTextView.dart';
 import 'package:customerapp/core/components/quantity_Manager.dart';
 import 'package:customerapp/core/components/share_rapper.dart';
 import 'package:customerapp/core/models/cartModel.dart';
 import 'package:customerapp/core/models/single_package.dart';
 import 'package:customerapp/core/providers/cartProvider.dart';
 import 'package:customerapp/core/repo/services.dart';
-import 'package:customerapp/core/routes/cartPage.dart';
 import 'package:customerapp/core/routes/checkoutPage.dart';
-import 'package:customerapp/core/routes/product.dart';
-import 'package:customerapp/core/routes/signin.dart';
 import 'package:customerapp/core/utils/logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -55,8 +51,8 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
   final TextEditingController _duration = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   List<PopupCategory> popupCategories = [];
-  PopupCategory? selectedCategory=null;
-  String? SelectedCategoryId="";
+  PopupCategory? selectedCategory;
+  String? SelectedCategoryId = "";
 
   void _calculateDays() {
     if (_startDate.text.isNotEmpty && _endDate.text.isNotEmpty) {
@@ -92,13 +88,13 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
     }
   }
 
-  bool _isShowMore = false;
-  bool _isShowMoreFD = false;
+  final bool _isShowMore = false;
+  final bool _isShowMoreFD = false;
 
   @override
   void initState() {
     super.initState();
-    Provider.of<CategoryProvider>(context, listen: false).navIndex=1;
+    Provider.of<CategoryProvider>(context, listen: false).navIndex = 1;
     print(">>>>_SinglePackageRouteState");
     getSinglePackage();
     _startDate.addListener(_calculateDays);
@@ -109,7 +105,15 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
         : widget.package.minQnty.toString();
     _duration.text = "Full Day";
     log(widget.package.minQnty.toString(), name: "Package");
+  }
 
+  void _showFullScreenImage(String imageUrl) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FullScreenImageView(imageUrl: imageUrl),
+      ),
+    );
   }
 
   Future<void> getSinglePackage() async {
@@ -124,7 +128,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
       if (popupCategories.isNotEmpty) {
         selectedCategory = popupCategories.first;
         _categoryName.text = selectedCategory!.category?.categoryName ?? "";
-        SelectedCategoryId=popupCategories.first.categoryId;
+        SelectedCategoryId = popupCategories.first.categoryId;
         print("$SelectedCategoryId");
       }
     } catch (e) {
@@ -178,7 +182,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
 
   @override
   Widget build(BuildContext context) {
-    int index=0;
+    int index = 0;
     return AnnotatedRegion(
       value: const SystemUiOverlayStyle(
           statusBarColor: primaryColor,
@@ -192,12 +196,13 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
         child: Consumer2<CategoryProvider, AuthProvider>(
             builder: (context, categories, auth, child) {
           return BottomNav(
-            index: categories.navIndex==null?1:categories.navIndex,
+            index: categories.navIndex ?? 1,
             onTabChange: (p0) {
-            print(">>>>>>$p0");
-                Provider.of<CategoryProvider>(context, listen: false).navIndex=p0;
-           // index=p0;
-          },
+              print(">>>>>>$p0");
+              Provider.of<CategoryProvider>(context, listen: false).navIndex =
+                  p0;
+              // index=p0;
+            },
             child: Scaffold(
               backgroundColor: Colors.white,
               appBar: CommonHeader.header(context, onBack: () {
@@ -205,7 +210,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
               }, onSearch: () {
                 Navigator.pushNamed(context, ProductPageRoute.routeName);
               }),
-              body: Container(
+              body: SizedBox(
                 width: double.infinity,
                 child: SingleChildScrollView(
                   child: Column(
@@ -214,7 +219,8 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                     children: [
                       ShareRapper(
                           title: widget.package.name,
-                          url: 'https://utsavlife.com/customer/package/details/${widget.package.id}',
+                          url:
+                              'https://utsavlife.com/customer/package/details/${widget.package.id}',
                           child: PackageImageSlider(
                             imageUrls: widget.package.images!,
                             videoUrls: widget.package.videos!,
@@ -239,58 +245,17 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                       const SizedBox(
                         height: 8,
                       ),
-                      AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 600),
-                        child: Column(
-                          key: ValueKey<bool>(_isShowMore),
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            AnimatedContainer(
-                              duration: const Duration(milliseconds: 600),
-                              constraints: BoxConstraints(
-                                minHeight: 1.h,
-                                maxHeight: _isShowMore ? double.infinity : 10.h,
-                                minWidth: double.infinity,
-                                maxWidth: double.infinity,
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 4.w,
-                              ),
-                              alignment: Alignment.centerLeft,
-                              child: SingleChildScrollView(
-                                physics:  const NeverScrollableScrollPhysics(),
-                                child: HtmlTextView(
-                                    htmlText: widget.package.description!),
-                              ),
-                            ),
-                            if (widget.package.description!.length > 100)
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _isShowMore = !_isShowMore;
-                                  });
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 4.w,
-                                  ),
-                                  child: Text(
-                                    _isShowMore ? "Show Less" : "Read More",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelLarge!
-                                        .copyWith(
-                                            fontSize: 14, color: primaryColor),
-                                  ),
-                                ),
-                              ),
-                          ],
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: parseHtmlStringToRichText(
+                          widget.package.description!,
+                          enableShowMore: true,
+                          maxWords: 20,
                         ),
                       ),
                       const Divider(
                         thickness: 1,
                       ),
-
                       if (isLoading)
                         const Center(
                           child: CircularProgressIndicator(),
@@ -298,7 +263,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                       if (!isLoading)
                         Container(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 0, vertical: 1.h),
+                              horizontal: 2.w, vertical: 1.h),
                           child: Row(
                             children: [
                               Column(
@@ -334,17 +299,17 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                       ),
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8.0),
-                                    child: const Text(
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 8.0),
+                                    child: Text(
                                       'Exc. all taxes',
                                       style: TextStyle(fontSize: 16),
                                     ),
                                   ),
                                   const SizedBox(height: 8),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8.0),
-                                    child: const Text(
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 8.0),
+                                    child: Text(
                                       'Check price for other event',
                                       style: TextStyle(
                                           fontSize: 16,
@@ -353,49 +318,69 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                   ),
                                   const SizedBox(height: 8),
                                   Padding(
-                                    padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                                    padding: const EdgeInsets.only(
+                                        left: 8.0, right: 0),
                                     child: Container(
-                                      width: MediaQuery.of(context).size.width - 16.0,
+                                      width: MediaQuery.of(context).size.width -
+                                          24,
                                       decoration: BoxDecoration(
-                                        color: Theme.of(context).primaryColor, // Background color
-                                        borderRadius: BorderRadius.circular(12.0), // Rounded corners
+                                        color: Theme.of(context)
+                                            .primaryColor, // Background color
+                                        borderRadius: BorderRadius.circular(
+                                            12.0), // Rounded corners
                                       ),
-                                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0), // Internal padding
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0,
+                                          vertical: 0.0), // Internal padding
                                       child: DropdownButton<PopupCategory?>(
                                         isExpanded: true,
-                                        style: TextStyle(color: Theme.of(context).primaryColor),
+                                        style: TextStyle(
+                                            color:
+                                                Theme.of(context).primaryColor),
                                         underline: Container(),
                                         iconSize: 20,
                                         icon: const Icon(
                                           Icons.arrow_drop_down_circle_outlined,
-                                          color: Colors.white, // Icon color to match the blue background
+                                          color: Colors
+                                              .white, // Icon color to match the blue background
                                         ),
-                                        value: selectedCategory, // Ensure this is the correct binding to selectedCategory
+                                        value:
+                                            selectedCategory, // Ensure this is the correct binding to selectedCategory
                                         hint: selectedCategory == null
-                                            ? Text(
-                                          "Select a category", // Hint text
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.white, // Hint text color
-                                          ),
-                                        )
+                                            ? const Text(
+                                                "Select a category", // Hint text
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors
+                                                      .white, // Hint text color
+                                                ),
+                                              )
                                             : null, // Hide the hint once a value is selected
-                                        dropdownColor: Theme.of(context).primaryColor, // Optional: Dropdown menu background
+                                        dropdownColor: Theme.of(context)
+                                            .primaryColor, // Optional: Dropdown menu background
                                         items: popupCategories
                                             .map(
-                                              (e) => DropdownMenuItem<PopupCategory>(
-                                            value: e,
-                                            child: Text(
-                                              e.category?.categoryName ?? "",
-                                              style: const TextStyle(fontSize: 14, color: Colors.white),
-                                            ),
-                                          ),
-                                        )
+                                              (e) => DropdownMenuItem<
+                                                  PopupCategory>(
+                                                value: e,
+                                                child: Text(
+                                                  e.category?.categoryName ??
+                                                      "",
+                                                  style: const TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.white),
+                                                ),
+                                              ),
+                                            )
                                             .toList(),
                                         onChanged: (PopupCategory? newValue) {
                                           setState(() {
-                                            selectedCategory = newValue; // Update selectedCategory when a new value is selected
-                                            _categoryName.text = selectedCategory?.category?.categoryName ?? "";
+                                            selectedCategory =
+                                                newValue; // Update selectedCategory when a new value is selected
+                                            _categoryName.text =
+                                                selectedCategory?.category
+                                                        ?.categoryName ??
+                                                    "";
                                           });
                                         },
                                       ),
@@ -406,16 +391,20 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                             ],
                           ),
                         ),
+                      SizedBox(
+                        height: 1.2.h,
+                      ),
                       if (!isLoading)
-                        const Divider(
+                        Divider(
                           thickness: 1,
-                          height: 1,
+                          height: 0.h,
                         ),
                       if (!isLoading)
                         Container(
                           decoration: const BoxDecoration(color: tertiaryColor),
                           padding: EdgeInsets.symmetric(
                               horizontal: 4.w, vertical: 2.h),
+                          // margin: EdgeInsets.only(top: 2.h),
                           alignment: Alignment.centerLeft,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -464,7 +453,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                         visible: !isLoading,
                         child: Container(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 0.0, vertical: 2.h),
+                              horizontal: 5, vertical: 2.h),
                           child: Column(children: [
                             Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -561,112 +550,143 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            const Padding(
-                                              padding: EdgeInsets.only(
-                                                  top: 8.0,
-                                                  left: 8.0,
-                                                  bottom: 8.0),
-                                              child: Text(
-                                                "Feature Image",
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                            ),
+                                            // const Padding(
+                                            //   padding: EdgeInsets.only(
+                                            //       top: 8.0,
+                                            //       left: 8.0,
+                                            //       bottom: 8.0),
+                                            //   child: Text(
+                                            //     "Feature Image",
+                                            //     style: TextStyle(
+                                            //       fontSize: 16,
+                                            //       fontWeight: FontWeight.w600,
+                                            //     ),
+                                            //   ),
+                                            // ),
 
-                                            widget.package.featuredImage!
-                                                .length >
-                                                0
-                                                ? Padding(
-                                              padding:
-                                              const EdgeInsets.only(
-                                                  left: 8.0),
-                                              child: Padding(
-                                                padding:
-                                                const EdgeInsets.only(
-                                                    top: 8.0,
-                                                    bottom: 8.0,
-                                                    right: 8.0),
-                                                child: Container(
-                                                  height: 26.h,
-                                                  width: double.infinity,
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                      BorderRadius
-                                                          .circular(
-                                                          10),
-                                                      image: DecorationImage(
-                                                          image: NetworkImage(
-                                                              "https://utsavlife.com/storage/app/public/packages/featured/${widget.package.featuredImage![0]}"),
-                                                          fit: BoxFit
-                                                              .cover)),
-                                                ),
-                                              ),
-                                            )
-                                                : SizedBox(),
+                                            // widget.package.featuredImage!
+                                            //         .isNotEmpty
+                                            //     ? Padding(
+                                            //         padding:
+                                            //             const EdgeInsets.only(
+                                            //                 left: 8.0),
+                                            //         child: Padding(
+                                            //           padding:
+                                            //               const EdgeInsets.only(
+                                            //                   top: 8.0,
+                                            //                   bottom: 8.0,
+                                            //                   right: 8.0),
+                                            //           child: Container(
+                                            //             height: 26.h,
+                                            //             width: double.infinity,
+                                            //             decoration: BoxDecoration(
+                                            //                 borderRadius:
+                                            //                     BorderRadius
+                                            //                         .circular(
+                                            //                             10),
+                                            //                 image: DecorationImage(
+                                            //                     image: NetworkImage(
+                                            //                         "https://utsavlife.com/storage/app/public/packages/featured/${widget.package.featuredImage![0]}"),
+                                            //                     fit: BoxFit
+                                            //                         .cover)),
+                                            //           ),
+                                            //         ),
+                                            //       )
+                                            //     : const SizedBox(),
                                             const Padding(
                                               padding: EdgeInsets.only(
                                                   top: 8.0,
                                                   bottom: 8.0,
-                                                  left: 8.0),
+                                                  left: 10.0),
                                               child: Text(
-                                                "Feature Description",
+                                                "Description",
                                                 style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w600,
                                                 ),
                                               ),
                                             ),
-                                            // Ensure proper constraints and styles for Html content
-                                            AnimatedSwitcher(
-                                              duration: const Duration(milliseconds: 600),
-                                              child: Column(
-                                                key: ValueKey<bool>(_isShowMoreFD),
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  AnimatedContainer(
-                                                    duration: const Duration(milliseconds: 600),
-                                                    constraints: BoxConstraints(
-                                                      minHeight: 1.h,
-                                                      maxHeight: _isShowMoreFD ? double.infinity : 30.h,
-                                                      minWidth: double.infinity,
-                                                      maxWidth: double.infinity,
-                                                    ),
-                                                    padding: EdgeInsets.symmetric(
-                                                      horizontal: 4.w,
-                                                    ),
-                                                    alignment: Alignment.centerLeft,
-                                                    child: SingleChildScrollView(
-                                                      physics:  const NeverScrollableScrollPhysics(),
-                                                      child: HtmlTextView(
-                                                          htmlText: widget.package.featureDescription!),
-                                                    ),
-                                                  ),
-                                                  if (widget.package.featureDescription!.length > 100)
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        setState(() {
-                                                          _isShowMoreFD = !_isShowMoreFD;
-                                                        });
-                                                      },
-                                                      child: Container(
-                                                        padding: EdgeInsets.symmetric(
-                                                          horizontal: 4.w,
-                                                        ),
-                                                        child: Text(
-                                                          _isShowMoreFD ? "Read Less" : "Read More",
-                                                          style: Theme.of(context)
-                                                              .textTheme
-                                                              .labelLarge!
-                                                              .copyWith(
-                                                              fontSize: 14, color: primaryColor),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                ],
-                                              ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 10.0),
+                                              child: parseHtmlStringToRichText(
+                                                  widget.package
+                                                          .featureDescription ??
+                                                      ""),
                                             ),
+                                            // Ensure proper constraints and styles for Html content
+                                            // AnimatedSwitcher(
+                                            //   duration: const Duration(
+                                            //       milliseconds: 600),
+                                            //   child: Column(
+                                            //     key: ValueKey<bool>(
+                                            //         _isShowMoreFD),
+                                            //     crossAxisAlignment:
+                                            //         CrossAxisAlignment.start,
+                                            //     children: [
+                                            //       AnimatedContainer(
+                                            //         duration: const Duration(
+                                            //             milliseconds: 600),
+                                            //         constraints: BoxConstraints(
+                                            //           minHeight: 1.h,
+                                            //           maxHeight: _isShowMoreFD
+                                            //               ? double.infinity
+                                            //               : 30.h,
+                                            //           minWidth: double.infinity,
+                                            //           maxWidth: double.infinity,
+                                            //         ),
+                                            //         padding:
+                                            //             EdgeInsets.symmetric(
+                                            //           horizontal: 4.w,
+                                            //         ),
+                                            //         alignment:
+                                            //             Alignment.centerLeft,
+                                            //         child:
+                                            //             SingleChildScrollView(
+                                            //           physics:
+                                            //               const NeverScrollableScrollPhysics(),
+                                            //           child: HtmlTextView(
+                                            //               htmlText: widget
+                                            //                   .package
+                                            //                   .featureDescription!),
+                                            //         ),
+                                            //       ),
+                                            //       if (widget
+                                            //               .package
+                                            //               .featureDescription!
+                                            //               .length >
+                                            //           100)
+                                            //         GestureDetector(
+                                            //           onTap: () {
+                                            //             setState(() {
+                                            //               _isShowMoreFD =
+                                            //                   !_isShowMoreFD;
+                                            //             });
+                                            //           },
+                                            //           child: Container(
+                                            //             padding: EdgeInsets
+                                            //                 .symmetric(
+                                            //               horizontal: 4.w,
+                                            //             ),
+                                            //             child: Text(
+                                            //               _isShowMoreFD
+                                            //                   ? "Read Less"
+                                            //                   : "Read More",
+                                            //               style: Theme.of(
+                                            //                       context)
+                                            //                   .textTheme
+                                            //                   .labelLarge!
+                                            //                   .copyWith(
+                                            //                       fontSize: 14,
+                                            //                       color:
+                                            //                           primaryColor),
+                                            //             ),
+                                            //           ),
+                                            //         ),
+                                            //     ],
+                                            //   ),
+                                            // ),
                                           ],
                                         ),
                                       )
@@ -683,21 +703,62 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                           ]),
                         ),
                       ),
-                      Container(
-                          constraints: BoxConstraints(
-                              minHeight: 1.h,
-                              maxHeight: double.infinity,
-                              minWidth: double.infinity,
-                              maxWidth: double.infinity),
+                      if (widget.package.featuredImage != null &&
+                          widget.package.featuredImage!.isNotEmpty)
+                        Container(
                           padding: EdgeInsets.symmetric(
-                            horizontal: 4.w,
-                          ),
+                              vertical: 0.h, horizontal: 5),
                           child: Column(
-                            children:  [HorizontalImageSlider(images: widget.package.images!)]
-                          )),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0,bottom: 8.0),
-                        child: const Divider(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8.0, vertical: 8.0),
+                                child: Text(
+                                  "Package Images",
+                                  style: headerTextStylerelated(context),
+                                ),
+                              ),
+                              ...widget.package.featuredImage!
+                                  .map((image) => GestureDetector(
+                                        onTap: () => _showFullScreenImage(
+                                            "https://utsavlife.com/storage/app/public/packages/featured/$image"),
+                                        child: Container(
+                                          margin: const EdgeInsets.symmetric(
+                                              horizontal: 8.0, vertical: 8.0),
+                                          height: 26.h,
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            image: DecorationImage(
+                                                image: NetworkImage(
+                                                    "https://utsavlife.com/storage/app/public/packages/featured/$image"),
+                                                fit: BoxFit.cover),
+                                          ),
+                                        ),
+                                      ))
+                                  .toList(),
+                            ],
+                          ),
+                        ),
+
+                      // Container(
+                      //     constraints: BoxConstraints(
+                      //         minHeight: 1.h,
+                      //         maxHeight: double.infinity,
+                      //         minWidth: double.infinity,
+                      //         maxWidth: double.infinity),
+                      //     padding: EdgeInsets.symmetric(
+                      //       horizontal: 4.w,
+                      //     ),
+                      //     child: Column(children: [
+                      //       HorizontalImageSlider(
+                      //           images: widget.package.images!)
+                      //     ])),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
+                        child: Divider(
                           thickness: 1,
                           height: 1,
                         ),
@@ -815,8 +876,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
   }
 
   void addToCartDialog(BuildContext context, CategoryProvider categories,
-      {
-        Function(
+      {Function(
               List<String> serviceIds, List<CartModel> data, double totalPrice)?
           isFromBookNow}) {
     showModalBottomSheet(
@@ -856,7 +916,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                     )),
                                 // package name
                                 Text(
-                                  widget.package.name ??"",
+                                  widget.package.name ?? "",
                                   style: Theme.of(context)
                                       .textTheme
                                       .headlineSmall!
@@ -1005,7 +1065,8 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                       ),
 
                                       Container(
-                                        padding: const EdgeInsets.only(bottom: 5),
+                                        padding:
+                                            const EdgeInsets.only(bottom: 5),
                                         child: Text(
                                           "Event end date isn’t consider as serviceable day",
                                           style: TextStyle(
@@ -1021,7 +1082,8 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                       ),
 
                                       Container(
-                                        padding: const EdgeInsets.only(bottom: 5),
+                                        padding:
+                                            const EdgeInsets.only(bottom: 5),
                                         child: Text(
                                           "Quantity",
                                           style: TextStyle(
@@ -1047,7 +1109,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                   color: Theme.of(context)
                                                       .primaryColor),
                                               borderRadius:
-                                              BorderRadius.circular(10),
+                                                  BorderRadius.circular(10),
                                             ),
                                             enabledBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
@@ -1055,7 +1117,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                   color: Theme.of(context)
                                                       .primaryColor),
                                               borderRadius:
-                                              BorderRadius.circular(10),
+                                                  BorderRadius.circular(10),
                                             ),
                                             hintText: "Select Quantity"),
                                       ),
@@ -1113,8 +1175,11 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                             visible: false,
                                             child: QuantityManager(
                                               qnty: quantity.text,
-                                              minQnty:
-                                              selectedCategory?.minQty ==null?0:  selectedCategory?.minQty ??
+                                              minQnty: selectedCategory
+                                                          ?.minQty ==
+                                                      null
+                                                  ? 0
+                                                  : selectedCategory?.minQty ??
                                                       widget.package.minQnty,
                                               onChanged: (v) {
                                                 setState(() {
@@ -1152,7 +1217,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                               padding: const EdgeInsets.only(
                                                   right: 8.0),
                                               child: Text(
-                                                "\u20B9 ${double.parse(selectedCategory?.discountPrice.toString()??  widget.package.price.toString()) * int.parse(quantity.text)}",
+                                                "\u20B9 ${double.parse(selectedCategory?.discountPrice.toString() ?? widget.package.price.toString()) * int.parse(quantity.text)}",
                                                 style: const TextStyle(
                                                     fontSize: 16,
                                                     fontWeight:
@@ -1195,7 +1260,7 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                             "package_id": widget
                                                                 .package.id,
                                                             "cart_category":
-                                                            SelectedCategoryId,
+                                                                SelectedCategoryId,
                                                             "date":
                                                                 _startDate.text,
                                                             "end_date":
@@ -1224,13 +1289,10 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                                         content:
                                                                             Text("Successfully added to cart")));
 
-
                                                             setState(() {
                                                               isProcessing =
-                                                              false;
+                                                                  false;
                                                             });
-
-
                                                           }
                                                           if (context.mounted) {
                                                             Navigator.pop(
@@ -1247,10 +1309,8 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
                                                                   cart.totalPrice);
                                                             }
                                                           });
-                                                          isProcessing =
-                                                          false;
-                                                          setState(() {
-                                                          });
+                                                          isProcessing = false;
+                                                          setState(() {});
                                                         }
                                                       },
                                                 child: isProcessing
@@ -1274,7 +1334,6 @@ class _SinglePackageRouteState extends State<SinglePackageRoute> {
           });
         });
   }
-
 }
 
 class SelectCategory extends StatelessWidget {
@@ -1296,5 +1355,4 @@ class SelectCategory extends StatelessWidget {
       ),
     );
   }
-
 }

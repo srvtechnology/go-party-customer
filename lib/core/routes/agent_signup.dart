@@ -1,8 +1,5 @@
 import 'package:customerapp/core/components/TramsAndConditionsCheckBox.dart';
 import 'package:customerapp/core/providers/AuthProvider.dart';
-import 'package:customerapp/core/routes/agent_sign_in.dart';
-import 'package:customerapp/core/routes/mainpage.dart';
-import 'package:customerapp/core/routes/profile.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../../views/view.dart';
-import '../constant/themData.dart';
 
 class AgentSignUp extends StatefulWidget {
   static String routeName = "/agent_signup";
@@ -69,10 +65,9 @@ class _AgentSignUpState extends State<AgentSignUp> {
                         ),
                       ),
                       const SizedBox(height: 32.0),
-
                       Container(
                         alignment: Alignment.center,
-                        child: Text(
+                        child: const Text(
                           "Create an account (Agent) ",
                           style: TextStyle(
                               color: Colors.black,
@@ -80,7 +75,6 @@ class _AgentSignUpState extends State<AgentSignUp> {
                               fontWeight: FontWeight.w600),
                         ),
                       ),
-
                       const SizedBox(height: 16.0),
                       Card(
                         shape: RoundedRectangleBorder(
@@ -483,7 +477,7 @@ class _AgentSignUpState extends State<AgentSignUp> {
                                   if (isValid) {
                                     state.registerAgentOtp(
                                       scaffoldKey,
-                                      email: _emailController.text.trim(),
+                                      // user_id: _emailController.text.trim(),
                                       otp: _otpController.text.trim(),
                                     );
                                   }

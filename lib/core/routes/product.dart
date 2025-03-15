@@ -78,13 +78,13 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                         alignment: Alignment.center,
                         child: const ShimmerWidget()));
               }
-
               // Update search data notifier
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (state.savedSearchData != null &&
                     state.savedSearchData!
                         .any((model) => model.data.isNotEmpty)) {
-                  _showOverlay(context, state.savedSearchData!, auth, state,filters);
+                  _showOverlay(
+                      context, state.savedSearchData!, auth, state, filters);
                 } else if (state.searchData != null &&
                     state.searchData!.isNotEmpty) {
                   _removeOverlay();
@@ -218,8 +218,8 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                                   ),
                                 )
                               : RefreshIndicator(
-                        onRefresh: _handleRefresh,
-                        child: ListView.builder(
+                                  onRefresh: _handleRefresh,
+                                  child: ListView.builder(
                                     controller: _scrollController,
                                     itemCount: state.searchData!.length,
                                     itemBuilder: (context, index) {
@@ -259,7 +259,7 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                                       }
                                     },
                                   ),
-                              ),
+                                ),
                     ),
                   );
                 },
@@ -290,13 +290,15 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
             controller: controller,
             onTap: () {
               if (savedSearchList != null && savedSearchList.isNotEmpty) {
-                _showOverlay(context, savedSearchList, auth, serviceState,filterState);
+                _showOverlay(
+                    context, savedSearchList, auth, serviceState, filterState);
               }
             },
             onChanged: (value) {
               if (value.isEmpty) {
                 if (savedSearchList != null && savedSearchList.isNotEmpty) {
-                  _showOverlay(context, savedSearchList, auth, serviceState,filterState);
+                  _showOverlay(context, savedSearchList, auth, serviceState,
+                      filterState);
                 }
               } else {
                 _removeOverlay();
@@ -377,18 +379,18 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
   }
 
   void _showOverlay(
-      BuildContext context,
-      List<SaveSearchTextModel>? savedSearchList,
-      AuthProvider? auth,
-      ServiceProvider serviceState,
-      FilterProvider filterState,
-      ) {
+    BuildContext context,
+    List<SaveSearchTextModel>? savedSearchList,
+    AuthProvider? auth,
+    ServiceProvider serviceState,
+    FilterProvider filterState,
+  ) {
     if (_isOverlayVisible) return; // Prevent duplicate overlay
 
     _isOverlayVisible = true; // Mark overlay as visible
 
     final RenderBox renderBox =
-    _searchBarKey.currentContext!.findRenderObject() as RenderBox;
+        _searchBarKey.currentContext!.findRenderObject() as RenderBox;
     final size = renderBox.size;
     final offset = renderBox.localToGlobal(Offset.zero);
 
@@ -413,73 +415,83 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
                     color: Colors.white,
                     child: savedSearchList != null && savedSearchList.isNotEmpty
                         ? ListView.builder(
-                      padding: EdgeInsets.zero,
-                      shrinkWrap: true,
-                      itemCount: savedSearchList
-                          .expand((item) => item.data)
-                          .length,
-                      itemBuilder: (context, index) {
-                        final datum = savedSearchList
-                            .expand((item) => item.data)
-                            .toList()[index];
+                            padding: EdgeInsets.zero,
+                            shrinkWrap: true,
+                            itemCount: savedSearchList
+                                .expand((item) => item.data)
+                                .length,
+                            itemBuilder: (context, index) {
+                              final datum = savedSearchList
+                                  .expand((item) => item.data)
+                                  .toList()[index];
 
-                        return Column(
-                          children: [
-                            Padding(
-                              padding:
-                              const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Row(
+                              return Column(
                                 children: [
-                                  Expanded(
-                                    child: ListTile(
-                                      title: Text(datum.value ?? ''),
-                                      onTap: () {
-                                        _removeOverlay(); // Close overlay when tapped
-                                        if (datum.value != null) {
-                                          serviceState.getFilteredServices(
-                                              auth, filterState,
-                                              searchString: datum.value);
-                                        } else {
-                                          Fluttertoast.showToast(
-                                            msg: "Search field cannot be empty",
-                                            toastLength: Toast.LENGTH_SHORT,
-                                            gravity: ToastGravity.BOTTOM,
-                                            backgroundColor: Colors.red,
-                                            textColor: Colors.white,
-                                            fontSize: 16.0,
-                                          );
-                                        }
-                                      },
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: ListTile(
+                                            title: Text(datum.value ?? ''),
+                                            onTap: () {
+                                              _removeOverlay(); // Close overlay when tapped
+                                              if (datum.value != null) {
+                                                serviceState
+                                                    .getFilteredServices(
+                                                        auth, filterState,
+                                                        searchString:
+                                                            datum.value);
+                                              } else {
+                                                Fluttertoast.showToast(
+                                                  msg:
+                                                      "Search field cannot be empty",
+                                                  toastLength:
+                                                      Toast.LENGTH_SHORT,
+                                                  gravity: ToastGravity.BOTTOM,
+                                                  backgroundColor: Colors.red,
+                                                  textColor: Colors.white,
+                                                  fontSize: 16.0,
+                                                );
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              final parentIndex =
+                                                  savedSearchList.indexWhere(
+                                                      (item) => item.data
+                                                          .contains(datum));
+                                              if (parentIndex != -1) {
+                                                savedSearchList[parentIndex]
+                                                    .data
+                                                    .remove(datum);
+                                                if (savedSearchList[parentIndex]
+                                                    .data
+                                                    .isEmpty) {
+                                                  savedSearchList
+                                                      .removeAt(parentIndex);
+                                                }
+                                              }
+                                            });
+                                          },
+                                          child: const Icon(
+                                            Icons.close,
+                                            color: Colors.blue,
+                                            size: 24.0,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        final parentIndex = savedSearchList
-                                            .indexWhere(
-                                                (item) => item.data.contains(datum));
-                                        if (parentIndex != -1) {
-                                          savedSearchList[parentIndex].data.remove(datum);
-                                          if (savedSearchList[parentIndex].data.isEmpty) {
-                                            savedSearchList.removeAt(parentIndex);
-                                          }
-                                        }
-                                      });
-                                    },
-                                    child: const Icon(
-                                      Icons.close,
-                                      color: Colors.blue,
-                                      size: 24.0,
-                                    ),
-                                  ),
+                                  const Divider(),
                                 ],
-                              ),
-                            ),
-                            const Divider(),
-                          ],
-                        );
-                      },
-                    )
+                              );
+                            },
+                          )
                         : Container(),
                   ),
                 ),
@@ -492,10 +504,6 @@ class _ProductPageRouteState extends State<ProductPageRoute> {
 
     Overlay.of(context).insert(_overlayEntry!);
   }
-
-
-
-
 
   //Consumer<FilterProvider>(builder: (context, filters, child) {
   void _removeOverlay() {
@@ -518,7 +526,6 @@ class PackageListPageRoute extends StatefulWidget {
 }
 
 class _PackageListPageRouteState extends State<PackageListPageRoute> {
-
   @override
   void initState() {
     super.initState();
@@ -528,7 +535,7 @@ class _PackageListPageRouteState extends State<PackageListPageRoute> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CommonHeader.header(showBackButton: false,context, onBack: () {
+      appBar: CommonHeader.header(showBackButton: false, context, onBack: () {
         Navigator.pop(context);
       }, onSearch: () {
         if (kDebugMode) {
@@ -554,5 +561,3 @@ class _PackageListPageRouteState extends State<PackageListPageRoute> {
     );
   }
 }
-
-

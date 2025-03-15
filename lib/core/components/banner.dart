@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:collection/collection.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:customerapp/core/constant/HorizontalImageSlider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -204,18 +205,30 @@ class PackageImageSlider extends StatefulWidget {
 class _PackageImageSliderState extends State<PackageImageSlider> {
   int _currentIndex = 0;
 
+  void _showFullScreenImage(String imageUrl) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FullScreenImageView(imageUrl: imageUrl),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Widget> carouselItems = [];
 
     // Add image items
     carouselItems.addAll(widget.imageUrls.map(
-      (url) => Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: NetworkImage(url),
-            fit: BoxFit.cover,
+      (url) => GestureDetector(
+        onTap: () => _showFullScreenImage(url),
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: NetworkImage(url),
+              fit: BoxFit.cover,
+            ),
           ),
         ),
       ),
@@ -394,7 +407,6 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                 child: AspectRatio(
                   aspectRatio: 16 / 9,
                   child: YoutubePlayer(
-
                     controller: widget.controller,
                   ),
                 ),
