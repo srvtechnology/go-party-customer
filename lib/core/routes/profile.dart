@@ -217,6 +217,8 @@ class _ProfileState extends State<Profile> {
       return Scaffold(
         backgroundColor: Colors.white,
         appBar: CommonHeader.headerMain(context, isShowLogo: false,elevation: 0, onSearch: () {
+
+          userType = pref.getString("userType") ?? "";
           Navigator.pushNamed(context, ProductPageRoute.routeName);
         }),
         body: Column(
