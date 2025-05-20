@@ -64,7 +64,7 @@ class _OrderInfoViewState extends State<OrderInfoView> {
             redirectUrl: res['partialSecondPayObject']['redirect_url'],
             cancelUrl: res['partialSecondPayObject']['cancel_url'],
             encVal: res['partialSecondPayObject']['enc_val'],
-          ),
+          ), paidStatus: widget.order.paidStatus!,
         ),
       ),
     );
@@ -424,7 +424,7 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Order Summary',
+                          'Order Summary....',
                           style: TextStyle(
                             fontSize: 18.sp,
                             fontWeight: FontWeight.bold,
@@ -474,26 +474,7 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                                   ),
                                 ],
                               )
-                            : Row(
-                                children: [
-                                  Text(
-                                    'Paid Total ',
-                                    style: TextStyle(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  const Spacer(),
-                                  Text(
-                                    "₹ ${widget.order.totalPrice}",
-                                    style: TextStyle(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            : SizedBox(),
                         // total
                         const Divider(),
                         widget.order.paidStatus == "partial"
@@ -529,7 +510,7 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                                   const Spacer(),
                                   //
                                   Text(
-                                    "₹ ${(double.parse(widget.order.totalPrice) * 0.25 + double.parse(widget.order.totalPrice) * 0.25 * 0.18).toStringAsFixed(2)}",
+                                    "₹ ${tprice.toStringAsFixed(2)}",
                                     style: TextStyle(
                                       fontSize: 18.sp,
                                       fontWeight: FontWeight.w600,

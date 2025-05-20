@@ -9,12 +9,14 @@ class PaymentStatusView extends StatefulWidget {
   final PaymentRes? paymentRes;
   final String address;
   final String billingName;
+  final String paidstatus;
 
   const PaymentStatusView({
     Key? key,
     required this.paymentRes,
     required this.billingName,
     required this.address,
+    required this.paidstatus,
   }) : super(key: key);
 
   @override
@@ -38,6 +40,7 @@ class _PaymentStatusViewState extends State<PaymentStatusView> {
 
   @override
   Widget build(BuildContext context) {
+    final code = widget.paymentRes?.code ?? 400;
     return WillPopScope(
       onWillPop: () {
         if (context.mounted) {
@@ -64,19 +67,18 @@ class _PaymentStatusViewState extends State<PaymentStatusView> {
                 },
               )),
           body: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: (widget.paymentRes?.code ?? 400) == 200 ||
-                      (widget.paymentRes?.code ?? 400) == 202
-                  ? _buildPaymentStatus(context, true,widget.address,
-                  widget.billingName)
-                  : _buildPaymentStatus(context, false,widget.address,
-                  widget.billingName))),
+            width: MediaQuery.of(context).size.width,
+            child: (code == 200 || code == 202 || code == 203)
+                ? _buildPaymentStatus(context, true, widget.address, widget.billingName)
+                : _buildPaymentStatus(context, false, widget.address, widget.billingName),
+          )),
     );
   }
 
   Widget _buildPaymentStatus(BuildContext context, bool isPaymentSuccess,String? address,String? shippingto) {
     if(isPaymentSuccess){
-      Provider.of<PaymentStatusProvider>(context, listen: false).isPaid=true;
+
+     widget.paidstatus=="Partial"? Provider.of<PaymentStatusProvider>(context, listen: false).isPaid=true: Provider.of<PaymentStatusProvider>(context, listen: false).isPaid=false;
       Provider.of<PaymentStatusProvider>(context, listen: false).address=address!;
       Provider.of<PaymentStatusProvider>(context, listen: false).shippingto=shippingto!;
     }else{

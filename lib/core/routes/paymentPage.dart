@@ -786,7 +786,7 @@ class _PaymentPageState extends State<PaymentPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PaymentWebView(billingName: widget.selectedAddress?.billingName ??"",selectedaddress:  widget.selectedAddress.toString(),
+            builder: (context) => PaymentWebView(billingName: widget.selectedAddress?.billingName ??"",selectedaddress:  widget.selectedAddress!.address.toString(),
               generateOrderValue:
               GenerateOrderValue(
                 orderId: value.orderId,
@@ -802,7 +802,7 @@ class _PaymentPageState extends State<PaymentPage> {
                 encVal: !_paymentTypeController.text.contains("Partial")
                     ? value.fullPayObject!.encVal
                     : value.partialPayObject!.encVal,
-              ),
+              ), paidStatus: _paymentTypeController.text.toString(),
             ),
           ),
         );

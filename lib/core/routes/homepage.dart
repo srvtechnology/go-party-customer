@@ -300,6 +300,8 @@ class _HomeState extends State<Home> {
 
 
   Widget successCard(String? address, String? shippingName, VoidCallback onClose) {
+
+   print(">>>>$address");
     return Stack(
       children: [
         // Card Container

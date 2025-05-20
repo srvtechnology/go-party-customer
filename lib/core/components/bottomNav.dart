@@ -53,7 +53,7 @@ class _BottomNavState extends State<BottomNav> {
         height: 50,
         onTap: (index) {
           if (widget.child != null) {
-            Navigator.of(context).pop();
+            //Navigator.of(context).pop();
             widget.onTabChange!(index);
           }
 

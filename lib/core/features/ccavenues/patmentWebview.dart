@@ -13,11 +13,13 @@ class PaymentWebView extends StatefulWidget {
   final GenerateOrderValue generateOrderValue;
  final String  selectedaddress;
  final String  billingName;
+ final String paidStatus;
   const PaymentWebView({
     Key? key,
     required this.generateOrderValue,
     required this.selectedaddress,
-    required this.billingName
+    required this.billingName,
+    required this.paidStatus,
   }) : super(key: key);
 
   @override
@@ -28,6 +30,7 @@ class _PaymentWebViewState extends State<PaymentWebView> {
   WebViewController? controller;
   bool isloading = false;
   double progress = 0;
+
   @override
   void initState() {
     super.initState();
@@ -85,7 +88,7 @@ class _PaymentWebViewState extends State<PaymentWebView> {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              PaymentStatusView(billingName: widget.billingName,address: widget.selectedaddress,paymentRes: paymentRes)));
+                              PaymentStatusView(billingName: widget.billingName,address: widget.selectedaddress,paymentRes: paymentRes, paidstatus: widget.paidStatus,)));
                 }
               });
             } catch (e) {

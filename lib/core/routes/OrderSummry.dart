@@ -434,7 +434,7 @@ class _OrderSummaryState extends State<OrderSummary> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Order Summary',
+                          'Order Summary...',
                           style: TextStyle(
                             fontSize: 18.sp,
                             fontWeight: FontWeight.bold,
@@ -578,7 +578,8 @@ class _OrderSummaryState extends State<OrderSummary> {
             redirectUrl: res['partialSecondPayObject']['redirect_url'],
             cancelUrl: res['partialSecondPayObject']['cancel_url'],
             encVal: res['partialSecondPayObject']['enc_val'],
-          ),
+
+          ), paidStatus: widget.order.paidStatus!,
         ),
       ),
     );

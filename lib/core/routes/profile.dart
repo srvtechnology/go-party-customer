@@ -63,7 +63,9 @@ class _ProfileState extends State<Profile> {
   void initializeData() async {
     auth = Provider.of<AuthProvider>(context, listen: false);
     pref = await SharedPreferences.getInstance();
-    userType = pref.getString("userType") ?? "";
+    setState(() {
+      userType = pref.getString("userType") ?? "";
+    });
   }
 
   @override
@@ -400,7 +402,7 @@ class _ProfileState extends State<Profile> {
                             ],
                           ):const SizedBox(),
                           const SizedBox(
-                            height: 20,
+                            height: 10,
                           ),
                         ],
                       ),
