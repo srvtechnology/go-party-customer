@@ -27,7 +27,6 @@ class _PaymentStatusViewState extends State<PaymentStatusView> {
   @override
   void initState() {
     super.initState();
-    // 2 seconds delay and automatically navigate to main page
     Future.delayed(const Duration(seconds: 5), () {
       if (context.mounted) {
         Navigator.pushAndRemoveUntil(

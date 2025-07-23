@@ -18,11 +18,17 @@ class AuthProvider with ChangeNotifier {
   String? _token;
   bool _isLoading = false;
   String? status;
+  String? reg_otp="";
 
   bool get isLoading => _isLoading;
   UserModel? _user;
   bool isAgent = false;
   late final SharedPreferences pref;
+
+  String? _regOtp; // ✅ OTP variable
+  String? _agentregOtp; // ✅ OTP variable
+  String? get regOtp => _regOtp;
+  String? get agentregOtp => _agentregOtp;
 
   String? get token => _token;
 
@@ -33,6 +39,16 @@ class AuthProvider with ChangeNotifier {
 
   int? userId;
   String? tempToken;
+
+  void setOtp(String otp) {
+    _regOtp = otp;
+    notifyListeners();
+  }
+
+  void setAgentOtp(String otp) {
+    _agentregOtp = otp;
+    notifyListeners();
+  }
 
   void startLoading() {
     _isLoading = true;
@@ -57,105 +73,6 @@ class AuthProvider with ChangeNotifier {
     init();
   }
 
-/*  Future<void> register(
-      String name, String email, String phone, String password) async {
-    try {
-      final res = await authRepo.register(email, password, name, phone);
-      if (res?.statusCode == 200) {
-        login(email, password);
-      }
-    } catch (e) {
-      CustomLogger.error(e);
-      _authState = AuthState.Error;
-      notifyListeners();
-    }
-  }*/
-
-  /*--- modified on 25-07-24 ----*/
-  /* Future<void> register(
-      String name, String email, String phone, String password) async {
-    try {
-      final res = await authRepo.register(email, password, name, phone);
-      if (res != null && res.statusCode == 200) {
-        login(email, password);
-      } else {
-        throw Exception('Registration failed.');
-      }
-    } catch (e) {
-      CustomLogger.error(e);
-      _authState = AuthState.error;
-      notifyListeners();
-      rethrow;
-    }
-  }
-
-  Future<void> registerAgent(BuildContext context,
-      {required String name,
-      required String email,
-      required String phone,
-      required String password,
-      required TextEditingController otpcontroller}) async {
-    try {
-      _isLoading = true;
-      notifyListeners();
-      log("Registering Agent");
-      final res = await authRepo.registerAgent(email, password, name, phone);
-      log(res.toString(), name: "Agent Registered");
-      if (res!.statusCode == 200) {
-        log(res.data.toString(), name: "Agent Registered OTP");
-        agentRegistrationStep = 2;
-        notifyListeners();
-        /*-- commented on 24-07-24 because OTP is set by default ---*/
-        /*otpcontroller.text = res.data['opt_code'].toString();*/
-        return;
-      }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(res.data['error'] ?? "Invalid Credentials"),
-        ),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Email or Phone already exists'),
-        ),
-      );
-      _authState = AuthState.error;
-      notifyListeners();
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
-  } */
-
-  // Future<void> register(
-  //     String name, String email, String phone, String password) async {
-  //   try {
-  //     final res = await authRepo.register(email, password, name, phone);
-  //     if (res != null && res.statusCode == 200) {
-  //       await login(email, password);
-  //       if (_authState == AuthState.loggedIn) {
-  //         // Registration and login successful
-  //         log("User successfully registered and logged in.");
-  //       }
-  //     } else {
-  //       throw Exception('Registration failed.');
-  //     }
-  //   } catch (e) {
-  //     CustomLogger.error(e);
-  //     _authState = AuthState.error;
-  //     notifyListeners();
-
-  //     // Show error message and reset authState
-  //     Future.delayed(const Duration(seconds: 2), () {
-  //       _authState = AuthState.loggedOut;
-  //       notifyListeners();
-  //     });
-
-  //     rethrow;
-  //   }
-  // }
-
   Future<bool> register(
       String name, String email, String phone, String password) async {
     // try {
@@ -165,23 +82,16 @@ class AuthProvider with ChangeNotifier {
     final res = await authRepo.register(email, password, name, phone);
     print(res.toString());
 
+    final otp = res?.data['user']['reg_otp'];
+    setOtp(otp);
+
     if (res != null && res.statusCode == 200) {
       userId = res.data['user']['id'];
       return true;
     }
-    // Dummy success response
-
     _isLoading = false;
     notifyListeners();
     return false;
-    // } catch (e) {
-    //   _authState = AuthState.error;
-    //   notifyListeners();
-    //   return false;
-    // } finally {
-    //   _isLoading = false;
-    //   notifyListeners();
-    // }
   }
 
   Future<bool> verifySignupOTP(String otp) async {
@@ -221,18 +131,16 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
     print("Registering Agent");
     final res = await authRepo.registerAgent(email, password, name, phone);
-    print(
-      res.toString(),
-    );
+    print(res.toString(),);
     print(res!.statusCode.toString());
     if (res.statusCode == 200) {
       userId = res.data['data']['id'];
       log(res.data.toString(), name: "Agent Registered OTP");
+
+      setAgentOtp(res.data['data']['reg_otp']);
       agentRegistrationStep = 2;
       _isLoading = false;
       notifyListeners();
-      /*-- commented on 24-07-24 because OTP is set by default ---*/
-      /*otpcontroller.text = res.data['opt_code'].toString();*/
       return;
     }
     _isLoading = false;
@@ -244,24 +152,6 @@ class AuthProvider with ChangeNotifier {
         ),
       );
     }
-    // } catch (e) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(
-    //       content: Text('Email or Phone already exists'),
-    //     ),
-    //   );
-    //   _authState = AuthState.error;
-    //   notifyListeners();
-
-    //   // Reset authState after showing the error message
-    //   Future.delayed(const Duration(seconds: 2), () {
-    //     _authState = AuthState.loggedOut;
-    //     notifyListeners();
-    //   });
-    // } finally {
-    // _isLoading = false;
-    // notifyListeners();
-    // }
   }
 
   Future resendOtp(scaffoldKey, {required String email}) async {
@@ -468,24 +358,6 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  /*  Future<void> login(String email, String password) async {
-    _authState = AuthState.waiting;
-    notifyListeners();
-    try {
-      String tempToken = await authRepo.login(email, password);
-      saveTokenToStorage(tempToken);
-      saveEmailPasswordToStorage(email, password);
-      _token = tempToken;
-      _authState = AuthState.loggedIn;
-      final userType = pref.getString("userType");
-      await getUser(userType: userType);
-    } catch (e) {
-      _authState = AuthState.error;
-      rethrow;
-    }
-    notifyListeners();
-  } */
-
   void deleteAllFromStorage() {
     pref.remove("token");
     pref.remove("userType");
@@ -583,7 +455,6 @@ class AuthProvider with ChangeNotifier {
 
       if (res?.statusCode == 200) {
         log(res!.data.toString(), name: "Agent Registered 3");
-
         saveTokenToStorage(tempToken ?? "");
         saveEmailPasswordToStorage(email, password);
         saveUserType("agent");
@@ -599,99 +470,10 @@ class AuthProvider with ChangeNotifier {
       log(e.toString(), name: "registerAgentBankDetails");
       _authState = AuthState.error;
       notifyListeners();
-
-      // // Reset authState after showing the error message
-      // Future.delayed(const Duration(seconds: 2), () {
-      //   _authState = AuthState.loggedOut;
-      //   notifyListeners();
-      // });
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 }
-
-  /* Future registerAgentBankDetails(
-    BuildContext context, {
-    required String email,
-    required String bankName,
-    required String accountNumber,
-    required String accountHolderName,
-    required String ifscCode,
-    required String password,
-  }) async {
-    try {
-      _isLoading = true;
-      notifyListeners();
-      final res = await authRepo.submitAgentBankData(
-        email: email,
-        bankName: bankName,
-        accountNumber: accountNumber,
-        accountHolderName: accountHolderName,
-        ifscCode: ifscCode,
-      );
-
-      if (res?.statusCode == 200) {
-        log(res!.data.toString(), name: "Agent Registered 3");
-        final tempToken = res.data['token'];
-        saveTokenToStorage(tempToken);
-        saveEmailPasswordToStorage(email, password);
-        saveUserType("agent");
-        _token = tempToken;
-        agentRegistrationStep = 1;
-        _authState = AuthState.loggedIn;
-        final userType = pref.getString("userType");
-        await getUser(userType: userType);
-      }
-    } catch (e) {
-      CustomLogger.error(e);
-
-      _authState = AuthState.error;
-      notifyListeners();
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
-  } */
-
-  /* Future loginAgent(
-    scaffoldKey, {
-    required String email,
-    required String password,
-  }) async {
-    try {
-      _isLoading = true;
-      notifyListeners();
-      final res = await authRepo.agentLogin(
-        email: email,
-        password: password,
-      );
-      if (res?.statusCode == 200) {
-        final tempToken = res!.data['token'];
-        if (tempToken == null) {
-          ScaffoldMessenger.of(scaffoldKey.currentContext!).showSnackBar(
-            SnackBar(
-              content: Text(res.data['error'] ?? "Invalid Credentials"),
-            ),
-          );
-          return;
-        }
-        saveTokenToStorage(tempToken);
-        saveEmailPasswordToStorage(email, password);
-        saveUserType("agent");
-        _token = tempToken;
-        _authState = AuthState.loggedIn;
-        final userType = pref.getString("userType");
-        await getUser(userType: userType);
-      }
-    } catch (e) {
-      CustomLogger.error(e);
-      _authState = AuthState.error;
-      notifyListeners();
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
-  } */
 

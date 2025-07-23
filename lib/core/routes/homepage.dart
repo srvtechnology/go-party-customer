@@ -297,8 +297,6 @@ class _HomeState extends State<Home> {
     Provider.of<PaymentStatusProvider>(context, listen: false).isPaid=false;
   }
 
-
-
   Widget successCard(String? address, String? shippingName, VoidCallback onClose) {
 
    print(">>>>$address");

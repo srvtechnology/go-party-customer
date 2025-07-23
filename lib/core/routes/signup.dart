@@ -15,6 +15,7 @@ class SignUpPageRoute extends StatefulWidget {
 
   @override
   State<SignUpPageRoute> createState() => _SignUpPageRouteState();
+
 }
 
 class _SignUpPageRouteState extends State<SignUpPageRoute> {
@@ -45,124 +46,109 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
     try {
       await auth.register(_nameController.text, _emailController.text,
           _phoneNumberController.text, _passwordController.text);
-
       if (context.mounted) {
-        // showDialog(
-        //   context: context,
-        //   barrierDismissible: false,
-        //   builder: (context) => AlertDialog(
-        //     title: const Text('Enter OTP'),
-        //     content: TextField(
-        //       controller: _otpController,
-        //       keyboardType: TextInputType.number,
-        //       decoration: const InputDecoration(
-        //         hintText: 'Enter verification code',
-        //       ),
-        //     ),
-        //     actions: [
-        //       TextButton(
-        //         onPressed: () async {
-        //           final success = await auth.verifySignupOTP(
-        //               _emailController.text, _otpController.text);
-        //           if (success && mounted) {
-        //             Navigator.pushReplacementNamed(
-        //                 context, MainPageRoute.routeName);
-        //           }
-        //         },
-        //         child: const Text('Verify'),
-        //       ),
-        //     ],
-        //   ),
-        // );
         showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (context) => AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            title: Column(
-              children: [
-                Icon(Icons.message_rounded,
-                    size: 50, color: Theme.of(context).primaryColor),
-                const SizedBox(height: 10),
-                const Text(
-                  'OTP Verification',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          builder: (context) => Consumer<AuthProvider>(
+            builder: (context, auth, child) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
                 ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Enter the verification code sent to your email',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
-                ),
-              ],
-            ),
-            content: Column(
-              children: [
-                TextField(
-                  controller: _otpController,
-                  keyboardType: TextInputType.number,
-                  maxLength: 12,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 24, letterSpacing: 8),
-                  decoration: InputDecoration(
-                    hintText: '000000',
-                    counterText: '',
-                    filled: true,
-                    fillColor: Colors.grey[100],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none,
+                title: Column(
+                  children: [
+                    Icon(
+                      Icons.message_rounded,
+                      size: 50,
+                      color: Theme.of(context).primaryColor,
                     ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextButton(
-                  onPressed: () async {
-                    await auth.resendCustomerOTP();
-                    if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('OTP resent successfully')),
-                      );
-                    }
-                  },
-                  child: const Text('Resend OTP'),
-                ),
-              ],
-            ),
-            actions: [
-              Row(
-                children: [
-                  Expanded(
-                    child: TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text('Cancel'),
+                    const SizedBox(height: 10),
+                    Text(
+                      'OTP Verification ${auth.regOtp}',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        final success =
-                            await auth.verifySignupOTP(_otpController.text);
-                        if (success && mounted) {
-                          Navigator.pushReplacementNamed(
-                              context, MainPageRoute.routeName);
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Enter the verification code sent to your email',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 14, color: Colors.grey),
+                    ),
+                  ],
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: _otpController,
+                      keyboardType: TextInputType.number,
+                      maxLength: 12,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 24, letterSpacing: 8),
+                      decoration: InputDecoration(
+                        hintText: '000000',
+                        counterText: '',
+                        filled: true,
+                        fillColor: Colors.grey[100],
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
                         ),
                       ),
-                      child: const Text('Verify'),
                     ),
+                    const SizedBox(height: 16),
+                    Text("OTP is:- ${auth.reg_otp.toString()}"),
+                    const SizedBox(height: 16),
+                    TextButton(
+                      onPressed: () async {
+                        await auth.resendCustomerOTP();
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('OTP resent successfully')),
+                          );
+                        }
+                      },
+                      child: const Text('Resend OTP'),
+                    ),
+                  ],
+                ),
+                actions: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('Cancel'),
+                        ),
+                      ),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            final success =
+                            await auth.verifySignupOTP(_otpController.text);
+                            if (success && context.mounted) {
+                              Navigator.pushReplacementNamed(
+                                  context, MainPageRoute.routeName);
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: const Text('Verify'),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
-              ),
-            ],
+              );
+            },
           ),
         );
       }
@@ -559,4 +545,5 @@ class _SignUpPageRouteState extends State<SignUpPageRoute> {
       );
     });
   }
+
 }

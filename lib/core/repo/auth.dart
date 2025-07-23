@@ -135,11 +135,7 @@ Future<Map<String, dynamic>> verifyOTP(String id, String otp) async {
         "user_id": id,
         "reg_otp": otp,
       });
-
-  print(
-    jsonEncode(response.data.toString()),
-  );
-
+  print(jsonEncode(response.data.toString()),);
   if (response.statusCode == 200) {
     return {
       "status": response.data['success'],

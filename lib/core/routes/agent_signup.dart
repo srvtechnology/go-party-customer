@@ -411,110 +411,114 @@ class _AgentSignUpState extends State<AgentSignUp> {
               ),
             );
           case 2:
-            return Container(
+            return Consumer<AuthProvider>(builder: (context, value, child) {
+              return Container(
                 // color: Colors.white,
-                padding: const EdgeInsets.all(16.0),
-                child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Form(
-                        key: _formKey,
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              const SizedBox(height: 8),
-                              SizedBox(
-                                child: Image.asset(
-                                  'assets/images/logo/Utsavlife full logo.png',
-                                ),
-                              ),
-                              const SizedBox(height: 32.0),
-                              Text(
-                                "Verify Agent Account",
-                                style: TextStyle(
-                                    color: Theme.of(context).primaryColor,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                              const SizedBox(height: 16.0),
-                              TextFormField(
-                                style: const TextStyle(color: Colors.grey),
-                                controller: _otpController,
-                                keyboardType: TextInputType.number,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly
-                                ],
-                                decoration: InputDecoration(
-                                  labelText: 'Enter OTP',
-                                  prefixIcon: const Icon(Icons.lock,
-                                      color: Colors.grey),
-                                  labelStyle:
-                                      const TextStyle(color: Colors.grey),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: const BorderSide(
-                                          width: 0.5, color: Colors.grey)),
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: const BorderSide(
-                                          width: 0.5, color: Colors.grey)),
-                                ),
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return 'Please enter your OTP';
-                                  }
-                                  // min 6 characters
-                                  if (value.length < 6) {
-                                    return 'OTP should be at least 6 characters long';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(height: 32.0),
-                              ElevatedButton(
-                                onPressed: () {
-                                  final isValid =
-                                      _formKey.currentState!.validate();
-                                  if (isValid) {
-                                    state.registerAgentOtp(
-                                      scaffoldKey,
-                                      // user_id: _emailController.text.trim(),
-                                      otp: _otpController.text.trim(),
-                                    );
-                                  }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      Theme.of(context).primaryColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8.0),
+                  padding: const EdgeInsets.all(16.0),
+                  child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Form(
+                          key: _formKey,
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                const SizedBox(height: 8),
+                                SizedBox(
+                                  child: Image.asset(
+                                    'assets/images/logo/Utsavlife full logo.png',
                                   ),
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 16.0),
                                 ),
-                                child: state.isLoading
-                                    ? const CircularProgressIndicator(
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                                Colors.grey),
-                                      )
-                                    : const Text(
-                                        'Validate OTP',
-                                        style: TextStyle(
-                                          fontSize: 18.0,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                              ),
-                              const SizedBox(height: 16.0),
-                              TextButton(
-                                onPressed: () {
-                                  state.resendOtp(scaffoldKey,
-                                      email: _emailController.text.trim());
-                                },
-                                child: const Text("Resend OTP"),
-                              ),
-                            ]))));
+                                const SizedBox(height: 32.0),
+                                Text(
+                                  "Verify Agent Account",
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                const SizedBox(height: 16.0),
+                                TextFormField(
+                                  style: const TextStyle(color: Colors.grey),
+                                  controller: _otpController,
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly
+                                  ],
+                                  decoration: InputDecoration(
+                                    labelText: 'Enter OTP',
+                                    prefixIcon: const Icon(Icons.lock,
+                                        color: Colors.grey),
+                                    labelStyle:
+                                    const TextStyle(color: Colors.grey),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: const BorderSide(
+                                            width: 0.5, color: Colors.grey)),
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: const BorderSide(
+                                            width: 0.5, color: Colors.grey)),
+                                  ),
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Please enter your OTP';
+                                    }
+                                    // min 6 characters
+                                    if (value.length < 6) {
+                                      return 'OTP should be at least 6 characters long';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(height: 32.0),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    final isValid =
+                                    _formKey.currentState!.validate();
+                                    if (isValid) {
+                                      state.registerAgentOtp(
+                                        scaffoldKey,
+                                        // user_id: _emailController.text.trim(),
+                                        otp: _otpController.text.trim(),
+                                      );
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                    Theme.of(context).primaryColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 16.0),
+                                  ),
+                                  child: state.isLoading
+                                      ? const CircularProgressIndicator(
+                                    valueColor:
+                                    AlwaysStoppedAnimation<Color>(
+                                        Colors.grey),
+                                  )
+                                      : const Text(
+                                    'Validate OTP',
+                                    style: TextStyle(
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 16.0),
+                                 Text(" OTP is:- ${value.agentregOtp}"),
+                                const SizedBox(height: 16.0),
+                                TextButton(
+                                  onPressed: () {
+                                    state.resendOtp(scaffoldKey,
+                                        email: _emailController.text.trim());
+                                  },
+                                  child: const Text("Resend OTP"),
+                                ),
+                              ]))));
+            },);
           case 3:
             return Container(
               // color: Colors.white,
